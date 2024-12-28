@@ -7,3 +7,9 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: ${DB_DRIVER}
+
+mybatis:
+  mapper-locations:
+    - classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
