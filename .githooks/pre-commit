@@ -1,0 +1,14 @@
+#!/bin/bash
+# Hook to run Maven validate phase before committing
+
+echo "Running mvn validate..."
+mvn validate
+
+# 检查 mvn validate 的退出码，如果非 0，则中止提交
+if [ $? -ne 0 ]; then
+    echo "Maven validation failed. Commit aborted."
+    exit 1
+fi
+
+echo "Maven validation passed. Proceeding with commit."
+exit 0
