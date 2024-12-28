@@ -2,11 +2,10 @@ package com.youyi.common.base;
 
 import com.youyi.common.type.ErrorCode;
 import com.youyi.common.type.ReturnCode;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serial;
 import java.io.Serializable;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
