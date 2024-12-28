@@ -10,11 +10,27 @@
     </parent>
 
     <artifactId>app-infra</artifactId>
+    <version>${revision}</version>
 
     <dependencies>
+        <!-- Modules -->
         <dependency>
             <groupId>com.youyi</groupId>
             <artifactId>app-common</artifactId>
+        </dependency>
+
+        <!-- DataBase MySQL -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
     </dependencies>
 

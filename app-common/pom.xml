@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>app-common</artifactId>
+    <version>${revision}</version>
 
     <dependencies>
         <!-- Utils -->

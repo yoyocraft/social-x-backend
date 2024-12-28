@@ -10,5 +10,6 @@
     </parent>
 
     <artifactId>app-test</artifactId>
+    <version>${revision}</version>
 
 </project>

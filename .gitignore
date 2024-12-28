@@ -35,5 +35,6 @@ build/
 .DS_Store
 
 ### Local ###
-*-local.*
+*local.*
 logs
+.flattened-pom.xml
