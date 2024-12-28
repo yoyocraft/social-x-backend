@@ -12,4 +12,46 @@
     <artifactId>app-test</artifactId>
     <version>${revision}</version>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>com.youyi</groupId>
+            <artifactId>app-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.youyi</groupId>
+            <artifactId>app-component</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.youyi</groupId>
+            <artifactId>app-infra</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.youyi</groupId>
+            <artifactId>app-runner</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>report-aggregate</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${basedir}/target/coverage-reports</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

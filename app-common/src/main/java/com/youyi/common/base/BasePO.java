@@ -4,12 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * Persistence Object
+ *
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2024/12/27
  */
 @Getter
 @Setter
-public class BaseDO {
+public class BasePO {
 
     private Long id;
 

@@ -1,18 +1,19 @@
 package com.youyi.common.base;
 
+import java.io.Serial;
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serial;
-import java.io.Serializable;
-
 /**
+ * Frontend --> Backend
+ *
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2024/12/27
  */
 @Getter
 @Setter
-public class BaseReq implements Serializable {
+public class BaseParam implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
