@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum ReturnCode implements ErrorCode{
+public enum ReturnCode implements ErrorCode {
 
     SUCCESS("SUCCESS", "Success"),
     SYSTEM_ERROR("SYSTEM_ERROR", "System error"),

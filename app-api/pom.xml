@@ -11,5 +11,6 @@
     </parent>
 
     <artifactId>app-api</artifactId>
+    <version>${revision}</version>
 
 </project>

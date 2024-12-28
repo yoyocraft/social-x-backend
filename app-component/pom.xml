@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>app-component</artifactId>
+    <version>${revision}</version>
 
     <dependencies>
         <dependency>
