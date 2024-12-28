@@ -13,18 +13,29 @@
     <version>${revision}</version>
 
     <dependencies>
+        <!-- Modules -->
         <dependency>
             <groupId>com.youyi</groupId>
             <artifactId>app-common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.youyi</groupId>
-            <artifactId>app-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.youyi</groupId>
             <artifactId>app-infra</artifactId>
         </dependency>
+
+        <!-- Mapstruct -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

@@ -61,7 +61,6 @@
                 <module>app-infra</module>
                 <module>app-runner</module>
                 <module>app-component</module>
-                <module>app-api</module>
                 <module>app-test</module>
             </modules>
         </profile>
@@ -75,16 +74,6 @@
                 <module>app-infra</module>
                 <module>app-runner</module>
                 <module>app-component</module>
-                <module>app-api</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>release-api</id>
-            <properties>
-                <env>release</env>
-            </properties>
-            <modules>
-                <module>app-api</module>
             </modules>
         </profile>
     </profiles>
@@ -106,11 +95,6 @@
     <dependencyManagement>
         <dependencies>
             <!-- Modules -->
-            <dependency>
-                <groupId>com.youyi</groupId>
-                <artifactId>app-api</artifactId>
-                <version>${revision}</version>
-            </dependency>
             <dependency>
                 <groupId>com.youyi</groupId>
                 <artifactId>app-common</artifactId>
@@ -140,15 +124,23 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- MyBatis -->
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis-spring-starter.version}</version>
             </dependency>
+            <!-- MapStruct -->
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>${mapstruct.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <!-- Util -->
@@ -180,6 +172,30 @@
         </dependencies>
     </dependencyManagement>
 
+    <dependencies>
+        <!-- Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -192,6 +208,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -284,19 +305,31 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
+                <configuration>
+                    <skip>false</skip>
+                    <destFile>${basedir}/target/jacoco.exec</destFile>
+                </configuration>
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                        <configuration>
+                            <propertyName>jacocoReportArgLine</propertyName>
+                            <destFile>${basedir}/target/jacoco.exec</destFile>
+                        </configuration>
                     </execution>
                     <execution>
-                        <id>generate-code-coverage-report</id>
+                        <id>report</id>
                         <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <dataFile>${basedir}/target/jacoco.exec</dataFile>
+                            <outputDirectory>${basedir}/target/coverage-reports</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

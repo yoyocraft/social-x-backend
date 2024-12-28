@@ -22,10 +22,6 @@
             <groupId>com.youyi</groupId>
             <artifactId>app-component</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.youyi</groupId>
-            <artifactId>app-api</artifactId>
-        </dependency>
 
         <!-- Spring Stack -->
         <dependency>
