@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2024/12/27
  */
-public class BaseVO implements Serializable {
+public abstract class BaseVO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

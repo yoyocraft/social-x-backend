@@ -20,6 +20,9 @@ public class Result<T> implements Serializable {
 
     private T data;
 
+    /**
+     * {@link ReturnCode}
+     */
     private String code;
 
     private String message;

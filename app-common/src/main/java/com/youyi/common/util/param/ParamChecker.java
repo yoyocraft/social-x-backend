@@ -24,7 +24,7 @@ public interface ParamChecker<T> {
 
     default CheckResult validateWithLog(T data) {
         CheckResult ret = this.validate(data);
-        if (CheckResult.success().equals(ret)) {
+        if (CheckResult.isSuccess(ret)) {
             return CheckResult.success();
         }
 
