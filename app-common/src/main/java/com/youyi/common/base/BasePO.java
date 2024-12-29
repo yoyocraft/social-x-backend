@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class BasePO {
+public abstract class BasePO {
 
     private Long id;
 

@@ -41,7 +41,7 @@ class ParamCheckerChainTest {
     void testParamCheckerChain() {
         long param = 1L;
         Assertions.assertDoesNotThrow(
-            () -> paramCheckerChain
+            () -> ParamCheckerChain.newCheckerChain()
                 .put(ParamChecker.greaterThanChecker(0L, INVALID_PARAM), param)
                 .put(ParamChecker.lessThanChecker(100L, INVALID_PARAM), param)
                 .put(ParamChecker.rangeCloseChecker(0L, 100L, INVALID_PARAM), param)
@@ -52,7 +52,7 @@ class ParamCheckerChainTest {
 
         AppBizException exception = Assertions.assertThrows(
             AppBizException.class,
-            () -> paramCheckerChain
+            () -> ParamCheckerChain.newCheckerChain()
                 .put(ParamChecker.greaterThanChecker(0L, INVALID_PARAM), exParam)
                 .put(ParamChecker.lessThanChecker(100L, INVALID_PARAM), exParam)
                 .validateWithThrow()
