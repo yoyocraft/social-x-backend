@@ -5,18 +5,19 @@ component "app-common" as common
 component "app-infra" as infra
 component "app-runner" as runner
 component "app-component" as comp
-component "app-api" as api
 component "app-test" as test
 
 ' 定义依赖关系
-runner --> api : depends on
 runner --> common : uses
 runner --> comp : uses
 
-comp --> api: depends on
 comp --> infra: uses
 comp --> common: uses
 
 infra --> common: uses
 
+
+note top of test
+integration test for other module
+end note
 @enduml
