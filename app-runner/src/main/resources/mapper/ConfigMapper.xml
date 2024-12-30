@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youyi.core.config.repository.mapper.ConfigMapper">
+
+    <resultMap id="ConfigResultMap" type="com.youyi.core.config.repository.po.ConfigPO">
+        <id column="id" property="id"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="deleted" column="deleted"/>
+        <result property="configKey" column="config_key"/>
+        <result property="configValue" column="config_value"/>
+        <result property="env" column="env"/>
+        <result property="version" column="version"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.youyi.core.config.repository.po.ConfigPO">
+        INSERT INTO `config` (gmt_create, gmt_modified, deleted, extra_data, config_key,
+        config_value, env, version)
+        VALUES (#{gmtCreate}, #{gmtModified}, #{deleted}, #{extraData}, #{configKey},
+        #{configValue}, #{env}, #{version})
+    </insert>
+
+</mapper>
+
