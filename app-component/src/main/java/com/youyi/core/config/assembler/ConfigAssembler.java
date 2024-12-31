@@ -2,6 +2,7 @@ package com.youyi.core.config.assembler;
 
 import com.youyi.core.config.domain.ConfigDO;
 import com.youyi.core.config.param.ConfigCreateParam;
+import com.youyi.core.config.param.ConfigDeleteParam;
 import com.youyi.core.config.param.ConfigQueryParam;
 import com.youyi.core.config.param.ConfigUpdateParam;
 import com.youyi.core.config.repository.po.ConfigPO;
@@ -33,6 +34,8 @@ public interface ConfigAssembler {
     })
     ConfigDO toDO(ConfigUpdateParam param);
 
+    ConfigDO toDO(ConfigDeleteParam param);
+
     @Mappings({
         @Mapping(source = "id", target = "configId")
     })
@@ -42,5 +45,5 @@ public interface ConfigAssembler {
         @Mapping(source = "configId", target = "id"),
         @Mapping(target = "gmtModified", expression = "java(System.currentTimeMillis())")
     })
-    ConfigPO toUpdatePO(ConfigDO configDO);
+    ConfigPO toUpdateOrDeletePO(ConfigDO configDO);
 }

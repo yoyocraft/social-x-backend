@@ -34,8 +34,14 @@ public class ConfigHelper {
     }
 
     public void updateConfig(ConfigDO configDO) {
-        configDO.preUpdate();
-        ConfigPO configPO = CONFIG_ASSEMBLER.toUpdatePO(configDO);
+        configDO.preUpdateOrDelete();
+        ConfigPO configPO = CONFIG_ASSEMBLER.toUpdateOrDeletePO(configDO);
         configRepository.updateConfigValueAndEnv(configPO);
+    }
+
+    public void deleteConfig(ConfigDO configDO) {
+        configDO.preUpdateOrDelete();
+        ConfigPO configPO = CONFIG_ASSEMBLER.toUpdateOrDeletePO(configDO);
+        configRepository.deleteByConfigKeyAndEnv(configPO);
     }
 }

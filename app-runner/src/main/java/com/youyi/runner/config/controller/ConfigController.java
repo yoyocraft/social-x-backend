@@ -8,6 +8,7 @@ import com.youyi.common.util.GsonUtil;
 import com.youyi.core.config.domain.ConfigDO;
 import com.youyi.core.config.helper.ConfigHelper;
 import com.youyi.core.config.param.ConfigCreateParam;
+import com.youyi.core.config.param.ConfigDeleteParam;
 import com.youyi.core.config.param.ConfigQueryParam;
 import com.youyi.core.config.param.ConfigUpdateParam;
 import com.youyi.runner.config.model.ConfigVO;
@@ -26,6 +27,8 @@ import static com.youyi.common.util.LogUtil.serverExpLog;
 import static com.youyi.core.config.assembler.ConfigAssembler.CONFIG_ASSEMBLER;
 import static com.youyi.runner.config.util.ConfigResponseUtil.createFail;
 import static com.youyi.runner.config.util.ConfigResponseUtil.createSuccess;
+import static com.youyi.runner.config.util.ConfigResponseUtil.deleteFail;
+import static com.youyi.runner.config.util.ConfigResponseUtil.deleteSuccess;
 import static com.youyi.runner.config.util.ConfigResponseUtil.queryFail;
 import static com.youyi.runner.config.util.ConfigResponseUtil.querySuccess;
 import static com.youyi.runner.config.util.ConfigResponseUtil.updateFail;
@@ -44,7 +47,7 @@ public class ConfigController {
 
     private final ConfigHelper configHelper;
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     public Result<Boolean> createConfig(@RequestBody ConfigCreateParam param) {
         try {
             ConfigValidator.validateConfigCreateParam(param);
@@ -86,6 +89,21 @@ public class ConfigController {
         } catch (Exception e) {
             serverExpLog(LOGGER, ServerType.HTTP, "updateConfig", GsonUtil.toJson(param), e);
             return updateFail(param, SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, CommonBizState.UNKNOWN);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public Result<Boolean> deleteConfig(@RequestBody ConfigDeleteParam param) {
+        try {
+            ConfigValidator.validateConfigDeleteParam(param);
+            ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
+            configHelper.deleteConfig(configDO);
+            return deleteSuccess(param);
+        } catch (AppBizException e) {
+            return deleteFail(param, e.getCode(), e.getMessage(), CommonBizState.FAILED);
+        } catch (Exception e) {
+            serverExpLog(LOGGER, ServerType.HTTP, "deleteConfig", GsonUtil.toJson(param), e);
+            return deleteFail(param, SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, CommonBizState.UNKNOWN);
         }
     }
 }

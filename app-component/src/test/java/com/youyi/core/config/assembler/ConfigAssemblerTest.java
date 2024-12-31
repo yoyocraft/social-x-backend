@@ -33,7 +33,7 @@ public class ConfigAssemblerTest {
     void testDOToUpdatePO() {
         ConfigDO configDO = new ConfigDO();
 
-        ConfigPO po = ConfigAssembler.CONFIG_ASSEMBLER.toUpdatePO(configDO);
+        ConfigPO po = ConfigAssembler.CONFIG_ASSEMBLER.toUpdateOrDeletePO(configDO);
 
         Assertions.assertNotNull(po.getGmtModified());
     }

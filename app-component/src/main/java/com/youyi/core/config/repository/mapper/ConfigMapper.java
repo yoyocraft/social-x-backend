@@ -17,4 +17,6 @@ public interface ConfigMapper {
 
     int updateConfigValueAndEnv(ConfigPO po);
 
+    int deleteByConfigKeyAndEnv(ConfigPO po);
+
 }

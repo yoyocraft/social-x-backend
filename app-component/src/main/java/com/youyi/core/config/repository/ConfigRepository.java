@@ -60,4 +60,15 @@ public class ConfigRepository {
         }
     }
 
+    public void deleteByConfigKeyAndEnv(ConfigPO po) {
+        try {
+            checkNotNull(po);
+            int ret = configMapper.deleteByConfigKeyAndEnv(po);
+            checkState(ret == SINGLE_DML_AFFECTED_ROWS);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            throw AppBizException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
+
 }

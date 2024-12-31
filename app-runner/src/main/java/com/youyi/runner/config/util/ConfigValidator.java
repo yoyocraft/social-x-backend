@@ -3,6 +3,7 @@ package com.youyi.runner.config.util;
 import com.youyi.common.type.Env;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.core.config.param.ConfigCreateParam;
+import com.youyi.core.config.param.ConfigDeleteParam;
 import com.youyi.core.config.param.ConfigQueryParam;
 import com.youyi.core.config.param.ConfigUpdateParam;
 
@@ -36,6 +37,13 @@ public class ConfigValidator {
             .put(notBlankChecker("newConfigValue不能为空"), param.getNewConfigValue())
             .putIfNotBlank(enumExistChecker(Env.class, "env类型不合法"), param.getEnv())
             .put(greaterThanOrEqualChecker(0, "version不合法"), param.getVersion())
+            .validateWithThrow();
+    }
+
+    public static void validateConfigDeleteParam(ConfigDeleteParam param) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("configKey不能为空"), param.getConfigKey())
+            .put(enumExistChecker(Env.class, "env类型不合法"), param.getEnv())
             .validateWithThrow();
     }
 }
