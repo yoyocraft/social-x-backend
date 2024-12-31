@@ -1,7 +1,9 @@
 package com.youyi.core.config.helper;
 
+import com.youyi.core.config.assembler.ConfigAssembler;
 import com.youyi.core.config.domain.ConfigDO;
 import com.youyi.core.config.repository.ConfigRepository;
+import com.youyi.core.config.repository.po.ConfigPO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,5 +25,10 @@ public class ConfigHelper {
         configDO.create();
         configDO.buildToSaveConfig();
         configRepository.insert(configDO.getToSaveConfig());
+    }
+
+    public ConfigDO queryConfig(ConfigDO configDO) {
+        ConfigPO configPO = configRepository.queryByConfigKeyAndEnv(configDO.getConfigKey(), configDO.getEnv());
+        return ConfigAssembler.CONFIG_ASSEMBLER.toDO(configPO);
     }
 }

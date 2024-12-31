@@ -21,6 +21,7 @@ public class ConfigDO {
     private String configKey;
     private String configValue;
     private String env;
+    private Integer version;
     private String extraData;
 
     private ConfigPO toSaveConfig;

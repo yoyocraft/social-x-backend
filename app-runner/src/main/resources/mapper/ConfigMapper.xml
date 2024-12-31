@@ -15,12 +15,26 @@
         <result property="version" column="version"/>
     </resultMap>
 
+    <sql id="result_cols">
+        id, gmt_create, gmt_modified, deleted, extra_data, config_key, config_value, env, version
+    </sql>
+
     <insert id="insert" parameterType="com.youyi.core.config.repository.po.ConfigPO">
         INSERT INTO `config` (gmt_create, gmt_modified, deleted, extra_data, config_key,
         config_value, env, version)
         VALUES (#{gmtCreate}, #{gmtModified}, #{deleted}, #{extraData}, #{configKey},
         #{configValue}, #{env}, #{version})
     </insert>
+    <select id="queryByConfigKeyAndEnv" resultType="com.youyi.core.config.repository.po.ConfigPO">
+        SELECT
+        <include refid="result_cols"/>
+        FROM `config`
+        WHERE `config_key` = #{configKey}
+        AND `env` = #{env}
+        <if test="!includeDeleted">
+            AND deleted = 0
+        </if>
+    </select>
 
 </mapper>
 
