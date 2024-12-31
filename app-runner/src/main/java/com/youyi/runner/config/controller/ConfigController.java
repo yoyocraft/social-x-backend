@@ -9,6 +9,7 @@ import com.youyi.core.config.domain.ConfigDO;
 import com.youyi.core.config.helper.ConfigHelper;
 import com.youyi.core.config.param.ConfigCreateParam;
 import com.youyi.core.config.param.ConfigQueryParam;
+import com.youyi.core.config.param.ConfigUpdateParam;
 import com.youyi.runner.config.model.ConfigVO;
 import com.youyi.runner.config.util.ConfigValidator;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ import static com.youyi.runner.config.util.ConfigResponseUtil.createFail;
 import static com.youyi.runner.config.util.ConfigResponseUtil.createSuccess;
 import static com.youyi.runner.config.util.ConfigResponseUtil.queryFail;
 import static com.youyi.runner.config.util.ConfigResponseUtil.querySuccess;
+import static com.youyi.runner.config.util.ConfigResponseUtil.updateFail;
+import static com.youyi.runner.config.util.ConfigResponseUtil.updateSuccess;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -68,6 +71,21 @@ public class ConfigController {
         } catch (Exception e) {
             serverExpLog(LOGGER, ServerType.HTTP, "queryConfig", GsonUtil.toJson(param), e);
             return queryFail(param, SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, CommonBizState.UNKNOWN);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    public Result<Boolean> updateConfig(@RequestBody ConfigUpdateParam param) {
+        try {
+            ConfigValidator.validateConfigUpdateParam(param);
+            ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
+            configHelper.updateConfig(configDO);
+            return updateSuccess(param);
+        } catch (AppBizException e) {
+            return updateFail(param, e.getCode(), e.getMessage(), CommonBizState.FAILED);
+        } catch (Exception e) {
+            serverExpLog(LOGGER, ServerType.HTTP, "updateConfig", GsonUtil.toJson(param), e);
+            return updateFail(param, SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, CommonBizState.UNKNOWN);
         }
     }
 }

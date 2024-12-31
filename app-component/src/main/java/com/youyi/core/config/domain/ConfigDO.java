@@ -43,4 +43,8 @@ public class ConfigDO {
         toSaveConfig.setDeleted(INIT_DELETED);
         toSaveConfig.setExtraData(extraData);
     }
+
+    public void preUpdate() {
+        create();
+    }
 }

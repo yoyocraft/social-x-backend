@@ -6,6 +6,7 @@ import com.youyi.common.util.GsonUtil;
 import com.youyi.core.config.domain.ConfigDO;
 import com.youyi.core.config.param.ConfigCreateParam;
 import com.youyi.core.config.param.ConfigQueryParam;
+import com.youyi.core.config.param.ConfigUpdateParam;
 import com.youyi.runner.config.model.ConfigVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,18 @@ public class ConfigResponseUtil {
     public static Result<ConfigVO> queryFail(ConfigQueryParam param, String code, String message, CommonBizState state) {
         Result<ConfigVO> response = Result.of(null, code, message, state.name());
         LOGGER.error("query config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<Boolean> updateSuccess(ConfigUpdateParam param) {
+        Result<Boolean> response = Result.success(Boolean.TRUE);
+        LOGGER.info("update config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<Boolean> updateFail(ConfigUpdateParam param, String code, String message, CommonBizState state) {
+        Result<Boolean> response = Result.of(Boolean.FALSE, code, message, state.name());
+        LOGGER.error("update config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
         return response;
     }
 }

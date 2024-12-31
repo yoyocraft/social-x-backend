@@ -3,6 +3,7 @@ package com.youyi.core.config.assembler;
 import com.youyi.core.config.domain.ConfigDO;
 import com.youyi.core.config.param.ConfigCreateParam;
 import com.youyi.core.config.param.ConfigQueryParam;
+import com.youyi.core.config.param.ConfigUpdateParam;
 import com.youyi.core.config.repository.po.ConfigPO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,12 +28,19 @@ public interface ConfigAssembler {
     ConfigDO toDO(ConfigQueryParam param);
 
     @Mappings({
+        @Mapping(source = "newConfigValue", target = "configValue"),
+        @Mapping(source = "version", target = "version")
+    })
+    ConfigDO toDO(ConfigUpdateParam param);
+
+    @Mappings({
         @Mapping(source = "id", target = "configId")
     })
     ConfigDO toDO(ConfigPO configPO);
 
-    default ConfigDO buildQueryCondition(ConfigQueryParam param) {
-        return toDO(param);
-    }
-
+    @Mappings({
+        @Mapping(source = "configId", target = "id"),
+        @Mapping(target = "gmtModified", expression = "java(System.currentTimeMillis())")
+    })
+    ConfigPO toUpdatePO(ConfigDO configDO);
 }

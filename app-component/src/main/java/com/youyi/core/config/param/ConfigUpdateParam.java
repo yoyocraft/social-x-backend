@@ -12,9 +12,8 @@ import lombok.Setter;
 @Setter
 public class ConfigUpdateParam extends BaseParam {
 
-    private Integer configId;
     private String configKey;
     private String newConfigValue;
     private String env;
-    private String extraData;
+    private Integer version;
 }

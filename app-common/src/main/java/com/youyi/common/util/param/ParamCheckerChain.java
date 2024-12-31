@@ -38,7 +38,7 @@ public class ParamCheckerChain {
         return this;
     }
 
-    public <T extends CharSequence> ParamCheckerChain putIfNotEmpty(@Nonnull ParamChecker<? super T> checker, T param) {
+    public <T extends CharSequence> ParamCheckerChain putIfNotBlank(@Nonnull ParamChecker<? super T> checker, T param) {
         if (StringUtils.isNotBlank(param)) {
             paramCheckerChain.add(Pair.of(checker, param));
         }

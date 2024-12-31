@@ -1,9 +1,14 @@
 package com.youyi.runner.config.util;
 
-import com.youyi.common.util.param.ParamChecker;
+import com.youyi.common.type.Env;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.core.config.param.ConfigCreateParam;
 import com.youyi.core.config.param.ConfigQueryParam;
+import com.youyi.core.config.param.ConfigUpdateParam;
+
+import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
+import static com.youyi.common.util.param.ParamChecker.greaterThanOrEqualChecker;
+import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -13,16 +18,24 @@ public class ConfigValidator {
 
     public static void validateConfigCreateParam(ConfigCreateParam param) {
         ParamCheckerChain.newCheckerChain()
-            .put(ParamChecker.notBlankChecker("configKey不能为空"), param.getConfigKey())
-            .put(ParamChecker.notBlankChecker("configValue不能为空"), param.getConfigValue())
+            .put(notBlankChecker("configKey不能为空"), param.getConfigKey())
+            .put(notBlankChecker("configValue不能为空"), param.getConfigValue())
             .validateWithThrow();
     }
 
     public static void validateConfigQueryParam(ConfigQueryParam param) {
         ParamCheckerChain.newCheckerChain()
-            .put(ParamChecker.notBlankChecker("configKey不能为空"), param.getKey())
-            // TODO enum Checker
-            // .put(ParamChecker.notBlankChecker("configValue不能为空"), param.getConfigValue())
+            .put(notBlankChecker("configKey不能为空"), param.getKey())
+            .put(enumExistChecker(Env.class, "env类型不合法"), param.getEnv())
+            .validateWithThrow();
+    }
+
+    public static void validateConfigUpdateParam(ConfigUpdateParam param) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("configKey不能为空"), param.getConfigKey())
+            .put(notBlankChecker("newConfigValue不能为空"), param.getNewConfigValue())
+            .putIfNotBlank(enumExistChecker(Env.class, "env类型不合法"), param.getEnv())
+            .put(greaterThanOrEqualChecker(0, "version不合法"), param.getVersion())
             .validateWithThrow();
     }
 }

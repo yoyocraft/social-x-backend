@@ -2,6 +2,8 @@ package com.youyi.common.util.param;
 
 import com.youyi.common.util.GsonUtil;
 import java.util.Collection;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -72,9 +74,41 @@ public interface ParamChecker<T> {
             : CheckResult.of(INVALID_PARAM, errorMsg);
     }
 
+    static ParamChecker<Integer> greaterThanOrEqualChecker(int min, String errorMsg) {
+        return param -> param != null && param >= min
+            ? CheckResult.success()
+            : CheckResult.of(INVALID_PARAM, errorMsg);
+    }
+
     static ParamChecker<Long> lessThanChecker(long max, String errorMsg) {
         return param -> param != null && param < max
             ? CheckResult.success()
             : CheckResult.of(INVALID_PARAM, errorMsg);
+    }
+
+    static ParamChecker<Long> lessThanOrEqualChecker(long max, String errorMsg) {
+        return param -> param != null && param <= max
+            ? CheckResult.success()
+            : CheckResult.of(INVALID_PARAM, errorMsg);
+    }
+
+    static <T extends Enum<T>> ParamChecker<String> enumExistChecker(Class<T> enumClass, String errorMsg) {
+        return param -> {
+            boolean exist = Stream.of(enumClass.getEnumConstants())
+                .anyMatch(e -> StringUtils.equals(e.name(), param));
+            return exist
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
+    }
+
+    static <T extends Enum<T>> ParamChecker<String> enumExistChecker(Class<T> enumClass, Predicate<String> predicate, String errorMsg) {
+        return param -> {
+            boolean validate = predicate.test(param) && Stream.of(enumClass.getEnumConstants())
+                .anyMatch(e -> StringUtils.equals(e.name(), param));
+            return validate
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
     }
 }

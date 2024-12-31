@@ -1,6 +1,5 @@
 package com.youyi.core.config.helper;
 
-import com.youyi.core.config.assembler.ConfigAssembler;
 import com.youyi.core.config.domain.ConfigDO;
 import com.youyi.core.config.repository.ConfigRepository;
 import com.youyi.core.config.repository.po.ConfigPO;
@@ -8,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import static com.youyi.core.config.assembler.ConfigAssembler.CONFIG_ASSEMBLER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -29,6 +30,12 @@ public class ConfigHelper {
 
     public ConfigDO queryConfig(ConfigDO configDO) {
         ConfigPO configPO = configRepository.queryByConfigKeyAndEnv(configDO.getConfigKey(), configDO.getEnv());
-        return ConfigAssembler.CONFIG_ASSEMBLER.toDO(configPO);
+        return CONFIG_ASSEMBLER.toDO(configPO);
+    }
+
+    public void updateConfig(ConfigDO configDO) {
+        configDO.preUpdate();
+        ConfigPO configPO = CONFIG_ASSEMBLER.toUpdatePO(configDO);
+        configRepository.updateConfigValueAndEnv(configPO);
     }
 }
