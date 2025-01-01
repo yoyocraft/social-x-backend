@@ -36,5 +36,5 @@ build/
 
 ### Local ###
 *local.*
-logs
+*.log
 .flattened-pom.xml

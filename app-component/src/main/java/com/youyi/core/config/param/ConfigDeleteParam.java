@@ -1,4 +1,4 @@
-package com.youyi.core.user.param;
+package com.youyi.core.config.param;
 
 import com.youyi.common.base.BaseParam;
 import lombok.Getter;
@@ -6,13 +6,12 @@ import lombok.Setter;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
- * @date 2024/12/28
+ * @date 2024/12/31
  */
 @Getter
 @Setter
-public class UserAddParam extends BaseParam {
+public class ConfigDeleteParam extends BaseParam {
 
-    private String username;
-
-    private Integer age;
+    private String configKey;
+    private String env;
 }

@@ -11,11 +11,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @MapperScan(
     basePackages = {
-        "com.youyi.component"
+        "com.youyi.core.config.repository.mapper"
     },
     annotationClass = Mapper.class
 )
-@SpringBootApplication
+@SpringBootApplication(
+    scanBasePackages = {
+        "com.youyi.runner",
+        "com.youyi.core"
+    }
+)
 public class MainApplication {
 
     public static void main(String[] args) {
