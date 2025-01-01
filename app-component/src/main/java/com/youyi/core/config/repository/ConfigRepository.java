@@ -1,10 +1,11 @@
 package com.youyi.core.config.repository;
 
-import com.youyi.common.exception.AppBizException;
+import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.core.config.repository.mapper.ConfigMapper;
 import com.youyi.core.config.repository.po.ConfigPO;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public class ConfigRepository {
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppBizException.of(InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
 
@@ -45,29 +46,36 @@ public class ConfigRepository {
             return configMapper.queryByConfigKeyAndEnv(configKey, env, false);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppBizException.of(InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
 
     public void updateConfigValueAndEnv(ConfigPO po) {
         try {
             checkNotNull(po);
-            int ret = configMapper.updateConfigValueAndEnv(po);
-            checkState(ret == SINGLE_DML_AFFECTED_ROWS);
+            configMapper.updateConfigValueAndEnv(po);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppBizException.of(InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
 
     public void deleteByConfigKeyAndEnv(ConfigPO po) {
         try {
             checkNotNull(po);
-            int ret = configMapper.deleteByConfigKeyAndEnv(po);
-            checkState(ret == SINGLE_DML_AFFECTED_ROWS);
+            configMapper.deleteByConfigKeyAndEnv(po);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppBizException.of(InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
+
+    public List<ConfigPO> queryAllConfig() {
+        try {
+            return configMapper.queryAll(false);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
 

@@ -50,6 +50,15 @@
             AND deleted = 0
         </if>
     </select>
+    <select id="queryAll" resultType="com.youyi.core.config.repository.po.ConfigPO">
+        SELECT
+        <include refid="result_cols"/>
+        FROM `config`
+        WHERE 1 = 1
+        <if test="!includeDeleted">
+            AND deleted = 0
+        </if>
+    </select>
 
 </mapper>
 

@@ -1,6 +1,7 @@
 package com.youyi.core.config.repository.mapper;
 
 import com.youyi.core.config.repository.po.ConfigPO;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,5 +19,7 @@ public interface ConfigMapper {
     int updateConfigValueAndEnv(ConfigPO po);
 
     int deleteByConfigKeyAndEnv(ConfigPO po);
+
+    List<ConfigPO> queryAll(@Param("includeDeleted") boolean includeDeleted);
 
 }

@@ -35,8 +35,8 @@ public class ConfigValidator {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("configKey不能为空"), param.getConfigKey())
             .put(notBlankChecker("newConfigValue不能为空"), param.getNewConfigValue())
-            .putIfNotBlank(enumExistChecker(Env.class, "env类型不合法"), param.getEnv())
             .put(greaterThanOrEqualChecker(0, "version不合法"), param.getVersion())
+            .putIfNotBlank(enumExistChecker(Env.class, "env类型不合法"), param.getEnv())
             .validateWithThrow();
     }
 

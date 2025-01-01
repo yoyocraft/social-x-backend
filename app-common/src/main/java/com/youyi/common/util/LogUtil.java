@@ -65,4 +65,14 @@ public class LogUtil {
             UTIL_LOGGER.error("[LogUtil] serverExpLog exp", e);
         }
     }
+
+    public static void runWithCost(Logger logger, Runnable action, String loggerMessage) {
+        long start = System.currentTimeMillis();
+        try {
+            action.run();
+        } finally {
+            long cost = System.currentTimeMillis() - start;
+            logger.info("[runWithCost]{}, cost:{}ms", loggerMessage, cost);
+        }
+    }
 }

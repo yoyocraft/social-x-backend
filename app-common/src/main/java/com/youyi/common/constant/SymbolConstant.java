@@ -13,4 +13,5 @@ public class SymbolConstant {
     public static final String HASH = "#";
     public static final String DOT = ".";
     public static final String SLASH = "/";
+    public static final String COLON = ":";
 }
