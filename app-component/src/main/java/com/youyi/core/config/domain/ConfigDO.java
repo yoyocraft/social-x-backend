@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-import static com.youyi.common.constant.RepositoryConstant.INIT_DELETED;
 import static com.youyi.common.constant.RepositoryConstant.INIT_VERSION;
 import static com.youyi.common.type.Env.LOCAL;
 
@@ -23,13 +22,12 @@ public class ConfigDO {
     private String env;
     private Integer version;
     private String extraData;
+    private Long deletedAt;
 
     private ConfigPO toSaveConfig;
 
     public void create() {
-        if (StringUtils.isBlank(env)) {
-            env = LOCAL.name();
-        }
+        setEnvIfNeeded();
     }
 
     public void buildToSaveConfig() {
@@ -40,11 +38,21 @@ public class ConfigDO {
         toSaveConfig.setVersion(INIT_VERSION);
         toSaveConfig.setGmtCreate(System.currentTimeMillis());
         toSaveConfig.setGmtModified(System.currentTimeMillis());
-        toSaveConfig.setDeleted(INIT_DELETED);
         toSaveConfig.setExtraData(extraData);
     }
 
-    public void preUpdateOrDelete() {
-        create();
+    public void preUpdate() {
+        setEnvIfNeeded();
+    }
+
+    public void preDelete() {
+        setEnvIfNeeded();
+        this.deletedAt = System.currentTimeMillis();
+    }
+
+    private void setEnvIfNeeded() {
+        if (StringUtils.isBlank(env)) {
+            env = LOCAL.name();
+        }
     }
 }

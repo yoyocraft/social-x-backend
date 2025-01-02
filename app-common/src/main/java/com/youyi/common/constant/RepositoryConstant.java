@@ -8,6 +8,4 @@ public class RepositoryConstant {
     public static final int SINGLE_DML_AFFECTED_ROWS = 1;
 
     public static final int INIT_VERSION = 0;
-
-    public static final int INIT_DELETED = 0;
 }

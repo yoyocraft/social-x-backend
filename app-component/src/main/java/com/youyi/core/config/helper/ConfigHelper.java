@@ -4,8 +4,6 @@ import com.youyi.core.config.domain.ConfigDO;
 import com.youyi.core.config.repository.ConfigRepository;
 import com.youyi.core.config.repository.po.ConfigPO;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import static com.youyi.core.config.assembler.ConfigAssembler.CONFIG_ASSEMBLER;
@@ -17,8 +15,6 @@ import static com.youyi.core.config.assembler.ConfigAssembler.CONFIG_ASSEMBLER;
 @Service
 @RequiredArgsConstructor
 public class ConfigHelper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHelper.class);
 
     private final ConfigRepository configRepository;
 
@@ -34,13 +30,13 @@ public class ConfigHelper {
     }
 
     public void updateConfig(ConfigDO configDO) {
-        configDO.preUpdateOrDelete();
+        configDO.preUpdate();
         ConfigPO configPO = CONFIG_ASSEMBLER.toUpdateOrDeletePO(configDO);
         configRepository.updateConfigValueAndEnv(configPO);
     }
 
     public void deleteConfig(ConfigDO configDO) {
-        configDO.preUpdateOrDelete();
+        configDO.preDelete();
         ConfigPO configPO = CONFIG_ASSEMBLER.toUpdateOrDeletePO(configDO);
         configRepository.deleteByConfigKeyAndEnv(configPO);
     }
