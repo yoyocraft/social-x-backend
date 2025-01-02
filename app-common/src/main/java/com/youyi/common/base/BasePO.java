@@ -19,7 +19,7 @@ public abstract class BasePO {
 
     private Long gmtModified;
 
-    private Integer deleted;
+    private Long deletedAt;
 
     private String extraData;
 }

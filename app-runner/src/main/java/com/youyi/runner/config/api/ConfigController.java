@@ -1,4 +1,4 @@
-package com.youyi.runner.config.controller;
+package com.youyi.runner.config.api;
 
 import com.youyi.common.base.Result;
 import com.youyi.common.constant.CommonBizState;

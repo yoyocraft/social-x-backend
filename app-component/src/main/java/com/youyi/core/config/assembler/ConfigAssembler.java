@@ -30,7 +30,7 @@ public interface ConfigAssembler {
 
     @Mappings({
         @Mapping(source = "newConfigValue", target = "configValue"),
-        @Mapping(source = "version", target = "version")
+        @Mapping(source = "currVersion", target = "version")
     })
     ConfigDO toDO(ConfigUpdateParam param);
 

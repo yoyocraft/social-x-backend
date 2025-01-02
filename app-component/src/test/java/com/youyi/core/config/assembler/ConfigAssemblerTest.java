@@ -18,7 +18,7 @@ public class ConfigAssemblerTest {
         param.setConfigKey("configKey");
         param.setNewConfigValue("newConfigValue");
         param.setEnv("env");
-        param.setVersion(1);
+        param.setCurrVersion(1);
 
         ConfigDO configDO = ConfigAssembler.CONFIG_ASSEMBLER.toDO(param);
 
