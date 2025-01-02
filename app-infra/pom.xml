@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.youyi</groupId>
-        <artifactId>dev-template-pom</artifactId>
+        <artifactId>social-x</artifactId>
         <version>${revision}</version>
     </parent>
 
