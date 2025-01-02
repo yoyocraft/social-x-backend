@@ -1,3 +1,5 @@
+-- database social_x
+
 CREATE TABLE `config` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `gmt_create` BIGINT(20) NOT NULL COMMENT 'create time',

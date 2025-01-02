@@ -5,13 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.youyi</groupId>
-    <artifactId>dev-template-pom</artifactId>
+    <artifactId>social-x</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
     <properties>
         <!-- Project -->
         <revision>1.0-SNAPSHOT</revision>
+        <app.name>social-x</app.name>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -38,13 +39,12 @@
     </properties>
 
     <scm>
-        <connection>scm:git:git@github.com:yoyocraft/dev-template.git</connection>
-        <developerConnection>scm:git:git@github.com:yoyocraft/dev-template.git</developerConnection>
+        <connection>scm:git:git@github.com:yoyocraft/social-x.git</connection>
+        <developerConnection>scm:git:git@github.com:yoyocraft/social-x.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
-    <name>${project.artifactId}</name>
-    <description>${project.name}</description>
+    <name>${app.name}</name>
 
     <profiles>
         <profile>
