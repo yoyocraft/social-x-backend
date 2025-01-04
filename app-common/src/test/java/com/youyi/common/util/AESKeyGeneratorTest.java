@@ -1,0 +1,19 @@
+package com.youyi.common.util;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+/**
+ * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
+ * @date 2025/01/04
+ */
+class AESKeyGeneratorTest {
+
+    @Test
+    void testGenerateAESKey() throws Exception {
+        String result = AESKeyGenerator.generateAESKey();
+        Assertions.assertEquals(24, result.length());
+    }
+}
+
+// Generated with love by TestMe :) Please raise issues & feature requests at: https://weirddev.com/forum#!/testme
