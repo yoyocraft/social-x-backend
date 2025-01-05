@@ -9,12 +9,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
-import static com.youyi.common.type.ConfigName.CAPTCHA_EMAIL_TEMPLATE;
-import static com.youyi.common.type.ConfigName.EMAIL_SUBJECT;
-import static com.youyi.common.type.ConfigName.EMAIL_TITLE;
-import static com.youyi.common.type.ConfigName.MAIL_FROM;
-import static com.youyi.common.type.ConfigName.PLATFORM_RESPONSIBLE_PERSON;
-import static com.youyi.common.type.ConfigName.PROCESS_CN_TITLE;
+import static com.youyi.common.type.ConfigKey.CAPTCHA_EMAIL_TEMPLATE;
+import static com.youyi.common.type.ConfigKey.CAPTCHA_EMAIL_SUBJECT;
+import static com.youyi.common.type.ConfigKey.CAPTCHA_EMAIL_TITLE;
+import static com.youyi.common.type.ConfigKey.MAIL_FROM;
+import static com.youyi.common.type.ConfigKey.PLATFORM_RESPONSIBLE_PERSON;
+import static com.youyi.common.type.ConfigKey.CAPTCHA_PROCESS_CN_TITLE;
 import static com.youyi.common.type.InfraCode.SEND_EMAIL_ERROR;
 
 /**
@@ -35,10 +35,10 @@ public class EmailSender {
             MimeMessage message = mailSender.createMimeMessage();
 
             MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
-            messageHelper.setSubject(configCacheService.getStringConfig(EMAIL_SUBJECT));
+            messageHelper.setSubject(configCacheService.getStringConfig(CAPTCHA_EMAIL_SUBJECT));
             messageHelper.setText(buildCaptchaEmailContent(captcha), true);
             messageHelper.setTo(emailTo);
-            String from = String.format(MAIL_FROM_FORMATTER, configCacheService.getStringConfig(PROCESS_CN_TITLE), configCacheService.getStringConfig(MAIL_FROM));
+            String from = String.format(MAIL_FROM_FORMATTER, configCacheService.getStringConfig(CAPTCHA_PROCESS_CN_TITLE), configCacheService.getStringConfig(MAIL_FROM));
             messageHelper.setFrom(from);
             mailSender.send(message);
         } catch (Exception e) {
@@ -48,8 +48,8 @@ public class EmailSender {
 
     private String buildCaptchaEmailContent(String captcha) {
         String emailTemplate = configCacheService.getStringConfig(CAPTCHA_EMAIL_TEMPLATE);
-        String emailTitle = configCacheService.getStringConfig(EMAIL_TITLE);
-        String processCnTitle = configCacheService.getStringConfig(PROCESS_CN_TITLE);
+        String emailTitle = configCacheService.getStringConfig(CAPTCHA_EMAIL_TITLE);
+        String processCnTitle = configCacheService.getStringConfig(CAPTCHA_PROCESS_CN_TITLE);
         String platformResponsiblePerson = configCacheService.getStringConfig(PLATFORM_RESPONSIBLE_PERSON);
         return MessageFormat.format(emailTemplate, captcha, emailTitle, processCnTitle, platformResponsiblePerson);
     }
