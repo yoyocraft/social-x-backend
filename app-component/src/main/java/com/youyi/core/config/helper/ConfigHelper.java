@@ -1,8 +1,8 @@
 package com.youyi.core.config.helper;
 
 import com.youyi.core.config.domain.ConfigDO;
-import com.youyi.core.config.repository.ConfigRepository;
-import com.youyi.core.config.repository.po.ConfigPO;
+import com.youyi.infra.config.repository.ConfigRepository;
+import com.youyi.infra.config.repository.po.ConfigPO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

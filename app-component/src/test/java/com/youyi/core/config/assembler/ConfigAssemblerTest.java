@@ -2,7 +2,7 @@ package com.youyi.core.config.assembler;
 
 import com.youyi.core.config.domain.ConfigDO;
 import com.youyi.core.config.param.ConfigUpdateParam;
-import com.youyi.core.config.repository.po.ConfigPO;
+import com.youyi.infra.config.repository.po.ConfigPO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

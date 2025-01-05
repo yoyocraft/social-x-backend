@@ -1,6 +1,6 @@
-package com.youyi.core.config.repository.mapper;
+package com.youyi.infra.config.repository.mapper;
 
-import com.youyi.core.config.repository.po.ConfigPO;
+import com.youyi.infra.config.repository.po.ConfigPO;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
