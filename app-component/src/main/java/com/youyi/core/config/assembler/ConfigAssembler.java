@@ -5,7 +5,7 @@ import com.youyi.core.config.param.ConfigCreateParam;
 import com.youyi.core.config.param.ConfigDeleteParam;
 import com.youyi.core.config.param.ConfigQueryParam;
 import com.youyi.core.config.param.ConfigUpdateParam;
-import com.youyi.core.config.repository.po.ConfigPO;
+import com.youyi.infra.config.repository.po.ConfigPO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

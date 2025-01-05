@@ -1,4 +1,4 @@
-package com.youyi.core.config.core;
+package com.youyi.infra.config.core;
 
 import com.google.gson.reflect.TypeToken;
 import com.youyi.common.constant.SymbolConstant;

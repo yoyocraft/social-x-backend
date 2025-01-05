@@ -1,9 +1,9 @@
-package com.youyi.core.config.core;
+package com.youyi.infra.config.core;
 
 import com.google.common.collect.ImmutableMap;
 import com.youyi.common.type.Env;
-import com.youyi.core.config.repository.ConfigRepository;
-import com.youyi.core.config.repository.po.ConfigPO;
+import com.youyi.infra.config.repository.ConfigRepository;
+import com.youyi.infra.config.repository.po.ConfigPO;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;

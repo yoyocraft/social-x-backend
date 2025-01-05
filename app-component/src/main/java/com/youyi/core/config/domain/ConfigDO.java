@@ -1,6 +1,6 @@
 package com.youyi.core.config.domain;
 
-import com.youyi.core.config.repository.po.ConfigPO;
+import com.youyi.infra.config.repository.po.ConfigPO;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
