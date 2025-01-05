@@ -1,6 +1,6 @@
 package com.youyi.common.base;
 
-import com.youyi.common.constant.CommonBizState;
+import com.youyi.common.type.CommonBizState;
 import com.youyi.common.type.ErrorCode;
 import com.youyi.common.type.ReturnCode;
 import java.io.Serial;

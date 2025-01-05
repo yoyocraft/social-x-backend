@@ -13,6 +13,9 @@ public enum ConfigKey {
     CAPTCHA_EMAIL_SUBJECT,
     MAIL_FROM,
     PLATFORM_RESPONSIBLE_PERSON,
+
+    // ================ ThreadPool ================
+    RECORD_OP_LOG_THREAD_POOL_CONFIG
     ;
 
 }

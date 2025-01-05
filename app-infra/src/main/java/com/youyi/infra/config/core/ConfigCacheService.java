@@ -32,6 +32,10 @@ public class ConfigCacheService {
         return getCacheValue(configKey, Env.LOCAL.name(), type);
     }
 
+    public <T> T getCacheValue(ConfigKey configKey, Class<T> type) {
+        return getCacheValue(configKey.name(), Env.LOCAL.name(), type);
+    }
+
     public <T> T getCacheValue(String configKey, String env, Class<T> type) {
         String key = buildCacheKey(configKey, env);
         String value = configLoader.getCacheRawValue(key);
