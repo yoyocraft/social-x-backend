@@ -12,7 +12,8 @@ import lombok.Getter;
 public enum InfraCode implements ErrorCode {
     INFRA_SUCCESS("INFRA_SUCCESS", "Success"),
     MYSQL_ERROR("MYSQL_ERROR", "mysql error"),
-
+    CONFIG_ERROR("CONFIG_ERROR", "config error"),
+    SEND_EMAIL_ERROR("SEND_EMAIL_ERROR", "send email error"),
     ;
 
     private final String code;
