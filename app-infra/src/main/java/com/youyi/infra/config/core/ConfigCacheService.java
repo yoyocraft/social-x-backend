@@ -3,7 +3,7 @@ package com.youyi.infra.config.core;
 import com.google.gson.reflect.TypeToken;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppSystemException;
-import com.youyi.common.type.ConfigName;
+import com.youyi.common.type.ConfigKey;
 import com.youyi.common.type.Env;
 import com.youyi.common.util.GsonUtil;
 import java.lang.reflect.Type;
@@ -91,8 +91,8 @@ public class ConfigCacheService {
         return getCacheValue(key, String.class);
     }
 
-    public String getStringConfig(ConfigName configName) {
-        return getStringConfig(configName.name());
+    public String getStringConfig(ConfigKey configKey) {
+        return getStringConfig(configKey.name());
     }
 
     public Long getLongConfig(String key) {
