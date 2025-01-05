@@ -1,7 +1,7 @@
 package com.youyi.runner.config.util;
 
 import com.youyi.common.base.Result;
-import com.youyi.common.constant.CommonBizState;
+import com.youyi.common.type.CommonBizState;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.core.config.domain.ConfigDO;
 import com.youyi.core.config.param.ConfigCreateParam;

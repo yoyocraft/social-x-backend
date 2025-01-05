@@ -1,8 +1,10 @@
 package com.youyi.runner.config.api;
 
+import com.youyi.common.anno.RecordOpLog;
 import com.youyi.common.base.Result;
-import com.youyi.common.constant.CommonBizState;
+import com.youyi.common.type.CommonBizState;
 import com.youyi.common.exception.AppBizException;
+import com.youyi.common.type.OperationType;
 import com.youyi.common.type.ServerType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.core.config.domain.ConfigDO;
@@ -47,6 +49,7 @@ public class ConfigController {
 
     private final ConfigHelper configHelper;
 
+    @RecordOpLog(opType = OperationType.INSERT_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.POST)
     public Result<Boolean> createConfig(@RequestBody ConfigCreateParam param) {
         try {
@@ -77,6 +80,7 @@ public class ConfigController {
         }
     }
 
+    @RecordOpLog(opType = OperationType.UPDATE_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.PUT)
     public Result<Boolean> updateConfig(@RequestBody ConfigUpdateParam param) {
         try {
@@ -92,6 +96,7 @@ public class ConfigController {
         }
     }
 
+    @RecordOpLog(opType = OperationType.DELETE_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.DELETE)
     public Result<Boolean> deleteConfig(@RequestBody ConfigDeleteParam param) {
         try {
