@@ -1,4 +1,4 @@
-package com.youyi.core.config.domain;
+package com.youyi.domain.config.model;
 
 import com.youyi.infra.config.repository.po.ConfigPO;
 import lombok.Getter;

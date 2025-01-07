@@ -16,14 +16,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan(
     basePackages = {
         "com.youyi.infra.config.repository.mapper",
-        "com.youyi.core.audit.repository.mapper"
+        "com.youyi.domain.audit.repository.mapper"
     },
     annotationClass = Mapper.class
 )
 @SpringBootApplication(
     scanBasePackages = {
         "com.youyi.runner",
-        "com.youyi.core",
+        "com.youyi.domain",
         "com.youyi.infra"
     }
 )

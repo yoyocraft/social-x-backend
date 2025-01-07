@@ -1,12 +1,12 @@
-package com.youyi.core.config.helper;
+package com.youyi.domain.config.helper;
 
-import com.youyi.core.config.domain.ConfigDO;
+import com.youyi.domain.config.model.ConfigDO;
 import com.youyi.infra.config.repository.ConfigRepository;
 import com.youyi.infra.config.repository.po.ConfigPO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.youyi.core.config.assembler.ConfigAssembler.CONFIG_ASSEMBLER;
+import static com.youyi.domain.config.assembler.ConfigAssembler.CONFIG_ASSEMBLER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

@@ -1,6 +1,6 @@
-package com.youyi.core.audit.domain;
+package com.youyi.domain.audit.model;
 
-import com.youyi.core.audit.repository.po.OperationLogPO;
+import com.youyi.domain.audit.repository.po.OperationLogPO;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -2,10 +2,10 @@ package com.youyi.runner.config.util;
 
 import com.youyi.common.type.Env;
 import com.youyi.common.util.param.ParamCheckerChain;
-import com.youyi.core.config.param.ConfigCreateParam;
-import com.youyi.core.config.param.ConfigDeleteParam;
-import com.youyi.core.config.param.ConfigQueryParam;
-import com.youyi.core.config.param.ConfigUpdateParam;
+import com.youyi.domain.config.param.ConfigCreateParam;
+import com.youyi.domain.config.param.ConfigDeleteParam;
+import com.youyi.domain.config.param.ConfigQueryParam;
+import com.youyi.domain.config.param.ConfigUpdateParam;
 
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.greaterThanOrEqualChecker;
