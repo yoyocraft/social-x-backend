@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youyi.domain.user.repository.mapper.UserAuthMapper">
+
+    <resultMap id="UserAuthResultMap" type="com.youyi.domain.user.repository.po.UserAuthPO">
+        <id column="id" property="id"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="deletedAt" column="deleted_at"/>
+        <result property="userId" column="user_id"/>
+        <result property="identityType" column="identity_type"/>
+        <result property="identifier" column="identifier"/>
+        <result property="credential" column="credential"/>
+        <result property="salt" column="salt"/>
+        <result property="lastLoginAt" column="last_login_at"/>
+        <result property="lastLoginIp" column="last_login_ip"/>
+        <result property="loginCount" column="login_count"/>
+    </resultMap>
+
+    <sql id="result_cols">
+        id, gmt_create, gmt_modified, deleted_at, extra_data, user_id, identity_type, identifier, credential, salt,
+        last_login_at, last_login_ip, login_count
+    </sql>
+
+</mapper>
