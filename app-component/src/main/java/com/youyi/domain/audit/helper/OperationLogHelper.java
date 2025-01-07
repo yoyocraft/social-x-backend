@@ -1,14 +1,14 @@
-package com.youyi.core.audit.helper;
+package com.youyi.domain.audit.helper;
 
-import com.youyi.core.audit.domain.OperationLogDO;
-import com.youyi.core.audit.repository.OperationLogRepository;
-import com.youyi.core.audit.repository.po.OperationLogPO;
+import com.youyi.domain.audit.model.OperationLogDO;
+import com.youyi.domain.audit.repository.OperationLogRepository;
+import com.youyi.domain.audit.repository.po.OperationLogPO;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static com.youyi.core.audit.assembler.OperationLogAssembler.OPERATION_LOG_ASSEMBLER;
+import static com.youyi.domain.audit.assembler.OperationLogAssembler.OPERATION_LOG_ASSEMBLER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

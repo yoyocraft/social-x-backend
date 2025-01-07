@@ -1,4 +1,4 @@
-package com.youyi.core.audit.repository.po;
+package com.youyi.domain.audit.repository.po;
 
 import com.youyi.common.base.BasePO;
 import com.youyi.common.type.OperationType;

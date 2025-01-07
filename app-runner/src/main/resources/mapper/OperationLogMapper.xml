@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.youyi.core.audit.repository.mapper.OperationLogMapper">
+<mapper namespace="com.youyi.domain.audit.repository.mapper.OperationLogMapper">
 
-    <resultMap id="OperationLogMapResult" type="com.youyi.core.audit.repository.po.OperationLogPO">
+    <resultMap id="OperationLogMapResult" type="com.youyi.domain.audit.repository.po.OperationLogPO">
         <id column="id" property="id"/>
         <result property="gmtCreate" column="gmt_create"/>
         <result property="gmtModified" column="gmt_modified"/>
@@ -17,12 +17,12 @@
     <sql id="result_cols">
         id, gmt_create, gmt_modified, deleted_at, extra_data, operation_type, operator_id, operator_name
     </sql>
-    <insert id="insert" parameterType="com.youyi.core.audit.repository.po.OperationLogPO">
+    <insert id="insert" parameterType="com.youyi.domain.audit.repository.po.OperationLogPO">
         INSERT INTO `operation_log` (gmt_create, gmt_modified, extra_data, operation_type, operator_id, operator_name)
         VALUES (#{gmtCreate}, #{gmtModified}, #{extraData}, #{operationType}, #{operatorId}, #{operatorName})
     </insert>
     <select id="queryByOperationTypeAndOperatorId"
-            resultType="com.youyi.core.audit.repository.po.OperationLogPO">
+            resultType="com.youyi.domain.audit.repository.po.OperationLogPO">
         SELECT
         <include refid="result_cols"/>
         FROM `operation_log`

@@ -1,7 +1,7 @@
-package com.youyi.core.config.assembler;
+package com.youyi.domain.config.assembler;
 
-import com.youyi.core.config.domain.ConfigDO;
-import com.youyi.core.config.param.ConfigUpdateParam;
+import com.youyi.domain.config.model.ConfigDO;
+import com.youyi.domain.config.param.ConfigUpdateParam;
 import com.youyi.infra.config.repository.po.ConfigPO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

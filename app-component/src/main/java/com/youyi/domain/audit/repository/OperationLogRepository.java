@@ -1,10 +1,10 @@
-package com.youyi.core.audit.repository;
+package com.youyi.domain.audit.repository;
 
 import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
-import com.youyi.core.audit.repository.po.OperationLogPO;
-import com.youyi.core.audit.repository.mapper.OperationLogMapper;
+import com.youyi.domain.audit.repository.po.OperationLogPO;
+import com.youyi.domain.audit.repository.mapper.OperationLogMapper;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
-package com.youyi.core.audit.assembler;
+package com.youyi.domain.audit.assembler;
 
-import com.youyi.core.audit.domain.OperationLogDO;
-import com.youyi.core.audit.repository.po.OperationLogPO;
+import com.youyi.domain.audit.model.OperationLogDO;
+import com.youyi.domain.audit.repository.po.OperationLogPO;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
