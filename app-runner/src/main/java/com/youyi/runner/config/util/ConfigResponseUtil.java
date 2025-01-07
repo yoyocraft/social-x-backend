@@ -1,7 +1,6 @@
 package com.youyi.runner.config.util;
 
 import com.youyi.common.base.Result;
-import com.youyi.common.type.CommonBizState;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.config.model.ConfigDO;
 import com.youyi.domain.config.param.ConfigCreateParam;
@@ -28,21 +27,9 @@ public class ConfigResponseUtil {
         return response;
     }
 
-    public static Result<Boolean> createFail(ConfigCreateParam param, String code, String message, CommonBizState state) {
-        Result<Boolean> response = Result.of(Boolean.FALSE, code, message, state.name());
-        LOGGER.error("create config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
-        return response;
-    }
-
     public static Result<ConfigVO> querySuccess(ConfigDO configDO, ConfigQueryParam param) {
         Result<ConfigVO> response = Result.success(CONFIG_CONVERTER.toVO(configDO));
         LOGGER.info("query config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
-        return response;
-    }
-
-    public static Result<ConfigVO> queryFail(ConfigQueryParam param, String code, String message, CommonBizState state) {
-        Result<ConfigVO> response = Result.of(null, code, message, state.name());
-        LOGGER.error("query config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
         return response;
     }
 
@@ -52,21 +39,9 @@ public class ConfigResponseUtil {
         return response;
     }
 
-    public static Result<Boolean> updateFail(ConfigUpdateParam param, String code, String message, CommonBizState state) {
-        Result<Boolean> response = Result.of(Boolean.FALSE, code, message, state.name());
-        LOGGER.error("update config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
-        return response;
-    }
-
     public static Result<Boolean> deleteSuccess(ConfigDeleteParam param) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         LOGGER.info("delete config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
-        return response;
-    }
-
-    public static Result<Boolean> deleteFail(ConfigDeleteParam param, String code, String message, CommonBizState state) {
-        Result<Boolean> response = Result.of(Boolean.FALSE, code, message, state.name());
-        LOGGER.error("delete config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
         return response;
     }
 }
