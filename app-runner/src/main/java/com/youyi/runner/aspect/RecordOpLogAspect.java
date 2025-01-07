@@ -3,6 +3,7 @@ package com.youyi.runner.aspect;
 import com.google.common.collect.ImmutableMap;
 import com.youyi.common.anno.RecordOpLog;
 import com.youyi.common.constant.SymbolConstant;
+import com.youyi.common.type.AspectOrdered;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.audit.model.OperationLogDO;
@@ -23,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.SystemOperationConstant.LOG_ARG_TYPES_KEY;
@@ -40,13 +42,22 @@ import static com.youyi.common.type.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEvent> {
+public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEvent>, Ordered {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordOpLogAspect.class);
 
     private final ConfigCacheService configCacheService;
     private final OperationLogHelper operationLogHelper;
     private static ThreadPoolExecutor asyncRecordOpLogExecutor;
+
+    /**
+     * This method needs to be executed after initialization {@link ConfigLoader#afterSingletonsInstantiated()}
+     * which init config cache
+     */
+    @Override
+    public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
+        initAsyncExecutor();
+    }
 
     @Pointcut("@annotation(com.youyi.common.anno.RecordOpLog)")
     public void pointCut() {
@@ -116,12 +127,8 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         return operationLogDO;
     }
 
-    /**
-     * This method needs to be executed after initialization {@link ConfigLoader#afterSingletonsInstantiated()}
-     * which init config cache
-     */
     @Override
-    public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
-        initAsyncExecutor();
+    public int getOrder() {
+        return AspectOrdered.RECORD_OP_LOG.getOrder();
     }
 }

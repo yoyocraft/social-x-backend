@@ -2,13 +2,9 @@ package com.youyi.runner.config.api;
 
 import com.youyi.common.anno.RecordOpLog;
 import com.youyi.common.base.Result;
-import com.youyi.common.type.CommonBizState;
-import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.OperationType;
-import com.youyi.common.type.ServerType;
-import com.youyi.common.util.GsonUtil;
-import com.youyi.domain.config.model.ConfigDO;
 import com.youyi.domain.config.helper.ConfigHelper;
+import com.youyi.domain.config.model.ConfigDO;
 import com.youyi.domain.config.param.ConfigCreateParam;
 import com.youyi.domain.config.param.ConfigDeleteParam;
 import com.youyi.domain.config.param.ConfigQueryParam;
@@ -16,24 +12,15 @@ import com.youyi.domain.config.param.ConfigUpdateParam;
 import com.youyi.runner.config.model.ConfigVO;
 import com.youyi.runner.config.util.ConfigValidator;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.youyi.common.constant.ErrorCodeConstant.SYSTEM_ERROR_RETRY_LATER;
-import static com.youyi.common.constant.ErrorCodeConstant.SYSTEM_ERROR_RETRY_LATER_MESSAGE;
-import static com.youyi.common.util.LogUtil.serverExpLog;
 import static com.youyi.domain.config.assembler.ConfigAssembler.CONFIG_ASSEMBLER;
-import static com.youyi.runner.config.util.ConfigResponseUtil.createFail;
 import static com.youyi.runner.config.util.ConfigResponseUtil.createSuccess;
-import static com.youyi.runner.config.util.ConfigResponseUtil.deleteFail;
 import static com.youyi.runner.config.util.ConfigResponseUtil.deleteSuccess;
-import static com.youyi.runner.config.util.ConfigResponseUtil.queryFail;
 import static com.youyi.runner.config.util.ConfigResponseUtil.querySuccess;
-import static com.youyi.runner.config.util.ConfigResponseUtil.updateFail;
 import static com.youyi.runner.config.util.ConfigResponseUtil.updateSuccess;
 
 /**
@@ -45,70 +32,40 @@ import static com.youyi.runner.config.util.ConfigResponseUtil.updateSuccess;
 @RequiredArgsConstructor
 public class ConfigController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigController.class);
-
     private final ConfigHelper configHelper;
 
     @RecordOpLog(opType = OperationType.INSERT_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.POST)
     public Result<Boolean> createConfig(@RequestBody ConfigCreateParam param) {
-        try {
-            ConfigValidator.validateConfigCreateParam(param);
-            ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
-            configHelper.createConfig(configDO);
-            return createSuccess(param);
-        } catch (AppBizException e) {
-            return createFail(param, e.getCode(), e.getMessage(), CommonBizState.FAILED);
-        } catch (Exception e) {
-            serverExpLog(LOGGER, ServerType.HTTP, "createConfig", GsonUtil.toJson(param), e);
-            return createFail(param, SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, CommonBizState.UNKNOWN);
-        }
+        ConfigValidator.validateConfigCreateParam(param);
+        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
+        configHelper.createConfig(configDO);
+        return createSuccess(param);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public Result<ConfigVO> queryConfig(ConfigQueryParam param) {
-        try {
-            ConfigValidator.validateConfigQueryParam(param);
-            ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
-            ConfigDO config = configHelper.queryConfig(configDO);
-            return querySuccess(config, param);
-        } catch (AppBizException e) {
-            return queryFail(param, e.getCode(), e.getMessage(), CommonBizState.FAILED);
-        } catch (Exception e) {
-            serverExpLog(LOGGER, ServerType.HTTP, "queryConfig", GsonUtil.toJson(param), e);
-            return queryFail(param, SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, CommonBizState.UNKNOWN);
-        }
+        ConfigValidator.validateConfigQueryParam(param);
+        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
+        ConfigDO config = configHelper.queryConfig(configDO);
+        return querySuccess(config, param);
     }
 
     @RecordOpLog(opType = OperationType.UPDATE_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.PUT)
     public Result<Boolean> updateConfig(@RequestBody ConfigUpdateParam param) {
-        try {
-            ConfigValidator.validateConfigUpdateParam(param);
-            ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
-            configHelper.updateConfig(configDO);
-            return updateSuccess(param);
-        } catch (AppBizException e) {
-            return updateFail(param, e.getCode(), e.getMessage(), CommonBizState.FAILED);
-        } catch (Exception e) {
-            serverExpLog(LOGGER, ServerType.HTTP, "updateConfig", GsonUtil.toJson(param), e);
-            return updateFail(param, SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, CommonBizState.UNKNOWN);
-        }
+        ConfigValidator.validateConfigUpdateParam(param);
+        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
+        configHelper.updateConfig(configDO);
+        return updateSuccess(param);
     }
 
     @RecordOpLog(opType = OperationType.DELETE_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.DELETE)
     public Result<Boolean> deleteConfig(@RequestBody ConfigDeleteParam param) {
-        try {
-            ConfigValidator.validateConfigDeleteParam(param);
-            ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
-            configHelper.deleteConfig(configDO);
-            return deleteSuccess(param);
-        } catch (AppBizException e) {
-            return deleteFail(param, e.getCode(), e.getMessage(), CommonBizState.FAILED);
-        } catch (Exception e) {
-            serverExpLog(LOGGER, ServerType.HTTP, "deleteConfig", GsonUtil.toJson(param), e);
-            return deleteFail(param, SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, CommonBizState.UNKNOWN);
-        }
+        ConfigValidator.validateConfigDeleteParam(param);
+        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
+        configHelper.deleteConfig(configDO);
+        return deleteSuccess(param);
     }
 }

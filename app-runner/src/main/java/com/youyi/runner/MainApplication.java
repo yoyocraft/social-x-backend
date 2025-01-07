@@ -16,7 +16,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan(
     basePackages = {
         "com.youyi.infra.config.repository.mapper",
-        "com.youyi.domain.audit.repository.mapper"
+        "com.youyi.domain.audit.repository.mapper",
+        "com.youyi.domain.user.repository.mapper"
     },
     annotationClass = Mapper.class
 )

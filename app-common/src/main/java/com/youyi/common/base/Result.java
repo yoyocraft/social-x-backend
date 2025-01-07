@@ -85,4 +85,8 @@ public class Result<T> implements Serializable {
     public static <T> Result<T> fail(String code, String message) {
         return new Result<>(code, message, CommonBizState.FAILED.name());
     }
+
+    public static <T> Result<T> fail(String code, String message, CommonBizState state) {
+        return new Result<>(code, message, state.name());
+    }
 }
