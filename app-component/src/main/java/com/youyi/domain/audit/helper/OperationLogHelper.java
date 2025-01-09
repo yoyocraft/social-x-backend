@@ -21,8 +21,8 @@ public class OperationLogHelper {
     private final OperationLogRepository operationLogRepository;
 
     public void recordOperationLog(OperationLogDO operationLogDO) {
-        operationLogDO.buildToSaveOperationLog();
-        operationLogRepository.insert(operationLogDO.getToSaveOperationLog());
+        OperationLogPO toSaveOperationLog = operationLogDO.buildToSaveOperationLog();
+        operationLogRepository.insert(toSaveOperationLog);
     }
 
     public List<OperationLogDO> queryByTypeAndOperatorId(String operationType, Long operatorId) {

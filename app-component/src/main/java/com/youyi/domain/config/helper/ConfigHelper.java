@@ -20,8 +20,8 @@ public class ConfigHelper {
 
     public void createConfig(ConfigDO configDO) {
         configDO.create();
-        configDO.buildToSaveConfig();
-        configRepository.insert(configDO.getToSaveConfig());
+        ConfigPO toSaveConfig = configDO.buildToSaveConfig();
+        configRepository.insert(toSaveConfig);
     }
 
     public ConfigDO queryConfig(ConfigDO configDO) {
