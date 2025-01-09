@@ -4,7 +4,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.youyi.common.constant.SymbolConstant;
-import com.youyi.common.util.GsonUtil;
 import com.youyi.infra.config.repository.ConfigRepository;
 import com.youyi.infra.config.repository.po.ConfigPO;
 import java.util.List;
@@ -37,7 +36,6 @@ public class ConfigLoader implements SmartInitializingSingleton {
     private static final Cache<String, String> CONFIG_CENTER = CacheBuilder
         .newBuilder()
         .maximumSize(CONFIG_CACHE_SIZE)
-        .removalListener(notification -> LOGGER.warn("Cache entry removed: key:{},value:{}", notification.getKey(), GsonUtil.toJson(notification.getValue())))
         .build();
 
     private final ConfigRepository configRepository;
@@ -75,8 +73,6 @@ public class ConfigLoader implements SmartInitializingSingleton {
                     (o, n) -> n
                 )
             );
-
-        LOGGER.info("refresh config cache, size:{}, configs:{}", configMap.size(), GsonUtil.toJson(configMap));
 
         CONFIG_CENTER.putAll(configMap);
     }

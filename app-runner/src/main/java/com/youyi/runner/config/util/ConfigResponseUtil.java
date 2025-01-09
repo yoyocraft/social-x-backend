@@ -23,7 +23,7 @@ public class ConfigResponseUtil {
 
     public static Result<Boolean> createSuccess(ConfigCreateParam param) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("create config ,request:{}, response: {}", GsonUtil.toJson(param), GsonUtil.toJson(response));
+        LOGGER.info("create config, request:{}, response: {}", GsonUtil.toJson(param), GsonUtil.toJson(response));
         return response;
     }
 
