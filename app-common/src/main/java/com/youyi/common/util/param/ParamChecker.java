@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.youyi.common.constant.ErrorCodeConstant.INVALID_PARAM;
+import static com.youyi.common.constant.ValidateRegex.VALIDATE_EMAIL_PATTERN;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -106,6 +107,15 @@ public interface ParamChecker<T> {
         return param -> {
             boolean validate = predicate.test(param) && Stream.of(enumClass.getEnumConstants())
                 .anyMatch(e -> StringUtils.equals(e.name(), param));
+            return validate
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
+    }
+
+    static ParamChecker<String> emailChecker(String errorMsg) {
+        return param -> {
+            boolean validate = StringUtils.isNotBlank(param) && VALIDATE_EMAIL_PATTERN.matcher(param).matches();
             return validate
                 ? CheckResult.success()
                 : CheckResult.of(INVALID_PARAM, errorMsg);
