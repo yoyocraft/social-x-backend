@@ -20,12 +20,12 @@
     </sql>
 
     <insert id="insert" parameterType="com.youyi.infra.config.repository.po.ConfigPO">
-        INSERT INTO `config` (gmt_create, gmt_modified, extra_data, config_key, config_value, env, version)
-        VALUES (#{gmtCreate}, #{gmtModified}, #{extraData}, #{configKey}, #{configValue}, #{env}, #{version})
+        INSERT INTO `config` (extra_data, config_key, config_value, env, version)
+        VALUES (#{extraData}, #{configKey}, #{configValue}, #{env}, #{version})
     </insert>
     <update id="updateConfigValueAndEnv" parameterType="com.youyi.infra.config.repository.po.ConfigPO">
         UPDATE `config`
-        SET `config_value` = #{configValue}, `env` = #{env}, `version` = version + 1, `gmt_modified` = #{gmtModified}
+        SET `config_value` = #{configValue}, `env` = #{env}, `version` = version + 1
         WHERE `config_key` = #{configKey}
         AND `env` = #{env}
         AND `version` = #{version}
@@ -33,7 +33,7 @@
     </update>
     <update id="deleteByConfigKeyAndEnv" parameterType="com.youyi.infra.config.repository.po.ConfigPO">
         UPDATE `config`
-        SET `deleted_at` = #{deletedAt}, `gmt_modified` = #{gmtModified}
+        SET `deleted_at` = #{deletedAt}
         WHERE `config_key` = #{configKey}
         AND `env` = #{env}
         AND `deleted_at` = 0

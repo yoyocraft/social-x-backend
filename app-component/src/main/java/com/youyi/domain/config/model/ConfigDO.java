@@ -24,21 +24,18 @@ public class ConfigDO {
     private String extraData;
     private Long deletedAt;
 
-    private ConfigPO toSaveConfig;
-
     public void create() {
         setEnvIfNeeded();
     }
 
-    public void buildToSaveConfig() {
-        toSaveConfig = new ConfigPO();
+    public ConfigPO buildToSaveConfig() {
+        ConfigPO toSaveConfig = new ConfigPO();
         toSaveConfig.setConfigKey(configKey);
         toSaveConfig.setConfigValue(configValue);
         toSaveConfig.setEnv(env);
         toSaveConfig.setVersion(INIT_VERSION);
-        toSaveConfig.setGmtCreate(System.currentTimeMillis());
-        toSaveConfig.setGmtModified(System.currentTimeMillis());
         toSaveConfig.setExtraData(extraData);
+        return toSaveConfig;
     }
 
     public void preUpdate() {

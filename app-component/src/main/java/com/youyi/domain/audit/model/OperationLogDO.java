@@ -17,17 +17,13 @@ public class OperationLogDO {
     private String operatorName;
     private String extraData;
 
-    private OperationLogPO toSaveOperationLog;
-
-    public void buildToSaveOperationLog() {
-        toSaveOperationLog = new OperationLogPO();
+    public OperationLogPO buildToSaveOperationLog() {
+        OperationLogPO toSaveOperationLog = new OperationLogPO();
         toSaveOperationLog.setOperationType(operationType);
         toSaveOperationLog.setOperatorId(operatorId);
         toSaveOperationLog.setOperatorName(operatorName);
-        toSaveOperationLog.setGmtCreate(System.currentTimeMillis());
-        toSaveOperationLog.setGmtModified(System.currentTimeMillis());
         toSaveOperationLog.setExtraData(extraData);
+        return toSaveOperationLog;
     }
-
 
 }

@@ -3,13 +3,13 @@ DROP TABLE IF EXISTS `config`;
 
 CREATE TABLE `config` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `gmt_create` BIGINT(20) NOT NULL COMMENT 'create time',
-    `gmt_modified` BIGINT(20) NOT NULL COMMENT 'modified time',
+    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
     `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
     `extra_data` JSON COMMENT 'extra data',
     `config_key` VARCHAR(255) NOT NULL COMMENT 'config key',
     `config_value` TEXT NOT NULL COMMENT 'config value',
-    `env` VARCHAR(16) NOT NULL COMMENT 'env',
+    `env` VARCHAR(16) NOT NULL COMMENT 'env, e.g. LOCAL, PROD',
     `version` INT(11) NOT NULL DEFAULT 0 COMMENT 'version',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_config_key_env_deleted_at` (`config_key`, `env`, `deleted_at`)
@@ -19,23 +19,23 @@ DROP TABLE IF EXISTS `operation_log`;
 
 CREATE TABLE `operation_log` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `gmt_create` BIGINT(20) NOT NULL COMMENT 'create time',
-    `gmt_modified` BIGINT(20) NOT NULL COMMENT 'modified time',
+    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
     `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
     `extra_data` JSON COMMENT 'extra data',
     `operation_type` VARCHAR(64) NOT NULL COMMENT 'operation type',
     `operator_id` BIGINT NOT NULL COMMENT 'operator id',
     `operator_name` VARCHAR(64) NOT NULL COMMENT 'operator name',
     PRIMARY KEY (`id`),
-    KEY `idx_operator_id` (`operator_id`)
+    KEY `idx_operator_id_type` (`operator_id`, `operation_type`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'operation log';
 
 DROP TABLE IF EXISTS `user_info`;
 
 CREATE TABLE `user_info` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `gmt_create` BIGINT(20) NOT NULL COMMENT 'create time',
-    `gmt_modified` BIGINT(20) NOT NULL COMMENT 'modified time',
+    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
     `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
     `extra_data` JSON COMMENT 'extra data',
     `user_id` VARCHAR(64) NOT NULL COMMENT 'user id',
@@ -62,8 +62,8 @@ DROP TABLE IF EXISTS `user_auth`;
 
 CREATE TABLE `user_auth` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `gmt_create` BIGINT(20) NOT NULL COMMENT 'create time',
-    `gmt_modified` BIGINT(20) NOT NULL COMMENT 'modified time',
+    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
     `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
     `extra_data` JSON COMMENT 'extra data',
     `user_id` VARCHAR(64) NOT NULL COMMENT 'user id',
@@ -71,7 +71,7 @@ CREATE TABLE `user_auth` (
     `identifier` VARCHAR(64) NOT NULL COMMENT 'identifier, e.g. username, openid, email',
     `credential` VARCHAR(64) NOT NULL COMMENT 'credential, e.g. password, token, code',
     `salt` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'salt',
-    `last_login_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'last login at',
+    `last_login_at` DATETIME NOT NULL COMMENT 'last login at',
     `last_login_ip` VARCHAR(32) NOT NULL DEFAULT '' COMMENT 'last login ip',
     `login_count` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'login count',
     PRIMARY KEY (`id`),

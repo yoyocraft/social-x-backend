@@ -18,8 +18,8 @@
         id, gmt_create, gmt_modified, deleted_at, extra_data, operation_type, operator_id, operator_name
     </sql>
     <insert id="insert" parameterType="com.youyi.domain.audit.repository.po.OperationLogPO">
-        INSERT INTO `operation_log` (gmt_create, gmt_modified, extra_data, operation_type, operator_id, operator_name)
-        VALUES (#{gmtCreate}, #{gmtModified}, #{extraData}, #{operationType}, #{operatorId}, #{operatorName})
+        INSERT INTO `operation_log` (extra_data, operation_type, operator_id, operator_name)
+        VALUES (#{extraData}, #{operationType}, #{operatorId}, #{operatorName})
     </insert>
     <select id="queryByOperationTypeAndOperatorId"
             resultType="com.youyi.domain.audit.repository.po.OperationLogPO">
