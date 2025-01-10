@@ -1,8 +1,6 @@
 package com.youyi.infra.config.core;
 
 import com.google.common.collect.ImmutableMap;
-import com.youyi.common.constant.SymbolConstant;
-import com.youyi.common.type.Env;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -34,12 +32,12 @@ class ConfigCacheServiceTest {
 
         // init data
         Map<String, String> dataMap = ImmutableMap.of(
-            buildCacheKey("STRING_KEY"), "STRING_VALUE",
-            buildCacheKey("BOOLEAN_KEY"), "true",
-            buildCacheKey("LONG_KEY"), "123",
-            buildCacheKey("JSON_KEY"), "{\"key\":\"value\"}",
-            buildCacheKey("LIST_KEY"), "[1,2,3]",
-            buildCacheKey("MAP_KEY"), "{\"key\":\"value\"}"
+            "STRING_KEY", "STRING_VALUE",
+            "BOOLEAN_KEY", "true",
+            "LONG_KEY", "123",
+            "JSON_KEY", "{\"key\":\"value\"}",
+            "LIST_KEY", "[1,2,3]",
+            "MAP_KEY", "{\"key\":\"value\"}"
         );
 
         when(configLoader.getCacheRawValue(anyString())).thenAnswer(invocation -> {
@@ -85,9 +83,6 @@ class ConfigCacheServiceTest {
         private String key;
     }
 
-    private String buildCacheKey(String key) {
-        return key + SymbolConstant.COLON + Env.LOCAL.name();
-    }
 }
 
 // Generated with love by TestMe :) Please raise issues & feature requests at: https://weirddev.com/forum#!/testme

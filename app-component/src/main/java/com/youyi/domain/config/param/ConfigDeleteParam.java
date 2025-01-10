@@ -13,5 +13,4 @@ import lombok.Setter;
 public class ConfigDeleteParam extends BaseParam {
 
     private String configKey;
-    private String env;
 }

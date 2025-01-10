@@ -9,10 +9,9 @@ CREATE TABLE `config` (
     `extra_data` JSON COMMENT 'extra data',
     `config_key` VARCHAR(255) NOT NULL COMMENT 'config key',
     `config_value` TEXT NOT NULL COMMENT 'config value',
-    `env` VARCHAR(16) NOT NULL COMMENT 'env, e.g. LOCAL, PROD',
     `version` INT(11) NOT NULL DEFAULT 0 COMMENT 'version',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_config_key_env_deleted_at` (`config_key`, `env`, `deleted_at`)
+    UNIQUE KEY `uk_config_key_deleted_at` (`config_key`, `deleted_at`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'project config';
 
 DROP TABLE IF EXISTS `operation_log`;

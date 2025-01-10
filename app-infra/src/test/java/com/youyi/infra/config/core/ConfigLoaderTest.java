@@ -1,7 +1,6 @@
 package com.youyi.infra.config.core;
 
 import com.google.common.collect.ImmutableMap;
-import com.youyi.common.type.Env;
 import com.youyi.infra.config.repository.ConfigRepository;
 import com.youyi.infra.config.repository.po.ConfigPO;
 import java.util.List;
@@ -56,7 +55,6 @@ class ConfigLoaderTest {
         ConfigPO configPO = new ConfigPO();
         configPO.setConfigKey(key);
         configPO.setConfigValue(value);
-        configPO.setEnv(Env.LOCAL.name());
         configPO.setVersion(0);
         return configPO;
     }

@@ -14,6 +14,5 @@ public class ConfigCreateParam extends BaseParam {
 
     private String configKey;
     private String configValue;
-    private String env;
     private String extraData;
 }

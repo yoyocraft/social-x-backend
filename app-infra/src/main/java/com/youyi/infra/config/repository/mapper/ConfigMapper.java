@@ -14,7 +14,7 @@ public interface ConfigMapper {
 
     int insert(ConfigPO po);
 
-    ConfigPO queryByConfigKeyAndEnv(@Param("configKey") String configKey, @Param("env") String env, @Param("includeDeleted") boolean includeDeleted);
+    ConfigPO queryByConfigKey(@Param("configKey") String configKey, @Param("includeDeleted") boolean includeDeleted);
 
     int updateConfigValueAndEnv(ConfigPO po);
 

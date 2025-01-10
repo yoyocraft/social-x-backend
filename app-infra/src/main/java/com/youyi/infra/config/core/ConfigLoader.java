@@ -3,7 +3,6 @@ package com.youyi.infra.config.core;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.youyi.common.constant.SymbolConstant;
 import com.youyi.infra.config.repository.ConfigRepository;
 import com.youyi.infra.config.repository.po.ConfigPO;
 import java.util.List;
@@ -68,20 +67,12 @@ public class ConfigLoader implements SmartInitializingSingleton {
         Map<String, String> configMap = configPOList.stream()
             .collect(
                 Collectors.toMap(
-                    this::buildCacheKey,
+                    ConfigPO::getConfigKey,
                     ConfigPO::getConfigValue,
                     (o, n) -> n
                 )
             );
 
         CONFIG_CENTER.putAll(configMap);
-    }
-
-    private String buildCacheKey(ConfigPO po) {
-        return buildCacheKey(po.getConfigKey(), po.getEnv());
-    }
-
-    private String buildCacheKey(String configKey, String env) {
-        return configKey + SymbolConstant.COLON + env;
     }
 }

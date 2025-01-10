@@ -14,6 +14,5 @@ public class ConfigUpdateParam extends BaseParam {
 
     private String configKey;
     private String newConfigValue;
-    private String env;
     private Integer currVersion;
 }

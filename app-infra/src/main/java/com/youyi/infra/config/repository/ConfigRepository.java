@@ -40,10 +40,10 @@ public class ConfigRepository {
         }
     }
 
-    public ConfigPO queryByConfigKeyAndEnv(String configKey, String env) {
+    public ConfigPO queryByConfigKey(String configKey) {
         try {
-            checkState(StringUtils.isNoneBlank(configKey, env));
-            return configMapper.queryByConfigKeyAndEnv(configKey, env, false);
+            checkState(StringUtils.isNoneBlank(configKey));
+            return configMapper.queryByConfigKey(configKey, false);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
