@@ -43,7 +43,6 @@ public interface ConfigAssembler {
 
     @Mappings({
         @Mapping(source = "configId", target = "id"),
-        @Mapping(target = "gmtModified", expression = "java(System.currentTimeMillis())")
     })
     ConfigPO toUpdateOrDeletePO(ConfigDO configDO);
 }

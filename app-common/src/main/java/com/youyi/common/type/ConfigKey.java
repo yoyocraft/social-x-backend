@@ -15,7 +15,10 @@ public enum ConfigKey {
     PLATFORM_RESPONSIBLE_PERSON,
 
     // ================ ThreadPool ================
-    RECORD_OP_LOG_THREAD_POOL_CONFIG
+    RECORD_OP_LOG_THREAD_POOL_CONFIG,
+
+    // ================ Feature AB Switch ================
+    SEND_EMAIL_AB_SWITCH,
     ;
 
 }
