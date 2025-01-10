@@ -19,18 +19,16 @@ public class ConfigHelper {
     private final ConfigRepository configRepository;
 
     public void createConfig(ConfigDO configDO) {
-        configDO.create();
         ConfigPO toSaveConfig = configDO.buildToSaveConfig();
         configRepository.insert(toSaveConfig);
     }
 
     public ConfigDO queryConfig(ConfigDO configDO) {
-        ConfigPO configPO = configRepository.queryByConfigKeyAndEnv(configDO.getConfigKey(), configDO.getEnv());
+        ConfigPO configPO = configRepository.queryByConfigKey(configDO.getConfigKey());
         return CONFIG_ASSEMBLER.toDO(configPO);
     }
 
     public void updateConfig(ConfigDO configDO) {
-        configDO.preUpdate();
         ConfigPO configPO = CONFIG_ASSEMBLER.toUpdateOrDeletePO(configDO);
         configRepository.updateConfigValueAndEnv(configPO);
     }

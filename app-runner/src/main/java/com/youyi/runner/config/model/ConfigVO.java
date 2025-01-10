@@ -15,6 +15,5 @@ public class ConfigVO extends BaseVO {
     private Long configId;
     private String configKey;
     private String configValue;
-    private String env;
     private Integer version;
 }

@@ -11,23 +11,21 @@
         <result property="deletedAt" column="deleted_at"/>
         <result property="configKey" column="config_key"/>
         <result property="configValue" column="config_value"/>
-        <result property="env" column="env"/>
         <result property="version" column="version"/>
     </resultMap>
 
     <sql id="result_cols">
-        id, gmt_create, gmt_modified, deleted_at, extra_data, config_key, config_value, env, version
+        id, gmt_create, gmt_modified, deleted_at, extra_data, config_key, config_value, version
     </sql>
 
     <insert id="insert" parameterType="com.youyi.infra.config.repository.po.ConfigPO">
-        INSERT INTO `config` (extra_data, config_key, config_value, env, version)
-        VALUES (#{extraData}, #{configKey}, #{configValue}, #{env}, #{version})
+        INSERT INTO `config` (extra_data, config_key, config_value, version)
+        VALUES (#{extraData}, #{configKey}, #{configValue}, #{version})
     </insert>
     <update id="updateConfigValueAndEnv" parameterType="com.youyi.infra.config.repository.po.ConfigPO">
         UPDATE `config`
-        SET `config_value` = #{configValue}, `env` = #{env}, `version` = version + 1
+        SET `config_value` = #{configValue}, `version` = version + 1
         WHERE `config_key` = #{configKey}
-        AND `env` = #{env}
         AND `version` = #{version}
         AND `deleted_at` = 0
     </update>
@@ -35,15 +33,13 @@
         UPDATE `config`
         SET `deleted_at` = #{deletedAt}
         WHERE `config_key` = #{configKey}
-        AND `env` = #{env}
         AND `deleted_at` = 0
     </update>
-    <select id="queryByConfigKeyAndEnv" resultType="com.youyi.infra.config.repository.po.ConfigPO">
+    <select id="queryByConfigKey" resultType="com.youyi.infra.config.repository.po.ConfigPO">
         SELECT
         <include refid="result_cols"/>
         FROM `config`
         WHERE `config_key` = #{configKey}
-        AND `env` = #{env}
         <if test="!includeDeleted">
             AND deleted_at = 0
         </if>

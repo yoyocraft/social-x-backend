@@ -12,5 +12,4 @@ import lombok.Setter;
 public class ConfigQueryParam {
 
     private String key;
-    private String env;
 }
