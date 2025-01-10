@@ -17,7 +17,6 @@ public class ConfigAssemblerTest {
         ConfigUpdateParam param = new ConfigUpdateParam();
         param.setConfigKey("configKey");
         param.setNewConfigValue("newConfigValue");
-        param.setEnv("env");
         param.setCurrVersion(1);
 
         ConfigDO configDO = ConfigAssembler.CONFIG_ASSEMBLER.toDO(param);
@@ -25,7 +24,6 @@ public class ConfigAssemblerTest {
         Assertions.assertNotNull(configDO);
         Assertions.assertEquals("configKey", configDO.getConfigKey());
         Assertions.assertEquals("newConfigValue", configDO.getConfigValue());
-        Assertions.assertEquals("env", configDO.getEnv());
         Assertions.assertEquals(1, configDO.getVersion());
     }
 
