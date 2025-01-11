@@ -97,10 +97,11 @@ public class UserDO {
 
     public void fillUserInfo(UserInfoPO userInfoPO) {
         this.userId = userInfoPO.getUserId();
-        this.originalEmail = CryptoManager.aesDecrypt(userInfoPO.getEmail());
+        this.originalEmail = CryptoManager.aesDecrypt(userInfoPO.getEmail(), userInfoPO.getEmailIv());
         this.encryptedEmail = userInfoPO.getEmail();
         this.encryptedPhone = userInfoPO.getPhone();
-        this.originalPhone = StringUtils.isNotBlank(encryptedPhone) ? CryptoManager.aesDecrypt(userInfoPO.getPhone()) : EMPTY;
+        this.originalPhone = StringUtils.isNotBlank(encryptedPhone)
+            ? CryptoManager.aesDecrypt(userInfoPO.getPhone(), userInfoPO.getPhoneIv()) : EMPTY;
         this.nickName = userInfoPO.getNickName();
         this.avatar = userInfoPO.getAvatar();
         this.gender = GenderType.of(userInfoPO.getGender());

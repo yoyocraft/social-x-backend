@@ -26,12 +26,12 @@ public class CryptoManager {
         }
     }
 
-    public static String aesDecrypt(String cipherText) {
+    public static String aesDecrypt(String cipherText, String iv) {
         String aesKey = getStringConfig(ConfigKey.AES_KEY);
         String aesAlgo = getStringConfig(ConfigKey.AES_ALGORITHM);
 
         try {
-            return AESUtil.decrypt(aesKey, aesAlgo, cipherText, IvGenerator.generateIv(cipherText));
+            return AESUtil.decrypt(aesKey, aesAlgo, cipherText, iv);
         } catch (Exception e) {
             throw AppSystemException.of(InfraCode.DECRYPT_ERROR);
         }
