@@ -6,7 +6,7 @@ import com.youyi.common.type.InfraCode;
 import com.youyi.common.util.AESUtil;
 import com.youyi.common.util.IvGenerator;
 
-import static com.youyi.infra.config.core.SystemConfigService.getStringConfig;
+import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

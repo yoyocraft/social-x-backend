@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.ConfigKey.QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH;
 import static com.youyi.common.type.ReturnCode.NOT_LOGIN;
-import static com.youyi.infra.config.core.SystemConfigService.getBooleanConfig;
+import static com.youyi.infra.conf.core.SystemConfigService.getBooleanConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

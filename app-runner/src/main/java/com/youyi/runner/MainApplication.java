@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAspectJAutoProxy
 @MapperScan(
     basePackages = {
-        "com.youyi.infra.config.repository.mapper",
+        "com.youyi.infra.conf.repository.mapper",
         "com.youyi.domain.audit.repository.mapper",
         "com.youyi.domain.user.repository.mapper"
     },

@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import static com.youyi.common.type.ConfigKey.DEFAULT_AVATAR;
 import static com.youyi.common.util.RandomGenUtil.genUserId;
 import static com.youyi.common.util.RandomGenUtil.genUserNickName;
-import static com.youyi.infra.config.core.SystemConfigService.getStringConfig;
+import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
 import static com.youyi.infra.privacy.DesensitizedManager.desensitizeEmail;
 import static com.youyi.infra.privacy.DesensitizedManager.desensitizeMobile;
 import static org.apache.commons.lang3.StringUtils.EMPTY;

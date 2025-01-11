@@ -1,10 +1,10 @@
-package com.youyi.infra.config.repository;
+package com.youyi.infra.conf.repository;
 
 import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
-import com.youyi.infra.config.repository.mapper.ConfigMapper;
-import com.youyi.infra.config.repository.po.ConfigPO;
+import com.youyi.infra.conf.repository.mapper.ConfigMapper;
+import com.youyi.infra.conf.repository.po.ConfigPO;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;

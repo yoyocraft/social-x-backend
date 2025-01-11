@@ -1,6 +1,6 @@
-package com.youyi.domain.config.model;
+package com.youyi.domain.conf.model;
 
-import com.youyi.infra.config.repository.po.ConfigPO;
+import com.youyi.infra.conf.repository.po.ConfigPO;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,6 @@
 package com.youyi.runner.config.util;
 
-import com.youyi.domain.config.model.ConfigDO;
+import com.youyi.domain.conf.model.ConfigDO;
 import com.youyi.runner.config.model.ConfigVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

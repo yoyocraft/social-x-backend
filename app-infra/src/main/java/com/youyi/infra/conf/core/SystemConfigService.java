@@ -1,4 +1,4 @@
-package com.youyi.infra.config.core;
+package com.youyi.infra.conf.core;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.youyi.infra.config.core.ConfigCache.getCacheRawValue;
+import static com.youyi.infra.conf.core.ConfigCache.getCacheRawValue;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

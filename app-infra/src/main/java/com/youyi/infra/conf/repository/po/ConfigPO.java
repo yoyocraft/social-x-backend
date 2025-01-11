@@ -1,4 +1,4 @@
-package com.youyi.infra.config.repository.po;
+package com.youyi.infra.conf.repository.po;
 
 import com.youyi.common.base.BasePO;
 import lombok.Getter;
