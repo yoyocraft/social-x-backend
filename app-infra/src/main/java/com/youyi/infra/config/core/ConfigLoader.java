@@ -1,8 +1,6 @@
 package com.youyi.infra.config.core;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.youyi.infra.config.repository.ConfigRepository;
 import com.youyi.infra.config.repository.po.ConfigPO;
 import java.util.List;
@@ -29,13 +27,7 @@ import static com.youyi.common.util.LogUtil.runWithCost;
 public class ConfigLoader implements SmartInitializingSingleton {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigLoader.class);
-    private static final int CONFIG_CACHE_SIZE = 10000;
     private static final int CONFIG_CACHE_REFRESH_INTERVAL = 10000;
-
-    private static final Cache<String, String> CONFIG_CENTER = CacheBuilder
-        .newBuilder()
-        .maximumSize(CONFIG_CACHE_SIZE)
-        .build();
 
     private final ConfigRepository configRepository;
 
@@ -44,17 +36,13 @@ public class ConfigLoader implements SmartInitializingSingleton {
         refreshCache();
     }
 
-    @Scheduled(fixedDelay = CONFIG_CACHE_REFRESH_INTERVAL)
+    @Scheduled(initialDelay = CONFIG_CACHE_REFRESH_INTERVAL, fixedDelay = CONFIG_CACHE_REFRESH_INTERVAL)
     public void refreshCache() {
         try {
             runWithCost(LOGGER, this::doRefreshConfigCache, "refreshConfigCache");
         } catch (Exception e) {
             LOGGER.error("[ConfigLoader] refreshCache exp", e);
         }
-    }
-
-    public String getCacheRawValue(String key) {
-        return CONFIG_CENTER.getIfPresent(key);
     }
 
     @VisibleForTesting
@@ -73,6 +61,6 @@ public class ConfigLoader implements SmartInitializingSingleton {
                 )
             );
 
-        CONFIG_CENTER.putAll(configMap);
+        ConfigCache.putAll(configMap);
     }
 }

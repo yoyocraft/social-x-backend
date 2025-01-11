@@ -11,9 +11,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ReturnCode implements ErrorCode {
 
-    SUCCESS("SUCCESS", "Success"),
-    SYSTEM_ERROR("SYSTEM_ERROR", "System error"),
-    INVALID_PARAM("INVALID_PARAM", "Invalid param"),
+    SUCCESS("SUCCESS", ""),
+    SYSTEM_ERROR("SYSTEM_ERROR", "系统繁忙，请稍后再试"),
+    INVALID_PARAM("INVALID_PARAM", "参数非法"),
+    CAPTCHA_EXPIRED("CAPTCHA_EXPIRED", "验证码过期，请重新获取"),
+    CAPTCHA_ERROR("CAPTCHA_ERROR", "验证码错误"),
+
+    NOT_LOGIN("NOT_LOGIN", "未登录"),
     ;
 
     private final String code;

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 
-import static com.youyi.common.constant.CodeGenConstant.EMAIL_CAPTCHA_LENGTH;
+import static com.youyi.common.constant.RandGenConstant.EMAIL_CAPTCHA_LENGTH;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

@@ -19,6 +19,14 @@ public enum ConfigKey {
 
     // ================ Feature AB Switch ================
     SEND_EMAIL_AB_SWITCH,
+    QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH,
+
+    // ================ Crypto ================
+    AES_KEY,
+    AES_ALGORITHM,
+
+    // ================ User ================
+    DEFAULT_AVATAR,
     ;
 
 }

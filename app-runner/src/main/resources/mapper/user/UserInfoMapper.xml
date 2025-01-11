@@ -29,6 +29,17 @@
         id, gmt_create, gmt_modified, deleted_at, extra_data, user_id, email, email_iv, phone, phone_iv, nick_name,
         avatar, gender, date_of_birth, bio, personalized_tags, location, status, role
     </sql>
+    <insert id="insert">
+        INSERT INTO `user_info` (user_id, email, email_iv, phone, phone_iv, nick_name, avatar)
+        VALUES (#{userId}, #{email}, #{emailIv}, #{phone}, #{phoneIv}, #{nickName}, #{avatar})
+    </insert>
+    <select id="queryByEmail" resultType="com.youyi.domain.user.repository.po.UserInfoPO">
+        SELECT
+        <include refid="result_cols"/>
+        FROM `user_info`
+        WHERE `email` = #{email}
+        AND `deleted_at` = 0
+    </select>
 
 
 </mapper>

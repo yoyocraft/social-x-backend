@@ -32,12 +32,12 @@ public class NotificationHelper {
         // 保存验证码
         saveCaptcha(notificationDO.getEmail(), captcha);
         // 发送邮件
-        // TODO youyi 2025/1/9 支持重试，防抖
+        // TODO youyi 2025/1/9 支持重试，防抖，异步发送即可
         emailSender.sendCaptchaEmail(notificationDO.getEmail(), captcha);
     }
 
     private void saveCaptcha(String email, String captcha) {
         String cacheKey = ofEmailCaptchaKey(email);
-        cacheManager.set(cacheKey, cacheKey, EMAIL_CAPTCHA_DURATION);
+        cacheManager.set(cacheKey, captcha, EMAIL_CAPTCHA_DURATION);
     }
 }

@@ -1,11 +1,23 @@
 package com.youyi.runner.user.api;
 
+import com.youyi.common.anno.RecordOpLog;
+import com.youyi.common.base.Result;
+import com.youyi.common.type.OperationType;
 import com.youyi.domain.user.helper.UserHelper;
+import com.youyi.domain.user.model.UserDO;
+import com.youyi.domain.user.param.UserAuthenticateParam;
+import com.youyi.runner.user.model.UserVO;
+import com.youyi.runner.user.util.UserValidator;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.youyi.domain.user.assembler.UserAssembler.USER_ASSEMBLER;
+import static com.youyi.runner.user.util.UserResponseUtil.getCurrentUserSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.logoutSuccess;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -16,8 +28,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     private final UserHelper userHelper;
+
+    @RecordOpLog(opType = OperationType.USER_LOGIN, system = true)
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public Result<Boolean> login(@RequestBody UserAuthenticateParam param) {
+        UserValidator.checkUserAuthenticateParam(param);
+        UserDO userDO = USER_ASSEMBLER.toDO(param);
+        // TODO youyi 2025/1/11 加分布式锁
+        userHelper.login(userDO);
+        return loginSuccess(param);
+    }
+
+    @RequestMapping(value = "/curr", method = RequestMethod.GET)
+    public Result<UserVO> getCurrentUser() {
+        UserDO userDO = userHelper.getCurrentUser();
+        return getCurrentUserSuccess(userDO);
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public Result<Boolean> logout() {
+        userHelper.logout();
+        return logoutSuccess();
+    }
 
 }

@@ -30,6 +30,8 @@
         <mybatis-spring-starter.version>2.3.2</mybatis-spring-starter.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok.version>1.18.30</lombok.version>
+        <sa-token.version>1.39.0</sa-token.version>
+        <hutool.version>5.8.35</hutool.version>
 
         <!-- Plugins -->
         <maven-flatten-plugin.version>1.5.0</maven-flatten-plugin.version>
@@ -143,6 +145,12 @@
                 <version>${mapstruct.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <!-- SaToken -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
 
             <!-- Util -->
             <dependency>
@@ -179,6 +187,11 @@
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-core</artifactId>
+                <version>${hutool.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

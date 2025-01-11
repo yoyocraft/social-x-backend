@@ -13,11 +13,11 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class AESUtil {
     private static final String AES = "AES";
-    private static final String AES_KEY = "epcLazOjpG46NK6P5WQx/Q==";
-    private static final String AES_ALGORITHM = "AES/CBC/PKCS5Padding";
+    private static final String SYSTEM_AES_KEY = "epcLazOjpG46NK6P5WQx/Q==";
+    private static final String SYSTEM_AES_ALGORITHM = "AES/CBC/PKCS5Padding";
 
     public static String encrypt(String plainText, String iv) throws Exception {
-        return encrypt(AES_KEY, AES_ALGORITHM, plainText, iv);
+        return encrypt(SYSTEM_AES_KEY, SYSTEM_AES_ALGORITHM, plainText, iv);
     }
 
     public static String encrypt(String aesKey, String aesAlgo, String plainText, String iv) throws Exception {
@@ -51,7 +51,7 @@ public class AESUtil {
     }
 
     public static String decrypt(String cipherText, String iv) throws Exception {
-        return decrypt(AES_KEY, AES_ALGORITHM, cipherText, iv);
+        return decrypt(SYSTEM_AES_KEY, SYSTEM_AES_ALGORITHM, cipherText, iv);
     }
 
     public static String decrypt(String aesKey, String aesAlgo, String cipherText, String iv) throws Exception {

@@ -8,106 +8,103 @@ import com.youyi.common.util.GsonUtil;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+
+import static com.youyi.infra.config.core.ConfigCache.getCacheRawValue;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/01
  */
-@Component
-@RequiredArgsConstructor
-public class ConfigCacheService {
+public class SystemConfigService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigCacheService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfigService.class);
 
-    private final ConfigLoader configLoader;
 
     // ====================== map type ======================
-    public <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType) {
+    public static  <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType) {
         return getMapConfig(configKey, keyType, valueType, Maps.newHashMap());
     }
 
-    public <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType, Map<K, V> defaultValue) {
+    public static  <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType, Map<K, V> defaultValue) {
         Type mapType = TypeToken.getParameterized(Map.class, keyType, valueType).getType();
         return getCacheValue(configKey, mapType, defaultValue);
     }
 
     // ====================== list type ======================
-    public <T> List<T> getListConfig(String configKey, Class<T> valueType) {
+    public static  <T> List<T> getListConfig(String configKey, Class<T> valueType) {
         return getListConfig(configKey, valueType, Lists.newArrayList());
     }
 
-    public <T> List<T> getListConfig(String configKey, Class<T> valueType, List<T> defaultValue) {
+    public static  <T> List<T> getListConfig(String configKey, Class<T> valueType, List<T> defaultValue) {
         Type listType = TypeToken.getParameterized(List.class, valueType).getType();
         return getCacheValue(configKey, listType, defaultValue);
     }
 
     // ====================== boolean type ======================
 
-    public Boolean getBooleanConfig(String key) {
-        return getCacheValue(key, Boolean.class, Boolean.FALSE);
+    public static Boolean getBooleanConfig(String key) {
+        return getCacheValue(key, Boolean.class, java.lang.Boolean.FALSE);
     }
 
-    public Boolean getBooleanConfig(String key, Boolean defaultValue) {
+    public static Boolean getBooleanConfig(String key, Boolean defaultValue) {
         return getCacheValue(key, Boolean.class, defaultValue);
     }
 
-    public Boolean getBooleanConfig(ConfigKey configKey) {
+    public static Boolean getBooleanConfig(ConfigKey configKey) {
         return getBooleanConfig(configKey, Boolean.FALSE);
     }
 
-    public Boolean getBooleanConfig(ConfigKey configKey, Boolean defaultValue) {
+    public static Boolean getBooleanConfig(ConfigKey configKey, Boolean defaultValue) {
         return getBooleanConfig(configKey.name(), defaultValue);
     }
 
     // ====================== string type ======================
 
-    public String getStringConfig(String key) {
+    public static String getStringConfig(String key) {
         return getStringConfig(key, StringUtils.EMPTY);
     }
 
-    public String getStringConfig(String key, String defaultValue) {
+    public static String getStringConfig(String key, String defaultValue) {
         return getCacheValue(key, String.class, defaultValue);
     }
 
-    public String getStringConfig(ConfigKey configKey) {
+    public static String getStringConfig(ConfigKey configKey) {
         return getStringConfig(configKey, StringUtils.EMPTY);
     }
 
-    public String getStringConfig(ConfigKey configKey, String defaultValue) {
+    public static String getStringConfig(ConfigKey configKey, String defaultValue) {
         return getStringConfig(configKey.name(), defaultValue);
     }
 
     // ====================== long type ======================
 
-    public Long getLongConfig(String key) {
+    public static Long getLongConfig(String key) {
         return getLongConfig(key, 0L);
     }
 
-    public Long getLongConfig(String key, Long defaultValue) {
+    public static Long getLongConfig(String key, Long defaultValue) {
         return getCacheValue(key, Long.class, defaultValue);
     }
 
     // ====================== class type ======================
 
-    public <T> T getCacheValue(String configKey, Class<T> type) {
+    public static  <T> T getCacheValue(String configKey, Class<T> type) {
         return getCacheValue(configKey, type, null);
     }
 
-    public <T> T getCacheValue(ConfigKey configKey, Class<T> type) {
+    public static  <T> T getCacheValue(ConfigKey configKey, Class<T> type) {
         return getCacheValue(configKey, type, null);
     }
 
-    public <T> T getCacheValue(ConfigKey configKey, Class<T> type, T defaultValue) {
+    public static  <T> T getCacheValue(ConfigKey configKey, Class<T> type, T defaultValue) {
         return getCacheValue(configKey.name(), type, defaultValue);
     }
 
-    public <T> T getCacheValue(String configKey, Class<T> type, T defaultValue) {
-        String value = configLoader.getCacheRawValue(configKey);
+    public static  <T> T getCacheValue(String configKey, Class<T> type, T defaultValue) {
+        String value = getCacheRawValue(configKey);
 
         if (value == null) {
             LOGGER.warn("Config not found for key:{}. Returning default value: {}", configKey, defaultValue);
@@ -127,12 +124,12 @@ public class ConfigCacheService {
 
     // ====================== reflect type ======================
 
-    public <T> T getCacheValue(String configKey, Type type) {
+    public static  <T> T getCacheValue(String configKey, Type type) {
         return getCacheValue(configKey, type, null);
     }
 
-    public <T> T getCacheValue(String configKey, Type type, T defaultValue) {
-        String value = configLoader.getCacheRawValue(configKey);
+    public static  <T> T getCacheValue(String configKey, Type type, T defaultValue) {
+        String value = getCacheRawValue(configKey);
 
         if (value == null) {
             LOGGER.warn("Config not found for key:{}. Returning default value: {}", configKey, defaultValue);

@@ -6,9 +6,8 @@ import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.AspectOrdered;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
-import com.youyi.domain.audit.model.OperationLogDO;
 import com.youyi.domain.audit.helper.OperationLogHelper;
-import com.youyi.infra.config.core.ConfigCacheService;
+import com.youyi.domain.audit.model.OperationLogDO;
 import com.youyi.infra.config.core.ConfigLoader;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -34,6 +33,7 @@ import static com.youyi.common.constant.SystemOperationConstant.LOG_METHOD_KEY;
 import static com.youyi.common.constant.SystemOperationConstant.SYSTEM_OPERATOR_ID;
 import static com.youyi.common.constant.SystemOperationConstant.SYSTEM_OPERATOR_NAME;
 import static com.youyi.common.type.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
+import static com.youyi.infra.config.core.SystemConfigService.getCacheValue;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -46,7 +46,6 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordOpLogAspect.class);
 
-    private final ConfigCacheService configCacheService;
     private final OperationLogHelper operationLogHelper;
     private static ThreadPoolExecutor asyncRecordOpLogExecutor;
 
@@ -88,7 +87,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
     }
 
     private void initAsyncExecutor() {
-        ThreadPoolConfigWrapper recordOpLogExecutorConfig = configCacheService.getCacheValue(RECORD_OP_LOG_THREAD_POOL_CONFIG, ThreadPoolConfigWrapper.class);
+        ThreadPoolConfigWrapper recordOpLogExecutorConfig = getCacheValue(RECORD_OP_LOG_THREAD_POOL_CONFIG, ThreadPoolConfigWrapper.class);
         asyncRecordOpLogExecutor = new ThreadPoolExecutor(
             recordOpLogExecutorConfig.getCorePoolSize(),
             recordOpLogExecutorConfig.getMaximumPoolSize(),

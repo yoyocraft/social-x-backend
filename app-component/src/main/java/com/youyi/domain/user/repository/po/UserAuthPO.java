@@ -17,8 +17,5 @@ public class UserAuthPO extends BasePO {
     private String identifier;
     private String credential;
     private String salt;
-    private Long lastLoginAt;
-    private String lastLoginIp;
-    private Integer loginCount;
 
 }

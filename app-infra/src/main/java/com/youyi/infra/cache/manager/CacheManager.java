@@ -71,6 +71,15 @@ public class CacheManager {
         }
     }
 
+    public String getString(String key) {
+        try {
+            return (String) redisTemplate.opsForValue().get(key);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
     public Object get(String key, Object defaultValue) {
         Object value = get(key);
         if (Objects.isNull(value)) {

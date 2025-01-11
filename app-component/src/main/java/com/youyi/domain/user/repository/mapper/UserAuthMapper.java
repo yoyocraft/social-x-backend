@@ -1,6 +1,8 @@
 package com.youyi.domain.user.repository.mapper;
 
+import com.youyi.domain.user.repository.po.UserAuthPO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -8,4 +10,9 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface UserAuthMapper {
+
+    int insert(UserAuthPO po);
+
+    UserAuthPO queryByIdentityTypeAndIdentifier(@Param("identityType") String identityType, @Param("identifier") String identifier);
+
 }

@@ -1,3 +1,6 @@
+server:
+  port: ${SERVER_PORT}
+
 spring:
   application:
     name: ${APP_NAME}
@@ -34,3 +37,11 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
     jdbc-type-for-null: 'NULL'
+
+sa-token:
+  token-name: ${SA_TOKEN_NAME}
+  timeout: ${SA_TOKEN_TIMEOUT}
+  is-concurrent: ${SA_TOKEN_IS_CONCURRENT}
+  is-share: ${SA_TOKEN_IS_SHARE}
+  token-style: ${SA_TOKEN_STYLE}
+  is-log: ${SA_TOKEN_IS_LOG}
