@@ -27,6 +27,9 @@ public enum ConfigKey {
 
     // ================ User ================
     DEFAULT_AVATAR,
+
+    // ================ Lock ================
+    DEFAULT_LOCAL_LOCK_TIMEOUT,
     ;
 
 }

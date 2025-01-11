@@ -22,23 +22,22 @@ public class SystemConfigService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfigService.class);
 
-
     // ====================== map type ======================
-    public static  <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType) {
+    public static <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType) {
         return getMapConfig(configKey, keyType, valueType, Maps.newHashMap());
     }
 
-    public static  <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType, Map<K, V> defaultValue) {
+    public static <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType, Map<K, V> defaultValue) {
         Type mapType = TypeToken.getParameterized(Map.class, keyType, valueType).getType();
         return getCacheValue(configKey, mapType, defaultValue);
     }
 
     // ====================== list type ======================
-    public static  <T> List<T> getListConfig(String configKey, Class<T> valueType) {
+    public static <T> List<T> getListConfig(String configKey, Class<T> valueType) {
         return getListConfig(configKey, valueType, Lists.newArrayList());
     }
 
-    public static  <T> List<T> getListConfig(String configKey, Class<T> valueType, List<T> defaultValue) {
+    public static <T> List<T> getListConfig(String configKey, Class<T> valueType, List<T> defaultValue) {
         Type listType = TypeToken.getParameterized(List.class, valueType).getType();
         return getCacheValue(configKey, listType, defaultValue);
     }
@@ -89,21 +88,29 @@ public class SystemConfigService {
         return getCacheValue(key, Long.class, defaultValue);
     }
 
+    public static Long getLongConfig(ConfigKey key) {
+        return getLongConfig(key, 0L);
+    }
+
+    public static Long getLongConfig(ConfigKey key, Long defaultValue) {
+        return getLongConfig(key.name(), defaultValue);
+    }
+
     // ====================== class type ======================
 
-    public static  <T> T getCacheValue(String configKey, Class<T> type) {
+    public static <T> T getCacheValue(String configKey, Class<T> type) {
         return getCacheValue(configKey, type, null);
     }
 
-    public static  <T> T getCacheValue(ConfigKey configKey, Class<T> type) {
+    public static <T> T getCacheValue(ConfigKey configKey, Class<T> type) {
         return getCacheValue(configKey, type, null);
     }
 
-    public static  <T> T getCacheValue(ConfigKey configKey, Class<T> type, T defaultValue) {
+    public static <T> T getCacheValue(ConfigKey configKey, Class<T> type, T defaultValue) {
         return getCacheValue(configKey.name(), type, defaultValue);
     }
 
-    public static  <T> T getCacheValue(String configKey, Class<T> type, T defaultValue) {
+    public static <T> T getCacheValue(String configKey, Class<T> type, T defaultValue) {
         String value = getCacheRawValue(configKey);
 
         if (value == null) {
@@ -124,11 +131,11 @@ public class SystemConfigService {
 
     // ====================== reflect type ======================
 
-    public static  <T> T getCacheValue(String configKey, Type type) {
+    public static <T> T getCacheValue(String configKey, Type type) {
         return getCacheValue(configKey, type, null);
     }
 
-    public static  <T> T getCacheValue(String configKey, Type type, T defaultValue) {
+    public static <T> T getCacheValue(String configKey, Type type, T defaultValue) {
         String value = getCacheRawValue(configKey);
 
         if (value == null) {

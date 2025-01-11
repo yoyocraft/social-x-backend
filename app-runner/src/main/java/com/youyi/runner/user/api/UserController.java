@@ -2,10 +2,12 @@ package com.youyi.runner.user.api;
 
 import com.youyi.common.anno.RecordOpLog;
 import com.youyi.common.base.Result;
+import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.OperationType;
 import com.youyi.domain.user.helper.UserHelper;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.param.UserAuthenticateParam;
+import com.youyi.infra.lock.LocalLockUtil;
 import com.youyi.runner.user.model.UserVO;
 import com.youyi.runner.user.util.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.youyi.common.type.ReturnCode.TOO_MANY_REQUEST;
 import static com.youyi.domain.user.assembler.UserAssembler.USER_ASSEMBLER;
 import static com.youyi.runner.user.util.UserResponseUtil.getCurrentUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
@@ -28,7 +31,6 @@ import static com.youyi.runner.user.util.UserResponseUtil.logoutSuccess;
 @RequiredArgsConstructor
 public class UserController {
 
-
     private final UserHelper userHelper;
 
     @RecordOpLog(opType = OperationType.USER_LOGIN, system = true)
@@ -36,8 +38,13 @@ public class UserController {
     public Result<Boolean> login(@RequestBody UserAuthenticateParam param) {
         UserValidator.checkUserAuthenticateParam(param);
         UserDO userDO = USER_ASSEMBLER.toDO(param);
-        // TODO youyi 2025/1/11 加分布式锁
-        userHelper.login(userDO);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> userHelper.login(userDO),
+            () -> {
+                throw AppBizException.of(TOO_MANY_REQUEST);
+            },
+            param.getIdentityType(), param.getIdentifier()
+        );
         return loginSuccess(param);
     }
 
