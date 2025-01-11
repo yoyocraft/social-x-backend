@@ -19,7 +19,9 @@ public interface UserConverter {
 
     @Mappings({
         @Mapping(target = "gender", expression = "java(userDO.getGender().name())"),
-        @Mapping(target = "role", expression = "java(userDO.getRole().name())")
+        @Mapping(target = "role", expression = "java(userDO.getRole().name())"),
+        @Mapping(target = "desensitizedEmail", source = "originalEmail"),
+        @Mapping(target = "desensitizedMobile", source = "originalPhone")
     })
     UserVO toVO(UserDO userDO);
 }
