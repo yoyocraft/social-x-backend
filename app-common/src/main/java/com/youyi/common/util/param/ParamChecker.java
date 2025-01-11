@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import static com.youyi.common.constant.ErrorCodeConstant.INVALID_PARAM;
 import static com.youyi.common.constant.ValidateRegex.VALIDATE_EMAIL_PATTERN;
+import static com.youyi.common.constant.ValidateRegex.VALIDATE_PASSWORD_PATTERN;
+import static com.youyi.common.constant.ValidateRegex.VALIDATE_SIX_DIGITS_PATTERN;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -116,6 +118,24 @@ public interface ParamChecker<T> {
     static ParamChecker<String> emailChecker(String errorMsg) {
         return param -> {
             boolean validate = StringUtils.isNotBlank(param) && VALIDATE_EMAIL_PATTERN.matcher(param).matches();
+            return validate
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
+    }
+
+    static ParamChecker<String> captchaChecker(String errorMsg) {
+        return param -> {
+            boolean validate = StringUtils.isNotBlank(param) && VALIDATE_SIX_DIGITS_PATTERN.matcher(param).matches();
+            return validate
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
+    }
+
+    static ParamChecker<String> passwordChecker(String errorMsg) {
+        return param -> {
+            boolean validate = StringUtils.isNotBlank(param) && VALIDATE_PASSWORD_PATTERN.matcher(param).matches();
             return validate
                 ? CheckResult.success()
                 : CheckResult.of(INVALID_PARAM, errorMsg);

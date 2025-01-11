@@ -20,6 +20,12 @@ class IvGeneratorTest {
         String ret1 = IvGenerator.generateIv(baseStr);
         String ret2 = IvGenerator.generateIv(baseStr);
         Assertions.assertEquals(ret1, ret2);
+
+        // 测试生成 100 次，校验结果一致
+        for (int i = 0; i < 100; i++) {
+            String ret = IvGenerator.generateIv(baseStr);
+            Assertions.assertEquals(ret1, ret);
+        }
     }
 
     @Test

@@ -15,6 +15,9 @@ public enum InfraCode implements ErrorCode {
     REDIS_ERROR("REDIS_ERROR", "redis error"),
     CONFIG_ERROR("CONFIG_ERROR", "config error"),
     SEND_EMAIL_ERROR("SEND_EMAIL_ERROR", "send email error"),
+
+    ENCRYPT_ERROR("ENCRYPT_ERROR", "encrypt error"),
+    DECRYPT_ERROR("DECRYPT_ERROR", "decrypt error"),
     ;
 
     private final String code;

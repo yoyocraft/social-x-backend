@@ -45,16 +45,16 @@ CREATE TABLE `user_info` (
     `nick_name` VARCHAR(64) NOT NULL COMMENT 'user nick name',
     `avatar` VARCHAR(255) NOT NULL DEFAULT '/media/avatar/default.png' COMMENT 'avatar',
     `gender` TINYINT NOT NULL DEFAULT 0 COMMENT 'gender, 0: UNKNOWN, 1: MALE, 2: FEMALE',
-    `date_of_birth` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'date of birth',
+    `date_of_birth` DATE NOT NULL DEFAULT '1970-01-01' COMMENT 'date of birth',
     `bio` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'brief introduction',
     `personalized_tags` JSON COMMENT 'personalized tags',
     `location` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'location',
     `status` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'status, 0: NORMAL, 1: LOCKED',
-    `role` VARCHAR(16) NOT NULL DEFAULT 0 COMMENT 'role, USER, ADMIN',
+    `role` VARCHAR(16) NOT NULL DEFAULT 'USER' COMMENT 'role, USER, ADMIN',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_user_id` (`user_id`),
     UNIQUE KEY `uk_nick_name` (`nick_name`),
-    KEY `idx_email` (`email`)
+    UNIQUE KEY `uk_email_deleted_at` (`email`, `deleted_at`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'user';
 
 DROP TABLE IF EXISTS `user_auth`;
@@ -66,14 +66,37 @@ CREATE TABLE `user_auth` (
     `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
     `extra_data` JSON COMMENT 'extra data',
     `user_id` VARCHAR(64) NOT NULL COMMENT 'user id',
-    `identity_type` VARCHAR(64) NOT NULL COMMENT 'identity type, e.g. USERNAME, EMAIL, WECHAT',
+    `identity_type` VARCHAR(64) NOT NULL COMMENT 'identity type, e.g. EMAIL_PASSWORD, EMAIL_CAPTCHA, WECHAT',
     `identifier` VARCHAR(64) NOT NULL COMMENT 'identifier, e.g. username, openid, email',
     `credential` VARCHAR(64) NOT NULL COMMENT 'credential, e.g. password, token, code',
     `salt` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'salt',
-    `last_login_at` DATETIME NOT NULL COMMENT 'last login at',
-    `last_login_ip` VARCHAR(32) NOT NULL DEFAULT '' COMMENT 'last login ip',
-    `login_count` INT(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'login count',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_user_id_identity_type_identifier` (`user_id`, `identity_type`, `identifier`),
-    KEY `idx_identity_type_identifier` (`identity_type`, `identifier`)
+    UNIQUE KEY `uk_identity_type_identifier_deleted_at` (`identity_type`, `identifier`, `deleted_at`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'user auth';
+
+DROP TABLE IF EXISTS `permission`;
+
+CREATE TABLE `permission` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
+    `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
+    `extra_data` JSON COMMENT 'extra data',
+    `permission_name` VARCHAR(64) NOT NULL COMMENT 'permission name, e.g. PUBLISH_POST, EDIT_USER, DELETE_POST',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_permission_name` (`permission_name`)
+) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'permission';
+
+DROP TABLE IF EXISTS `role_permission`;
+
+CREATE TABLE `role_permission` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
+    `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
+    `extra_data` JSON COMMENT 'extra data',
+    `role` VARCHAR(64) NOT NULL COMMENT 'role, e.g. ADMIN, USER',
+    `permissions` JSON COMMENT 'permissions, e.g. [PUBLISH_POST, EDIT_USER, DELETE_POST]',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_role` (`role`)
+) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'role permission';

@@ -14,14 +14,23 @@
         <result property="identifier" column="identifier"/>
         <result property="credential" column="credential"/>
         <result property="salt" column="salt"/>
-        <result property="lastLoginAt" column="last_login_at"/>
-        <result property="lastLoginIp" column="last_login_ip"/>
-        <result property="loginCount" column="login_count"/>
     </resultMap>
 
     <sql id="result_cols">
-        id, gmt_create, gmt_modified, deleted_at, extra_data, user_id, identity_type, identifier, credential, salt,
-        last_login_at, last_login_ip, login_count
+        id, gmt_create, gmt_modified, deleted_at, extra_data, user_id, identity_type, identifier, credential, salt
     </sql>
+    <insert id="insert">
+        INSERT INTO `user_auth` (user_id, identity_type, identifier, credential, salt)
+        VALUES (#{userId}, #{identityType}, #{identifier}, #{credential}, #{salt})
+    </insert>
+
+    <select id="queryByIdentityTypeAndIdentifier" resultType="com.youyi.domain.user.repository.po.UserAuthPO">
+        SELECT
+        <include refid="result_cols"/>
+        FROM `user_auth`
+        WHERE `identity_type` = #{identityType}
+        AND `identifier` = #{identifier}
+        AND `deleted_at` = 0
+    </select>
 
 </mapper>

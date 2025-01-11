@@ -10,5 +10,6 @@ public enum OperationType {
     UPDATE_CONFIG,
     DELETE_CONFIG,
 
+    USER_LOGIN,
     ;
 }
