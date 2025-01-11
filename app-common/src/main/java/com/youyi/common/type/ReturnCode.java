@@ -17,6 +17,8 @@ public enum ReturnCode implements ErrorCode {
     CAPTCHA_EXPIRED("CAPTCHA_EXPIRED", "验证码过期，请重新获取"),
     CAPTCHA_ERROR("CAPTCHA_ERROR", "验证码错误"),
 
+    TOO_MANY_REQUEST("TOO_MANY_REQUEST", "操作频繁，请稍后再试"),
+
     NOT_LOGIN("NOT_LOGIN", "未登录"),
     ;
 
