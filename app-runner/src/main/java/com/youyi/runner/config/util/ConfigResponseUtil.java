@@ -2,11 +2,11 @@ package com.youyi.runner.config.util;
 
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.domain.config.model.ConfigDO;
-import com.youyi.domain.config.param.ConfigCreateParam;
-import com.youyi.domain.config.param.ConfigDeleteParam;
-import com.youyi.domain.config.param.ConfigQueryParam;
-import com.youyi.domain.config.param.ConfigUpdateParam;
+import com.youyi.domain.conf.model.ConfigDO;
+import com.youyi.domain.conf.param.ConfigCreateParam;
+import com.youyi.domain.conf.param.ConfigDeleteParam;
+import com.youyi.domain.conf.param.ConfigQueryParam;
+import com.youyi.domain.conf.param.ConfigUpdateParam;
 import com.youyi.runner.config.model.ConfigVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

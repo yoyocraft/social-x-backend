@@ -1,11 +1,11 @@
-package com.youyi.domain.config.assembler;
+package com.youyi.domain.conf.assembler;
 
-import com.youyi.domain.config.model.ConfigDO;
-import com.youyi.domain.config.param.ConfigCreateParam;
-import com.youyi.domain.config.param.ConfigDeleteParam;
-import com.youyi.domain.config.param.ConfigQueryParam;
-import com.youyi.domain.config.param.ConfigUpdateParam;
-import com.youyi.infra.config.repository.po.ConfigPO;
+import com.youyi.domain.conf.model.ConfigDO;
+import com.youyi.domain.conf.param.ConfigCreateParam;
+import com.youyi.domain.conf.param.ConfigDeleteParam;
+import com.youyi.domain.conf.param.ConfigQueryParam;
+import com.youyi.domain.conf.param.ConfigUpdateParam;
+import com.youyi.infra.conf.repository.po.ConfigPO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

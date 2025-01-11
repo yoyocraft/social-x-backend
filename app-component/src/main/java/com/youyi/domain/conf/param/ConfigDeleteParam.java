@@ -1,4 +1,4 @@
-package com.youyi.domain.config.param;
+package com.youyi.domain.conf.param;
 
 import com.youyi.common.base.BaseParam;
 import lombok.Getter;

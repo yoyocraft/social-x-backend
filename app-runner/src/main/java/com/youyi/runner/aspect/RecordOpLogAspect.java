@@ -8,7 +8,7 @@ import com.youyi.common.util.GsonUtil;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.audit.helper.OperationLogHelper;
 import com.youyi.domain.audit.model.OperationLogDO;
-import com.youyi.infra.config.core.ConfigLoader;
+import com.youyi.infra.conf.core.ConfigLoader;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
@@ -33,7 +33,7 @@ import static com.youyi.common.constant.SystemOperationConstant.LOG_METHOD_KEY;
 import static com.youyi.common.constant.SystemOperationConstant.SYSTEM_OPERATOR_ID;
 import static com.youyi.common.constant.SystemOperationConstant.SYSTEM_OPERATOR_NAME;
 import static com.youyi.common.type.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
-import static com.youyi.infra.config.core.SystemConfigService.getCacheValue;
+import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

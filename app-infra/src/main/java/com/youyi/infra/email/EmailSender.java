@@ -1,7 +1,7 @@
 package com.youyi.infra.email;
 
 import com.youyi.common.exception.AppSystemException;
-import com.youyi.infra.config.core.SystemConfigService;
+import com.youyi.infra.conf.core.SystemConfigService;
 import java.text.MessageFormat;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import static com.youyi.common.type.ConfigKey.MAIL_FROM;
 import static com.youyi.common.type.ConfigKey.PLATFORM_RESPONSIBLE_PERSON;
 import static com.youyi.common.type.ConfigKey.SEND_EMAIL_AB_SWITCH;
 import static com.youyi.common.type.InfraCode.SEND_EMAIL_ERROR;
-import static com.youyi.infra.config.core.SystemConfigService.getStringConfig;
+import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

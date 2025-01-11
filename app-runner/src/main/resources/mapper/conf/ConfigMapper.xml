@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.youyi.infra.config.repository.mapper.ConfigMapper">
+<mapper namespace="com.youyi.infra.conf.repository.mapper.ConfigMapper">
 
-    <resultMap id="ConfigResultMap" type="com.youyi.infra.config.repository.po.ConfigPO">
+    <resultMap id="ConfigResultMap" type="com.youyi.infra.conf.repository.po.ConfigPO">
         <id column="id" property="id"/>
         <result property="gmtCreate" column="gmt_create"/>
         <result property="gmtModified" column="gmt_modified"/>
@@ -18,24 +18,24 @@
         id, gmt_create, gmt_modified, deleted_at, extra_data, config_key, config_value, version
     </sql>
 
-    <insert id="insert" parameterType="com.youyi.infra.config.repository.po.ConfigPO">
+    <insert id="insert" parameterType="com.youyi.infra.conf.repository.po.ConfigPO">
         INSERT INTO `config` (extra_data, config_key, config_value, version)
         VALUES (#{extraData}, #{configKey}, #{configValue}, #{version})
     </insert>
-    <update id="updateConfigValueAndEnv" parameterType="com.youyi.infra.config.repository.po.ConfigPO">
+    <update id="updateConfigValueAndEnv" parameterType="com.youyi.infra.conf.repository.po.ConfigPO">
         UPDATE `config`
         SET `config_value` = #{configValue}, `version` = version + 1
         WHERE `config_key` = #{configKey}
         AND `version` = #{version}
         AND `deleted_at` = 0
     </update>
-    <update id="deleteByConfigKeyAndEnv" parameterType="com.youyi.infra.config.repository.po.ConfigPO">
+    <update id="deleteByConfigKeyAndEnv" parameterType="com.youyi.infra.conf.repository.po.ConfigPO">
         UPDATE `config`
         SET `deleted_at` = #{deletedAt}
         WHERE `config_key` = #{configKey}
         AND `deleted_at` = 0
     </update>
-    <select id="queryByConfigKey" resultType="com.youyi.infra.config.repository.po.ConfigPO">
+    <select id="queryByConfigKey" resultType="com.youyi.infra.conf.repository.po.ConfigPO">
         SELECT
         <include refid="result_cols"/>
         FROM `config`
@@ -44,7 +44,7 @@
             AND deleted_at = 0
         </if>
     </select>
-    <select id="queryAll" resultType="com.youyi.infra.config.repository.po.ConfigPO">
+    <select id="queryAll" resultType="com.youyi.infra.conf.repository.po.ConfigPO">
         SELECT
         <include refid="result_cols"/>
         FROM `config`

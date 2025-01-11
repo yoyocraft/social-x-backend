@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.youyi.common.type.ConfigKey.DEFAULT_LOCAL_LOCK_TIMEOUT;
-import static com.youyi.infra.config.core.SystemConfigService.getLongConfig;
+import static com.youyi.infra.conf.core.SystemConfigService.getLongConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
