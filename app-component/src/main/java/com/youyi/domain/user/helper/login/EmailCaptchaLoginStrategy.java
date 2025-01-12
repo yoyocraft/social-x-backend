@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
+import static com.youyi.common.type.notification.NotificationType.CAPTCHA_FOR_LOGIN;
 import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey;
 
 /**
@@ -78,7 +79,7 @@ public class EmailCaptchaLoginStrategy implements LoginStrategy {
     }
 
     void checkCaptcha(UserDO userDO) {
-        String cacheKey = ofEmailCaptchaKey(userDO.getIdentifier());
+        String cacheKey = ofEmailCaptchaKey(userDO.getIdentifier(), CAPTCHA_FOR_LOGIN);
         String systemCaptcha = cacheManager.getString(cacheKey);
         if (StringUtils.isBlank(systemCaptcha)) {
             // 验证码过期
@@ -92,7 +93,7 @@ public class EmailCaptchaLoginStrategy implements LoginStrategy {
     }
 
     void cleanCaptcha(UserDO userDO) {
-        String cacheKey = ofEmailCaptchaKey(userDO.getIdentifier());
+        String cacheKey = ofEmailCaptchaKey(userDO.getIdentifier(), CAPTCHA_FOR_LOGIN);
         cacheManager.delete(cacheKey);
     }
 }

@@ -1,6 +1,8 @@
 package com.youyi.domain.notification.param;
 
+import com.google.gson.annotations.SerializedName;
 import com.youyi.common.base.BaseParam;
+import com.youyi.common.type.notification.NotificationType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,5 +14,12 @@ import lombok.Setter;
 @Setter
 public class CaptchaNotifyParam extends BaseParam {
 
+    /**
+     * @see NotificationType
+     */
+    @SerializedName("biz_type")
+    private String bizType;
+
+    @SerializedName("email")
     private String email;
 }

@@ -1,5 +1,6 @@
 package com.youyi.common.base;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serial;
 import java.io.Serializable;
 import lombok.Getter;
@@ -21,5 +22,6 @@ public abstract class BaseParam implements Serializable {
     /**
      * 请求唯一标识，防重，幂等校验
      */
+    @SerializedName("uuid")
     private String uuid;
 }
