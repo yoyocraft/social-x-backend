@@ -23,6 +23,16 @@
         INSERT INTO `user_auth` (user_id, identity_type, identifier, credential, salt)
         VALUES (#{userId}, #{identityType}, #{identifier}, #{credential}, #{salt})
     </insert>
+    <insert id="insertOrUpdate">
+        INSERT INTO `user_auth` (user_id, identity_type, identifier, credential, salt)
+        VALUES (#{userId}, #{identityType}, #{identifier}, #{credential}, #{salt})
+        ON DUPLICATE KEY UPDATE
+        user_id = #{userId},
+        identity_type = #{identityType},
+        identifier = #{identifier},
+        credential = #{credential},
+        salt = #{salt}
+    </insert>
 
     <select id="queryByIdentityTypeAndIdentifier" resultType="com.youyi.domain.user.repository.po.UserAuthPO">
         SELECT

@@ -154,7 +154,7 @@ public class UserHelper {
     void savePwd(UserDO userDO) {
         userDO.preSetPwd();
         UserAuthPO userAuthPO = userDO.buildToSaveUserAuthPO();
-        // TODO youyi 2025/1/12 insert or update
-        userRepository.insertUserAuth(userAuthPO);
+        // insert or update
+        userRepository.insertOrUpdateUserAuth(userAuthPO);
     }
 }

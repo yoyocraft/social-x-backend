@@ -72,6 +72,17 @@ public class UserRepository {
         }
     }
 
+    public void insertOrUpdateUserAuth(UserAuthPO userAuthPO) {
+        try {
+            checkNotNull(userAuthPO);
+            int ret = userAuthMapper.insertOrUpdate(userAuthPO);
+            checkState(ret >= SINGLE_DML_AFFECTED_ROWS);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
+
     public void insertUserInfo(UserInfoPO userInfoPO) {
         try {
             checkNotNull(userInfoPO);
