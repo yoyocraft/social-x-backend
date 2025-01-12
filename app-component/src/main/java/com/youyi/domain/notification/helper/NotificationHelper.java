@@ -30,14 +30,14 @@ public class NotificationHelper {
         String captcha = RandomGenUtil.genEmailCaptcha();
         notificationDO.setCaptcha(captcha);
         // 保存验证码
-        saveCaptcha(notificationDO.getEmail(), captcha);
+        saveCaptcha(notificationDO);
         // 发送邮件
         // TODO youyi 2025/1/9 支持重试，防抖，异步发送即可
         emailSender.sendCaptchaEmail(notificationDO.getEmail(), captcha);
     }
 
-    private void saveCaptcha(String email, String captcha) {
-        String cacheKey = ofEmailCaptchaKey(email);
-        cacheManager.set(cacheKey, captcha, EMAIL_CAPTCHA_DURATION);
+    private void saveCaptcha(NotificationDO notificationDO) {
+        String cacheKey = ofEmailCaptchaKey(notificationDO.getEmail(), notificationDO.getNotificationType());
+        cacheManager.set(cacheKey, notificationDO.getCaptcha(), EMAIL_CAPTCHA_DURATION);
     }
 }

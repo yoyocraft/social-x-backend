@@ -1,5 +1,6 @@
 package com.youyi.domain.notification.model;
 
+import com.youyi.common.type.notification.NotificationType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,4 +14,5 @@ public class NotificationDO {
 
     private String email;
     private String captcha;
+    private NotificationType notificationType;
 }

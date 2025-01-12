@@ -1,5 +1,6 @@
 package com.youyi.domain.conf.param;
 
+import com.google.gson.annotations.SerializedName;
 import com.youyi.common.base.BaseParam;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,5 +13,6 @@ import lombok.Setter;
 @Setter
 public class ConfigDeleteParam extends BaseParam {
 
+    @SerializedName("config_key")
     private String configKey;
 }

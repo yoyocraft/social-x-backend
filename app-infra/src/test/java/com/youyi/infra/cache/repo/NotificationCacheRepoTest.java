@@ -1,5 +1,6 @@
 package com.youyi.infra.cache.repo;
 
+import com.youyi.common.type.notification.NotificationType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,8 +12,8 @@ class NotificationCacheRepoTest {
 
     @Test
     void testOfEmailCaptchaKey() {
-        String result = NotificationCacheRepo.ofEmailCaptchaKey("test@example.com");
-        Assertions.assertEquals("email:captcha:test@example.com", result);
+        String result = NotificationCacheRepo.ofEmailCaptchaKey("test@example.com", NotificationType.CAPTCHA_FOR_LOGIN);
+        Assertions.assertEquals("email:captcha:test@example.com:CAPTCHA_FOR_LOGIN", result);
     }
 }
 
