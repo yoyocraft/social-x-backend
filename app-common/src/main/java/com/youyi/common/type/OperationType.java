@@ -11,5 +11,8 @@ public enum OperationType {
     DELETE_CONFIG,
 
     USER_LOGIN,
+    USER_LOGOUT,
+
+    NOTIFY_CAPTCHA,
     ;
 }

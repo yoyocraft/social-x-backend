@@ -1,5 +1,6 @@
 package com.youyi.runner.user.api;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.youyi.common.anno.RecordOpLog;
 import com.youyi.common.base.Result;
 import com.youyi.common.exception.AppBizException;
@@ -54,6 +55,8 @@ public class UserController {
         return getCurrentUserSuccess(userDO);
     }
 
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.USER_LOGOUT)
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public Result<Boolean> logout() {
         userHelper.logout();
