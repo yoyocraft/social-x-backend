@@ -8,7 +8,11 @@ import com.youyi.common.util.GsonUtil;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.audit.helper.OperationLogHelper;
 import com.youyi.domain.audit.model.OperationLogDO;
+import com.youyi.domain.user.helper.UserHelper;
+import com.youyi.domain.user.model.UserDO;
 import com.youyi.infra.conf.core.ConfigLoader;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
@@ -26,6 +30,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
+import static com.youyi.common.constant.SystemOperationConstant.LOG_ARG_NAMES_KEY;
 import static com.youyi.common.constant.SystemOperationConstant.LOG_ARG_TYPES_KEY;
 import static com.youyi.common.constant.SystemOperationConstant.LOG_ARG_VALUES_KEY;
 import static com.youyi.common.constant.SystemOperationConstant.LOG_CLASS_KEY;
@@ -47,6 +52,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordOpLogAspect.class);
 
     private final OperationLogHelper operationLogHelper;
+    private final UserHelper userHelper;
     private static ThreadPoolExecutor asyncRecordOpLogExecutor;
 
     /**
@@ -70,15 +76,18 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         }
 
         try {
-            asyncRecordOpLogExecutor.execute(() -> doRecordOpLog(joinPoint));
+            final OperationLogDO operationLogDO = preRecordOpLog(joinPoint);
+            asyncRecordOpLogExecutor.execute(() -> {
+                buildOperationLogDO(joinPoint, operationLogDO);
+                doRecordOpLog(operationLogDO);
+            });
         } catch (Exception e) {
             LOGGER.error("Failed to submit async task to record operation log: {}", e.getMessage(), e);
         }
     }
 
-    private void doRecordOpLog(JoinPoint joinPoint) {
+    private void doRecordOpLog(OperationLogDO operationLogDO) {
         try {
-            OperationLogDO operationLogDO = buildOperationLogDO(joinPoint);
             LOGGER.info("Record operation log: {}", GsonUtil.toJson(operationLogDO));
             operationLogHelper.recordOperationLog(operationLogDO);
         } catch (Exception e) {
@@ -99,12 +108,8 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         );
     }
 
-    private OperationLogDO buildOperationLogDO(JoinPoint jp) {
+    private OperationLogDO preRecordOpLog(JoinPoint jp) {
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
-        String methodName = methodSignature.getName();
-        String className = jp.getTarget().getClass().getSimpleName();
-        Class<?>[] types = methodSignature.getParameterTypes();
-        String[] parameterNames = methodSignature.getParameterNames();
         RecordOpLog recordOpLog = methodSignature.getMethod().getAnnotation(RecordOpLog.class);
 
         OperationLogDO operationLogDO = new OperationLogDO();
@@ -113,17 +118,32 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         if (recordOpLog.system()) {
             operationLogDO.setOperatorId(SYSTEM_OPERATOR_ID);
             operationLogDO.setOperatorName(SYSTEM_OPERATOR_NAME);
+        } else {
+            // 以下操作必须要在异步线程之外做
+            UserDO currentUser = userHelper.getCurrentUser();
+            operationLogDO.setOperatorId(currentUser.getUserId());
+            operationLogDO.setOperatorName(currentUser.getNickName());
         }
-        // TODO youyi 2025/1/5 actual user info will be set in else block
+        return operationLogDO;
+    }
+
+    private void buildOperationLogDO(JoinPoint jp, OperationLogDO operationLogDO) {
+        MethodSignature methodSignature = (MethodSignature) jp.getSignature();
+        String methodName = methodSignature.getName();
+        String className = jp.getTarget().getClass().getSimpleName();
+        Class<?>[] types = methodSignature.getParameterTypes();
+        String[] parameterNames = methodSignature.getParameterNames();
+        Object[] parameterValues = jp.getArgs();
+
+        List<String> paramValues = Arrays.stream(parameterValues).map(GsonUtil::toJson).toList();
         Map<String, Object> extraData = ImmutableMap.of(
             LOG_METHOD_KEY, methodName,
             LOG_CLASS_KEY, className,
             LOG_ARG_TYPES_KEY, StringUtils.join(types, SymbolConstant.COMMA),
-            LOG_ARG_VALUES_KEY, StringUtils.join(parameterNames, SymbolConstant.COMMA)
+            LOG_ARG_NAMES_KEY, GsonUtil.toJson(parameterNames),
+            LOG_ARG_VALUES_KEY, GsonUtil.toJson(paramValues)
         );
         operationLogDO.setExtraData(GsonUtil.toJson(extraData));
-
-        return operationLogDO;
     }
 
     @Override

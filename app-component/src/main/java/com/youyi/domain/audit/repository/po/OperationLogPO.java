@@ -17,6 +17,6 @@ public class OperationLogPO extends BasePO {
      * @see OperationType
      */
     private String operationType;
-    private Long operatorId;
+    private String operatorId;
     private String operatorName;
 }

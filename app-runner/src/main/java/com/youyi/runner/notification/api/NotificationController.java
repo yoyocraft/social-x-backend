@@ -1,6 +1,8 @@
 package com.youyi.runner.notification.api;
 
+import com.youyi.common.anno.RecordOpLog;
 import com.youyi.common.base.Result;
+import com.youyi.common.type.OperationType;
 import com.youyi.domain.notification.helper.NotificationHelper;
 import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.domain.notification.param.CaptchaNotifyParam;
@@ -25,6 +27,7 @@ public class NotificationController {
 
     private final NotificationHelper notificationHelper;
 
+    @RecordOpLog(opType = OperationType.NOTIFY_CAPTCHA, system = true)
     @RequestMapping(value = "/captcha", method = RequestMethod.POST)
     public Result<Boolean> notifyCaptcha(@RequestBody CaptchaNotifyParam param) {
         NotificationValidator.checkCaptchaNotifyParam(param);

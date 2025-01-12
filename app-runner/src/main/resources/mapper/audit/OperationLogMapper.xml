@@ -8,14 +8,13 @@
         <id column="id" property="id"/>
         <result property="gmtCreate" column="gmt_create"/>
         <result property="gmtModified" column="gmt_modified"/>
-        <result property="deletedAt" column="deleted_at"/>
         <result property="operationType" column="operation_type"/>
         <result property="operatorId" column="operator_id"/>
         <result property="operatorName" column="operator_name"/>
     </resultMap>
 
     <sql id="result_cols">
-        id, gmt_create, gmt_modified, deleted_at, extra_data, operation_type, operator_id, operator_name
+        id, gmt_create, gmt_modified, extra_data, operation_type, operator_id, operator_name
     </sql>
     <insert id="insert" parameterType="com.youyi.domain.audit.repository.po.OperationLogPO">
         INSERT INTO `operation_log` (extra_data, operation_type, operator_id, operator_name)
@@ -28,7 +27,6 @@
         FROM `operation_log`
         WHERE `operation_type` = #{operationType}
         AND `operator_id` = #{operatorId}
-        AND `deleted_at` = 0
     </select>
 
 </mapper>

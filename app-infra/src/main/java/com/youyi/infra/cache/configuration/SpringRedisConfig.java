@@ -1,4 +1,4 @@
-package com.youyi.infra.cache.config;
+package com.youyi.infra.cache.configuration;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

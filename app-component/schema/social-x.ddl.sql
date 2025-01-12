@@ -20,7 +20,6 @@ CREATE TABLE `operation_log` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
-    `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
     `extra_data` JSON COMMENT 'extra data',
     `operation_type` VARCHAR(64) NOT NULL COMMENT 'operation type',
     `operator_id` BIGINT NOT NULL COMMENT 'operator id',
