@@ -8,6 +8,7 @@ import com.youyi.common.type.OperationType;
 import com.youyi.domain.user.helper.UserHelper;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.param.UserAuthenticateParam;
+import com.youyi.domain.user.param.UserSetPwdParam;
 import com.youyi.domain.user.param.UserVerifyCaptchaParam;
 import com.youyi.infra.lock.LocalLockUtil;
 import com.youyi.runner.user.model.UserVO;
@@ -15,6 +16,7 @@ import com.youyi.runner.user.model.VerifyCaptchaVO;
 import com.youyi.runner.user.util.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +26,7 @@ import static com.youyi.domain.user.assembler.UserAssembler.USER_ASSEMBLER;
 import static com.youyi.runner.user.util.UserResponseUtil.getCurrentUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.logoutSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.setPwdSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.verifyCaptchaSuccess;
 
 /**
@@ -74,5 +77,21 @@ public class UserController {
         UserDO userDO = USER_ASSEMBLER.toDO(param);
         userHelper.verifyCaptcha(userDO);
         return verifyCaptchaSuccess(userDO, param);
+    }
+
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.USER_SET_PASSWORD, desensitize = true)
+    @RequestMapping(value = "/auth/set-pwd", method = RequestMethod.POST)
+    public Result<Boolean> setPwd(@RequestBody UserSetPwdParam param, @RequestHeader("Authorization") String token) {
+        UserValidator.checkUserSetPwdParamAndToken(param, token);
+        UserDO userDO = USER_ASSEMBLER.toDO(param, token);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> userHelper.setPwd(userDO),
+            () -> {
+                throw AppBizException.of(TOO_MANY_REQUEST);
+            },
+            token
+        );
+        return setPwdSuccess();
     }
 }

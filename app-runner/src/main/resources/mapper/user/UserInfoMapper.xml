@@ -40,6 +40,13 @@
         WHERE `email` = #{email}
         AND `deleted_at` = 0
     </select>
+    <select id="queryByUserId" resultType="com.youyi.domain.user.repository.po.UserInfoPO">
+        SELECT
+        <include refid="result_cols"/>
+        FROM `user_info`
+        WHERE `user_id` = #{userId}
+        AND `deleted_at` = 0
+    </select>
 
 
 </mapper>

@@ -19,4 +19,6 @@ public @interface RecordOpLog {
     OperationType opType();
 
     boolean system() default false;
+
+    boolean desensitize() default false;
 }

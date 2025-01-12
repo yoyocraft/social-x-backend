@@ -33,7 +33,7 @@ public class NotificationHelper {
     }
 
     private void saveCaptcha(NotificationDO notificationDO) {
-        String cacheKey = ofEmailCaptchaKey(notificationDO.getEmail(), notificationDO.getNotificationType());
+        String cacheKey = ofEmailCaptchaKey(notificationDO.getEmail(), notificationDO.getBizType());
         cacheManager.set(cacheKey, notificationDO.getCaptcha(), EMAIL_CAPTCHA_TTL);
     }
 }

@@ -12,9 +12,9 @@ public enum OperationType {
 
     USER_LOGIN,
     USER_LOGOUT,
+    USER_SET_PASSWORD,
 
     NOTIFY_CAPTCHA,
-
     VERIFY_CAPTCHA,
     ;
 }

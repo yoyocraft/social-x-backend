@@ -1,7 +1,7 @@
 package com.youyi.domain.user.helper.login;
 
 import com.google.common.collect.ImmutableMap;
-import com.youyi.common.type.IdentityType;
+import com.youyi.common.type.user.IdentityType;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.SmartInitializingSingleton;

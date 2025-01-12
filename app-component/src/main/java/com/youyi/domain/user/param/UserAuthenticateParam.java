@@ -2,7 +2,7 @@ package com.youyi.domain.user.param;
 
 import com.google.gson.annotations.SerializedName;
 import com.youyi.common.base.BaseParam;
-import com.youyi.common.type.IdentityType;
+import com.youyi.common.type.user.IdentityType;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;

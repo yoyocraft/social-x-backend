@@ -43,4 +43,10 @@ public class UserResponseUtil {
         LOGGER.info("verify captcha, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
         return response;
     }
+
+    public static Result<Boolean> setPwdSuccess() {
+        Result<Boolean> response = Result.success(Boolean.TRUE);
+        LOGGER.info("set password, response:{}", GsonUtil.toJson(response));
+        return response;
+    }
 }

@@ -68,7 +68,7 @@ CREATE TABLE `user_auth` (
     `identity_type` VARCHAR(64) NOT NULL COMMENT 'identity type, e.g. EMAIL_PASSWORD, EMAIL_CAPTCHA, WECHAT',
     `identifier` VARCHAR(64) NOT NULL COMMENT 'identifier, e.g. username, openid, email',
     `credential` VARCHAR(64) NOT NULL COMMENT 'credential, e.g. password, token, code',
-    `salt` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'salt',
+    `salt` CHAR(64) NOT NULL DEFAULT '' COMMENT 'salt',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_identity_type_identifier_deleted_at` (`identity_type`, `identifier`, `deleted_at`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'user auth';

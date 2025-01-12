@@ -16,7 +16,8 @@ public enum ReturnCode implements ErrorCode {
     INVALID_PARAM("INVALID_PARAM", "参数非法"),
     CAPTCHA_EXPIRED("CAPTCHA_EXPIRED", "验证码过期，请重新获取"),
     CAPTCHA_ERROR("CAPTCHA_ERROR", "验证码错误"),
-
+    ILLEGAL_OPERATION("ILLEGAL_OPERATION", "非法操作"),
+    VERIFY_TOKEN_EXPIRED("VERIFY_TOKEN_EXPIRED", "操作时间过长，请重新操作"),
     TOO_MANY_REQUEST("TOO_MANY_REQUEST", "操作频繁，请稍后再试"),
 
     NOT_LOGIN("NOT_LOGIN", "未登录"),
