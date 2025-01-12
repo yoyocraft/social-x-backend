@@ -10,18 +10,18 @@ import static com.youyi.infra.cache.util.CacheUtil.ofKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
- * @date 2025/01/10
+ * @date 2025/01/12
  */
-public class NotificationCacheRepo {
+public class UserCacheRepo {
 
-    public static final String EMAIL_CAPTCHA_KEY = ofKey("email", "captcha", "${email}", "${notificationType}");
-    public static final Duration EMAIL_CAPTCHA_TTL = Duration.ofMinutes(10);
+    public static final String USER_VERIFY_TOKEN_KEY = ofKey("user", "verify", "captcha", "${email}", "${notificationType}");
+    public static final Duration USER_VERIFY_TOKEN_TTL = Duration.ofMinutes(10);
 
-    public static String ofEmailCaptchaKey(String email, NotificationType notificationType) {
+    public static String ofUserVerifyTokenKey(String email, NotificationType notificationType) {
         Map<String, String> dataMap = ImmutableMap.of(
             "email", email,
             "notificationType", notificationType.name()
         );
-        return buildKey(EMAIL_CAPTCHA_KEY, dataMap);
+        return buildKey(USER_VERIFY_TOKEN_KEY, dataMap);
     }
 }

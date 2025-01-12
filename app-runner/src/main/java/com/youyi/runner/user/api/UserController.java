@@ -8,8 +8,10 @@ import com.youyi.common.type.OperationType;
 import com.youyi.domain.user.helper.UserHelper;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.param.UserAuthenticateParam;
+import com.youyi.domain.user.param.UserVerifyCaptchaParam;
 import com.youyi.infra.lock.LocalLockUtil;
 import com.youyi.runner.user.model.UserVO;
+import com.youyi.runner.user.model.VerifyCaptchaVO;
 import com.youyi.runner.user.util.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,7 @@ import static com.youyi.domain.user.assembler.UserAssembler.USER_ASSEMBLER;
 import static com.youyi.runner.user.util.UserResponseUtil.getCurrentUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.logoutSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.verifyCaptchaSuccess;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -63,4 +66,13 @@ public class UserController {
         return logoutSuccess();
     }
 
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.VERIFY_CAPTCHA)
+    @RequestMapping(value = "/auth/verify-captcha", method = RequestMethod.POST)
+    public Result<VerifyCaptchaVO> verifyCaptcha(@RequestBody UserVerifyCaptchaParam param) {
+        UserValidator.checkUserVerifyCaptchaParam(param);
+        UserDO userDO = USER_ASSEMBLER.toDO(param);
+        userHelper.verifyCaptcha(userDO);
+        return verifyCaptchaSuccess(userDO, param);
+    }
 }

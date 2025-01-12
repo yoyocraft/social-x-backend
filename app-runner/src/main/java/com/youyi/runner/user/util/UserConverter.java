@@ -2,6 +2,7 @@ package com.youyi.runner.user.util;
 
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.runner.user.model.UserVO;
+import com.youyi.runner.user.model.VerifyCaptchaVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -24,4 +25,9 @@ public interface UserConverter {
         @Mapping(target = "desensitizedMobile", source = "originalPhone")
     })
     UserVO toVO(UserDO userDO);
+
+    @Mappings({
+        @Mapping(target = "token", source = "verifyCaptchaToken")
+    })
+    VerifyCaptchaVO toVerifyCaptchaVO(UserDO userDO);
 }

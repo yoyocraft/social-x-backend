@@ -14,5 +14,7 @@ public enum OperationType {
     USER_LOGOUT,
 
     NOTIFY_CAPTCHA,
+
+    VERIFY_CAPTCHA,
     ;
 }
