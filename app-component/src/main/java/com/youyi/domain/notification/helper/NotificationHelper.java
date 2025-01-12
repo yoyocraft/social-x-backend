@@ -5,11 +5,9 @@ import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.infra.cache.manager.CacheManager;
 import com.youyi.infra.email.EmailSender;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import static com.youyi.infra.cache.repo.NotificationCacheRepo.EMAIL_CAPTCHA_DURATION;
+import static com.youyi.infra.cache.repo.NotificationCacheRepo.EMAIL_CAPTCHA_TTL;
 import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey;
 
 /**
@@ -19,8 +17,6 @@ import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey
 @Service
 @RequiredArgsConstructor
 public class NotificationHelper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationHelper.class);
 
     private final EmailSender emailSender;
     private final CacheManager cacheManager;
@@ -38,6 +34,6 @@ public class NotificationHelper {
 
     private void saveCaptcha(NotificationDO notificationDO) {
         String cacheKey = ofEmailCaptchaKey(notificationDO.getEmail(), notificationDO.getNotificationType());
-        cacheManager.set(cacheKey, notificationDO.getCaptcha(), EMAIL_CAPTCHA_DURATION);
+        cacheManager.set(cacheKey, notificationDO.getCaptcha(), EMAIL_CAPTCHA_TTL);
     }
 }

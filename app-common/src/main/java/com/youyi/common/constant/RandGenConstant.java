@@ -12,4 +12,6 @@ public class RandGenConstant {
 
     public static final String USER_NICK_NAME_PREFIX = "social_x_";
     public static final int USER_NICK_NAME_SUFFIX_LENGTH = 8;
+
+    public static final int USER_VERIFY_CAPTCHA_TOKEN_LENGTH = 64;
 }

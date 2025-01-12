@@ -4,7 +4,9 @@ import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.param.UserAuthenticateParam;
+import com.youyi.domain.user.param.UserVerifyCaptchaParam;
 import com.youyi.runner.user.model.UserVO;
+import com.youyi.runner.user.model.VerifyCaptchaVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +35,12 @@ public class UserResponseUtil {
     public static Result<Boolean> logoutSuccess() {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         LOGGER.info("user logout, response:{}", GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<VerifyCaptchaVO> verifyCaptchaSuccess(UserDO userDO, UserVerifyCaptchaParam param) {
+        Result<VerifyCaptchaVO> response = Result.success(USER_CONVERTER.toVerifyCaptchaVO(userDO));
+        LOGGER.info("verify captcha, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
         return response;
     }
 }

@@ -1,6 +1,7 @@
 package com.youyi.domain.user.model;
 
 import com.youyi.common.type.IdentityType;
+import com.youyi.common.type.notification.NotificationType;
 import com.youyi.common.type.user.GenderType;
 import com.youyi.common.type.user.UserRoleType;
 import com.youyi.common.type.user.UserStatusType;
@@ -52,6 +53,13 @@ public class UserDO {
     private List<String> personalizedTags;
     private String location;
     private UserRoleType role;
+
+    /**
+     * for captcha check
+     */
+    private NotificationType notificationType;
+    private String verifyCaptchaToken;
+    private String toVerifiedCaptcha;
 
     public void initUserId() {
         this.userId = genUserId();
