@@ -53,6 +53,7 @@ public class UserHelper {
 
         boolean queryFromDB = getBooleanConfig(QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH);
         if (queryFromDB) {
+            LOGGER.info("[UserHelper] load current user from db");
             return loadCurrentUserFromDB();
         }
         return loadCurrentUserFromSession();
@@ -70,6 +71,7 @@ public class UserHelper {
     }
 
     public void setPwd(UserDO userDO) {
+        loadCurrentUserInfo(userDO);
         checkToken(userDO);
         encryptPwd(userDO);
         savePwd(userDO);
@@ -127,12 +129,15 @@ public class UserHelper {
         cacheManager.delete(ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType()));
     }
 
-    void checkToken(UserDO userDO) {
+    void loadCurrentUserInfo(UserDO userDO) {
         UserDO currentUser = loadCurrentUserFromSession();
         checkNotNull(currentUser);
         UserInfoPO userInfoPO = userRepository.queryUserInfoByUserId(currentUser.getUserId());
         userDO.fillUserInfo(userInfoPO);
+    }
 
+    void checkToken(UserDO userDO) {
+        LOGGER.info("user:{} check verify token", userDO.getUserId());
         String cacheVerifyTokenKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
         String systemVerifyToken = (String) cacheManager.get(cacheVerifyTokenKey);
 
