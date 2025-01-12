@@ -1,12 +1,13 @@
 package com.youyi.domain.user.model;
 
-import com.youyi.common.type.IdentityType;
-import com.youyi.common.type.notification.NotificationType;
+import com.youyi.common.type.BizType;
+import com.youyi.common.type.user.IdentityType;
 import com.youyi.common.type.user.GenderType;
 import com.youyi.common.type.user.UserRoleType;
 import com.youyi.common.type.user.UserStatusType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.common.util.IvGenerator;
+import com.youyi.common.util.RandomGenUtil;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.infra.privacy.CryptoManager;
@@ -17,7 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
-import static com.youyi.common.type.ConfigKey.DEFAULT_AVATAR;
+import static com.youyi.common.type.conf.ConfigKey.DEFAULT_AVATAR;
 import static com.youyi.common.util.RandomGenUtil.genUserId;
 import static com.youyi.common.util.RandomGenUtil.genUserNickName;
 import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
@@ -57,9 +58,12 @@ public class UserDO {
     /**
      * for captcha check
      */
-    private NotificationType notificationType;
+    private BizType bizType;
     private String verifyCaptchaToken;
     private String toVerifiedCaptcha;
+
+    private String newPassword;
+    private String confirmPassword;
 
     public void initUserId() {
         this.userId = genUserId();
@@ -133,5 +137,18 @@ public class UserDO {
         this.originalEmail = userLoginStateInfo.getDesensitizedEmail();
         this.originalPhone = userLoginStateInfo.getDesensitizedMobile();
         this.status = userLoginStateInfo.getStatus();
+    }
+
+    public void initSalt() {
+        this.salt = RandomGenUtil.genPwdSalt();
+    }
+
+    public void encryptPwd() {
+        this.credential = CryptoManager.encryptPassword(this.newPassword, this.salt);
+    }
+
+    public void preSetPwd() {
+        this.identifier = this.originalEmail;
+        this.identityType = IdentityType.EMAIL_PASSWORD;
     }
 }

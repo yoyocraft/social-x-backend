@@ -41,6 +41,16 @@ public class UserRepository {
         }
     }
 
+    public UserInfoPO queryUserInfoByUserId(String userId) {
+        try {
+            checkState(StringUtils.isNotBlank(userId));
+            return userInfoMapper.queryByUserId(userId);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
+
     public UserAuthPO queryUserAuthByIdentityTypeAndIdentifier(String identityType, String identifier) {
         try {
             checkState(StringUtils.isNotBlank(identityType) && StringUtils.isNotBlank(identifier));

@@ -1,4 +1,4 @@
-package com.youyi.common.type;
+package com.youyi.common.type.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

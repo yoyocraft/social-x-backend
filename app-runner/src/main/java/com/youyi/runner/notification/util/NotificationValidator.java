@@ -1,6 +1,6 @@
 package com.youyi.runner.notification.util;
 
-import com.youyi.common.type.notification.NotificationType;
+import com.youyi.common.type.BizType;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.notification.param.CaptchaNotifyParam;
 
@@ -18,7 +18,7 @@ public class NotificationValidator {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("email不能为空"), param.getEmail())
             .put(emailChecker("email格式不合法"), param.getEmail())
-            .put(enumExistChecker(NotificationType.class, "业务类型不合法"), param.getBizType())
+            .put(enumExistChecker(BizType.class, "业务类型不合法"), param.getBizType())
             .validateWithThrow();
     }
 }

@@ -14,4 +14,6 @@ public interface UserInfoMapper {
     int insert(UserInfoPO po);
 
     UserInfoPO queryByEmail(@Param("email") String email);
+
+    UserInfoPO queryByUserId(@Param("userId") String userId);
 }

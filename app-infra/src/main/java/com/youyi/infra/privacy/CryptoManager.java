@@ -1,10 +1,12 @@
 package com.youyi.infra.privacy;
 
 import com.youyi.common.exception.AppSystemException;
-import com.youyi.common.type.ConfigKey;
+import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.util.AESUtil;
 import com.youyi.common.util.IvGenerator;
+import org.apache.commons.codec.digest.HmacAlgorithms;
+import org.apache.commons.codec.digest.HmacUtils;
 
 import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
 
@@ -13,7 +15,6 @@ import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
  * @date 2025/01/11
  */
 public class CryptoManager {
-
 
     public static String aesEncrypt(String plainText) {
         String aesKey = getStringConfig(ConfigKey.AES_KEY);
@@ -35,5 +36,9 @@ public class CryptoManager {
         } catch (Exception e) {
             throw AppSystemException.of(InfraCode.DECRYPT_ERROR);
         }
+    }
+
+    public static String encryptPassword(String password, String salt) {
+        return new HmacUtils(HmacAlgorithms.HMAC_SHA_256, salt).hmacHex(password);
     }
 }

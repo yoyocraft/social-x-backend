@@ -14,4 +14,6 @@ public class RandGenConstant {
     public static final int USER_NICK_NAME_SUFFIX_LENGTH = 8;
 
     public static final int USER_VERIFY_CAPTCHA_TOKEN_LENGTH = 64;
+
+    public static final int USER_PWD_SALT_LENGTH = 64;
 }

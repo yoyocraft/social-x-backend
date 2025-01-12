@@ -1,4 +1,4 @@
-package com.youyi.common.type;
+package com.youyi.common.type.conf;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

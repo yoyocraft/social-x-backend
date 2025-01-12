@@ -1,9 +1,10 @@
 package com.youyi.domain.user.assembler;
 
-import com.youyi.common.type.IdentityType;
-import com.youyi.common.type.notification.NotificationType;
+import com.youyi.common.type.BizType;
+import com.youyi.common.type.user.IdentityType;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.param.UserAuthenticateParam;
+import com.youyi.domain.user.param.UserSetPwdParam;
 import com.youyi.domain.user.param.UserVerifyCaptchaParam;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
@@ -19,7 +20,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(
     imports = {
         IdentityType.class,
-        NotificationType.class
+        BizType.class
     },
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
@@ -36,9 +37,15 @@ public interface UserAssembler {
     @Mappings({
         @Mapping(target = "toVerifiedCaptcha", source = "captcha"),
         @Mapping(target = "originalEmail", source = "email"),
-        @Mapping(target = "notificationType", expression = "java(NotificationType.of(param.getBizType()))")
+        @Mapping(target = "bizType", expression = "java(BizType.of(param.getBizType()))")
     })
     UserDO toDO(UserVerifyCaptchaParam param);
+
+    @Mappings({
+        @Mapping(target = "bizType", expression = "java(BizType.SET_PWD)"),
+        @Mapping(target = "verifyCaptchaToken", source = "token")
+    })
+    UserDO toDO(UserSetPwdParam param, String token);
 
     default String originalEmail(UserAuthenticateParam param) {
         IdentityType identityType = IdentityType.of(param.getIdentityType());

@@ -2,7 +2,7 @@ package com.youyi.runner.aspect;
 
 import com.youyi.common.base.Result;
 import com.youyi.common.exception.AppBizException;
-import com.youyi.common.type.AspectOrdered;
+import com.youyi.common.type.aspect.AspectOrdered;
 import com.youyi.common.type.CommonBizState;
 import com.youyi.common.type.ServerType;
 import com.youyi.common.util.GsonUtil;

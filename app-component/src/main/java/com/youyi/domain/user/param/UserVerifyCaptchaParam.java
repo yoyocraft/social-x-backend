@@ -2,7 +2,7 @@ package com.youyi.domain.user.param;
 
 import com.google.gson.annotations.SerializedName;
 import com.youyi.common.base.BaseParam;
-import com.youyi.common.type.notification.NotificationType;
+import com.youyi.common.type.BizType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +21,7 @@ public class UserVerifyCaptchaParam extends BaseParam {
     private String captcha;
 
     /**
-     * @see NotificationType
+     * @see BizType
      */
     @SerializedName("biz_type")
     private String bizType;

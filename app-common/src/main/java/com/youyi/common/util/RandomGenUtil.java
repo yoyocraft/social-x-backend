@@ -6,6 +6,7 @@ import static com.youyi.common.constant.RandGenConstant.EMAIL_CAPTCHA_LENGTH;
 import static com.youyi.common.constant.RandGenConstant.USER_ID_LENGTH;
 import static com.youyi.common.constant.RandGenConstant.USER_NICK_NAME_PREFIX;
 import static com.youyi.common.constant.RandGenConstant.USER_NICK_NAME_SUFFIX_LENGTH;
+import static com.youyi.common.constant.RandGenConstant.USER_PWD_SALT_LENGTH;
 import static com.youyi.common.constant.RandGenConstant.USER_VERIFY_CAPTCHA_TOKEN_LENGTH;
 
 /**
@@ -28,5 +29,9 @@ public class RandomGenUtil {
 
     public static String genUserVerifyCaptchaToken() {
         return RandomStringUtils.secure().nextAlphanumeric(USER_VERIFY_CAPTCHA_TOKEN_LENGTH);
+    }
+
+    public static String genPwdSalt() {
+        return RandomStringUtils.secure().nextAlphanumeric(USER_PWD_SALT_LENGTH);
     }
 }

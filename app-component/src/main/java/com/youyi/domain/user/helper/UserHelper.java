@@ -8,6 +8,9 @@ import com.youyi.domain.user.helper.login.LoginStrategy;
 import com.youyi.domain.user.helper.login.LoginStrategyFactory;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.model.UserLoginStateInfo;
+import com.youyi.domain.user.repository.UserRepository;
+import com.youyi.domain.user.repository.po.UserAuthPO;
+import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.infra.cache.manager.CacheManager;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
-import static com.youyi.common.type.ConfigKey.QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH;
+import static com.youyi.common.type.conf.ConfigKey.QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH;
 import static com.youyi.common.type.ReturnCode.NOT_LOGIN;
 import static com.youyi.common.util.RandomGenUtil.genUserVerifyCaptchaToken;
 import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey;
@@ -37,6 +41,7 @@ public class UserHelper {
 
     private final LoginStrategyFactory loginStrategyFactory;
     private final CacheManager cacheManager;
+    private final UserRepository userRepository;
 
     public void login(UserDO userDO) {
         LoginStrategy loginStrategy = loginStrategyFactory.getLoginStrategy(userDO.getIdentityType());
@@ -44,28 +49,13 @@ public class UserHelper {
     }
 
     public UserDO getCurrentUser() {
-        boolean login = StpUtil.isLogin();
-        if (!login) {
-            throw AppBizException.of(NOT_LOGIN);
-        }
-        Object loginId = StpUtil.getLoginIdDefaultNull();
-        if (Objects.isNull(loginId)) {
-            throw AppBizException.of(NOT_LOGIN);
-        }
+        checkLogin();
 
         boolean queryFromDB = getBooleanConfig(QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH);
         if (queryFromDB) {
-            // TODO youyi 2025/1/11 从数据库查询用户信息
-            String userId = (String) loginId;
-            LOGGER.info("query login user info from db, userId:{}", userId);
-            return new UserDO();
+            return loadCurrentUserFromDB();
         }
-        // 从 session 中获取
-        String loginUserStateInfoJson = (String) StpUtil.getSessionByLoginId(loginId).get(USER_LOGIN_STATE);
-        UserLoginStateInfo loginStateInfo = GsonUtil.fromJson(loginUserStateInfoJson, UserLoginStateInfo.class);
-        UserDO userDO = new UserDO();
-        userDO.fillUserInfo(loginStateInfo);
-        return userDO;
+        return loadCurrentUserFromSession();
     }
 
     public void logout() {
@@ -79,8 +69,44 @@ public class UserHelper {
         genTokenAndCleanCaptcha(userDO);
     }
 
+    public void setPwd(UserDO userDO) {
+        checkToken(userDO);
+        encryptPwd(userDO);
+        savePwd(userDO);
+    }
+
+    UserDO loadCurrentUserFromSession() {
+        Object loginId = StpUtil.getLoginIdDefaultNull();
+        String loginUserStateInfoJson = (String) StpUtil.getSessionByLoginId(loginId).get(USER_LOGIN_STATE);
+        UserLoginStateInfo loginStateInfo = GsonUtil.fromJson(loginUserStateInfoJson, UserLoginStateInfo.class);
+        UserDO userDO = new UserDO();
+        userDO.fillUserInfo(loginStateInfo);
+        return userDO;
+    }
+
+    UserDO loadCurrentUserFromDB() {
+        Object loginId = StpUtil.getLoginIdDefaultNull();
+        String userId = (String) loginId;
+        UserInfoPO userInfoPO = userRepository.queryUserInfoByUserId(userId);
+        checkNotNull(userInfoPO);
+        UserDO userDO = new UserDO();
+        userDO.fillUserInfo(userInfoPO);
+        return userDO;
+    }
+
+    void checkLogin() {
+        boolean login = StpUtil.isLogin();
+        if (!login) {
+            throw AppBizException.of(NOT_LOGIN);
+        }
+        Object loginId = StpUtil.getLoginIdDefaultNull();
+        if (Objects.isNull(loginId)) {
+            throw AppBizException.of(NOT_LOGIN);
+        }
+    }
+
     void checkCaptcha(UserDO userDO) {
-        String cacheCaptchaKey = ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getNotificationType());
+        String cacheCaptchaKey = ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType());
         String systemCaptcha = cacheManager.getString(cacheCaptchaKey);
         if (StringUtils.isBlank(systemCaptcha)) {
             // 验证码过期
@@ -96,8 +122,39 @@ public class UserHelper {
     void genTokenAndCleanCaptcha(UserDO userDO) {
         String verifyToken = genUserVerifyCaptchaToken();
         userDO.setVerifyCaptchaToken(verifyToken);
-        String verifyTokenCacheKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getNotificationType());
+        String verifyTokenCacheKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
         cacheManager.set(verifyTokenCacheKey, verifyToken, USER_VERIFY_TOKEN_TTL);
-        cacheManager.delete(ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getNotificationType()));
+        cacheManager.delete(ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType()));
+    }
+
+    void checkToken(UserDO userDO) {
+        UserDO currentUser = loadCurrentUserFromSession();
+        checkNotNull(currentUser);
+        UserInfoPO userInfoPO = userRepository.queryUserInfoByUserId(currentUser.getUserId());
+        userDO.fillUserInfo(userInfoPO);
+
+        String cacheVerifyTokenKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
+        String systemVerifyToken = (String) cacheManager.get(cacheVerifyTokenKey);
+
+        if (StringUtils.isBlank(systemVerifyToken)) {
+            throw AppBizException.of(ReturnCode.VERIFY_TOKEN_EXPIRED);
+        }
+
+        // 非法操作
+        if (!systemVerifyToken.equals(userDO.getVerifyCaptchaToken())) {
+            throw AppBizException.of(ReturnCode.ILLEGAL_OPERATION);
+        }
+    }
+
+    void encryptPwd(UserDO userDO) {
+        userDO.initSalt();
+        userDO.encryptPwd();
+    }
+
+    void savePwd(UserDO userDO) {
+        userDO.preSetPwd();
+        UserAuthPO userAuthPO = userDO.buildToSaveUserAuthPO();
+        // TODO youyi 2025/1/12 insert or update
+        userRepository.insertUserAuth(userAuthPO);
     }
 }

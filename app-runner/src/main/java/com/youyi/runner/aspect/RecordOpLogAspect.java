@@ -1,9 +1,10 @@
 package com.youyi.runner.aspect;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.youyi.common.anno.RecordOpLog;
 import com.youyi.common.constant.SymbolConstant;
-import com.youyi.common.type.AspectOrdered;
+import com.youyi.common.type.aspect.AspectOrdered;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.audit.helper.OperationLogHelper;
@@ -14,6 +15,7 @@ import com.youyi.infra.conf.core.ConfigLoader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,7 @@ import static com.youyi.common.constant.SystemOperationConstant.LOG_CLASS_KEY;
 import static com.youyi.common.constant.SystemOperationConstant.LOG_METHOD_KEY;
 import static com.youyi.common.constant.SystemOperationConstant.SYSTEM_OPERATOR_ID;
 import static com.youyi.common.constant.SystemOperationConstant.SYSTEM_OPERATOR_NAME;
-import static com.youyi.common.type.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
+import static com.youyi.common.type.conf.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
 import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
 
 /**
@@ -129,13 +131,18 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
     private void buildOperationLogDO(JoinPoint jp, OperationLogDO operationLogDO) {
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
+        RecordOpLog recordOpLog = methodSignature.getMethod().getAnnotation(RecordOpLog.class);
         String methodName = methodSignature.getName();
         String className = jp.getTarget().getClass().getSimpleName();
         Class<?>[] types = methodSignature.getParameterTypes();
         String[] parameterNames = methodSignature.getParameterNames();
         Object[] parameterValues = jp.getArgs();
 
-        List<String> paramValues = Arrays.stream(parameterValues).map(GsonUtil::toJson).toList();
+        List<String> paramValues = Lists.newArrayList();
+        boolean desensitize = recordOpLog.desensitize();
+        if (!desensitize) {
+            paramValues = Arrays.stream(parameterValues).map(Objects::toString).toList();
+        }
         Map<String, Object> extraData = ImmutableMap.of(
             LOG_METHOD_KEY, methodName,
             LOG_CLASS_KEY, className,

@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,6 +137,15 @@ public interface ParamChecker<T> {
     static ParamChecker<String> passwordChecker(String errorMsg) {
         return param -> {
             boolean validate = StringUtils.isNotBlank(param) && VALIDATE_PASSWORD_PATTERN.matcher(param).matches();
+            return validate
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
+    }
+
+    static ParamChecker<Pair<String, String>> equalsChecker(String errorMsg) {
+        return param -> {
+            boolean validate = StringUtils.equals(param.getLeft(), param.getRight());
             return validate
                 ? CheckResult.success()
                 : CheckResult.of(INVALID_PARAM, errorMsg);
