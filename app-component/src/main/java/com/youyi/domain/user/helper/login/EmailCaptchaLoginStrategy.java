@@ -1,12 +1,9 @@
 package com.youyi.domain.user.helper.login;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.ReturnCode;
-import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
-import com.youyi.domain.user.model.UserLoginStateInfo;
 import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
@@ -18,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.BizType.LOGIN;
 import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey;
 
@@ -51,11 +47,8 @@ public class EmailCaptchaLoginStrategy implements LoginStrategy {
         // 3. 查询用户信息
         UserInfoPO userInfoPO = userRepository.queryUserInfoByEmail(encryptedEmail);
         userDO.fillUserInfo(userInfoPO);
-        // 4. 生成用户登录态信息
-        UserLoginStateInfo loginStateInfo = userDO.buildLoginStateInfo();
-        // 5. 存储用户登录态
-        StpUtil.login(userDO.getUserId());
-        StpUtil.getSession().set(USER_LOGIN_STATE, GsonUtil.toJson(loginStateInfo));
+        // 4. 用户登录态
+        saveUserLoginState(userDO);
         // 6. 删除验证码
         cleanCaptcha(userDO);
     }

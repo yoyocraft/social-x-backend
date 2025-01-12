@@ -21,6 +21,8 @@ public enum ReturnCode implements ErrorCode {
     TOO_MANY_REQUEST("TOO_MANY_REQUEST", "操作频繁，请稍后再试"),
 
     NOT_LOGIN("NOT_LOGIN", "未登录"),
+    USER_NOT_EXIST("USER_NOT_EXIST", "用户不存在，请使用验证码登录（登录即注册）"),
+    PASSWORD_ERROR("PASSWORD_ERROR", "密码错误，请重试"),
     ;
 
     private final String code;

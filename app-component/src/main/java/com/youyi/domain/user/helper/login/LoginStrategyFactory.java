@@ -16,13 +16,15 @@ import org.springframework.stereotype.Component;
 public class LoginStrategyFactory implements SmartInitializingSingleton {
 
     private final EmailCaptchaLoginStrategy emailCaptchaLoginStrategy;
+    private final EmailPasswordLoginStrategy emailPasswordLoginStrategy;
 
     static Map<String, LoginStrategy> loginStrategyMap;
 
     @Override
     public void afterSingletonsInstantiated() {
         loginStrategyMap = ImmutableMap.of(
-            IdentityType.EMAIL_CAPTCHA.name(), emailCaptchaLoginStrategy
+            IdentityType.EMAIL_CAPTCHA.name(), emailCaptchaLoginStrategy,
+            IdentityType.EMAIL_PASSWORD.name(), emailPasswordLoginStrategy
         );
     }
 
