@@ -1,4 +1,4 @@
-package com.youyi.common.util;
+package com.youyi.common.util.crypto;
 
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Base64;

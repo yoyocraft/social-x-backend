@@ -14,7 +14,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class BaseParam implements Serializable {
+public abstract class BaseRequest implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

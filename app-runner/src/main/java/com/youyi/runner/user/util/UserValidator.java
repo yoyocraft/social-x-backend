@@ -5,9 +5,9 @@ import com.youyi.common.type.BizType;
 import com.youyi.common.type.user.IdentityType;
 import com.youyi.common.util.param.ParamChecker;
 import com.youyi.common.util.param.ParamCheckerChain;
-import com.youyi.domain.user.param.UserAuthenticateParam;
-import com.youyi.domain.user.param.UserSetPwdParam;
-import com.youyi.domain.user.param.UserVerifyCaptchaParam;
+import com.youyi.domain.user.request.UserAuthenticateRequest;
+import com.youyi.domain.user.request.UserSetPwdRequest;
+import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import org.apache.commons.lang3.tuple.Pair;
 
 import static com.youyi.common.util.param.ParamChecker.captchaChecker;
@@ -23,42 +23,42 @@ import static com.youyi.common.util.param.ParamChecker.passwordChecker;
  */
 public class UserValidator {
 
-    public static void checkUserAuthenticateParam(UserAuthenticateParam param) {
+    public static void checkUserAuthenticateRequest(UserAuthenticateRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(ParamChecker.enumExistChecker(IdentityType.class, "登录类型不合法"), param.getIdentityType())
+            .put(ParamChecker.enumExistChecker(IdentityType.class, "登录类型不合法"), request.getIdentityType())
             .putIf(
-                () -> IdentityType.EMAIL_CAPTCHA.name().equals(param.getIdentityType()) || IdentityType.EMAIL_PASSWORD.name().equals(param.getIdentityType()),
+                () -> IdentityType.EMAIL_CAPTCHA.name().equals(request.getIdentityType()) || IdentityType.EMAIL_PASSWORD.name().equals(request.getIdentityType()),
                 emailChecker("邮箱格式不合法"),
-                param.getIdentifier()
+                request.getIdentifier()
             )
             .putIf(
-                () -> IdentityType.EMAIL_CAPTCHA.name().equals(param.getIdentityType()),
+                () -> IdentityType.EMAIL_CAPTCHA.name().equals(request.getIdentityType()),
                 captchaChecker("验证码不合法"),
-                param.getCredential()
+                request.getCredential()
             )
             .putIf(
-                () -> IdentityType.EMAIL_PASSWORD.name().equals(param.getIdentityType()),
+                () -> IdentityType.EMAIL_PASSWORD.name().equals(request.getIdentityType()),
                 passwordChecker("密码不合法"),
-                param.getCredential()
+                request.getCredential()
             )
             .validateWithThrow();
     }
 
-    public static void checkUserVerifyCaptchaParam(UserVerifyCaptchaParam param) {
+    public static void checkUserVerifyCaptchaRequest(UserVerifyCaptchaRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(emailChecker("邮箱格式不合法"), param.getEmail())
-            .put(captchaChecker("验证码不合法"), param.getCaptcha())
-            .put(enumExistChecker(BizType.class, "业务类型不合法"), param.getBizType())
+            .put(emailChecker("邮箱格式不合法"), request.getEmail())
+            .put(captchaChecker("验证码不合法"), request.getCaptcha())
+            .put(enumExistChecker(BizType.class, "业务类型不合法"), request.getBizType())
             .validateWithThrow();
     }
 
-    public static void checkUserSetPwdParamAndToken(UserSetPwdParam param, String token) {
+    public static void checkUserSetPwdRequestAndToken(UserSetPwdRequest request, String token) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("token不能为空"), token)
-            .put(notBlankChecker("新密码不能为空"), param.getNewPassword())
-            .put(notBlankChecker("确认密码不能为空"), param.getConfirmPassword())
-            .putBatch(passwordChecker("密码不合法"), Lists.newArrayList(param.getNewPassword(), param.getConfirmPassword()))
-            .put(equalsChecker("新密码与确认密码不一致"), Pair.of(param.getNewPassword(), param.getConfirmPassword()))
+            .put(notBlankChecker("新密码不能为空"), request.getNewPassword())
+            .put(notBlankChecker("确认密码不能为空"), request.getConfirmPassword())
+            .putBatch(passwordChecker("密码不合法"), Lists.newArrayList(request.getNewPassword(), request.getConfirmPassword()))
+            .put(equalsChecker("新密码与确认密码不一致"), Pair.of(request.getNewPassword(), request.getConfirmPassword()))
             .validateWithThrow();
     }
 }

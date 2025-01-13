@@ -14,7 +14,7 @@ import org.springframework.http.converter.json.GsonHttpMessageConverter;
 @Configuration
 public class GsonConverterConfig {
 
-    @Bean
+    @Bean(name = "gsonHttpMessageConverters")
     public HttpMessageConverters gsonHttpMessageConverters() {
         GsonHttpMessageConverter gsonConverter = new GsonHttpMessageConverter();
         Gson gson = new GsonBuilder().create();

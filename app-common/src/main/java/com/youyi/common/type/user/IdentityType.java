@@ -12,7 +12,14 @@ import org.apache.commons.lang3.EnumUtils;
 @AllArgsConstructor
 public enum IdentityType {
 
+    /**
+     * 邮箱验证码验证
+     */
     EMAIL_CAPTCHA,
+
+    /**
+     * 邮箱密码验证
+     */
     EMAIL_PASSWORD,
 
     ;

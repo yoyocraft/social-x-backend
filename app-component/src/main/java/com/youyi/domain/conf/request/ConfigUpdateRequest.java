@@ -1,7 +1,7 @@
-package com.youyi.domain.conf.param;
+package com.youyi.domain.conf.request;
 
 import com.google.gson.annotations.SerializedName;
-import com.youyi.common.base.BaseParam;
+import com.youyi.common.base.BaseRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ConfigUpdateParam extends BaseParam {
+public class ConfigUpdateRequest extends BaseRequest {
 
     @SerializedName("config_key")
     private String configKey;

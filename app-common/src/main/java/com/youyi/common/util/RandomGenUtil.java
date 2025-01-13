@@ -2,18 +2,27 @@ package com.youyi.common.util;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
-import static com.youyi.common.constant.RandGenConstant.EMAIL_CAPTCHA_LENGTH;
-import static com.youyi.common.constant.RandGenConstant.USER_ID_LENGTH;
-import static com.youyi.common.constant.RandGenConstant.USER_NICK_NAME_PREFIX;
-import static com.youyi.common.constant.RandGenConstant.USER_NICK_NAME_SUFFIX_LENGTH;
-import static com.youyi.common.constant.RandGenConstant.USER_PWD_SALT_LENGTH;
-import static com.youyi.common.constant.RandGenConstant.USER_VERIFY_CAPTCHA_TOKEN_LENGTH;
-
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/09
  */
 public class RandomGenUtil {
+
+    // ============================= Constants ==============================
+    public static final int EMAIL_CAPTCHA_LENGTH = 6;
+
+    public static final int USER_ID_LENGTH = 32;
+
+    public static final String USER_NICK_NAME_PREFIX = "social_x_";
+    public static final int USER_NICK_NAME_SUFFIX_LENGTH = 8;
+
+    public static final int USER_VERIFY_CAPTCHA_TOKEN_LENGTH = 64;
+
+    public static final int USER_PWD_SALT_LENGTH = 64;
+
+
+    private RandomGenUtil() {
+    }
 
     public static String genEmailCaptcha() {
         return RandomStringUtils.secure().nextNumeric(EMAIL_CAPTCHA_LENGTH);

@@ -2,7 +2,7 @@ package com.youyi.runner.notification.util;
 
 import com.youyi.common.type.BizType;
 import com.youyi.common.util.param.ParamCheckerChain;
-import com.youyi.domain.notification.param.CaptchaNotifyParam;
+import com.youyi.domain.notification.request.CaptchaNotifyRequest;
 
 import static com.youyi.common.util.param.ParamChecker.emailChecker;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
@@ -14,11 +14,11 @@ import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
  */
 public class NotificationValidator {
 
-    public static void checkCaptchaNotifyParam(CaptchaNotifyParam param) {
+    public static void checkCaptchaNotifyRequest(CaptchaNotifyRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(notBlankChecker("email不能为空"), param.getEmail())
-            .put(emailChecker("email格式不合法"), param.getEmail())
-            .put(enumExistChecker(BizType.class, "业务类型不合法"), param.getBizType())
+            .put(notBlankChecker("email不能为空"), request.getEmail())
+            .put(emailChecker("email格式不合法"), request.getEmail())
+            .put(enumExistChecker(BizType.class, "业务类型不合法"), request.getBizType())
             .validateWithThrow();
     }
 }

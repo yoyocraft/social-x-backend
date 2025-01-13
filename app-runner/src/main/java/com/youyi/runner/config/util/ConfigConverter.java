@@ -1,7 +1,7 @@
 package com.youyi.runner.config.util;
 
 import com.youyi.domain.conf.model.ConfigDO;
-import com.youyi.runner.config.model.ConfigVO;
+import com.youyi.runner.config.model.ConfigInfoResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -14,5 +14,5 @@ public interface ConfigConverter {
 
     ConfigConverter CONFIG_CONVERTER = Mappers.getMapper(ConfigConverter.class);
 
-    ConfigVO toVO(ConfigDO configDO);
+    ConfigInfoResponse toResponse(ConfigDO configDO);
 }

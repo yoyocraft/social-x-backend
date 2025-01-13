@@ -54,6 +54,9 @@ public class GsonUtil {
         PRETTY_GSON = new GsonBuilder().setPrettyPrinting().create();
     }
 
+    private GsonUtil() {
+    }
+
     public static String toJson(Object obj) {
         if (obj == null) {
             return null;

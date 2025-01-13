@@ -12,7 +12,7 @@ import lombok.Getter;
 public enum AspectOrdered {
 
     EXCEPTION_HANDLER(1),
-    RECORD_OP_LOG(2)
+    RECORD_OP_LOG(2),
     ;
 
     private final int order;

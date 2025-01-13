@@ -10,7 +10,8 @@ public enum BizType {
 
     UNKNOWN,
     LOGIN,
-    SET_PWD;
+    SET_PWD,
+    ;
 
     public static BizType of(String type) {
         return EnumUtils.getEnum(BizType.class, type, UNKNOWN);

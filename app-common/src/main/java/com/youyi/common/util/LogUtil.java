@@ -19,6 +19,9 @@ public class LogUtil {
 
     private static final Logger UTIL_LOGGER = LoggerFactory.getLogger(LogUtil.class);
 
+    private LogUtil() {
+    }
+
     public static void infraLog(Logger logger, InfraType infraType, InfraCode infraCode) {
         infraLog(logger, infraType, infraCode, infraCode.getMessage());
     }

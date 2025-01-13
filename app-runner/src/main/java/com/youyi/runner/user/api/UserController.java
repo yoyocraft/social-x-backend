@@ -1,18 +1,18 @@
 package com.youyi.runner.user.api;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import com.youyi.common.anno.RecordOpLog;
+import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.Result;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.OperationType;
 import com.youyi.domain.user.helper.UserHelper;
 import com.youyi.domain.user.model.UserDO;
-import com.youyi.domain.user.param.UserAuthenticateParam;
-import com.youyi.domain.user.param.UserSetPwdParam;
-import com.youyi.domain.user.param.UserVerifyCaptchaParam;
+import com.youyi.domain.user.request.UserAuthenticateRequest;
+import com.youyi.domain.user.request.UserSetPwdRequest;
+import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import com.youyi.infra.lock.LocalLockUtil;
-import com.youyi.runner.user.model.UserVO;
-import com.youyi.runner.user.model.VerifyCaptchaVO;
+import com.youyi.runner.user.model.UserBasicInfoResponse;
+import com.youyi.runner.user.model.VerifyCaptchaResponse;
 import com.youyi.runner.user.util.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,21 +42,21 @@ public class UserController {
 
     @RecordOpLog(opType = OperationType.USER_LOGIN, system = true)
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Result<Boolean> login(@RequestBody UserAuthenticateParam param) {
-        UserValidator.checkUserAuthenticateParam(param);
-        UserDO userDO = USER_ASSEMBLER.toDO(param);
+    public Result<Boolean> login(@RequestBody UserAuthenticateRequest request) {
+        UserValidator.checkUserAuthenticateRequest(request);
+        UserDO userDO = USER_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
             () -> userHelper.login(userDO),
             () -> {
                 throw AppBizException.of(TOO_MANY_REQUEST);
             },
-            param.getIdentityType(), param.getIdentifier()
+            request.getIdentityType(), request.getIdentifier()
         );
-        return loginSuccess(param);
+        return loginSuccess(request);
     }
 
     @RequestMapping(value = "/curr", method = RequestMethod.GET)
-    public Result<UserVO> getCurrentUser() {
+    public Result<UserBasicInfoResponse> getCurrentUser() {
         UserDO userDO = userHelper.getCurrentUser();
         return getCurrentUserSuccess(userDO);
     }
@@ -72,19 +72,19 @@ public class UserController {
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.VERIFY_CAPTCHA)
     @RequestMapping(value = "/auth/verify-captcha", method = RequestMethod.POST)
-    public Result<VerifyCaptchaVO> verifyCaptcha(@RequestBody UserVerifyCaptchaParam param) {
-        UserValidator.checkUserVerifyCaptchaParam(param);
-        UserDO userDO = USER_ASSEMBLER.toDO(param);
+    public Result<VerifyCaptchaResponse> verifyCaptcha(@RequestBody UserVerifyCaptchaRequest request) {
+        UserValidator.checkUserVerifyCaptchaRequest(request);
+        UserDO userDO = USER_ASSEMBLER.toDO(request);
         userHelper.verifyCaptcha(userDO);
-        return verifyCaptchaSuccess(userDO, param);
+        return verifyCaptchaSuccess(userDO, request);
     }
 
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.USER_SET_PASSWORD, desensitize = true)
     @RequestMapping(value = "/auth/set-pwd", method = RequestMethod.POST)
-    public Result<Boolean> setPwd(@RequestBody UserSetPwdParam param, @RequestHeader("Authorization") String token) {
-        UserValidator.checkUserSetPwdParamAndToken(param, token);
-        UserDO userDO = USER_ASSEMBLER.toDO(param, token);
+    public Result<Boolean> setPwd(@RequestBody UserSetPwdRequest request, @RequestHeader("Authorization") String token) {
+        UserValidator.checkUserSetPwdRequestAndToken(request, token);
+        UserDO userDO = USER_ASSEMBLER.toDO(request, token);
         LocalLockUtil.runWithLockFailSafe(
             () -> userHelper.setPwd(userDO),
             () -> {

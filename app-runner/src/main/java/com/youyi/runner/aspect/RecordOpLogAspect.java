@@ -2,7 +2,7 @@ package com.youyi.runner.aspect;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.youyi.common.anno.RecordOpLog;
+import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.aspect.AspectOrdered;
 import com.youyi.common.util.GsonUtil;
@@ -32,13 +32,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
-import static com.youyi.common.constant.SystemOperationConstant.LOG_ARG_NAMES_KEY;
-import static com.youyi.common.constant.SystemOperationConstant.LOG_ARG_TYPES_KEY;
-import static com.youyi.common.constant.SystemOperationConstant.LOG_ARG_VALUES_KEY;
-import static com.youyi.common.constant.SystemOperationConstant.LOG_CLASS_KEY;
-import static com.youyi.common.constant.SystemOperationConstant.LOG_METHOD_KEY;
-import static com.youyi.common.constant.SystemOperationConstant.SYSTEM_OPERATOR_ID;
-import static com.youyi.common.constant.SystemOperationConstant.SYSTEM_OPERATOR_NAME;
 import static com.youyi.common.type.conf.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
 import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
 
@@ -50,6 +43,16 @@ import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
 @Component
 @RequiredArgsConstructor
 public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEvent>, Ordered {
+
+    // ========================== Constant ==========================
+    public static final String SYSTEM_OPERATOR_ID = "-1";
+    public static final String SYSTEM_OPERATOR_NAME = "SocialX System";
+
+    public static final String LOG_METHOD_KEY = "method";
+    public static final String LOG_CLASS_KEY = "class_name";
+    public static final String LOG_ARG_TYPES_KEY = "arg_types";
+    public static final String LOG_ARG_NAMES_KEY = "arg_names";
+    public static final String LOG_ARG_VALUES_KEY = "arg_values";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordOpLogAspect.class);
 
@@ -66,7 +69,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         initAsyncExecutor();
     }
 
-    @Pointcut("@annotation(com.youyi.common.anno.RecordOpLog)")
+    @Pointcut("@annotation(com.youyi.common.annotation.RecordOpLog)")
     public void pointCut() {
     }
 

@@ -1,7 +1,7 @@
 package com.youyi.runner.config.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.youyi.common.base.BaseVO;
+import com.youyi.common.base.BaseResponse;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ConfigVO extends BaseVO {
+public class ConfigInfoResponse extends BaseResponse {
 
     @SerializedName("config_id")
     private Long configId;

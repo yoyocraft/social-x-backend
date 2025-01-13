@@ -3,10 +3,10 @@ package com.youyi.runner.user.util;
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
-import com.youyi.domain.user.param.UserAuthenticateParam;
-import com.youyi.domain.user.param.UserVerifyCaptchaParam;
-import com.youyi.runner.user.model.UserVO;
-import com.youyi.runner.user.model.VerifyCaptchaVO;
+import com.youyi.domain.user.request.UserAuthenticateRequest;
+import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
+import com.youyi.runner.user.model.UserBasicInfoResponse;
+import com.youyi.runner.user.model.VerifyCaptchaResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,14 +20,14 @@ public class UserResponseUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserResponseUtil.class);
 
-    public static Result<Boolean> loginSuccess(UserAuthenticateParam param) {
+    public static Result<Boolean> loginSuccess(UserAuthenticateRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("user login, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
+        LOGGER.info("user login, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
-    public static Result<UserVO> getCurrentUserSuccess(UserDO userDO) {
-        Result<UserVO> response = Result.success(USER_CONVERTER.toVO(userDO));
+    public static Result<UserBasicInfoResponse> getCurrentUserSuccess(UserDO userDO) {
+        Result<UserBasicInfoResponse> response = Result.success(USER_CONVERTER.toResponse(userDO));
         LOGGER.info("get current user, response:{}", GsonUtil.toJson(response));
         return response;
     }
@@ -38,9 +38,9 @@ public class UserResponseUtil {
         return response;
     }
 
-    public static Result<VerifyCaptchaVO> verifyCaptchaSuccess(UserDO userDO, UserVerifyCaptchaParam param) {
-        Result<VerifyCaptchaVO> response = Result.success(USER_CONVERTER.toVerifyCaptchaVO(userDO));
-        LOGGER.info("verify captcha, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
+    public static Result<VerifyCaptchaResponse> verifyCaptchaSuccess(UserDO userDO, UserVerifyCaptchaRequest request) {
+        Result<VerifyCaptchaResponse> response = Result.success(USER_CONVERTER.toVerifyCaptchaResponse(userDO));
+        LOGGER.info("verify captcha, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 

@@ -3,9 +3,9 @@ package com.youyi.domain.user.assembler;
 import com.youyi.common.type.BizType;
 import com.youyi.common.type.user.IdentityType;
 import com.youyi.domain.user.model.UserDO;
-import com.youyi.domain.user.param.UserAuthenticateParam;
-import com.youyi.domain.user.param.UserSetPwdParam;
-import com.youyi.domain.user.param.UserVerifyCaptchaParam;
+import com.youyi.domain.user.request.UserAuthenticateRequest;
+import com.youyi.domain.user.request.UserSetPwdRequest;
+import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -29,28 +29,28 @@ public interface UserAssembler {
     UserAssembler USER_ASSEMBLER = Mappers.getMapper(UserAssembler.class);
 
     @Mappings({
-        @Mapping(target = "identityType", expression = "java(IdentityType.of(param.getIdentityType()))"),
-        @Mapping(target = "originalEmail", expression = "java(originalEmail(param))")
+        @Mapping(target = "identityType", expression = "java(IdentityType.of(request.getIdentityType()))"),
+        @Mapping(target = "originalEmail", expression = "java(originalEmail(request))")
     })
-    UserDO toDO(UserAuthenticateParam param);
+    UserDO toDO(UserAuthenticateRequest request);
 
     @Mappings({
         @Mapping(target = "toVerifiedCaptcha", source = "captcha"),
         @Mapping(target = "originalEmail", source = "email"),
-        @Mapping(target = "bizType", expression = "java(BizType.of(param.getBizType()))")
+        @Mapping(target = "bizType", expression = "java(BizType.of(request.getBizType()))")
     })
-    UserDO toDO(UserVerifyCaptchaParam param);
+    UserDO toDO(UserVerifyCaptchaRequest request);
 
     @Mappings({
         @Mapping(target = "bizType", expression = "java(BizType.SET_PWD)"),
         @Mapping(target = "verifyCaptchaToken", source = "token")
     })
-    UserDO toDO(UserSetPwdParam param, String token);
+    UserDO toDO(UserSetPwdRequest request, String token);
 
-    default String originalEmail(UserAuthenticateParam param) {
-        IdentityType identityType = IdentityType.of(param.getIdentityType());
+    default String originalEmail(UserAuthenticateRequest request) {
+        IdentityType identityType = IdentityType.of(request.getIdentityType());
         if (identityType == IdentityType.EMAIL_CAPTCHA || identityType == IdentityType.EMAIL_PASSWORD) {
-            return param.getIdentifier();
+            return request.getIdentifier();
         }
         return StringUtils.EMPTY;
     }
