@@ -1,8 +1,7 @@
 package com.youyi.domain.user.helper.login;
 
-import com.google.common.collect.ImmutableMap;
 import com.youyi.common.type.user.IdentityType;
-import java.util.Map;
+import java.util.EnumMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.stereotype.Component;
@@ -18,17 +17,16 @@ public class LoginStrategyFactory implements SmartInitializingSingleton {
     private final EmailCaptchaLoginStrategy emailCaptchaLoginStrategy;
     private final EmailPasswordLoginStrategy emailPasswordLoginStrategy;
 
-    static Map<String, LoginStrategy> loginStrategyMap;
+    static EnumMap<IdentityType, LoginStrategy> loginStrategyMapping;
 
     @Override
     public void afterSingletonsInstantiated() {
-        loginStrategyMap = ImmutableMap.of(
-            IdentityType.EMAIL_CAPTCHA.name(), emailCaptchaLoginStrategy,
-            IdentityType.EMAIL_PASSWORD.name(), emailPasswordLoginStrategy
-        );
+        loginStrategyMapping = new EnumMap<>(IdentityType.class);
+        loginStrategyMapping.put(IdentityType.EMAIL_CAPTCHA, emailCaptchaLoginStrategy);
+        loginStrategyMapping.put(IdentityType.EMAIL_PASSWORD, emailPasswordLoginStrategy);
     }
 
     public LoginStrategy getLoginStrategy(IdentityType identityType) {
-        return loginStrategyMap.get(identityType.name());
+        return loginStrategyMapping.get(identityType);
     }
 }

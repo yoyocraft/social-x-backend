@@ -1,4 +1,4 @@
-package com.youyi.common.anno;
+package com.youyi.common.annotation;
 
 import com.youyi.common.type.OperationType;
 import java.lang.annotation.Documented;
@@ -16,9 +16,18 @@ import java.lang.annotation.Target;
 @Documented
 public @interface RecordOpLog {
 
+    /**
+     * 操作类型
+     */
     OperationType opType();
 
+    /**
+     * 是否是系统操作，记录 operatorId 和 operatorName
+     */
     boolean system() default false;
 
+    /**
+     * 是否脱敏
+     */
     boolean desensitize() default false;
 }

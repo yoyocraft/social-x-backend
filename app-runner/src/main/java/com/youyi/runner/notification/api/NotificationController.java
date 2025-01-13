@@ -1,12 +1,12 @@
 package com.youyi.runner.notification.api;
 
-import com.youyi.common.anno.RecordOpLog;
+import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.Result;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.OperationType;
 import com.youyi.domain.notification.helper.NotificationHelper;
 import com.youyi.domain.notification.model.NotificationDO;
-import com.youyi.domain.notification.param.CaptchaNotifyParam;
+import com.youyi.domain.notification.request.CaptchaNotifyRequest;
 import com.youyi.infra.lock.LocalLockUtil;
 import com.youyi.runner.notification.util.NotificationValidator;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +32,16 @@ public class NotificationController {
 
     @RecordOpLog(opType = OperationType.NOTIFY_CAPTCHA, system = true)
     @RequestMapping(value = "/captcha", method = RequestMethod.POST)
-    public Result<Boolean> notifyCaptcha(@RequestBody CaptchaNotifyParam param) {
-        NotificationValidator.checkCaptchaNotifyParam(param);
-        NotificationDO notificationDO = NOTIFICATION_ASSEMBLER.toDO(param);
+    public Result<Boolean> notifyCaptcha(@RequestBody CaptchaNotifyRequest request) {
+        NotificationValidator.checkCaptchaNotifyRequest(request);
+        NotificationDO notificationDO = NOTIFICATION_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
             () -> notificationHelper.notifyCaptcha(notificationDO),
             () -> {
                 throw AppBizException.of(TOO_MANY_REQUEST);
             },
-            param.getEmail(), param.getBizType()
+            request.getEmail(), request.getBizType()
         );
-        return notifyCaptchaSuccess(param);
+        return notifyCaptchaSuccess(request);
     }
 }

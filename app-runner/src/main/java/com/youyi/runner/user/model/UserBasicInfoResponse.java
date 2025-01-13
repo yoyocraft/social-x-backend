@@ -1,7 +1,7 @@
 package com.youyi.runner.user.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.youyi.common.base.BaseVO;
+import com.youyi.common.base.BaseResponse;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UserVO extends BaseVO {
+public class UserBasicInfoResponse extends BaseResponse {
 
     @SerializedName("user_id")
     private String userId;

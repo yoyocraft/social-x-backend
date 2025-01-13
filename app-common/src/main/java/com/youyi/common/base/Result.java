@@ -1,6 +1,6 @@
 package com.youyi.common.base;
 
-import com.youyi.common.type.CommonBizState;
+import com.youyi.common.type.RequestState;
 import com.youyi.common.type.ErrorCode;
 import com.youyi.common.type.ReturnCode;
 import java.io.Serial;
@@ -28,6 +28,9 @@ public class Result<T> implements Serializable {
 
     private String message;
 
+    /**
+     * {@link RequestState}
+     */
     private String bizState;
 
     private Long timestamp;
@@ -71,22 +74,22 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> success() {
-        return new Result<>(ReturnCode.SUCCESS, CommonBizState.SUCCESS.name());
+        return new Result<>(ReturnCode.SUCCESS, RequestState.SUCCESS.name());
     }
 
     public static <T> Result<T> success(T data) {
-        return new Result<>(data, ReturnCode.SUCCESS, CommonBizState.SUCCESS.name());
+        return new Result<>(data, ReturnCode.SUCCESS, RequestState.SUCCESS.name());
     }
 
     public static <T> Result<T> fail(ErrorCode errorCode) {
-        return new Result<>(errorCode, CommonBizState.FAILED.name());
+        return new Result<>(errorCode, RequestState.FAILED.name());
     }
 
     public static <T> Result<T> fail(String code, String message) {
-        return new Result<>(code, message, CommonBizState.FAILED.name());
+        return new Result<>(code, message, RequestState.FAILED.name());
     }
 
-    public static <T> Result<T> fail(String code, String message, CommonBizState state) {
+    public static <T> Result<T> fail(String code, String message, RequestState state) {
         return new Result<>(code, message, state.name());
     }
 }

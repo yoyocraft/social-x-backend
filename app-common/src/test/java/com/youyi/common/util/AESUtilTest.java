@@ -1,5 +1,7 @@
 package com.youyi.common.util;
 
+import com.youyi.common.util.crypto.AESUtil;
+import com.youyi.common.util.crypto.IvGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

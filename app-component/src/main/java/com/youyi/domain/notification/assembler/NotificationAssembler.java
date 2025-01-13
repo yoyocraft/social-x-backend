@@ -2,7 +2,7 @@ package com.youyi.domain.notification.assembler;
 
 import com.youyi.common.type.BizType;
 import com.youyi.domain.notification.model.NotificationDO;
-import com.youyi.domain.notification.param.CaptchaNotifyParam;
+import com.youyi.domain.notification.request.CaptchaNotifyRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -23,7 +23,7 @@ public interface NotificationAssembler {
     NotificationAssembler NOTIFICATION_ASSEMBLER = Mappers.getMapper(NotificationAssembler.class);
 
     @Mappings({
-        @Mapping(target = "bizType", expression = "java(BizType.of(param.getBizType()))")
+        @Mapping(target = "bizType", expression = "java(BizType.of(request.getBizType()))")
     })
-    NotificationDO toDO(CaptchaNotifyParam param);
+    NotificationDO toDO(CaptchaNotifyRequest request);
 }

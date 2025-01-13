@@ -1,7 +1,7 @@
-package com.youyi.domain.user.param;
+package com.youyi.domain.user.request;
 
 import com.google.gson.annotations.SerializedName;
-import com.youyi.common.base.BaseParam;
+import com.youyi.common.base.BaseRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UserSetPwdParam extends BaseParam {
+public class UserSetPwdRequest extends BaseRequest {
 
     @SerializedName("new_password")
     private String newPassword;

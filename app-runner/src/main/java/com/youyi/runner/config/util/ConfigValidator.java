@@ -1,10 +1,10 @@
 package com.youyi.runner.config.util;
 
 import com.youyi.common.util.param.ParamCheckerChain;
-import com.youyi.domain.conf.param.ConfigCreateParam;
-import com.youyi.domain.conf.param.ConfigDeleteParam;
-import com.youyi.domain.conf.param.ConfigQueryParam;
-import com.youyi.domain.conf.param.ConfigUpdateParam;
+import com.youyi.domain.conf.request.ConfigCreateRequest;
+import com.youyi.domain.conf.request.ConfigDeleteRequest;
+import com.youyi.domain.conf.request.ConfigQueryRequest;
+import com.youyi.domain.conf.request.ConfigUpdateRequest;
 
 import static com.youyi.common.util.param.ParamChecker.greaterThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
@@ -15,20 +15,20 @@ import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
  */
 public class ConfigValidator {
 
-    public static void validateConfigCreateParam(ConfigCreateParam param) {
+    public static void validateConfigCreateRequest(ConfigCreateRequest param) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("configKey不能为空"), param.getConfigKey())
             .put(notBlankChecker("configValue不能为空"), param.getConfigValue())
             .validateWithThrow();
     }
 
-    public static void validateConfigQueryParam(ConfigQueryParam param) {
+    public static void validateConfigQueryRequest(ConfigQueryRequest param) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("configKey不能为空"), param.getKey())
             .validateWithThrow();
     }
 
-    public static void validateConfigUpdateParam(ConfigUpdateParam param) {
+    public static void validateConfigUpdateRequest(ConfigUpdateRequest param) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("configKey不能为空"), param.getConfigKey())
             .put(notBlankChecker("newConfigValue不能为空"), param.getNewConfigValue())
@@ -36,7 +36,7 @@ public class ConfigValidator {
             .validateWithThrow();
     }
 
-    public static void validateConfigDeleteParam(ConfigDeleteParam param) {
+    public static void validateConfigDeleteRequest(ConfigDeleteRequest param) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("configKey不能为空"), param.getConfigKey())
             .validateWithThrow();

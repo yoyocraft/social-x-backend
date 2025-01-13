@@ -1,15 +1,15 @@
 package com.youyi.runner.config.api;
 
-import com.youyi.common.anno.RecordOpLog;
+import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.Result;
 import com.youyi.common.type.OperationType;
 import com.youyi.domain.conf.helper.ConfigHelper;
 import com.youyi.domain.conf.model.ConfigDO;
-import com.youyi.domain.conf.param.ConfigCreateParam;
-import com.youyi.domain.conf.param.ConfigDeleteParam;
-import com.youyi.domain.conf.param.ConfigQueryParam;
-import com.youyi.domain.conf.param.ConfigUpdateParam;
-import com.youyi.runner.config.model.ConfigVO;
+import com.youyi.domain.conf.request.ConfigCreateRequest;
+import com.youyi.domain.conf.request.ConfigDeleteRequest;
+import com.youyi.domain.conf.request.ConfigQueryRequest;
+import com.youyi.domain.conf.request.ConfigUpdateRequest;
+import com.youyi.runner.config.model.ConfigInfoResponse;
 import com.youyi.runner.config.util.ConfigValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,36 +36,36 @@ public class ConfigController {
 
     @RecordOpLog(opType = OperationType.INSERT_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.POST)
-    public Result<Boolean> createConfig(@RequestBody ConfigCreateParam param) {
-        ConfigValidator.validateConfigCreateParam(param);
-        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
+    public Result<Boolean> createConfig(@RequestBody ConfigCreateRequest request) {
+        ConfigValidator.validateConfigCreateRequest(request);
+        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
         configHelper.createConfig(configDO);
-        return createSuccess(param);
+        return createSuccess(request);
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public Result<ConfigVO> queryConfig(ConfigQueryParam param) {
-        ConfigValidator.validateConfigQueryParam(param);
-        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
+    public Result<ConfigInfoResponse> queryConfig(ConfigQueryRequest request) {
+        ConfigValidator.validateConfigQueryRequest(request);
+        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
         ConfigDO config = configHelper.queryConfig(configDO);
-        return querySuccess(config, param);
+        return querySuccess(config, request);
     }
 
     @RecordOpLog(opType = OperationType.UPDATE_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.PUT)
-    public Result<Boolean> updateConfig(@RequestBody ConfigUpdateParam param) {
-        ConfigValidator.validateConfigUpdateParam(param);
-        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
+    public Result<Boolean> updateConfig(@RequestBody ConfigUpdateRequest request) {
+        ConfigValidator.validateConfigUpdateRequest(request);
+        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
         configHelper.updateConfig(configDO);
-        return updateSuccess(param);
+        return updateSuccess(request);
     }
 
     @RecordOpLog(opType = OperationType.DELETE_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.DELETE)
-    public Result<Boolean> deleteConfig(@RequestBody ConfigDeleteParam param) {
-        ConfigValidator.validateConfigDeleteParam(param);
-        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(param);
+    public Result<Boolean> deleteConfig(@RequestBody ConfigDeleteRequest request) {
+        ConfigValidator.validateConfigDeleteRequest(request);
+        ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
         configHelper.deleteConfig(configDO);
-        return deleteSuccess(param);
+        return deleteSuccess(request);
     }
 }

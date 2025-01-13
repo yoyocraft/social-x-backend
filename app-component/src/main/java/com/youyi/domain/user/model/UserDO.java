@@ -6,7 +6,7 @@ import com.youyi.common.type.user.GenderType;
 import com.youyi.common.type.user.UserRoleType;
 import com.youyi.common.type.user.UserStatusType;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.common.util.IvGenerator;
+import com.youyi.common.util.crypto.IvGenerator;
 import com.youyi.common.util.RandomGenUtil;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;

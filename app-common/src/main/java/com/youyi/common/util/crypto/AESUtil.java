@@ -1,4 +1,4 @@
-package com.youyi.common.util;
+package com.youyi.common.util.crypto;
 
 import java.nio.charset.StandardCharsets;
 import javax.crypto.Cipher;

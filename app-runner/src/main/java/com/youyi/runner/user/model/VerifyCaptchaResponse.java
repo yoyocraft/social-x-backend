@@ -1,7 +1,7 @@
 package com.youyi.runner.user.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.youyi.common.base.BaseVO;
+import com.youyi.common.base.BaseResponse;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class VerifyCaptchaVO extends BaseVO {
+public class VerifyCaptchaResponse extends BaseResponse {
 
     @SerializedName("token")
     private String token;

@@ -3,11 +3,11 @@ package com.youyi.runner.config.util;
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.conf.model.ConfigDO;
-import com.youyi.domain.conf.param.ConfigCreateParam;
-import com.youyi.domain.conf.param.ConfigDeleteParam;
-import com.youyi.domain.conf.param.ConfigQueryParam;
-import com.youyi.domain.conf.param.ConfigUpdateParam;
-import com.youyi.runner.config.model.ConfigVO;
+import com.youyi.domain.conf.request.ConfigCreateRequest;
+import com.youyi.domain.conf.request.ConfigDeleteRequest;
+import com.youyi.domain.conf.request.ConfigQueryRequest;
+import com.youyi.domain.conf.request.ConfigUpdateRequest;
+import com.youyi.runner.config.model.ConfigInfoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,27 +21,27 @@ public class ConfigResponseUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigResponseUtil.class);
 
-    public static Result<Boolean> createSuccess(ConfigCreateParam param) {
+    public static Result<Boolean> createSuccess(ConfigCreateRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("create config, request:{}, response: {}", GsonUtil.toJson(param), GsonUtil.toJson(response));
+        LOGGER.info("create config, request:{}, response: {}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
-    public static Result<ConfigVO> querySuccess(ConfigDO configDO, ConfigQueryParam param) {
-        Result<ConfigVO> response = Result.success(CONFIG_CONVERTER.toVO(configDO));
-        LOGGER.info("query config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
+    public static Result<ConfigInfoResponse> querySuccess(ConfigDO configDO, ConfigQueryRequest request) {
+        Result<ConfigInfoResponse> response = Result.success(CONFIG_CONVERTER.toResponse(configDO));
+        LOGGER.info("query config, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
-    public static Result<Boolean> updateSuccess(ConfigUpdateParam param) {
+    public static Result<Boolean> updateSuccess(ConfigUpdateRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("update config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
+        LOGGER.info("update config, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
-    public static Result<Boolean> deleteSuccess(ConfigDeleteParam param) {
+    public static Result<Boolean> deleteSuccess(ConfigDeleteRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("delete config, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
+        LOGGER.info("delete config, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

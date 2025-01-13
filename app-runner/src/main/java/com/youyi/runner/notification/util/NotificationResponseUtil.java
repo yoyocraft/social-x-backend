@@ -2,7 +2,7 @@ package com.youyi.runner.notification.util;
 
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.domain.notification.param.CaptchaNotifyParam;
+import com.youyi.domain.notification.request.CaptchaNotifyRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +14,9 @@ public class NotificationResponseUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NotificationResponseUtil.class);
 
-    public static Result<Boolean> notifyCaptchaSuccess(CaptchaNotifyParam param) {
+    public static Result<Boolean> notifyCaptchaSuccess(CaptchaNotifyRequest request) {
         Result<Boolean> response = Result.success(true);
-        LOGGER.info("notify captcha, request:{}, response:{}", GsonUtil.toJson(param), GsonUtil.toJson(response));
+        LOGGER.info("notify captcha, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

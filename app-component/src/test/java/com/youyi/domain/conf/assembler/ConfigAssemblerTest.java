@@ -1,7 +1,7 @@
 package com.youyi.domain.conf.assembler;
 
 import com.youyi.domain.conf.model.ConfigDO;
-import com.youyi.domain.conf.param.ConfigUpdateParam;
+import com.youyi.domain.conf.request.ConfigUpdateRequest;
 import com.youyi.infra.conf.repository.po.ConfigPO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ public class ConfigAssemblerTest {
 
     @Test
     void testUpdateParamToDO() {
-        ConfigUpdateParam param = new ConfigUpdateParam();
+        ConfigUpdateRequest param = new ConfigUpdateRequest();
         param.setConfigKey("configKey");
         param.setNewConfigValue("newConfigValue");
         param.setCurrVersion(1);

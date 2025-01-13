@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * 个人信息主页登录展示信息
+ * 个人信息主页登录展示信息，登录态信息
  *
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/11
