@@ -1,5 +1,6 @@
 package com.youyi.domain.user.helper;
 
+import com.youyi.common.type.user.UserRoleType;
 import com.youyi.domain.user.model.PermissionDO;
 import com.youyi.domain.user.repository.PermissionRepository;
 import com.youyi.domain.user.repository.po.PermissionPO;
@@ -7,6 +8,8 @@ import com.youyi.domain.user.repository.po.RolePermissionPO;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import static com.youyi.domain.user.assembler.PermissionAssembler.PERMISSION_ASSEMBLER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -41,5 +44,10 @@ public class PermissionHelper {
         // 3. 保存用户权限
         RolePermissionPO po = permissionDO.buildToSaveRolePermissionPO();
         permissionRepository.insertOrUpdateRolePermission(po);
+    }
+
+    public PermissionDO queryPermissionByRole(UserRoleType role) {
+        RolePermissionPO po = permissionRepository.queryRolePermissionByRole(role.name());
+        return PERMISSION_ASSEMBLER.toPermissionDO(po);
     }
 }
