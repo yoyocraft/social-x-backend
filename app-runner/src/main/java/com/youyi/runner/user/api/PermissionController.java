@@ -1,5 +1,7 @@
 package com.youyi.runner.user.api;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.Result;
 import com.youyi.common.exception.AppBizException;
@@ -17,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.youyi.common.constant.PermissionConstant.ADD_PERMISSION;
+import static com.youyi.common.constant.PermissionConstant.AUTHORIZE_PERMISSION;
+import static com.youyi.common.constant.PermissionConstant.PERMISSION_MANAGER;
 import static com.youyi.common.type.ReturnCode.TOO_MANY_REQUEST;
 import static com.youyi.domain.user.assembler.PermissionAssembler.PERMISSION_ASSEMBLER;
 import static com.youyi.runner.user.util.PermissionResponseUtil.addSuccess;
@@ -34,6 +39,7 @@ public class PermissionController {
 
     private final PermissionHelper permissionHelper;
 
+    @SaCheckPermission(value = {PERMISSION_MANAGER, ADD_PERMISSION}, mode = SaMode.OR)
     @RecordOpLog(opType = OperationType.ADD_PERMISSION, system = true)
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public Result<Boolean> addPermission(@RequestBody PermissionAddRequest request) {
@@ -43,6 +49,7 @@ public class PermissionController {
         return addSuccess(request);
     }
 
+    @SaCheckPermission(value = {PERMISSION_MANAGER, AUTHORIZE_PERMISSION}, mode = SaMode.OR)
     @RecordOpLog(opType = OperationType.AUTHORIZE_PERMISSION, system = true)
     @RequestMapping(value = "/authorize", method = RequestMethod.POST)
     public Result<Boolean> authorize(@RequestBody RolePermissionAuthorizeRequest request) {
@@ -58,6 +65,7 @@ public class PermissionController {
         return authorizeSuccess(request);
     }
 
+    @SaCheckPermission(value = {PERMISSION_MANAGER, AUTHORIZE_PERMISSION}, mode = SaMode.OR)
     @RecordOpLog(opType = OperationType.REVOKE_PERMISSION, system = true)
     @RequestMapping(value = "/revoke", method = RequestMethod.POST)
     public Result<Boolean> revoke(@RequestBody RolePermissionRevokeRequest request) {

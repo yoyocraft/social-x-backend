@@ -52,7 +52,7 @@ public interface PermissionAssembler {
     @Mappings({
         @Mapping(target = "permissions", expression = "java(toPermissions(po))")
     })
-    PermissionDO toDO(RolePermissionPO po);
+    PermissionDO toPermissionDO(RolePermissionPO po);
 
     default String toSavePermissions(PermissionDO permissionDO) {
         List<PermissionType> permissions = permissionDO.getPermissions();
