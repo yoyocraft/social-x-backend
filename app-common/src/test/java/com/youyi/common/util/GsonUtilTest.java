@@ -1,6 +1,10 @@
 package com.youyi.common.util;
 
+import com.google.common.collect.Lists;
+import com.youyi.common.type.user.PermissionType;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
+import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
@@ -43,6 +47,19 @@ class GsonUtilTest {
         return configWrapper;
     }
 
+    @Test
+    void testFromJson() {
+        List<PermissionType> permissions = Lists.newArrayList(
+            PermissionType.CREATE_CONFIG,
+            PermissionType.READ_CONFIG,
+            PermissionType.UPDATE_CONFIG,
+            PermissionType.DELETE_CONFIG
+        );
+
+        String json = GsonUtil.toJson(permissions);
+        List<PermissionType> permissionTypes = Assertions.assertDoesNotThrow(() -> GsonUtil.fromJson(json, List.class, PermissionType.class));
+        Assertions.assertTrue(CollectionUtils.isNotEmpty(permissionTypes));
+    }
 }
 
 // Generated with love by TestMe :) Please raise issues & feature requests at: https://weirddev.com/forum#!/testme

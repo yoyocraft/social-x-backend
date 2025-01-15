@@ -16,5 +16,9 @@ public enum OperationType {
 
     NOTIFY_CAPTCHA,
     VERIFY_CAPTCHA,
+
+    ADD_PERMISSION,
+    AUTHORIZE_PERMISSION,
+    REVOKE_PERMISSION,
     ;
 }

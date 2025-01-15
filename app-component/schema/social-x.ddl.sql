@@ -79,7 +79,6 @@ CREATE TABLE `permission` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
     `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
-    `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
     `extra_data` JSON COMMENT 'extra data',
     `permission_name` VARCHAR(64) NOT NULL COMMENT 'permission name, e.g. PUBLISH_POST, EDIT_USER, DELETE_POST',
     PRIMARY KEY (`id`),

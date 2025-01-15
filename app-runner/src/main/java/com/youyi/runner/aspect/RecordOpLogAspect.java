@@ -15,7 +15,6 @@ import com.youyi.infra.conf.core.ConfigLoader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -136,7 +135,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
         RecordOpLog recordOpLog = methodSignature.getMethod().getAnnotation(RecordOpLog.class);
         String methodName = methodSignature.getName();
-        String className = jp.getTarget().getClass().getSimpleName();
+        String className = jp.getTarget().getClass().getName();
         Class<?>[] types = methodSignature.getParameterTypes();
         String[] parameterNames = methodSignature.getParameterNames();
         Object[] parameterValues = jp.getArgs();
@@ -144,14 +143,14 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         List<String> paramValues = Lists.newArrayList();
         boolean desensitize = recordOpLog.desensitize();
         if (!desensitize) {
-            paramValues = Arrays.stream(parameterValues).map(Objects::toString).toList();
+            paramValues = Arrays.stream(parameterValues).map(GsonUtil::toJson).toList();
         }
         Map<String, Object> extraData = ImmutableMap.of(
             LOG_METHOD_KEY, methodName,
             LOG_CLASS_KEY, className,
             LOG_ARG_TYPES_KEY, StringUtils.join(types, SymbolConstant.COMMA),
-            LOG_ARG_NAMES_KEY, GsonUtil.toJson(parameterNames),
-            LOG_ARG_VALUES_KEY, GsonUtil.toJson(paramValues)
+            LOG_ARG_NAMES_KEY, StringUtils.join(parameterNames, SymbolConstant.COMMA),
+            LOG_ARG_VALUES_KEY, StringUtils.join(paramValues, SymbolConstant.COMMA)
         );
         operationLogDO.setExtraData(GsonUtil.toJson(extraData));
     }
