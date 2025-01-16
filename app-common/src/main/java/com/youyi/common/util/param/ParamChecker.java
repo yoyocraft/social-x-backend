@@ -1,5 +1,6 @@
 package com.youyi.common.util.param;
 
+import com.youyi.common.type.HasCode;
 import com.youyi.common.util.GsonUtil;
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -100,6 +101,21 @@ public interface ParamChecker<T> {
         return param -> {
             boolean exist = Stream.of(enumClass.getEnumConstants())
                 .anyMatch(e -> StringUtils.equals(e.name(), param));
+            return exist
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
+    }
+
+    static <T extends Enum<T>> ParamChecker<Integer> enumCodeExistChecker(Class<T> enumClass, String errorMsg) {
+        return param -> {
+            boolean exist = Stream.of(enumClass.getEnumConstants())
+                .anyMatch(e -> {
+                    if (e instanceof HasCode item) {
+                        return item.getCode().equals(param);
+                    }
+                    return false;
+                });
             return exist
                 ? CheckResult.success()
                 : CheckResult.of(INVALID_PARAM, errorMsg);

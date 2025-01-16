@@ -4,6 +4,7 @@ import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
+import com.youyi.domain.user.request.UserEditInfoRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import com.youyi.runner.user.model.UserBasicInfoResponse;
 import com.youyi.runner.user.model.VerifyCaptchaResponse;
@@ -47,6 +48,12 @@ public class UserResponseUtil {
     public static Result<Boolean> setPwdSuccess() {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         LOGGER.info("set password, response:{}", GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<Boolean> editUserInfoSuccess(UserEditInfoRequest request) {
+        Result<Boolean> response = Result.success(Boolean.TRUE);
+        LOGGER.info("edit user info, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

@@ -1,8 +1,8 @@
 package com.youyi.domain.user.model;
 
-import com.youyi.common.type.user.GenderType;
 import com.youyi.common.type.user.UserRoleType;
 import com.youyi.common.type.user.UserStatusType;
+import com.youyi.common.type.user.WorkDirectionType;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,13 +19,16 @@ public class UserLoginStateInfo {
 
     private String userId;
     private String nickName;
+    private String desensitizedMobile;
+    private String desensitizedEmail;
     private String avatar;
     private String bio;
     private List<String> personalizedTags;
-    private String location;
-    private String desensitizedMobile;
-    private String desensitizedEmail;
-    private GenderType gender;
+    private String workStartTime;
+    private WorkDirectionType workDirection;
+    private String jobTitle;
+    private String company;
+
     private UserRoleType role;
     private UserStatusType status;
 

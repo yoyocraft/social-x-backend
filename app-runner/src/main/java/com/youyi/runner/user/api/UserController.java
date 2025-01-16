@@ -3,11 +3,12 @@ package com.youyi.runner.user.api;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.Result;
-import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.OperationType;
+import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.user.helper.UserHelper;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
+import com.youyi.domain.user.request.UserEditInfoRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import com.youyi.infra.lock.LocalLockUtil;
@@ -21,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.youyi.common.type.ReturnCode.TOO_MANY_REQUEST;
 import static com.youyi.domain.user.assembler.UserAssembler.USER_ASSEMBLER;
+import static com.youyi.runner.user.util.UserResponseUtil.editUserInfoSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.getCurrentUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.logoutSuccess;
@@ -47,9 +48,7 @@ public class UserController {
         UserDO userDO = USER_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
             () -> userHelper.login(userDO),
-            () -> {
-                throw AppBizException.of(TOO_MANY_REQUEST);
-            },
+            CommonOperationUtil::tooManyRequestError,
             request.getIdentityType(), request.getIdentifier()
         );
         return loginSuccess(request);
@@ -75,7 +74,11 @@ public class UserController {
     public Result<VerifyCaptchaResponse> verifyCaptcha(@RequestBody UserVerifyCaptchaRequest request) {
         UserValidator.checkUserVerifyCaptchaRequest(request);
         UserDO userDO = USER_ASSEMBLER.toDO(request);
-        userHelper.verifyCaptcha(userDO);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> userHelper.verifyCaptcha(userDO),
+            CommonOperationUtil::tooManyRequestError,
+            request.getBizType(), request.getEmail()
+        );
         return verifyCaptchaSuccess(userDO, request);
     }
 
@@ -87,11 +90,23 @@ public class UserController {
         UserDO userDO = USER_ASSEMBLER.toDO(request, token);
         LocalLockUtil.runWithLockFailSafe(
             () -> userHelper.setPwd(userDO),
-            () -> {
-                throw AppBizException.of(TOO_MANY_REQUEST);
-            },
+            CommonOperationUtil::tooManyRequestError,
             token
         );
         return setPwdSuccess();
+    }
+
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.USER_EDIT_INFO)
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    public Result<Boolean> editUserInfo(@RequestBody UserEditInfoRequest request) {
+        UserValidator.checkUserEditInfoRequest(request);
+        UserDO userDO = USER_ASSEMBLER.toDO(request);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> userHelper.editUserInfo(userDO),
+            CommonOperationUtil::tooManyRequestError,
+            request.getUserId()
+        );
+        return editUserInfoSuccess(request);
     }
 }

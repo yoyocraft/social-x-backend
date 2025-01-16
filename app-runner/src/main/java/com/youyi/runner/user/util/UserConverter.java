@@ -19,10 +19,10 @@ public interface UserConverter {
     UserConverter USER_CONVERTER = Mappers.getMapper(UserConverter.class);
 
     @Mappings({
-        @Mapping(target = "gender", expression = "java(userDO.getGender().name())"),
         @Mapping(target = "role", expression = "java(userDO.getRole().name())"),
         @Mapping(target = "desensitizedEmail", source = "originalEmail"),
-        @Mapping(target = "desensitizedMobile", source = "originalPhone")
+        @Mapping(target = "desensitizedMobile", source = "originalPhone"),
+        @Mapping(target = "workDirection", expression = "java(userDO.getWorkDirection().getCode())")
     })
     UserBasicInfoResponse toResponse(UserDO userDO);
 

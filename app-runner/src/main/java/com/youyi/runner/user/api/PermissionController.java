@@ -4,8 +4,8 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.Result;
-import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.OperationType;
+import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.user.helper.PermissionHelper;
 import com.youyi.domain.user.model.PermissionDO;
 import com.youyi.domain.user.request.PermissionAddRequest;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.youyi.common.constant.PermissionConstant.ADD_PERMISSION;
 import static com.youyi.common.constant.PermissionConstant.AUTHORIZE_PERMISSION;
 import static com.youyi.common.constant.PermissionConstant.PERMISSION_MANAGER;
-import static com.youyi.common.type.ReturnCode.TOO_MANY_REQUEST;
 import static com.youyi.domain.user.assembler.PermissionAssembler.PERMISSION_ASSEMBLER;
 import static com.youyi.runner.user.util.PermissionResponseUtil.addSuccess;
 import static com.youyi.runner.user.util.PermissionResponseUtil.authorizeSuccess;
@@ -57,9 +56,7 @@ public class PermissionController {
         PermissionDO permissionDO = PERMISSION_ASSEMBLER.toPermissionDO(request);
         LocalLockUtil.runWithLockFailSafe(
             () -> permissionHelper.authorize(permissionDO),
-            () -> {
-                throw AppBizException.of(TOO_MANY_REQUEST);
-            },
+            CommonOperationUtil::tooManyRequestError,
             request.getRole()
         );
         return authorizeSuccess(request);
@@ -73,9 +70,7 @@ public class PermissionController {
         PermissionDO permissionDO = PERMISSION_ASSEMBLER.toPermissionDO(request);
         LocalLockUtil.runWithLockFailSafe(
             () -> permissionHelper.revoke(permissionDO),
-            () -> {
-                throw AppBizException.of(TOO_MANY_REQUEST);
-            },
+            CommonOperationUtil::tooManyRequestError,
             request.getRole()
         );
         return revokeSuccess(request);

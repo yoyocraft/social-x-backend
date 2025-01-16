@@ -2,16 +2,15 @@ package com.youyi.domain.user.model;
 
 import com.youyi.common.type.BizType;
 import com.youyi.common.type.user.IdentityType;
-import com.youyi.common.type.user.GenderType;
 import com.youyi.common.type.user.UserRoleType;
 import com.youyi.common.type.user.UserStatusType;
+import com.youyi.common.type.user.WorkDirectionType;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.common.util.crypto.IvGenerator;
 import com.youyi.common.util.RandomGenUtil;
+import com.youyi.common.util.crypto.IvGenerator;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.infra.privacy.CryptoManager;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -47,12 +46,14 @@ public class UserDO {
     private String originalPhone;
     private String nickName;
     private String avatar;
-    private GenderType gender;
-    private LocalDate dateOfBirth;
-    private UserStatusType status;
+    private String workStartTime;
+    private WorkDirectionType workDirection;
     private String bio;
     private List<String> personalizedTags;
-    private String location;
+    private String jobTitle;
+    private String company;
+
+    private UserStatusType status;
     private UserRoleType role;
 
     /**
@@ -95,16 +96,32 @@ public class UserDO {
         return UserLoginStateInfo.builder()
             .bio(bio)
             .role(role)
-            .gender(gender)
             .userId(userId)
             .avatar(avatar)
-            .location(location)
             .nickName(nickName)
             .status(status)
             .personalizedTags(personalizedTags)
+            .jobTitle(jobTitle)
+            .company(company)
+            .workStartTime(workStartTime)
+            .workDirection(workDirection)
             .desensitizedMobile(desensitizeMobile(originalPhone))
             .desensitizedEmail(desensitizeEmail(originalEmail))
             .build();
+    }
+
+    public UserInfoPO buildToUpdateUserInfoPO() {
+        UserInfoPO userInfoPO = new UserInfoPO();
+        userInfoPO.setUserId(this.userId);
+        userInfoPO.setNickName(this.nickName);
+        userInfoPO.setAvatar(this.avatar);
+        userInfoPO.setWorkStartTime(this.workStartTime);
+        userInfoPO.setWorkDirection(this.workDirection.getCode());
+        userInfoPO.setBio(this.bio);
+        userInfoPO.setPersonalizedTags(GsonUtil.toJson(this.personalizedTags));
+        userInfoPO.setJobTitle(this.jobTitle);
+        userInfoPO.setCompany(this.company);
+        return userInfoPO;
     }
 
     public void fillUserInfo(UserInfoPO userInfoPO) {
@@ -116,11 +133,13 @@ public class UserDO {
             ? CryptoManager.aesDecrypt(userInfoPO.getPhone(), userInfoPO.getPhoneIv()) : EMPTY;
         this.nickName = userInfoPO.getNickName();
         this.avatar = userInfoPO.getAvatar();
-        this.gender = GenderType.of(userInfoPO.getGender());
-        this.dateOfBirth = userInfoPO.getDateOfBirth();
         this.bio = userInfoPO.getBio();
         this.personalizedTags = GsonUtil.fromJson(userInfoPO.getPersonalizedTags(), List.class, String.class);
-        this.location = userInfoPO.getLocation();
+        this.workStartTime = userInfoPO.getWorkStartTime();
+        this.workDirection = WorkDirectionType.fromCode(userInfoPO.getWorkDirection());
+        this.jobTitle = userInfoPO.getJobTitle();
+        this.company = userInfoPO.getCompany();
+
         this.status = UserStatusType.of(userInfoPO.getStatus());
         this.role = UserRoleType.of(userInfoPO.getRole());
     }
@@ -131,8 +150,10 @@ public class UserDO {
         this.avatar = userLoginStateInfo.getAvatar();
         this.bio = userLoginStateInfo.getBio();
         this.personalizedTags = userLoginStateInfo.getPersonalizedTags();
-        this.location = userLoginStateInfo.getLocation();
-        this.gender = userLoginStateInfo.getGender();
+        this.workStartTime = userLoginStateInfo.getWorkStartTime();
+        this.workDirection = userLoginStateInfo.getWorkDirection();
+        this.jobTitle = userLoginStateInfo.getJobTitle();
+        this.company = userLoginStateInfo.getCompany();
         this.role = userLoginStateInfo.getRole();
         this.originalEmail = userLoginStateInfo.getDesensitizedEmail();
         this.originalPhone = userLoginStateInfo.getDesensitizedMobile();
@@ -150,5 +171,9 @@ public class UserDO {
     public void preSetPwd() {
         this.identifier = this.originalEmail;
         this.identityType = IdentityType.EMAIL_PASSWORD;
+    }
+
+    public boolean isAdmin() {
+        return UserRoleType.ADMIN.equals(this.role);
     }
 }

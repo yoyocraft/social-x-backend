@@ -93,4 +93,14 @@ public class UserRepository {
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
+
+    public void editUserInfo(UserInfoPO userInfoPO) {
+        try {
+            checkNotNull(userInfoPO);
+            userInfoMapper.update(userInfoPO);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
 }

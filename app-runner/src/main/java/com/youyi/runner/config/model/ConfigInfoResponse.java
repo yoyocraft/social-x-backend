@@ -22,6 +22,6 @@ public class ConfigInfoResponse extends BaseResponse {
     @SerializedName("config_value")
     private String configValue;
 
-    @SerializedName("extra_data")
+    @SerializedName("version")
     private Integer version;
 }

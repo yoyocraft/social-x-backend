@@ -16,23 +16,54 @@
         <result property="phoneIv" column="phone_iv"/>
         <result property="nickName" column="nick_name"/>
         <result property="avatar" column="avatar"/>
-        <result property="gender" column="gender"/>
-        <result property="dateOfBirth" column="date_of_birth"/>
+        <result property="workStartTime" column="work_start_time"/>
+        <result property="workDirection" column="work_direction"/>
         <result property="bio" column="bio"/>
         <result property="personalizedTags" column="personalized_tags"/>
-        <result property="location" column="location"/>
+        <result property="jobTitle" column="job_title"/>
+        <result property="company" column="company"/>
         <result property="status" column="status"/>
         <result property="role" column="role"/>
     </resultMap>
 
     <sql id="result_cols">
         id, gmt_create, gmt_modified, deleted_at, extra_data, user_id, email, email_iv, phone, phone_iv, nick_name,
-        avatar, gender, date_of_birth, bio, personalized_tags, location, status, role
+        avatar, work_start_time, work_direction, bio, personalized_tags, job_title, company, status, role
     </sql>
     <insert id="insert">
         INSERT INTO `user_info` (user_id, email, email_iv, phone, phone_iv, nick_name, avatar)
         VALUES (#{userId}, #{email}, #{emailIv}, #{phone}, #{phoneIv}, #{nickName}, #{avatar})
     </insert>
+    <update id="update">
+        UPDATE `user_info`
+        <set>
+            <if test="nickName !=null">
+                nick_name = #{nickName},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar},
+            </if>
+            <if test="workStartTime != null">
+                work_start_time = #{workStartTime},
+            </if>
+            <if test="workDirection != null">
+                work_direction = #{workDirection},
+            </if>
+            <if test="bio != null">
+                bio = #{bio},
+            </if>
+            <if test="personalizedTags != null">
+                personalized_tags = #{personalizedTags},
+            </if>
+            <if test="jobTitle != null">
+                job_title = #{jobTitle},
+            </if>
+            <if test="company != null">
+                company = #{company},
+            </if>
+        </set>
+        WHERE `user_id` = #{userId} AND `deleted_at` = 0
+    </update>
     <select id="queryByEmail" resultType="com.youyi.domain.user.repository.po.UserInfoPO">
         SELECT
         <include refid="result_cols"/>
