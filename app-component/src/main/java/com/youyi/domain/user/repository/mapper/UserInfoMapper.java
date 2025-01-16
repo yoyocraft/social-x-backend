@@ -16,4 +16,6 @@ public interface UserInfoMapper {
     UserInfoPO queryByEmail(@Param("email") String email);
 
     UserInfoPO queryByUserId(@Param("userId") String userId);
+
+    int update(UserInfoPO po);
 }

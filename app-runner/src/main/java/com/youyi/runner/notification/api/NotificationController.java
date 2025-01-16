@@ -2,8 +2,8 @@ package com.youyi.runner.notification.api;
 
 import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.Result;
-import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.OperationType;
+import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.notification.helper.NotificationHelper;
 import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.domain.notification.request.CaptchaNotifyRequest;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.youyi.common.type.ReturnCode.TOO_MANY_REQUEST;
 import static com.youyi.domain.notification.assembler.NotificationAssembler.NOTIFICATION_ASSEMBLER;
 import static com.youyi.runner.notification.util.NotificationResponseUtil.notifyCaptchaSuccess;
 
@@ -37,9 +36,7 @@ public class NotificationController {
         NotificationDO notificationDO = NOTIFICATION_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
             () -> notificationHelper.notifyCaptcha(notificationDO),
-            () -> {
-                throw AppBizException.of(TOO_MANY_REQUEST);
-            },
+            CommonOperationUtil::tooManyRequestError,
             request.getEmail(), request.getBizType()
         );
         return notifyCaptchaSuccess(request);

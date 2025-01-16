@@ -2,8 +2,10 @@ package com.youyi.domain.user.assembler;
 
 import com.youyi.common.type.BizType;
 import com.youyi.common.type.user.IdentityType;
+import com.youyi.common.type.user.WorkDirectionType;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
+import com.youyi.domain.user.request.UserEditInfoRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +22,8 @@ import org.mapstruct.factory.Mappers;
 @Mapper(
     imports = {
         IdentityType.class,
-        BizType.class
+        BizType.class,
+        WorkDirectionType.class
     },
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
@@ -46,6 +49,11 @@ public interface UserAssembler {
         @Mapping(target = "verifyCaptchaToken", source = "token")
     })
     UserDO toDO(UserSetPwdRequest request, String token);
+
+    @Mappings({
+        @Mapping(target = "workDirection", expression = "java(WorkDirectionType.fromCode(request.getWorkDirection()))")
+    })
+    UserDO toDO(UserEditInfoRequest request);
 
     default String originalEmail(UserAuthenticateRequest request) {
         IdentityType identityType = IdentityType.of(request.getIdentityType());

@@ -92,7 +92,6 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
     private void doRecordOpLog(OperationLogDO operationLogDO) {
         try {
-            LOGGER.info("Record operation log: {}", GsonUtil.toJson(operationLogDO));
             operationLogHelper.recordOperationLog(operationLogDO);
         } catch (Exception e) {
             LOGGER.error("Error occurred while recording operation log: {}", e.getMessage(), e);

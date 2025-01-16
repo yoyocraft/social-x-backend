@@ -43,16 +43,16 @@ CREATE TABLE `user_info` (
     `phone_iv` CHAR(24) NOT NULL DEFAULT '' COMMENT 'phone iv, for AES encryption, encoded by base64',
     `nick_name` VARCHAR(64) NOT NULL COMMENT 'user nick name',
     `avatar` VARCHAR(255) NOT NULL DEFAULT '/media/avatar/default.png' COMMENT 'avatar',
-    `gender` TINYINT NOT NULL DEFAULT 0 COMMENT 'gender, 0: UNKNOWN, 1: MALE, 2: FEMALE',
-    `date_of_birth` DATE NOT NULL DEFAULT '1970-01-01' COMMENT 'date of birth',
-    `bio` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'brief introduction',
+    `work_start_time` CHAR(7) NOT NULL DEFAULT '2025-07' COMMENT 'Date of joining the workforce in yyyy-MM format',
+    `work_direction` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'work direction, e.g. 0: UNKNOWN, 1: BACKEND, 2: FRONTEND, 3: FULL_STACK',
+    `bio` VARCHAR(255) NOT NULL DEFAULT '这个人很懒，什么都没有留下...' COMMENT 'brief introduction',
     `personalized_tags` JSON COMMENT 'personalized tags',
-    `location` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'location',
+    `job_title` VARCHAR(64) NOT NULL DEFAULT '暂无' COMMENT 'job title',
+    `company` VARCHAR(64) NOT NULL DEFAULT '暂无' COMMENT 'company',
     `status` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'status, 0: NORMAL, 1: LOCKED',
     `role` VARCHAR(16) NOT NULL DEFAULT 'USER' COMMENT 'role, USER, ADMIN',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_user_id` (`user_id`),
-    UNIQUE KEY `uk_nick_name` (`nick_name`),
     UNIQUE KEY `uk_email_deleted_at` (`email`, `deleted_at`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'user';
 

@@ -1,7 +1,6 @@
 package com.youyi.domain.user.repository.po;
 
 import com.youyi.common.base.BasePO;
-import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,11 +20,12 @@ public class UserInfoPO extends BasePO {
 
     private String nickName;
     private String avatar;
-    private Integer gender;
-    private LocalDate dateOfBirth;
+    private String workStartTime;
+    private Integer workDirection;
     private String bio;
     private String personalizedTags;
-    private String location;
+    private String jobTitle;
+    private String company;
 
     private Integer status;
     private String role;

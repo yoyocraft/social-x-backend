@@ -1,5 +1,7 @@
 package com.youyi.runner.config.api;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.Result;
 import com.youyi.common.type.OperationType;
@@ -17,6 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.youyi.common.constant.PermissionConstant.CONFIG_MANAGER;
+import static com.youyi.common.constant.PermissionConstant.CREATE_CONFIG;
+import static com.youyi.common.constant.PermissionConstant.DELETE_CONFIG;
+import static com.youyi.common.constant.PermissionConstant.READ_CONFIG;
+import static com.youyi.common.constant.PermissionConstant.UPDATE_CONFIG;
 import static com.youyi.domain.conf.assembler.ConfigAssembler.CONFIG_ASSEMBLER;
 import static com.youyi.runner.config.util.ConfigResponseUtil.createSuccess;
 import static com.youyi.runner.config.util.ConfigResponseUtil.deleteSuccess;
@@ -34,6 +41,7 @@ public class ConfigController {
 
     private final ConfigHelper configHelper;
 
+    @SaCheckPermission(value = {CONFIG_MANAGER, CREATE_CONFIG}, mode = SaMode.OR)
     @RecordOpLog(opType = OperationType.INSERT_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.POST)
     public Result<Boolean> createConfig(@RequestBody ConfigCreateRequest request) {
@@ -43,6 +51,7 @@ public class ConfigController {
         return createSuccess(request);
     }
 
+    @SaCheckPermission(value = {CONFIG_MANAGER, READ_CONFIG}, mode = SaMode.OR)
     @RequestMapping(method = RequestMethod.GET)
     public Result<ConfigInfoResponse> queryConfig(ConfigQueryRequest request) {
         ConfigValidator.validateConfigQueryRequest(request);
@@ -51,6 +60,7 @@ public class ConfigController {
         return querySuccess(config, request);
     }
 
+    @SaCheckPermission(value = {CONFIG_MANAGER, UPDATE_CONFIG}, mode = SaMode.OR)
     @RecordOpLog(opType = OperationType.UPDATE_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.PUT)
     public Result<Boolean> updateConfig(@RequestBody ConfigUpdateRequest request) {
@@ -60,6 +70,7 @@ public class ConfigController {
         return updateSuccess(request);
     }
 
+    @SaCheckPermission(value = {CONFIG_MANAGER, DELETE_CONFIG}, mode = SaMode.OR)
     @RecordOpLog(opType = OperationType.DELETE_CONFIG, system = true)
     @RequestMapping(method = RequestMethod.DELETE)
     public Result<Boolean> deleteConfig(@RequestBody ConfigDeleteRequest request) {
