@@ -98,3 +98,20 @@ CREATE TABLE `role_permission` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_role` (`role`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'role permission';
+
+DROP TABLE IF EXISTS `media_resource`;
+
+CREATE TABLE `media_resource` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
+    `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
+    `extra_data` JSON COMMENT 'extra data',
+    `resource_key` VARCHAR(128) NOT NULL COMMENT 'resource key',
+    `resource_type` VARCHAR(32) NOT NULL COMMENT 'resource type, e.g. IMAGE, VIDEO, AUDIO, DOCUMENT, OTHER',
+    `resource_url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'resource url',
+    `source` VARCHAR(32) NOT NULL COMMENT 'resource source, e.g. AVATAR, POST, REPLY',
+    `creator_id` VARCHAR(64) NOT NULL COMMENT 'creator id',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_resource_key` (`resource_key`)
+) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'media resource';

@@ -20,6 +20,8 @@ public class RandomGenUtil {
 
     public static final int USER_PWD_SALT_LENGTH = 64;
 
+    public static final int RESOURCE_KEY_LENGTH = 128;
+
 
     private RandomGenUtil() {
     }
@@ -42,5 +44,9 @@ public class RandomGenUtil {
 
     public static String genPwdSalt() {
         return RandomStringUtils.secure().nextAlphanumeric(USER_PWD_SALT_LENGTH);
+    }
+
+    public static String genResourceKey() {
+        return RandomStringUtils.secure().nextAlphanumeric(RESOURCE_KEY_LENGTH);
     }
 }

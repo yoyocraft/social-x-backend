@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.ReturnCode;
 import com.youyi.common.util.GsonUtil;
+import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.helper.login.LoginStrategy;
 import com.youyi.domain.user.helper.login.LoginStrategyFactory;
 import com.youyi.domain.user.model.UserDO;
@@ -23,12 +24,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.ReturnCode.NOT_LOGIN;
 import static com.youyi.common.type.ReturnCode.PERMISSION_DENIED;
-import static com.youyi.common.type.conf.ConfigKey.QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH;
 import static com.youyi.common.util.RandomGenUtil.genUserVerifyCaptchaToken;
 import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey;
 import static com.youyi.infra.cache.repo.UserCacheRepo.USER_VERIFY_TOKEN_TTL;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserVerifyTokenKey;
-import static com.youyi.infra.conf.core.SystemConfigService.getBooleanConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -42,6 +41,7 @@ public class UserHelper {
 
     private final LoginStrategyFactory loginStrategyFactory;
     private final CacheManager cacheManager;
+    private final UserService userService;
     private final UserRepository userRepository;
 
     public void login(UserDO userDO) {
@@ -51,7 +51,7 @@ public class UserHelper {
 
     public UserDO getCurrentUser() {
         checkLogin();
-        return doGetCurrentUser();
+        return userService.getCurrentUserInfo();
     }
 
     public void logout() {
@@ -67,7 +67,7 @@ public class UserHelper {
 
     public void setPwd(UserDO userDO) {
         // 1. 获取当前用户信息
-        loadCurrentUserInfo(userDO);
+        loadCurrentUserInfoForUpdate(userDO);
         // 2. 校验Token
         checkToken(userDO);
         // 3. 加密
@@ -78,41 +78,13 @@ public class UserHelper {
 
     public void editUserInfo(UserDO userDO) {
         // 1. 获取当前用户信息
-        UserDO currentUser = doGetCurrentUser();
+        UserDO currentUser = userService.getCurrentUserInfo();
         // 2. 校验
         checkCanEdit(userDO, currentUser);
         // 3. 更新
         doEditUserInfo(userDO);
         // 4. 更新登录态信息
         updateCurrentUserInfo();
-    }
-
-    UserDO doGetCurrentUser() {
-        boolean queryFromDB = getBooleanConfig(QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH);
-        if (queryFromDB) {
-            LOGGER.info("[UserHelper] load current user from db");
-            return loadCurrentUserFromDB();
-        }
-        return loadCurrentUserFromSession();
-    }
-
-    UserDO loadCurrentUserFromSession() {
-        Object loginId = StpUtil.getLoginIdDefaultNull();
-        String loginUserStateInfoJson = (String) StpUtil.getSessionByLoginId(loginId).get(USER_LOGIN_STATE);
-        UserLoginStateInfo loginStateInfo = GsonUtil.fromJson(loginUserStateInfoJson, UserLoginStateInfo.class);
-        UserDO userDO = new UserDO();
-        userDO.fillUserInfo(loginStateInfo);
-        return userDO;
-    }
-
-    UserDO loadCurrentUserFromDB() {
-        Object loginId = StpUtil.getLoginIdDefaultNull();
-        String userId = (String) loginId;
-        UserInfoPO userInfoPO = userRepository.queryUserInfoByUserId(userId);
-        checkNotNull(userInfoPO);
-        UserDO userDO = new UserDO();
-        userDO.fillUserInfo(userInfoPO);
-        return userDO;
     }
 
     void checkLogin() {
@@ -146,13 +118,6 @@ public class UserHelper {
         String verifyTokenCacheKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
         cacheManager.set(verifyTokenCacheKey, verifyToken, USER_VERIFY_TOKEN_TTL);
         cacheManager.delete(ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType()));
-    }
-
-    void loadCurrentUserInfo(UserDO userDO) {
-        UserDO currentUser = loadCurrentUserFromSession();
-        checkNotNull(currentUser);
-        UserInfoPO userInfoPO = userRepository.queryUserInfoByUserId(currentUser.getUserId());
-        userDO.fillUserInfo(userInfoPO);
     }
 
     void checkToken(UserDO userDO) {
@@ -199,9 +164,16 @@ public class UserHelper {
     }
 
     void updateCurrentUserInfo() {
-        UserDO userDO = loadCurrentUserFromDB();
+        UserDO userDO = userService.loadCurrentUserFromDB();
         UserLoginStateInfo loginStateInfo = userDO.buildLoginStateInfo();
         StpUtil.login(userDO.getUserId());
         StpUtil.getSession().set(USER_LOGIN_STATE, GsonUtil.toJson(loginStateInfo));
+    }
+
+    void loadCurrentUserInfoForUpdate(UserDO userDO) {
+        UserDO currentUser = userService.loadCurrentUserFromSession();
+        checkNotNull(currentUser);
+        UserInfoPO userInfoPO = userRepository.queryUserInfoByUserId(currentUser.getUserId());
+        userDO.fillUserInfo(userInfoPO);
     }
 }
