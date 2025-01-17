@@ -1,6 +1,5 @@
 package com.youyi.runner.aspect;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.constant.SymbolConstant;
@@ -9,12 +8,12 @@ import com.youyi.common.util.GsonUtil;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.audit.helper.OperationLogHelper;
 import com.youyi.domain.audit.model.OperationLogDO;
+import com.youyi.domain.audit.model.OperationLogExtraData;
 import com.youyi.domain.user.helper.UserHelper;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.infra.conf.core.ConfigLoader;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -46,12 +45,6 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
     // ========================== Constant ==========================
     public static final String SYSTEM_OPERATOR_ID = "-1";
     public static final String SYSTEM_OPERATOR_NAME = "SocialX System";
-
-    public static final String LOG_METHOD_KEY = "method";
-    public static final String LOG_CLASS_KEY = "class_name";
-    public static final String LOG_ARG_TYPES_KEY = "arg_types";
-    public static final String LOG_ARG_NAMES_KEY = "arg_names";
-    public static final String LOG_ARG_VALUES_KEY = "arg_values";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordOpLogAspect.class);
 
@@ -144,13 +137,13 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         if (!desensitize) {
             paramValues = Arrays.stream(parameterValues).map(GsonUtil::toJson).toList();
         }
-        Map<String, Object> extraData = ImmutableMap.of(
-            LOG_METHOD_KEY, methodName,
-            LOG_CLASS_KEY, className,
-            LOG_ARG_TYPES_KEY, StringUtils.join(types, SymbolConstant.COMMA),
-            LOG_ARG_NAMES_KEY, StringUtils.join(parameterNames, SymbolConstant.COMMA),
-            LOG_ARG_VALUES_KEY, StringUtils.join(paramValues, SymbolConstant.COMMA)
-        );
+        OperationLogExtraData extraData = OperationLogExtraData.builder()
+            .method(methodName)
+            .className(className)
+            .argType(StringUtils.join(types, SymbolConstant.COMMA))
+            .argName(StringUtils.join(parameterNames, SymbolConstant.COMMA))
+            .argValue(StringUtils.join(paramValues, SymbolConstant.COMMA))
+            .build();
         operationLogDO.setExtraData(GsonUtil.toJson(extraData));
     }
 

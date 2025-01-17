@@ -24,6 +24,8 @@ public enum ReturnCode implements ErrorCode {
     USER_NOT_EXIST("USER_NOT_EXIST", "用户不存在，请使用验证码登录（登录即注册）"),
     PASSWORD_ERROR("PASSWORD_ERROR", "密码错误，请重试"),
     PERMISSION_DENIED("PERMISSION_DENIED", "权限不足"),
+
+    UNKNOWN("UNKNOWN", "未知错误"),
     ;
 
     private final String code;

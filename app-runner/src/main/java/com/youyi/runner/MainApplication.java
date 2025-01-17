@@ -17,7 +17,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
     basePackages = {
         "com.youyi.infra.conf.repository.mapper",
         "com.youyi.domain.audit.repository.mapper",
-        "com.youyi.domain.user.repository.mapper"
+        "com.youyi.domain.user.repository.mapper",
+        "com.youyi.domain.media.repository.mapper"
     },
     annotationClass = Mapper.class
 )
