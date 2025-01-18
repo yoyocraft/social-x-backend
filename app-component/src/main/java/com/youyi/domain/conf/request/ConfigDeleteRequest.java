@@ -13,6 +13,6 @@ import lombok.Setter;
 @Setter
 public class ConfigDeleteRequest extends BaseRequest {
 
-    @SerializedName("config_key")
+    @SerializedName("configKey")
     private String configKey;
 }

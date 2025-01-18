@@ -13,12 +13,12 @@ import lombok.Setter;
 @Setter
 public class ConfigUpdateRequest extends BaseRequest {
 
-    @SerializedName("config_key")
+    @SerializedName("configKey")
     private String configKey;
 
-    @SerializedName("new_config_value")
+    @SerializedName("newConfigValue")
     private String newConfigValue;
 
-    @SerializedName("curr_version")
+    @SerializedName("currVersion")
     private Integer currVersion;
 }

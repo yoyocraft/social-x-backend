@@ -38,3 +38,4 @@ build/
 *local.*
 *.log
 .flattened-pom.xml
+CorsConfig.java

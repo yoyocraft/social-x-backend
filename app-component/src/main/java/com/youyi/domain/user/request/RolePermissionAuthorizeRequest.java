@@ -17,6 +17,6 @@ public class RolePermissionAuthorizeRequest extends BaseRequest {
     @SerializedName("role")
     private String role;
 
-    @SerializedName("granted_permissions")
+    @SerializedName("grantedPermissions")
     private List<String> grantedPermissions;
 }

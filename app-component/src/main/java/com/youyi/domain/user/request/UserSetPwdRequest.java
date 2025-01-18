@@ -13,9 +13,9 @@ import lombok.Setter;
 @Setter
 public class UserSetPwdRequest extends BaseRequest {
 
-    @SerializedName("new_password")
+    @SerializedName("newPassword")
     private String newPassword;
 
-    @SerializedName("confirm_password")
+    @SerializedName("confirmPassword")
     private String confirmPassword;
 }

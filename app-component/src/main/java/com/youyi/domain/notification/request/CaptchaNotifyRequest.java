@@ -17,7 +17,7 @@ public class CaptchaNotifyRequest extends BaseRequest {
     /**
      * @see BizType
      */
-    @SerializedName("biz_type")
+    @SerializedName("bizType")
     private String bizType;
 
     @SerializedName("email")
