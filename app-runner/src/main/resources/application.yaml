@@ -1,5 +1,7 @@
 server:
   port: ${SERVER_PORT}
+  servlet:
+    context-path: ${CONTEXT_PATH}
 
 spring:
   application:
@@ -7,6 +9,9 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -45,3 +50,15 @@ sa-token:
   is-share: ${SA_TOKEN_IS_SHARE}
   token-style: ${SA_TOKEN_STYLE}
   is-log: ${SA_TOKEN_IS_LOG}
+
+# 接口文档配置
+knife4j:
+  enable: ${KNIFE4J_ENABLED}
+  openapi:
+    title: ${APP_NAME}
+    version: 1.0
+    group:
+      default:
+        api-rule: package
+        api-rule-resources:
+          - com.youyi.runner
