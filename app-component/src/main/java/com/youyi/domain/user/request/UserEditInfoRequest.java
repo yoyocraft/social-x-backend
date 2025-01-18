@@ -14,28 +14,28 @@ import lombok.Setter;
 @Setter
 public class UserEditInfoRequest extends BaseRequest {
 
-    @SerializedName("user_id")
+    @SerializedName("userId")
     private String userId;
 
-    @SerializedName("nick_name")
+    @SerializedName("nickName")
     private String nickName;
 
     /**
      * yyyy-MM
      */
-    @SerializedName("work_start_time")
+    @SerializedName("workStartTime")
     private String workStartTime;
 
-    @SerializedName("work_direction")
+    @SerializedName("workDirection")
     private Integer workDirection;
 
     @SerializedName("bio")
     private String bio;
 
-    @SerializedName("personalized_tags")
+    @SerializedName("personalizedTags")
     private List<String> personalizedTags;
 
-    @SerializedName("job_title")
+    @SerializedName("jobTitle")
     private String jobTitle;
 
     @SerializedName("company")

@@ -13,13 +13,13 @@ import lombok.Setter;
 @Setter
 public class ConfigInfoResponse extends BaseResponse {
 
-    @SerializedName("config_id")
+    @SerializedName("configId")
     private Long configId;
 
-    @SerializedName("config_key")
+    @SerializedName("configKey")
     private String configKey;
 
-    @SerializedName("config_value")
+    @SerializedName("configValue")
     private String configValue;
 
     @SerializedName("version")

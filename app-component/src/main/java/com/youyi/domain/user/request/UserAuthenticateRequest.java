@@ -18,7 +18,7 @@ public class UserAuthenticateRequest extends BaseRequest {
     /**
      * @see IdentityType
      */
-    @SerializedName("identity_type")
+    @SerializedName("identityType")
     private String identityType;
 
     /**

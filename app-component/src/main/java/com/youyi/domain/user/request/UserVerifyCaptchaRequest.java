@@ -23,6 +23,6 @@ public class UserVerifyCaptchaRequest extends BaseRequest {
     /**
      * @see BizType
      */
-    @SerializedName("biz_type")
+    @SerializedName("bizType")
     private String bizType;
 }

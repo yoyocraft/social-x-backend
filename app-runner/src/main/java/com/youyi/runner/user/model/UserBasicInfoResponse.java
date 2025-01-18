@@ -14,10 +14,10 @@ import lombok.Setter;
 @Setter
 public class UserBasicInfoResponse extends BaseResponse {
 
-    @SerializedName("user_id")
+    @SerializedName("userId")
     private String userId;
 
-    @SerializedName("nick_name")
+    @SerializedName("nickName")
     private String nickName;
 
     @SerializedName("avatar")
@@ -26,25 +26,25 @@ public class UserBasicInfoResponse extends BaseResponse {
     @SerializedName("bio")
     private String bio;
 
-    @SerializedName("personalized_tags")
+    @SerializedName("personalizedTags")
     private List<String> personalizedTags;
 
-    @SerializedName("work_start_time")
+    @SerializedName("workStartTime")
     private String workStartTime;
 
-    @SerializedName("work_direction")
+    @SerializedName("workDirection")
     private Integer workDirection;
 
-    @SerializedName("job_title")
+    @SerializedName("jobTitle")
     private String jobTitle;
 
     @SerializedName("company")
     private String company;
 
-    @SerializedName("desensitized_mobile")
+    @SerializedName("desensitizedMobile")
     private String desensitizedMobile;
 
-    @SerializedName("desensitized_email")
+    @SerializedName("desensitizedEmail")
     private String desensitizedEmail;
 
     @SerializedName("role")

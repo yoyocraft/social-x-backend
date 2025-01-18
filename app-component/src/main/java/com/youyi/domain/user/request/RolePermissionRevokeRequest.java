@@ -17,6 +17,6 @@ public class RolePermissionRevokeRequest extends BaseRequest {
     @SerializedName("role")
     private String role;
 
-    @SerializedName("revoke_permissions")
+    @SerializedName("revokePermissions")
     private List<String> revokePermissions;
 }
