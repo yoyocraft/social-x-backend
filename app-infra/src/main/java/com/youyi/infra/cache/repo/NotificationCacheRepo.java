@@ -14,7 +14,7 @@ import static com.youyi.infra.cache.util.CacheUtil.ofKey;
  */
 public class NotificationCacheRepo {
 
-    public static final String EMAIL_CAPTCHA_KEY = ofKey("email", "captcha", "${email}", "${bizType}");
+    public static final String EMAIL_CAPTCHA_KEY = ofKey("em", "cap", "${email}", "${bizType}");
     public static final Duration EMAIL_CAPTCHA_TTL = Duration.ofMinutes(10);
 
     public static String ofEmailCaptchaKey(String email, BizType bizType) {

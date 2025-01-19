@@ -1,10 +1,14 @@
 package com.youyi.common.type;
 
+import org.apache.commons.lang3.EnumUtils;
+
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/05
  */
 public enum OperationType {
+
+    UNKNOWN,
 
     INSERT_CONFIG,
     UPDATE_CONFIG,
@@ -22,4 +26,8 @@ public enum OperationType {
     AUTHORIZE_PERMISSION,
     REVOKE_PERMISSION,
     ;
+
+    public static OperationType of(String type) {
+        return EnumUtils.getEnum(OperationType.class, type, UNKNOWN);
+    }
 }

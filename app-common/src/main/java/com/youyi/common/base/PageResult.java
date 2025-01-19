@@ -1,5 +1,6 @@
 package com.youyi.common.base;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,8 +13,15 @@ import lombok.Getter;
 @AllArgsConstructor
 public class PageResult<T> {
 
+    @SerializedName("total")
     private Long total;
+
+    @SerializedName("pno")
     private Long pageNo;
+
+    @SerializedName("ps")
     private Long pageSize;
+
+    @SerializedName("data")
     private List<T> data;
 }

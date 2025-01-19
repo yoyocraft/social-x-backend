@@ -1,5 +1,6 @@
 package com.youyi.common.base;
 
+import com.google.gson.annotations.SerializedName;
 import com.youyi.common.type.RequestState;
 import com.youyi.common.type.ErrorCode;
 import com.youyi.common.type.ReturnCode;
@@ -19,20 +20,25 @@ public class Result<T> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @SerializedName("data")
     private T data;
 
     /**
      * {@link ReturnCode}
      */
+    @SerializedName("code")
     private String code;
 
+    @SerializedName("message")
     private String message;
 
     /**
      * {@link RequestState}
      */
+    @SerializedName("bizState")
     private String bizState;
 
+    @SerializedName("timestamp")
     private Long timestamp;
 
     private Result(ErrorCode errorCode, String bizState) {

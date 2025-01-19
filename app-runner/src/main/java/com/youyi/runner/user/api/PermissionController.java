@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.youyi.common.constant.PermissionConstant.ADD_PERMISSION;
 import static com.youyi.common.constant.PermissionConstant.AUTHORIZE_PERMISSION;
 import static com.youyi.common.constant.PermissionConstant.PERMISSION_MANAGER;
+import static com.youyi.common.constant.PermissionConstant.REVOKE_PERMISSION;
 import static com.youyi.domain.user.assembler.PermissionAssembler.PERMISSION_ASSEMBLER;
 import static com.youyi.runner.user.util.PermissionResponseUtil.addSuccess;
 import static com.youyi.runner.user.util.PermissionResponseUtil.authorizeSuccess;
@@ -62,7 +63,7 @@ public class PermissionController {
         return authorizeSuccess(request);
     }
 
-    @SaCheckPermission(value = {PERMISSION_MANAGER, AUTHORIZE_PERMISSION}, mode = SaMode.OR)
+    @SaCheckPermission(value = {PERMISSION_MANAGER, REVOKE_PERMISSION}, mode = SaMode.OR)
     @RecordOpLog(opType = OperationType.REVOKE_PERMISSION, system = true)
     @RequestMapping(value = "/revoke", method = RequestMethod.POST)
     public Result<Boolean> revoke(@RequestBody RolePermissionRevokeRequest request) {
