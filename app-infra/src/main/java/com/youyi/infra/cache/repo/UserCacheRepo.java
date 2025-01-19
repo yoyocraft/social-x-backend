@@ -14,7 +14,10 @@ import static com.youyi.infra.cache.util.CacheUtil.ofKey;
  */
 public class UserCacheRepo {
 
-    public static final String USER_VERIFY_TOKEN_KEY = ofKey("user", "verify", "captcha", "${email}", "${bizType}");
+    /**
+     * u:vrf:cap:${email}:${bizType}
+     */
+    public static final String USER_VERIFY_TOKEN_KEY = ofKey("u", "vrf", "cap", "${email}", "${bizType}");
     public static final Duration USER_VERIFY_TOKEN_TTL = Duration.ofMinutes(10);
 
     public static String ofUserVerifyTokenKey(String email, BizType bizType) {

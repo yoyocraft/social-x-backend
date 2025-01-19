@@ -14,7 +14,7 @@ import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import static com.youyi.common.util.LogUtil.runWithCost;
+import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
 
 /**
  * Config loader using local memory cache

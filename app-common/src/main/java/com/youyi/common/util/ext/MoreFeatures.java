@@ -1,6 +1,7 @@
 package com.youyi.common.util.ext;
 
 import com.youyi.common.exception.AppSystemException;
+import org.slf4j.Logger;
 
 import static com.youyi.common.type.ReturnCode.UNKNOWN;
 
@@ -23,6 +24,18 @@ public class MoreFeatures {
             return supplier.get();
         } catch (Exception e) {
             throw AppSystemException.of(UNKNOWN, e);
+        }
+    }
+
+    public static void runWithCost(Logger logger, Runnable action, String loggerMessage) {
+        long start = System.currentTimeMillis();
+        try {
+            action.run();
+        } catch (Exception e) {
+            logger.error("[runWithCost]{}, execute with error", loggerMessage, e);
+        } finally {
+            long cost = System.currentTimeMillis() - start;
+            logger.info("[runWithCost]{}, cost:{}ms", loggerMessage, cost);
         }
     }
 }

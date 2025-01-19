@@ -17,6 +17,7 @@
         <dependency>
             <groupId>com.youyi</groupId>
             <artifactId>app-common</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.youyi</groupId>

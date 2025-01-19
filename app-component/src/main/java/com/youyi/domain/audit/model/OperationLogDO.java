@@ -1,5 +1,7 @@
 package com.youyi.domain.audit.model;
 
+import com.youyi.common.type.OperationType;
+import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.audit.repository.po.OperationLogPO;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,17 +14,17 @@ import lombok.Setter;
 @Setter
 public class OperationLogDO {
 
-    private String operationType;
+    private OperationType operationType;
     private String operatorId;
     private String operatorName;
-    private String extraData;
+    private OperationLogExtraData extraData;
 
     public OperationLogPO buildToSaveOperationLog() {
         OperationLogPO toSaveOperationLog = new OperationLogPO();
-        toSaveOperationLog.setOperationType(operationType);
+        toSaveOperationLog.setOperationType(operationType.name());
         toSaveOperationLog.setOperatorId(operatorId);
         toSaveOperationLog.setOperatorName(operatorName);
-        toSaveOperationLog.setExtraData(extraData);
+        toSaveOperationLog.setExtraData(GsonUtil.toJson(extraData));
         return toSaveOperationLog;
     }
 

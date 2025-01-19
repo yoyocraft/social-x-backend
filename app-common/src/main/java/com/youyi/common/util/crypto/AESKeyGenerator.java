@@ -12,6 +12,7 @@ import org.apache.commons.codec.binary.Base64;
 public class AESKeyGenerator {
 
     private static final String ALGORITHM = "AES";
+
     /**
      * AES Key size, in bits, 16 bytes
      */
@@ -19,13 +20,9 @@ public class AESKeyGenerator {
 
     public static String generateAESKey() throws Exception {
         KeyGenerator keyGenerator = KeyGenerator.getInstance(ALGORITHM);
-
         SecureRandom secureRandom = new SecureRandom();
-
         keyGenerator.init(KEY_SIZE, secureRandom);
-
         SecretKey secretKey = keyGenerator.generateKey();
-
         return Base64.encodeBase64String(secretKey.getEncoded());
     }
 }

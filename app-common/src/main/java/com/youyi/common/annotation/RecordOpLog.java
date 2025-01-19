@@ -11,9 +11,9 @@ import java.lang.annotation.Target;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/05
  */
+@Documented
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
 public @interface RecordOpLog {
 
     /**
