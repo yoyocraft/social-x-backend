@@ -110,7 +110,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
         OperationLogDO operationLogDO = new OperationLogDO();
 
-        operationLogDO.setOperationType(recordOpLog.opType().name());
+        operationLogDO.setOperationType(recordOpLog.opType());
         if (recordOpLog.system()) {
             operationLogDO.setOperatorId(SYSTEM_OPERATOR_ID);
             operationLogDO.setOperatorName(SYSTEM_OPERATOR_NAME);
@@ -144,7 +144,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
             .argName(StringUtils.join(parameterNames, SymbolConstant.COMMA))
             .argValue(StringUtils.join(paramValues, SymbolConstant.COMMA))
             .build();
-        operationLogDO.setExtraData(GsonUtil.toJson(extraData));
+        operationLogDO.setExtraData(extraData);
     }
 
     @Override
