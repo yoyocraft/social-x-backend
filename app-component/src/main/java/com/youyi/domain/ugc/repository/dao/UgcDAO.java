@@ -2,6 +2,7 @@ package com.youyi.domain.ugc.repository.dao;
 
 import com.google.common.collect.Lists;
 import com.mongodb.client.result.UpdateResult;
+import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +22,7 @@ import static com.youyi.common.constant.UgcConstant.UGC_ATTACHMENT_URLS;
 import static com.youyi.common.constant.UgcConstant.UGC_AUTHOR_ID;
 import static com.youyi.common.constant.UgcConstant.UGC_CONTENT;
 import static com.youyi.common.constant.UgcConstant.UGC_COVER;
+import static com.youyi.common.constant.UgcConstant.UGC_EXTRA_DATA;
 import static com.youyi.common.constant.UgcConstant.UGC_GMT_MODIFIED;
 import static com.youyi.common.constant.UgcConstant.UGC_ID;
 import static com.youyi.common.constant.UgcConstant.UGC_STATUS;
@@ -56,7 +58,8 @@ public class UgcDAO {
             .set(UGC_ATTACHMENT_URLS, ugcDocument.getAttachmentUrls())
             .set(UGC_TAGS, ugcDocument.getTags())
             .set(UGC_STATUS, ugcDocument.getStatus())
-            .set(UGC_GMT_MODIFIED, ugcDocument.getGmtModified());
+            .set(UGC_GMT_MODIFIED, ugcDocument.getGmtModified())
+            .set(UGC_EXTRA_DATA, ugcDocument.getExtraData());
         return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
     }
 
@@ -75,7 +78,8 @@ public class UgcDAO {
 
     public Page<UgcDocument> queryByKeywordAndStatusForSelf(String keyword, String ugcStatus, String authorId, int page, int size) {
         Query query = new Query();
-        if (StringUtils.isNotBlank(ugcStatus)) {
+        if (UgcStatusType.ALL != UgcStatusType.of(ugcStatus)) {
+            // 查询指定状态的 UGC
             query.addCriteria(Criteria.where(UGC_STATUS).is(ugcStatus));
         } else {
             // 查询除 DRAFT, DELETED 的 UGC
@@ -83,8 +87,11 @@ public class UgcDAO {
             query.addCriteria(Criteria.where(UGC_STATUS).nin(excludeStatus));
         }
         if (StringUtils.isNotBlank(keyword)) {
-            query.addCriteria(Criteria.where(UGC_TITLE).regex(".*" + keyword + ".*", "i"))
-                .addCriteria(Criteria.where(UGC_SUMMARY).regex(".*" + keyword + ".*", "i"));
+            Criteria regexCriteria = new Criteria().orOperator(
+                Criteria.where(UGC_TITLE).regex(".*" + keyword + ".*", "i"),
+                Criteria.where(UGC_SUMMARY).regex(".*" + keyword + ".*", "i")
+            );
+            query.addCriteria(regexCriteria);
         }
         query.addCriteria(Criteria.where(UGC_AUTHOR_ID).is(authorId));
 
@@ -97,5 +104,21 @@ public class UgcDAO {
         long total = mongoTemplate.count(query, UgcDocument.class);
 
         return new PageImpl<>(documents, PageRequest.of(page, size), total);
+    }
+
+    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcStatus, LocalDateTime lastCursor, int size) {
+        Query query = new Query();
+        if (UgcStatusType.ALL != UgcStatusType.of(ugcStatus)) {
+            query.addCriteria(Criteria.where(UGC_STATUS).is(ugcStatus));
+        } else {
+            // 查询除 DRAFT, DELETED 的 UGC
+            List<String> excludeStatus = Lists.newArrayList(DRAFT.name(), DELETED.name());
+            query.addCriteria(Criteria.where(UGC_STATUS).nin(excludeStatus));
+        }
+        // 分页 && 排序
+        query.addCriteria(Criteria.where(UGC_GMT_MODIFIED).lt(lastCursor));
+        query.limit(size);
+        query.with(Sort.by(Sort.Direction.DESC, UGC_GMT_MODIFIED, UGC_ID));
+        return mongoTemplate.find(query, UgcDocument.class);
     }
 }

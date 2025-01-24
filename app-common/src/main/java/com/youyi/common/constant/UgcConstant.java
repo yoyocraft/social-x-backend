@@ -17,6 +17,8 @@ public class UgcConstant {
     public static final String UGC_STATUS = "status";
 
     public static final String UGC_GMT_MODIFIED = "gmtModified";
+    public static final String UGC_GMT_CREATE = "gmtCreate";
+    public static final String UGC_EXTRA_DATA = "extraData";
 
     public static final String UGC_TITLE = "title";
     public static final String UGC_CONTENT = "content";

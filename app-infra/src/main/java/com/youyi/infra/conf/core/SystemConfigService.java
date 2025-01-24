@@ -96,6 +96,24 @@ public class SystemConfigService {
         return getLongConfig(key.name(), defaultValue);
     }
 
+    // ====================== integer type ======================
+
+    public static Integer getIntegerConfig(String key) {
+        return getIntegerConfig(key, 0);
+    }
+
+    public static Integer getIntegerConfig(String key, Integer defaultValue) {
+        return getCacheValue(key, Integer.class, defaultValue);
+    }
+
+    public static Integer getIntegerConfig(ConfigKey key) {
+        return getIntegerConfig(key, 0);
+    }
+
+    public static Integer getIntegerConfig(ConfigKey key, Integer defaultValue) {
+        return getIntegerConfig(key.name(), defaultValue);
+    }
+
     // ====================== class type ======================
 
     public static <T> T getCacheValue(String configKey, Class<T> type) {

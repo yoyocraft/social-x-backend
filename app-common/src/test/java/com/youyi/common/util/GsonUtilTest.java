@@ -3,6 +3,7 @@ package com.youyi.common.util;
 import com.google.common.collect.Lists;
 import com.youyi.common.type.user.PermissionType;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
@@ -59,6 +60,13 @@ class GsonUtilTest {
         String json = GsonUtil.toJson(permissions);
         List<PermissionType> permissionTypes = Assertions.assertDoesNotThrow(() -> GsonUtil.fromJson(json, List.class, PermissionType.class));
         Assertions.assertTrue(CollectionUtils.isNotEmpty(permissionTypes));
+    }
+
+    @Test
+    void testFromLocalDateTime() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String dateJson = Assertions.assertDoesNotThrow(() -> GsonUtil.toJson(localDateTime));
+        Assertions.assertTrue(StringUtils.isNotBlank(dateJson));
     }
 }
 

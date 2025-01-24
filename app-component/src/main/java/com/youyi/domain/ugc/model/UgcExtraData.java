@@ -10,4 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UgcExtraData {
+
+    private String auditRet;
 }

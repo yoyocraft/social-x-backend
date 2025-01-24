@@ -1,5 +1,6 @@
 package com.youyi.infra.mvc.configuration;
 
+import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -20,7 +21,7 @@ import springfox.documentation.spring.web.json.Json;
 @Configuration
 public class GsonConverterConfig {
 
-    private final Gson gson = new GsonBuilder()
+    private final Gson gson = Converters.registerAll(new GsonBuilder())
         .registerTypeAdapter(Json.class, new SpringfoxJsonToGsonAdapter())
         .create();
 

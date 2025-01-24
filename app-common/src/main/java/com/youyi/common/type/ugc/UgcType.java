@@ -11,6 +11,11 @@ import org.apache.commons.lang3.EnumUtils;
 public enum UgcType {
 
     /**
+     * 所有
+     */
+    ALL,
+
+    /**
      * 文章
      */
     ARTICLE,
@@ -27,6 +32,6 @@ public enum UgcType {
     ;
 
     public static UgcType of(String type) {
-        return EnumUtils.getEnum(UgcType.class, type, ARTICLE);
+        return EnumUtils.getEnum(UgcType.class, type, ALL);
     }
 }

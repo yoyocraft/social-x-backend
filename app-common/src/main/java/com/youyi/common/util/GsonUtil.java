@@ -1,5 +1,6 @@
 package com.youyi.common.util;
 
+import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,7 +32,7 @@ public class GsonUtil {
 
     static {
         TypeAdapter<Object> customizedAdapter = new CustomizedTypeAdapter();
-        GSON = new GsonBuilder()
+        GSON = Converters.registerAll(new GsonBuilder())
             .registerTypeAdapter(new TypeToken<Map>() {
             }.getType(), customizedAdapter)
             .registerTypeAdapter(new TypeToken<HashMap>() {
@@ -51,7 +52,7 @@ public class GsonUtil {
             .setStrictness(Strictness.LENIENT)
             .create();
 
-        PRETTY_GSON = new GsonBuilder().setPrettyPrinting().create();
+        PRETTY_GSON = Converters.registerAll(new GsonBuilder()).setPrettyPrinting().create();
     }
 
     private GsonUtil() {
