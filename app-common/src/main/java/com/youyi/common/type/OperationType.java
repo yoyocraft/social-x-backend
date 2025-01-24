@@ -25,6 +25,8 @@ public enum OperationType {
     ADD_PERMISSION,
     AUTHORIZE_PERMISSION,
     REVOKE_PERMISSION,
+
+    UGC_PUBLISH,
     ;
 
     public static OperationType of(String type) {

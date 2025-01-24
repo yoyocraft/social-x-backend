@@ -35,6 +35,9 @@ public enum ConfigKey {
     MEDIA_STORAGE_BASE_PATH,
     MEDIA_ACCESS_URL_PREFIX,
     MAX_UPLOAD_FILE_SIZE,
+
+    // ================ System ==================
+    DEFAULT_PAGE_SIZE,
     ;
 
 }

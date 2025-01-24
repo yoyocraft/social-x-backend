@@ -23,6 +23,9 @@ spring:
     password: ${REDIS_PASSWORD}
     database: ${REDIS_DATABASE}
     timeout: ${REDIS_TIMEOUT}
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
 
   mail:
     host: ${MAIL_HOST}
