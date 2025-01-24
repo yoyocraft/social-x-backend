@@ -1,5 +1,6 @@
 package com.youyi.common.util.param;
 
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.youyi.common.type.HasCode;
 import com.youyi.common.util.GsonUtil;
 import java.util.Collection;
@@ -162,6 +163,15 @@ public interface ParamChecker<T> {
     static ParamChecker<Pair<String, String>> equalsChecker(String errorMsg) {
         return param -> {
             boolean validate = StringUtils.equals(param.getLeft(), param.getRight());
+            return validate
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
+    }
+
+    static ParamChecker<String> sensitiveChecker(String errorMsg) {
+        return param -> {
+            boolean validate = StringUtils.isNotBlank(param) && !SensitiveWordHelper.contains(param);
             return validate
                 ? CheckResult.success()
                 : CheckResult.of(INVALID_PARAM, errorMsg);

@@ -22,6 +22,7 @@ public class RandomGenUtil {
 
     public static final int RESOURCE_KEY_LENGTH = 128;
 
+    public static final int UGC_ID_LENGTH = 32;
 
     private RandomGenUtil() {
     }
@@ -48,5 +49,9 @@ public class RandomGenUtil {
 
     public static String genResourceKey() {
         return RandomStringUtils.secure().nextAlphanumeric(RESOURCE_KEY_LENGTH);
+    }
+
+    public static String genUgcId() {
+        return RandomStringUtils.secure().nextNumeric(UGC_ID_LENGTH);
     }
 }

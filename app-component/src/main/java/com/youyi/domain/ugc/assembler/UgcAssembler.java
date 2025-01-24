@@ -1,0 +1,72 @@
+package com.youyi.domain.ugc.assembler;
+
+import com.youyi.common.type.conf.ConfigKey;
+import com.youyi.common.type.ugc.UgcStatusType;
+import com.youyi.common.type.ugc.UgcType;
+import com.youyi.common.util.GsonUtil;
+import com.youyi.domain.ugc.model.UgcDO;
+import com.youyi.domain.ugc.model.UgcExtraData;
+import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.domain.ugc.request.UgcPublishRequest;
+import com.youyi.domain.ugc.request.UgcQueryRequest;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
+
+import static com.youyi.infra.conf.core.SystemConfigService.getLongConfig;
+
+/**
+ * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
+ * @date 2025/01/23
+ */
+@Mapper(
+    imports = {
+        UgcType.class,
+        UgcStatusType.class
+    },
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
+public interface UgcAssembler {
+
+    UgcAssembler UGC_ASSEMBLER = Mappers.getMapper(UgcAssembler.class);
+
+    @Mappings({
+        @Mapping(target = "ugcType", expression = "java(UgcType.of(request.getUgcType()))"),
+        @Mapping(target = "status", expression = "java(calStatusWhenPublish(request))")
+    })
+    UgcDO toDO(UgcPublishRequest request);
+
+    @Mappings({
+        @Mapping(target = "ugcType", expression = "java(UgcType.of(request.getUgcType()))"),
+        @Mapping(target = "status", expression = "java(UgcStatusType.of(request.getUgcStatus()))"),
+        @Mapping(target = "size", expression = "java(calSize(request))")
+    })
+    UgcDO toDO(UgcQueryRequest request);
+
+    @Mappings({
+        @Mapping(target = "ugcType", expression = "java(UgcType.of(ugcDocument.getType()))"),
+        @Mapping(target = "status", expression = "java(UgcStatusType.of(ugcDocument.getStatus()))"),
+        @Mapping(target = "extraData", expression = "java(toExtraData(ugcDocument.getExtraData()))")
+    })
+    UgcDO toDO(UgcDocument ugcDocument);
+
+    default UgcStatusType calStatusWhenPublish(UgcPublishRequest request) {
+        if (Boolean.TRUE.equals(request.getDrafting())) {
+            return UgcStatusType.DRAFT;
+        }
+        return UgcStatusType.AUDITING;
+    }
+
+    default int calSize(UgcQueryRequest request) {
+        if (request.getSize() == 0) {
+            return Math.toIntExact(getLongConfig(ConfigKey.DEFAULT_PAGE_SIZE));
+        }
+        return request.getSize();
+    }
+
+    default UgcExtraData toExtraData(String extra) {
+        return GsonUtil.fromJson(extra, UgcExtraData.class);
+    }
+}

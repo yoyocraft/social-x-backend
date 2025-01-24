@@ -24,4 +24,8 @@ public class PageResult<T> {
 
     @SerializedName("data")
     private List<T> data;
+
+    public static <T> PageResult<T> of(Long total, Long pageNo, Long pageSize, List<T> data) {
+        return new PageResult<>(total, pageNo, pageSize, data);
+    }
 }
