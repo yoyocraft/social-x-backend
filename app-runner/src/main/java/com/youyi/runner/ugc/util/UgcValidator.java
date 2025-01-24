@@ -20,6 +20,16 @@ public class UgcValidator {
         ParamCheckerChain.newCheckerChain()
             .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
             .put(notBlankChecker("内容不能为空"), request.getContent())
+            .putIf(
+                () -> UgcType.ARTICLE == UgcType.of(request.getUgcType()),
+                notBlankChecker("标题不能为空"),
+                request.getTitle()
+            )
+            .putIf(
+                () -> UgcType.ARTICLE == UgcType.of(request.getUgcType()),
+                notBlankChecker("摘要不能为空"),
+                request.getSummary()
+            )
             .validateWithThrow();
     }
 

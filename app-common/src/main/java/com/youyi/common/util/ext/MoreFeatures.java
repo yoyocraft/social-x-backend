@@ -33,6 +33,7 @@ public class MoreFeatures {
             action.run();
         } catch (Exception e) {
             logger.error("[runWithCost]{}, execute with error", loggerMessage, e);
+            throw e;
         } finally {
             long cost = System.currentTimeMillis() - start;
             logger.info("[runWithCost]{}, cost:{}ms", loggerMessage, cost);

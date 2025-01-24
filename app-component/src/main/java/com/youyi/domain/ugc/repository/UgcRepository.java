@@ -5,6 +5,8 @@ import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.domain.ugc.repository.dao.UgcDAO;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -72,6 +74,16 @@ public class UgcRepository {
         try {
             checkState(StringUtils.isNotBlank(ugcId) && StringUtils.isNotBlank(ugcStatus));
             ugcDAO.updateStatusByUgcId(ugcId, ugcStatus);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcStatus, LocalDateTime lastCursor, int size) {
+        try {
+            checkState(LocalDateTime.now().isAfter(lastCursor) && size > 0);
+            return ugcDAO.queryByStatusWithTimeCursor(ugcStatus, lastCursor, size);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

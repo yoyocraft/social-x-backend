@@ -30,8 +30,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
+import static com.google.common.base.Preconditions.checkState;
 import static com.youyi.common.type.conf.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
 import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
+import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -58,6 +60,10 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
      */
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
+        checkState(
+            StringUtils.isNotBlank(getStringConfig(RECORD_OP_LOG_THREAD_POOL_CONFIG)),
+            "can not find RECORD_OP_LOG_THREAD_POOL_CONFIG config"
+        );
         initAsyncExecutor();
     }
 

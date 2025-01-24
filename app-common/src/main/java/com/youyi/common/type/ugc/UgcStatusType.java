@@ -9,6 +9,10 @@ import org.apache.commons.lang3.EnumUtils;
 public enum UgcStatusType {
 
     /**
+     * 所有
+     */
+    ALL,
+    /**
      * 草稿
      */
     DRAFT,
@@ -35,6 +39,6 @@ public enum UgcStatusType {
     ;
 
     public static UgcStatusType of(String status) {
-        return EnumUtils.getEnum(UgcStatusType.class, status, DRAFT);
+        return EnumUtils.getEnum(UgcStatusType.class, status, ALL);
     }
 }
