@@ -8,4 +8,6 @@ public class RepositoryConstant {
     public static final int SINGLE_DML_AFFECTED_ROWS = 1;
 
     public static final int INIT_VERSION = 0;
+
+    public static final int UNIQUE_KEY_AFFECTED_ROWS = 1;
 }

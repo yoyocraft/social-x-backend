@@ -6,6 +6,7 @@ import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
+import com.youyi.domain.ugc.request.UgcSetStatusRequest;
 import com.youyi.runner.ugc.model.UgcResponse;
 import java.util.List;
 import org.slf4j.Logger;
@@ -36,6 +37,18 @@ public class UgcResponseUtil {
 
         Result<PageResult<UgcResponse>> response = Result.success(PageResult.of(total, page, size, data));
         LOGGER.info("query self ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<UgcResponse> queryByUgcIdSuccess(UgcDO ugcDO, UgcQueryRequest request) {
+        Result<UgcResponse> response = Result.success(UGC_CONVERTER.toResponse(ugcDO));
+        LOGGER.info("query ugc by ugcId, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<Boolean> setStatusSuccess(UgcSetStatusRequest request) {
+        Result<Boolean> response = Result.success(Boolean.TRUE);
+        LOGGER.info("set ugc status, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

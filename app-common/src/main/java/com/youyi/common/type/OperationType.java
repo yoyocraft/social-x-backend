@@ -27,6 +27,7 @@ public enum OperationType {
     REVOKE_PERMISSION,
 
     UGC_PUBLISH,
+    UGC_SET_STATUS
     ;
 
     public static OperationType of(String type) {

@@ -1,7 +1,8 @@
 package com.youyi.domain.ugc.request;
 
 import com.google.gson.annotations.SerializedName;
-import com.youyi.common.base.BasePageRequest;
+import com.youyi.common.base.BaseRequest;
+import com.youyi.common.type.ugc.UgcStatusType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,17 +12,15 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UgcQueryRequest extends BasePageRequest {
-
-    @SerializedName("ugcStatus")
-    private String ugcStatus;
-
-    @SerializedName("ugcType")
-    private String ugcType;
-
-    @SerializedName("keyword")
-    private String keyword;
+public class UgcSetStatusRequest extends BaseRequest {
 
     @SerializedName("ugcId")
     private String ugcId;
+
+    /**
+     * @see UgcStatusType#PRIVATE,UgcStatusType#PUBLISHED
+     */
+    @SerializedName("status")
+    private String status;
+
 }

@@ -25,6 +25,8 @@ public enum ReturnCode implements ErrorCode {
     PASSWORD_ERROR("PASSWORD_ERROR", "密码错误，请重试"),
     PERMISSION_DENIED("PERMISSION_DENIED", "权限不足"),
 
+    OPERATION_DENIED("OPERATION_DENIED", "操作被拒绝"),
+
     UNKNOWN("UNKNOWN", "未知错误"),
     ;
 
