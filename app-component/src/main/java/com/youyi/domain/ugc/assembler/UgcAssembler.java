@@ -9,6 +9,7 @@ import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
+import com.youyi.domain.ugc.request.UgcSetStatusRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -44,6 +45,11 @@ public interface UgcAssembler {
         @Mapping(target = "size", expression = "java(calSize(request))")
     })
     UgcDO toDO(UgcQueryRequest request);
+
+    @Mappings({
+        @Mapping(target = "status", expression = "java(UgcStatusType.of(request.getStatus()))"),
+    })
+    UgcDO toDO(UgcSetStatusRequest request);
 
     @Mappings({
         @Mapping(target = "ugcType", expression = "java(UgcType.of(ugcDocument.getType()))"),

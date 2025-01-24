@@ -14,6 +14,9 @@ import lombok.Setter;
 @Setter
 public class UgcPublishRequest extends BaseRequest {
 
+    @SerializedName("ugcId")
+    private String ugcId;
+
     @SerializedName("ugcType")
     private String ugcType;
 
@@ -34,6 +37,9 @@ public class UgcPublishRequest extends BaseRequest {
 
     @SerializedName("cover")
     private String cover;
+
+    @SerializedName("attachmentUrls")
+    private List<String> attachmentUrls;
 
     /**
      * 是否为草稿

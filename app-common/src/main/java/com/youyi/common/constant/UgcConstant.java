@@ -19,6 +19,9 @@ public class UgcConstant {
     public static final String UGC_GMT_MODIFIED = "gmtModified";
 
     public static final String UGC_TITLE = "title";
-
+    public static final String UGC_CONTENT = "content";
     public static final String UGC_SUMMARY = "summary";
+    public static final String UGC_TAGS = "tags";
+    public static final String UGC_COVER = "cover";
+    public static final String UGC_ATTACHMENT_URLS = "attachmentUrls";
 }

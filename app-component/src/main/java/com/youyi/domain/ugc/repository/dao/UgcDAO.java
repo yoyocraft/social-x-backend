@@ -1,7 +1,9 @@
 package com.youyi.domain.ugc.repository.dao;
 
 import com.google.common.collect.Lists;
+import com.mongodb.client.result.UpdateResult;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -12,13 +14,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import static com.youyi.common.constant.UgcConstant.UGC_ATTACHMENT_URLS;
 import static com.youyi.common.constant.UgcConstant.UGC_AUTHOR_ID;
+import static com.youyi.common.constant.UgcConstant.UGC_CONTENT;
+import static com.youyi.common.constant.UgcConstant.UGC_COVER;
 import static com.youyi.common.constant.UgcConstant.UGC_GMT_MODIFIED;
 import static com.youyi.common.constant.UgcConstant.UGC_ID;
 import static com.youyi.common.constant.UgcConstant.UGC_STATUS;
 import static com.youyi.common.constant.UgcConstant.UGC_SUMMARY;
+import static com.youyi.common.constant.UgcConstant.UGC_TAGS;
 import static com.youyi.common.constant.UgcConstant.UGC_TITLE;
 import static com.youyi.common.type.ugc.UgcStatusType.DELETED;
 import static com.youyi.common.type.ugc.UgcStatusType.DRAFT;
@@ -35,6 +42,35 @@ public class UgcDAO {
 
     public void save(UgcDocument ugcDocument) {
         mongoTemplate.save(ugcDocument);
+    }
+
+    public UpdateResult updateByUgcId(UgcDocument ugcDocument) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(UGC_ID).is(ugcDocument.getUgcId()));
+
+        Update updateDef = new Update()
+            .set(UGC_TITLE, ugcDocument.getTitle())
+            .set(UGC_CONTENT, ugcDocument.getContent())
+            .set(UGC_SUMMARY, ugcDocument.getSummary())
+            .set(UGC_COVER, ugcDocument.getCover())
+            .set(UGC_ATTACHMENT_URLS, ugcDocument.getAttachmentUrls())
+            .set(UGC_TAGS, ugcDocument.getTags())
+            .set(UGC_STATUS, ugcDocument.getStatus())
+            .set(UGC_GMT_MODIFIED, ugcDocument.getGmtModified());
+        return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
+    }
+
+    public UpdateResult updateStatusByUgcId(String ugcId, String ugcStatus) {
+        Query query = new Query(Criteria.where(UGC_ID).is(ugcId));
+        Update updateDef = new Update()
+            .set(UGC_STATUS, ugcStatus)
+            .set(UGC_GMT_MODIFIED, LocalDateTime.now());
+        return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
+    }
+
+    public UgcDocument queryByUgcId(String ugcId) {
+        Query query = new Query(Criteria.where(UGC_ID).is(ugcId));
+        return mongoTemplate.findOne(query, UgcDocument.class);
     }
 
     public Page<UgcDocument> queryByKeywordAndStatusForSelf(String keyword, String ugcStatus, String authorId, int page, int size) {

@@ -9,6 +9,7 @@ import com.youyi.domain.ugc.helper.UgcHelper;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
+import com.youyi.domain.ugc.request.UgcSetStatusRequest;
 import com.youyi.runner.ugc.model.UgcResponse;
 import com.youyi.runner.ugc.util.UgcValidator;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.youyi.domain.ugc.assembler.UgcAssembler.UGC_ASSEMBLER;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryByUgcIdSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.querySelfUgcSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.setStatusSuccess;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -46,10 +49,28 @@ public class UgcController {
     @SaCheckLogin
     @RequestMapping(value = "/me", method = RequestMethod.GET)
     public Result<PageResult<UgcResponse>> querySelfUgc(UgcQueryRequest request) {
-        UgcValidator.checkUgcQueryRequest(request);
+        UgcValidator.checkUgcQueryRequestForQuerySelfUgc(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         Page<UgcDO> ugcPageInfo = ugcHelper.querySelfUgc(ugcDO);
         return querySelfUgcSuccess(ugcPageInfo, request);
     }
 
+    @SaCheckLogin
+    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    public Result<UgcResponse> queryByUgcId(UgcQueryRequest request) {
+        UgcValidator.checkUgcQueryRequestForQueryByUgcId(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        UgcDO ugcDOInfo = ugcHelper.queryByUgcId(ugcDO);
+        return queryByUgcIdSuccess(ugcDOInfo, request);
+    }
+
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.UGC_SET_STATUS)
+    @RequestMapping(value = "/set-status", method = RequestMethod.POST)
+    public Result<Boolean> setStatus(@RequestBody UgcSetStatusRequest request) {
+        UgcValidator.checkUgcSetStatusRequest(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        ugcHelper.updateUgcStatus(ugcDO);
+        return setStatusSuccess(request);
+    }
 }

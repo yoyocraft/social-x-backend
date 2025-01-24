@@ -5,6 +5,7 @@ import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
+import com.youyi.domain.ugc.request.UgcSetStatusRequest;
 
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
@@ -22,10 +23,23 @@ public class UgcValidator {
             .validateWithThrow();
     }
 
-    public static void checkUgcQueryRequest(UgcQueryRequest request) {
+    public static void checkUgcQueryRequestForQuerySelfUgc(UgcQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
             .putIfNotBlank(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
             .putIfNotBlank(enumExistChecker(UgcStatusType.class, "UGC状态不合法"), request.getUgcStatus())
+            .validateWithThrow();
+    }
+
+    public static void checkUgcQueryRequestForQueryByUgcId(UgcQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("UGC ID不能为空"), request.getUgcId())
+            .validateWithThrow();
+    }
+
+    public static void checkUgcSetStatusRequest(UgcSetStatusRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("UGC ID不能为空"), request.getUgcId())
+            .put(enumExistChecker(UgcStatusType.class, "UGC状态不合法"), request.getStatus())
             .validateWithThrow();
     }
 }

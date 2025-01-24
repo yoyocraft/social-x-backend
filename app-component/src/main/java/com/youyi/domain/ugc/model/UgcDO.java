@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -78,6 +79,29 @@ public class UgcDO {
         ugcDocument.setGmtCreate(LocalDateTime.now());
         ugcDocument.setGmtModified(LocalDateTime.now());
         ugcDocument.setExtraData(GsonUtil.toJson(extraData));
+        return ugcDocument;
+    }
+
+    public boolean isNew() {
+        return StringUtils.isBlank(ugcId);
+    }
+
+    public void fillBeforeUpdateWhenPublish(UgcDocument ugcDocument) {
+        this.gmtCreate = ugcDocument.getGmtCreate();
+    }
+
+    public UgcDocument buildToUpdateUgcDocumentWhenPublish() {
+        UgcDocument ugcDocument = new UgcDocument();
+        ugcDocument.setUgcId(ugcId);
+        ugcDocument.setTitle(title);
+        ugcDocument.setContent(content);
+        ugcDocument.setSummary(summary);
+        ugcDocument.setTags(tags);
+        ugcDocument.setStatus(status.name());
+        ugcDocument.setCover(cover);
+        ugcDocument.setAttachmentUrls(attachmentUrls);
+        ugcDocument.setGmtCreate(gmtCreate);
+        ugcDocument.setGmtModified(LocalDateTime.now());
         return ugcDocument;
     }
 }
