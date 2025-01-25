@@ -7,6 +7,7 @@ import com.youyi.common.base.Result;
 import com.youyi.common.type.OperationType;
 import com.youyi.domain.ugc.helper.UgcHelper;
 import com.youyi.domain.ugc.model.UgcDO;
+import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.youyi.domain.ugc.assembler.UgcAssembler.UGC_ASSEMBLER;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.deleteSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryByUgcIdSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.querySelfUgcSuccess;
@@ -44,6 +46,16 @@ public class UgcController {
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         ugcHelper.publishUgc(ugcDO);
         return publishSuccess(request);
+    }
+
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.UGC_DELETE)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public Result<Boolean> delete(@RequestBody UgcDeleteRequest request) {
+        UgcValidator.checkUgcDeleteRequest(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        ugcHelper.deleteUgc(ugcDO);
+        return deleteSuccess(request);
     }
 
     @SaCheckLogin

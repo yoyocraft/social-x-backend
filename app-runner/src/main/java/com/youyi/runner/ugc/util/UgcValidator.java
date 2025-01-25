@@ -3,6 +3,7 @@ package com.youyi.runner.ugc.util;
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.param.ParamCheckerChain;
+import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
@@ -30,6 +31,12 @@ public class UgcValidator {
                 notBlankChecker("摘要不能为空"),
                 request.getSummary()
             )
+            .validateWithThrow();
+    }
+
+    public static void checkUgcDeleteRequest(UgcDeleteRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("UGC ID不能为空"), request.getUgcId())
             .validateWithThrow();
     }
 

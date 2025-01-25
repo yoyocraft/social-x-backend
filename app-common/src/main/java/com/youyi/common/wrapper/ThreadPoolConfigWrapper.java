@@ -3,7 +3,7 @@ package com.youyi.common.wrapper;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -42,8 +42,8 @@ public class ThreadPoolConfigWrapper {
     public BlockingQueue<Runnable> getQueue() {
         QueueType type = QueueType.of(queueType);
         switch (type) {
-            case ARRAY_BLOCKING_QUEUE -> {
-                return new ArrayBlockingQueue<>(queueCapacity);
+            case LINKED_BLOCKING_QUEUE -> {
+                return new LinkedBlockingDeque<>(queueCapacity);
             }
             case PRIORITY_BLOCKING_QUEUE -> {
                 return new PriorityBlockingQueue<>(queueCapacity);
@@ -55,7 +55,7 @@ public class ThreadPoolConfigWrapper {
                 return new LinkedTransferQueue<>();
             }
             default -> {
-                return new LinkedBlockingQueue<>(queueCapacity);
+                return new ArrayBlockingQueue<>(queueCapacity);
             }
         }
     }
@@ -63,8 +63,8 @@ public class ThreadPoolConfigWrapper {
     public RejectedExecutionHandler getRejectedHandler() {
         RejectedExecutionHandlerType type = RejectedExecutionHandlerType.of(rejectedHandlerType);
         switch (type) {
-            case ABORT_POLICY -> {
-                return new ThreadPoolExecutor.AbortPolicy();
+            case CALLER_RUNS_POLICY -> {
+                return new ThreadPoolExecutor.CallerRunsPolicy();
             }
             case DISCARD_POLICY -> {
                 return new ThreadPoolExecutor.DiscardPolicy();
@@ -73,7 +73,7 @@ public class ThreadPoolConfigWrapper {
                 return new ThreadPoolExecutor.DiscardOldestPolicy();
             }
             default -> {
-                return new ThreadPoolExecutor.CallerRunsPolicy();
+                return new ThreadPoolExecutor.AbortPolicy();
             }
         }
     }
@@ -99,10 +99,9 @@ public class ThreadPoolConfigWrapper {
         ;
 
         public static QueueType of(String queueType) {
-            return EnumUtils.getEnum(QueueType.class, queueType, QueueType.LINKED_BLOCKING_QUEUE);
+            return EnumUtils.getEnum(QueueType.class, queueType, ARRAY_BLOCKING_QUEUE);
         }
     }
-
 
     /**
      * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -117,7 +116,7 @@ public class ThreadPoolConfigWrapper {
         ;
 
         public static RejectedExecutionHandlerType of(String rejectedHandlerType) {
-            return EnumUtils.getEnum(RejectedExecutionHandlerType.class, rejectedHandlerType, CALLER_RUNS_POLICY);
+            return EnumUtils.getEnum(RejectedExecutionHandlerType.class, rejectedHandlerType, ABORT_POLICY);
         }
     }
 }
