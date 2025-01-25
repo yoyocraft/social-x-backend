@@ -18,7 +18,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "com.youyi.infra.conf.repository.mapper",
         "com.youyi.domain.audit.repository.mapper",
         "com.youyi.domain.user.repository.mapper",
-        "com.youyi.domain.media.repository.mapper"
+        "com.youyi.domain.media.repository.mapper",
+        "com.youyi.domain.ugc.repository.mapper"
     },
     annotationClass = Mapper.class
 )

@@ -37,6 +37,10 @@ public class SystemConfigService {
         return getListConfig(configKey, valueType, Lists.newArrayList());
     }
 
+    public static <T> List<T> getListConfig(ConfigKey configKey, Class<T> valueType) {
+        return getListConfig(configKey.name(), valueType, Lists.newArrayList());
+    }
+
     public static <T> List<T> getListConfig(String configKey, Class<T> valueType, List<T> defaultValue) {
         Type listType = TypeToken.getParameterized(List.class, valueType).getType();
         return getCacheValue(configKey, listType, defaultValue);

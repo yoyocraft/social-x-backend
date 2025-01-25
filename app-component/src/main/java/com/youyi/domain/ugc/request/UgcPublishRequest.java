@@ -32,6 +32,12 @@ public class UgcPublishRequest extends BaseRequest {
     @SerializedName("summary")
     private String summary;
 
+    @SerializedName("categoryId")
+    private String categoryId;
+
+    @SerializedName("categoryName")
+    private String categoryName;
+
     @SerializedName("tags")
     private List<String> tags;
 

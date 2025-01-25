@@ -26,6 +26,8 @@ public class UgcDO {
     private String title;
     private String content;
     private String summary;
+    private String categoryId;
+    private String categoryName;
     private List<String> tags;
 
     private Long viewCount;
@@ -69,6 +71,8 @@ public class UgcDO {
         ugcDocument.setTitle(title);
         ugcDocument.setContent(content);
         ugcDocument.setSummary(summary);
+        ugcDocument.setCategoryId(categoryId);
+        ugcDocument.setCategoryName(categoryName);
         ugcDocument.setTags(tags);
         ugcDocument.setViewCount(viewCount);
         ugcDocument.setLikeCount(likeCount);
@@ -96,6 +100,8 @@ public class UgcDO {
         ugcDocument.setTitle(title);
         ugcDocument.setContent(content);
         ugcDocument.setSummary(summary);
+        ugcDocument.setCategoryId(categoryId);
+        ugcDocument.setCategoryName(categoryName);
         ugcDocument.setTags(tags);
         ugcDocument.setStatus(status.name());
         ugcDocument.setCover(cover);

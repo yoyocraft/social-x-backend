@@ -1,5 +1,7 @@
 package com.youyi.runner.ugc.util;
 
+import com.google.common.collect.Lists;
+import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.param.ParamCheckerChain;
@@ -7,9 +9,12 @@ import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
+import org.apache.commons.collections4.CollectionUtils;
 
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
+import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
+import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -31,6 +36,12 @@ public class UgcValidator {
                 notBlankChecker("摘要不能为空"),
                 request.getSummary()
             )
+            .putIf(
+                () -> CollectionUtils.isNotEmpty(request.getTags()),
+                lessThanOrEqualChecker(getIntegerConfig(ConfigKey.UGC_MAX_TAG_COUNT), "标签数量过多"),
+                request.getTags().size()
+            )
+            .putBatch(notBlankChecker("类别不能为空"), Lists.newArrayList(request.getCategoryId(), request.getCategoryName()))
             .validateWithThrow();
     }
 
