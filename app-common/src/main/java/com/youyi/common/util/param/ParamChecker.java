@@ -98,6 +98,12 @@ public interface ParamChecker<T> {
             : CheckResult.of(INVALID_PARAM, errorMsg);
     }
 
+    static ParamChecker<Integer> lessThanOrEqualChecker(int max, String errorMsg) {
+        return param -> param != null && param <= max
+            ? CheckResult.success()
+            : CheckResult.of(INVALID_PARAM, errorMsg);
+    }
+
     static <T extends Enum<T>> ParamChecker<String> enumExistChecker(Class<T> enumClass, String errorMsg) {
         return param -> {
             boolean exist = Stream.of(enumClass.getEnumConstants())

@@ -16,10 +16,10 @@ public class PageResult<T> {
     @SerializedName("total")
     private Long total;
 
-    @SerializedName("pno")
+    @SerializedName("pageNo")
     private Long pageNo;
 
-    @SerializedName("ps")
+    @SerializedName("pageSize")
     private Long pageSize;
 
     @SerializedName("data")

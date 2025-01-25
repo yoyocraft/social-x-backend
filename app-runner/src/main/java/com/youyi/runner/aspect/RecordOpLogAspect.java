@@ -31,6 +31,8 @@ import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.youyi.common.constant.SystemConstant.SYSTEM_OPERATOR_ID;
+import static com.youyi.common.constant.SystemConstant.SYSTEM_OPERATOR_NAME;
 import static com.youyi.common.type.conf.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
 import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
 import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
@@ -43,10 +45,6 @@ import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
 @Component
 @RequiredArgsConstructor
 public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEvent>, Ordered {
-
-    // ========================== Constant ==========================
-    public static final String SYSTEM_OPERATOR_ID = "-1";
-    public static final String SYSTEM_OPERATOR_NAME = "SocialX System";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordOpLogAspect.class);
 

@@ -39,6 +39,10 @@ public enum ConfigKey {
 
     // ================ System ==================
     DEFAULT_PAGE_SIZE,
+
+    // ================ Ugc ==================
+    INNER_UGC_CATEGORIES,
+    UGC_MAX_TAG_COUNT,
     ;
 
 }

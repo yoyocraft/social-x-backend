@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youyi.domain.ugc.repository.mapper.UgcCategoryMapper">
+
+    <resultMap id="ConfigResultMap" type="com.youyi.domain.ugc.repository.po.UgcCategoryPO">
+        <id column="id" property="id"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="deletedAt" column="deleted_at"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="priority" column="priority"/>
+    </resultMap>
+
+    <sql id="result_cols">
+        id, gmt_create, gmt_modified, deleted_at, category_id, category_name, creator_id, priority
+    </sql>
+    <insert id="insert">
+        INSERT INTO ugc_category (category_id, category_name, creator_id, priority)
+        VALUES (#{categoryId}, #{categoryName}, #{creatorId}, #{priority})
+    </insert>
+    <insert id="insertBatch">
+        INSERT INTO ugc_category (category_id, category_name, creator_id, priority)
+        VALUES
+        <foreach collection="categories" item="item" index="index" separator=",">
+            (#{item.categoryId}, #{item.categoryName}, #{item.creatorId}, #{item.priority})
+        </foreach>
+    </insert>
+    <select id="queryAll" resultType="com.youyi.domain.ugc.repository.po.UgcCategoryPO">
+        SELECT
+        <include refid="result_cols"/>
+        FROM ugc_category
+        WHERE deleted_at = 0
+    </select>
+
+</mapper>

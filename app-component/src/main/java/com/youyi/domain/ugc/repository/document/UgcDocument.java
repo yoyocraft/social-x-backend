@@ -36,6 +36,10 @@ public class UgcDocument extends BaseDocument {
 
     private String summary;
 
+    private String categoryId;
+
+    private String categoryName;
+
     private List<String> tags;
 
     private Long viewCount;
