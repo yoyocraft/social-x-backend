@@ -25,6 +25,7 @@ public class RandomGenUtil {
     public static final int UGC_ID_LENGTH = 32;
 
     public static final int UGC_CATEGORY_ID_LENGTH = 32;
+    public static final int UGC_TAG_ID_LENGTH = 32;
 
     private RandomGenUtil() {
     }
@@ -59,5 +60,9 @@ public class RandomGenUtil {
 
     public static String genUgcCategoryId() {
         return RandomStringUtils.secure().nextNumeric(UGC_CATEGORY_ID_LENGTH);
+    }
+
+    public static String genUgcTagId() {
+        return RandomStringUtils.secure().nextNumeric(UGC_TAG_ID_LENGTH);
     }
 }

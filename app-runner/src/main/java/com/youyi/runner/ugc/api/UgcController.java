@@ -5,12 +5,14 @@ import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.PageResult;
 import com.youyi.common.base.Result;
 import com.youyi.common.type.OperationType;
+import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.ugc.helper.UgcHelper;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
+import com.youyi.infra.lock.LocalLockUtil;
 import com.youyi.runner.ugc.model.UgcResponse;
 import com.youyi.runner.ugc.util.UgcValidator;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +46,11 @@ public class UgcController {
     public Result<Boolean> publish(@RequestBody UgcPublishRequest request) {
         UgcValidator.checkUgcPublishRequest(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        ugcHelper.publishUgc(ugcDO);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> ugcHelper.publishUgc(ugcDO),
+            CommonOperationUtil::tooManyRequestError,
+            request.getUgcType(), request.getReqId()
+        );
         return publishSuccess(request);
     }
 
@@ -54,7 +60,11 @@ public class UgcController {
     public Result<Boolean> delete(@RequestBody UgcDeleteRequest request) {
         UgcValidator.checkUgcDeleteRequest(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        ugcHelper.deleteUgc(ugcDO);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> ugcHelper.deleteUgc(ugcDO),
+            CommonOperationUtil::tooManyRequestError,
+            request.getUgcId()
+        );
         return deleteSuccess(request);
     }
 
@@ -82,7 +92,11 @@ public class UgcController {
     public Result<Boolean> setStatus(@RequestBody UgcSetStatusRequest request) {
         UgcValidator.checkUgcSetStatusRequest(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        ugcHelper.updateUgcStatus(ugcDO);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> ugcHelper.updateUgcStatus(ugcDO),
+            CommonOperationUtil::tooManyRequestError,
+            request.getUgcId(), request.getStatus()
+        );
         return setStatusSuccess(request);
     }
 }

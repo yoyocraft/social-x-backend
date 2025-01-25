@@ -11,11 +11,15 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class PageCursorResult<T> {
+public class PageCursorResult<CURSOR, T> {
 
     @SerializedName("data")
     private List<T> data;
 
     @SerializedName("cursor")
-    private Long cursor;
+    private CURSOR cursor;
+
+    public static <CURSOR, T> PageCursorResult<CURSOR, T> of(List<T> data, CURSOR cursor) {
+        return new PageCursorResult<>(data, cursor);
+    }
 }
