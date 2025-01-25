@@ -33,6 +33,13 @@ public class UgcHelper {
         ugcService.publishUgc(ugcDO);
     }
 
+    public void deleteUgc(UgcDO ugcDO) {
+        fillCurrUserAsAuthorInfo(ugcDO);
+        UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
+        checkSelfAuthor(ugcDO, ugcDocument);
+        ugcRepository.deleteUgc(ugcDO.getUgcId());
+    }
+
     public Page<UgcDO> querySelfUgc(UgcDO ugcDO) {
         fillCurrUserAsAuthorInfo(ugcDO);
         return ugcService.querySelfUgc(ugcDO);

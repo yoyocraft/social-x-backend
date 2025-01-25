@@ -7,6 +7,7 @@ import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
@@ -38,6 +39,8 @@ public interface UgcAssembler {
         @Mapping(target = "status", expression = "java(calStatusWhenPublish(request))")
     })
     UgcDO toDO(UgcPublishRequest request);
+
+    UgcDO toDO(UgcDeleteRequest request);
 
     @Mappings({
         @Mapping(target = "ugcType", expression = "java(UgcType.of(request.getUgcType()))"),

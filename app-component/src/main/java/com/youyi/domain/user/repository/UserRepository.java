@@ -75,6 +75,7 @@ public class UserRepository {
     public void insertOrUpdateUserAuth(UserAuthPO userAuthPO) {
         try {
             checkNotNull(userAuthPO);
+            // TODO youyi 2025/1/25 拆分成两句 SQL
             int ret = userAuthMapper.insertOrUpdate(userAuthPO);
             checkState(ret >= SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {

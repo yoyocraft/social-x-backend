@@ -4,6 +4,7 @@ import com.youyi.common.base.PageResult;
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.UgcDO;
+import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
@@ -26,6 +27,12 @@ public class UgcResponseUtil {
     public static Result<Boolean> publishSuccess(UgcPublishRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         LOGGER.info("publish ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<Boolean> deleteSuccess(UgcDeleteRequest request) {
+        Result<Boolean> response = Result.success(Boolean.TRUE);
+        LOGGER.info("delete ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
