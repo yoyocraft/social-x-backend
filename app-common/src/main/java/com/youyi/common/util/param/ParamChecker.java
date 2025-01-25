@@ -3,6 +3,7 @@ package com.youyi.common.util.param;
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.youyi.common.type.HasCode;
 import com.youyi.common.util.GsonUtil;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -178,6 +179,15 @@ public interface ParamChecker<T> {
     static ParamChecker<String> sensitiveChecker(String errorMsg) {
         return param -> {
             boolean validate = StringUtils.isNotBlank(param) && !SensitiveWordHelper.contains(param);
+            return validate
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
+    }
+
+    static ParamChecker<LocalDateTime> beforeNowChecker(String errorMsg) {
+        return param -> {
+            boolean validate = param != null && LocalDateTime.now().isAfter(param);
             return validate
                 ? CheckResult.success()
                 : CheckResult.of(INVALID_PARAM, errorMsg);

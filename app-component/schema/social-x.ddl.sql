@@ -129,5 +129,21 @@ CREATE TABLE `ugc_category` (
     `priority` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'priority, 0 is highest, 255 is lowest',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_category_id` (`category_id`),
-    UNIQUE KEY `uk_category_name` (`category_name`)
+    UNIQUE KEY `uk_category_name_priority` (`category_name`, `priority`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'ugc category';
+
+DROP TABLE IF EXISTS `ugc_tag`;
+
+CREATE TABLE `ugc_tag` (
+   `id` BIGINT NOT NULL AUTO_INCREMENT,
+   `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+   `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
+   `tag_id` VARCHAR(32) NOT NULL COMMENT 'tag id',
+   `tag_name` VARCHAR(64) NOT NULL COMMENT 'tag name',
+   `creator_id` VARCHAR(64) NOT NULL COMMENT 'creator id',
+   `priority` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'priority, 0 is highest, 65535 is lowest',
+   `type` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'type, 0 is for article, 1 is for interests',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `uk_tag_id` (`tag_id`),
+   UNIQUE KEY `uk_tag_name_type_priority` (`tag_name`, `type`, `priority`)
+) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'ugc tag';

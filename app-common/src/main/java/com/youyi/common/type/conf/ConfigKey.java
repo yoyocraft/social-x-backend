@@ -42,6 +42,7 @@ public enum ConfigKey {
 
     // ================ Ugc ==================
     INNER_UGC_CATEGORIES,
+    INNER_UGC_TAGS,
     UGC_MAX_TAG_COUNT,
     ;
 

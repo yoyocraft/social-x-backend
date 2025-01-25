@@ -22,6 +22,6 @@ public abstract class BaseRequest implements Serializable {
     /**
      * 请求唯一标识，防重，幂等校验
      */
-    @SerializedName("uuid")
-    private String uuid;
+    @SerializedName("reqId")
+    private String reqId;
 }
