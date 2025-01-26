@@ -1,6 +1,5 @@
 package com.youyi.runner.user.util;
 
-import com.google.common.collect.Lists;
 import com.youyi.common.type.BizType;
 import com.youyi.common.type.user.IdentityType;
 import com.youyi.common.type.user.WorkDirectionType;
@@ -10,6 +9,7 @@ import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
+import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 import static com.youyi.common.util.param.ParamChecker.captchaChecker;
@@ -60,7 +60,7 @@ public class UserValidator {
             .put(notBlankChecker("token不能为空"), token)
             .put(notBlankChecker("新密码不能为空"), request.getNewPassword())
             .put(notBlankChecker("确认密码不能为空"), request.getConfirmPassword())
-            .putBatch(passwordChecker("密码不合法"), Lists.newArrayList(request.getNewPassword(), request.getConfirmPassword()))
+            .putBatch(passwordChecker("密码不合法"), List.of(request.getNewPassword(), request.getConfirmPassword()))
             .put(equalsChecker("新密码与确认密码不一致"), Pair.of(request.getNewPassword(), request.getConfirmPassword()))
             .validateWithThrow();
     }

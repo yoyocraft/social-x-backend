@@ -1,5 +1,10 @@
 package com.youyi.common.constant;
 
+import java.util.List;
+
+import static com.youyi.common.type.ugc.UgcStatusType.DELETED;
+import static com.youyi.common.type.ugc.UgcStatusType.DRAFT;
+
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/23
@@ -10,7 +15,7 @@ public class UgcConstant {
 
     public static final String UGC_ID = "ugcId";
 
-    public static final String UGC_TYPE = "ugcType";
+    public static final String UGC_TYPE = "type";
 
     public static final String UGC_AUTHOR_ID = "authorId";
 
@@ -26,4 +31,12 @@ public class UgcConstant {
     public static final String UGC_TAGS = "tags";
     public static final String UGC_COVER = "cover";
     public static final String UGC_ATTACHMENT_URLS = "attachmentUrls";
+
+    public static final String UGC_CATEGORY_ID = "categoryId";
+
+    public static List<String> excludeStatus = List.of(
+        DRAFT.name(),
+        DELETED.name()
+    );
+
 }

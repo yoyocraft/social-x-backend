@@ -13,6 +13,9 @@ import lombok.Setter;
 @Setter
 public class UgcTagQueryRequest extends BasePageRequest {
 
+    /**
+     * 首次查询时，传入 '0'
+     */
     @SerializedName("cursor")
-    private Long cursor;
+    private String cursor;
 }

@@ -24,4 +24,13 @@ public class UgcQueryRequest extends BasePageRequest {
 
     @SerializedName("ugcId")
     private String ugcId;
+
+    /**
+     * 首次查询时，传入 '0'
+     */
+    @SerializedName("cursor")
+    private String cursor;
+
+    @SerializedName("categoryId")
+    private String categoryId;
 }

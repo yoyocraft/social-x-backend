@@ -13,8 +13,8 @@ import lombok.Setter;
 public abstract class BasePageRequest extends BaseRequest {
 
     @SerializedName("page")
-    private int page;
+    private Integer page;
 
     @SerializedName("size")
-    private int size;
+    private Integer size;
 }

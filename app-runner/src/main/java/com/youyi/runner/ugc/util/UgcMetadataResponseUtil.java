@@ -1,6 +1,5 @@
 package com.youyi.runner.ugc.util;
 
-import com.google.common.collect.Lists;
 import com.youyi.common.base.PageCursorResult;
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
@@ -26,7 +25,7 @@ public class UgcMetadataResponseUtil {
     public static Result<UgcMetadataResponse> queryUgcCategorySuccess(UgcMetadataDO ugcMetadataDO) {
         List<UgcCategoryInfoResponse> ugcCategoryInfoResponseList = ugcMetadataDO.getUgcCategoryList().stream()
             .map(UGC_METADATA_CONVERTER::toCategoryInfoResponse).toList();
-        Result<UgcMetadataResponse> response = Result.success(UgcMetadataResponse.of(ugcCategoryInfoResponseList, Lists.newArrayList()));
+        Result<UgcMetadataResponse> response = Result.success(UgcMetadataResponse.of(ugcCategoryInfoResponseList, List.of()));
         LOGGER.info("query ugc category, response:{}", GsonUtil.toJson(response));
         return response;
     }
@@ -34,17 +33,17 @@ public class UgcMetadataResponseUtil {
     public static Result<UgcMetadataResponse> queryUgcInterestTagSuccess(UgcMetadataDO ugcMetadataDO) {
         List<UgcTagInfoResponse> ugcTagInfoResponseList = ugcMetadataDO.getUgcTagList().stream()
             .map(UGC_METADATA_CONVERTER::toTagInfoResponse).toList();
-        Result<UgcMetadataResponse> response = Result.success(UgcMetadataResponse.of(Lists.newArrayList(), ugcTagInfoResponseList));
+        Result<UgcMetadataResponse> response = Result.success(UgcMetadataResponse.of(List.of(), ugcTagInfoResponseList));
         LOGGER.info("query ugc interest tag, response:{}", GsonUtil.toJson(response));
         return response;
     }
 
-    public static Result<PageCursorResult<Long, UgcTagInfoResponse>> queryUgcArticleTagWithCursorSuccess(
+    public static Result<PageCursorResult<String, UgcTagInfoResponse>> queryUgcArticleTagWithCursorSuccess(
         UgcMetadataDO ugcMetadataDO, UgcTagQueryRequest request) {
         List<UgcTagInfoResponse> ugcTagInfoResponseList = ugcMetadataDO.getUgcTagList().stream()
             .map(UGC_METADATA_CONVERTER::toTagInfoResponse).toList();
 
-        Result<PageCursorResult<Long, UgcTagInfoResponse>> response = Result.success(PageCursorResult.of(ugcTagInfoResponseList, ugcMetadataDO.getCursor()));
+        Result<PageCursorResult<String, UgcTagInfoResponse>> response = Result.success(PageCursorResult.of(ugcTagInfoResponseList, ugcMetadataDO.getCursor()));
         LOGGER.info("query ugc article tag with cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }

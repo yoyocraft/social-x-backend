@@ -1,7 +1,5 @@
 package com.youyi.infra.conf.core;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.reflect.TypeToken;
 import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.util.GsonUtil;
@@ -24,7 +22,7 @@ public class SystemConfigService {
 
     // ====================== map type ======================
     public static <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType) {
-        return getMapConfig(configKey, keyType, valueType, Maps.newHashMap());
+        return getMapConfig(configKey, keyType, valueType, Map.of());
     }
 
     public static <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType, Map<K, V> defaultValue) {
@@ -34,11 +32,11 @@ public class SystemConfigService {
 
     // ====================== list type ======================
     public static <T> List<T> getListConfig(String configKey, Class<T> valueType) {
-        return getListConfig(configKey, valueType, Lists.newArrayList());
+        return getListConfig(configKey, valueType, List.of());
     }
 
     public static <T> List<T> getListConfig(ConfigKey configKey, Class<T> valueType) {
-        return getListConfig(configKey.name(), valueType, Lists.newArrayList());
+        return getListConfig(configKey.name(), valueType, List.of());
     }
 
     public static <T> List<T> getListConfig(String configKey, Class<T> valueType, List<T> defaultValue) {

@@ -1,6 +1,5 @@
 package com.youyi.runner.ugc.util;
 
-import com.google.common.collect.Lists;
 import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.common.type.ugc.UgcType;
@@ -9,6 +8,7 @@ import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
+import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
@@ -41,7 +41,7 @@ public class UgcValidator {
                 lessThanOrEqualChecker(getIntegerConfig(ConfigKey.UGC_MAX_TAG_COUNT), "标签数量过多"),
                 request.getTags().size()
             )
-            .putBatch(notBlankChecker("类别不能为空"), Lists.newArrayList(request.getCategoryId(), request.getCategoryName()))
+            .putBatch(notBlankChecker("类别不能为空"), List.of(request.getCategoryId(), request.getCategoryName()))
             .validateWithThrow();
     }
 
@@ -55,6 +55,8 @@ public class UgcValidator {
         ParamCheckerChain.newCheckerChain()
             .putIfNotBlank(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
             .putIfNotBlank(enumExistChecker(UgcStatusType.class, "UGC状态不合法"), request.getUgcStatus())
+            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
+            .put(notBlankChecker("cursor不合法"), request.getCursor())
             .validateWithThrow();
     }
 
@@ -68,6 +70,14 @@ public class UgcValidator {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("UGC ID不能为空"), request.getUgcId())
             .put(enumExistChecker(UgcStatusType.class, "UGC状态不合法"), request.getStatus())
+            .validateWithThrow();
+    }
+
+    public static void checkUgcQueryRequestForMainPage(UgcQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("cursor不合法"), request.getCursor())
+            .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
+            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
     }
 }

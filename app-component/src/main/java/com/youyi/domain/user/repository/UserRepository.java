@@ -7,7 +7,10 @@ import com.youyi.domain.user.repository.mapper.UserAuthMapper;
 import com.youyi.domain.user.repository.mapper.UserInfoMapper;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
+import java.util.Collection;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +102,16 @@ public class UserRepository {
         try {
             checkNotNull(userInfoPO);
             userInfoMapper.update(userInfoPO);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
+
+    public List<UserInfoPO> queryUserInfoByUserIds(Collection<String> userIds) {
+        try {
+            checkState(CollectionUtils.isNotEmpty(userIds));
+            return userInfoMapper.queryBatchByUserId(userIds);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);

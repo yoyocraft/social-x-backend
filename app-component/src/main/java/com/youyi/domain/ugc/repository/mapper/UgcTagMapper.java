@@ -20,6 +20,6 @@ public interface UgcTagMapper {
 
     List<UgcTagPO> queryAll();
 
-    List<UgcTagPO> queryByCursor(@Param("cursor") Long cursor, @Param("size") Integer size);
+    List<UgcTagPO> queryByCursor(@Param("cursor") String cursor, @Param("size") Integer size);
 
 }
