@@ -26,6 +26,8 @@ public enum OperationType {
     AUTHORIZE_PERMISSION,
     REVOKE_PERMISSION,
 
+    UPLOAD_IMAGE,
+
     UGC_PUBLISH,
     UGC_SET_STATUS,
     UGC_DELETE,

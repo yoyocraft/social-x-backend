@@ -22,12 +22,11 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import static com.google.common.base.Preconditions.checkState;
 import static com.youyi.common.type.conf.ConfigKey.AUDIT_UGC_THREAD_POOL_CONFIG;
 import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
+import static com.youyi.infra.conf.core.SystemConfigService.checkConfig;
 import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
 import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
-import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -55,10 +54,7 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
 
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
-        checkState(
-            StringUtils.isNotBlank(getStringConfig(AUDIT_UGC_THREAD_POOL_CONFIG)),
-            "can not find AUDIT_UGC_THREAD_POOL_CONFIG config"
-        );
+        checkConfig(AUDIT_UGC_THREAD_POOL_CONFIG);
         initAsyncExecutor();
     }
 

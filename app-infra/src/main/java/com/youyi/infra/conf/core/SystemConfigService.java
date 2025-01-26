@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.google.common.base.Preconditions.checkState;
 import static com.youyi.infra.conf.core.ConfigCache.getCacheRawValue;
 
 /**
@@ -19,6 +20,23 @@ import static com.youyi.infra.conf.core.ConfigCache.getCacheRawValue;
 public class SystemConfigService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfigService.class);
+
+    private static final String CHECK_CONFIG_ERROR_MSG_FORMATTER = "can not find %s config";
+
+    // ======================= check ======================
+    public static void checkConfig(ConfigKey key) {
+        checkState(
+            StringUtils.isNotBlank(getStringConfig(key)),
+            String.format(CHECK_CONFIG_ERROR_MSG_FORMATTER, key.name())
+        );
+    }
+
+    public static void checkConfig(String key) {
+        checkState(
+            StringUtils.isNotBlank(getStringConfig(key)),
+            String.format(CHECK_CONFIG_ERROR_MSG_FORMATTER, key)
+        );
+    }
 
     // ====================== map type ======================
     public static <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType) {

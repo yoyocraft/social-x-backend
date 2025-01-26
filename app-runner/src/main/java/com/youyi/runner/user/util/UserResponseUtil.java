@@ -23,6 +23,8 @@ public class UserResponseUtil {
 
     public static Result<Boolean> loginSuccess(UserAuthenticateRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
+        // 脱敏
+        request.setCredential(null);
         LOGGER.info("user login, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }

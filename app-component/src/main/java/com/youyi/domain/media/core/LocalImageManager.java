@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.annotation.Nonnull;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -19,13 +18,13 @@ import org.springframework.stereotype.Component;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.youyi.common.constant.MediaConstant.DATE_PATH_FORMATTER;
 import static com.youyi.common.type.conf.ConfigKey.MEDIA_ACCESS_URL_PREFIX;
 import static com.youyi.common.type.conf.ConfigKey.MEDIA_STORAGE_BASE_PATH;
 import static com.youyi.common.type.media.ResourceType.IMAGE;
 import static com.youyi.common.util.CommonOperationUtil.buildFullPath;
 import static com.youyi.common.util.ext.MoreFeatures.runCatching;
+import static com.youyi.infra.conf.core.SystemConfigService.checkConfig;
 import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
 
 /**
@@ -37,15 +36,8 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
 
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
-        checkState(
-            StringUtils.isNotBlank(getStringConfig(MEDIA_STORAGE_BASE_PATH)),
-            "can not find MEDIA_STORAGE_BASE_PATH config"
-        );
-
-        checkState(
-            StringUtils.isNotBlank(getStringConfig(MEDIA_ACCESS_URL_PREFIX)),
-            "can not find MEDIA_ACCESS_URL_PREFIX config"
-        );
+        checkConfig(MEDIA_STORAGE_BASE_PATH);
+        checkConfig(MEDIA_ACCESS_URL_PREFIX);
 
         runCatching(() -> mkdirIfNeeded(getStringConfig(MEDIA_STORAGE_BASE_PATH)));
     }

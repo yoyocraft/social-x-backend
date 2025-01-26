@@ -21,7 +21,7 @@ public class NotificationHelper {
     private final EmailSender emailSender;
     private final CacheManager cacheManager;
 
-    public void notifyCaptcha(NotificationDO notificationDO) {
+    public void notifyEmailCaptcha(NotificationDO notificationDO) {
         // 生成验证码
         String captcha = RandomGenUtil.genEmailCaptcha();
         notificationDO.setCaptcha(captcha);
