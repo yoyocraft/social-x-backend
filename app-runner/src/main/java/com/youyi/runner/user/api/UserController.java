@@ -41,7 +41,11 @@ public class UserController {
 
     private final UserHelper userHelper;
 
-    @RecordOpLog(opType = OperationType.USER_LOGIN, system = true, desensitize = true)
+    @RecordOpLog(
+        opType = OperationType.USER_LOGIN,
+        desensitize = true,
+        fields = {"#request.identityType", "#request.identifier"}
+    )
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Result<Boolean> login(@RequestBody UserAuthenticateRequest request) {
         UserValidator.checkUserAuthenticateRequest(request);

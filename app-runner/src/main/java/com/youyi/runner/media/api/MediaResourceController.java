@@ -1,7 +1,9 @@
 package com.youyi.runner.media.api;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.Result;
+import com.youyi.common.type.OperationType;
 import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.media.helper.MediaResourceHelper;
 import com.youyi.domain.media.model.MediaResourceDO;
@@ -31,6 +33,11 @@ public class MediaResourceController {
     private final MediaResourceHelper mediaResourceHelper;
 
     @SaCheckLogin
+    @RecordOpLog(
+        opType = OperationType.UPLOAD_IMAGE,
+        desensitize = true,
+        fields = {"#request.source"}
+    )
     @RequestMapping(value = "/image/upload", method = RequestMethod.POST)
     public Result<ImageUploadResponse> uploadImage(@RequestPart("file") MultipartFile file, ImageUploadRequest request) {
         MediaResourceValidator.checkImageUploadRequestAndFile(request, file);

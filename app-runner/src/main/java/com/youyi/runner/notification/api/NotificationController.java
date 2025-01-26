@@ -30,12 +30,12 @@ public class NotificationController {
     private final NotificationHelper notificationHelper;
 
     @RecordOpLog(opType = OperationType.NOTIFY_CAPTCHA, system = true)
-    @RequestMapping(value = "/captcha", method = RequestMethod.POST)
-    public Result<Boolean> notifyCaptcha(@RequestBody CaptchaNotifyRequest request) {
+    @RequestMapping(value = "/email/captcha", method = RequestMethod.POST)
+    public Result<Boolean> notifyEmailCaptcha(@RequestBody CaptchaNotifyRequest request) {
         NotificationValidator.checkCaptchaNotifyRequest(request);
         NotificationDO notificationDO = NOTIFICATION_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
-            () -> notificationHelper.notifyCaptcha(notificationDO),
+            () -> notificationHelper.notifyEmailCaptcha(notificationDO),
             CommonOperationUtil::tooManyRequestError,
             request.getEmail(), request.getBizType()
         );
