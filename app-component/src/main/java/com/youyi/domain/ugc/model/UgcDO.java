@@ -55,6 +55,7 @@ public class UgcDO {
     private int page;
     private int size;
     private String keyword;
+    private String cursor;
 
     public void create() {
         this.ugcId = RandomGenUtil.genUgcId();
@@ -109,5 +110,25 @@ public class UgcDO {
         ugcDocument.setGmtCreate(gmtCreate);
         ugcDocument.setGmtModified(LocalDateTime.now());
         return ugcDocument;
+    }
+
+    public void fillWithUgcDocument(UgcDocument ugcDocument) {
+        this.ugcId = ugcDocument.getUgcId();
+        this.ugcType = UgcType.of(ugcDocument.getType());
+        this.title = ugcDocument.getTitle();
+        this.content = ugcDocument.getContent();
+        this.summary = ugcDocument.getSummary();
+        this.categoryId = ugcDocument.getCategoryId();
+        this.categoryName = ugcDocument.getCategoryName();
+        this.tags = ugcDocument.getTags();
+        this.viewCount = ugcDocument.getViewCount();
+        this.likeCount = ugcDocument.getLikeCount();
+        this.commentCount = ugcDocument.getCommentCount();
+        this.status = UgcStatusType.of(ugcDocument.getStatus());
+        this.cover = ugcDocument.getCover();
+        this.attachmentUrls = ugcDocument.getAttachmentUrls();
+        this.extraData = GsonUtil.fromJson(ugcDocument.getExtraData(), UgcExtraData.class);
+        this.gmtCreate = ugcDocument.getGmtCreate();
+        this.gmtModified = ugcDocument.getGmtModified();
     }
 }

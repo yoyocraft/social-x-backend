@@ -17,7 +17,7 @@ public class UgcMetadataDO {
     private List<UgcCategoryInfo> ugcCategoryList;
 
     // for query
-    private long cursor;
+    private String cursor;
     private int size;
 
     public static UgcMetadataDO of(List<UgcCategoryInfo> ugcCategoryList, List<UgcTagInfo> ugcTagList) {

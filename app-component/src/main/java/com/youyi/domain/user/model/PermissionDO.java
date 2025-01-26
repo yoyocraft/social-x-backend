@@ -72,11 +72,11 @@ public class PermissionDO {
         String permissionsJson = rolePermissionPO.getPermissions();
         List<PermissionType> basePermissions = GsonUtil.fromJson(permissionsJson, List.class, PermissionType.class);
         // 去掉 basePermissions 中的 permissions
-        Sets.SetView<PermissionType> finalPermissions = Sets.difference(Sets.newHashSet(basePermissions), Sets.newHashSet(permissions));
+        Set<PermissionType> finalPermissions = Sets.difference(Sets.newHashSet(basePermissions), Sets.newHashSet(permissions));
         this.permissions = Lists.newArrayList(finalPermissions);
     }
 
-    PermissionPO buildPermissionPO(PermissionType permission) {
+    private PermissionPO buildPermissionPO(PermissionType permission) {
         PermissionPO po = new PermissionPO();
         po.setPermissionName(permission.name());
         return po;

@@ -46,7 +46,7 @@ public class UgcMetadataController {
 
     @SaCheckLogin
     @RequestMapping(value = "/metadata/article-tag", method = RequestMethod.GET)
-    public Result<PageCursorResult<Long, UgcTagInfoResponse>> queryUgcArticleTagWithCursor(UgcTagQueryRequest request) {
+    public Result<PageCursorResult<String, UgcTagInfoResponse>> queryUgcArticleTagWithCursor(UgcTagQueryRequest request) {
         UgcMetadataValidator.checkUgcTagQueryRequest(request);
         UgcMetadataDO ugcMetadataDO = UGC_METADATA_ASSEMBLER.toDO(request);
         ugcMetadataHelper.queryUgcArticleTagWithCursor(ugcMetadataDO);

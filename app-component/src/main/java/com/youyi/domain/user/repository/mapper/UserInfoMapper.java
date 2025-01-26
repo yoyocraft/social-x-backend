@@ -1,6 +1,8 @@
 package com.youyi.domain.user.repository.mapper;
 
 import com.youyi.domain.user.repository.po.UserInfoPO;
+import java.util.Collection;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,4 +20,6 @@ public interface UserInfoMapper {
     UserInfoPO queryByUserId(@Param("userId") String userId);
 
     int update(UserInfoPO po);
+
+    List<UserInfoPO> queryBatchByUserId(@Param("userIds") Collection<String> userIds);
 }

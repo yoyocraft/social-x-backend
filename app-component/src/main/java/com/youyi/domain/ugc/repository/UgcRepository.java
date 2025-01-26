@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -51,10 +50,11 @@ public class UgcRepository {
         }
     }
 
-    public Page<UgcDocument> queryByKeywordAndStatusForSelf(String keyword, String ugcStatus, String authorId, int page, int size) {
+    public List<UgcDocument> queryByKeywordAndStatusForSelfWithCursor(String keyword, String ugcStatus, String authorId,
+        LocalDateTime lastCursor, int size) {
         try {
-            checkState(page >= 0 && size > 0);
-            return ugcDAO.queryByKeywordAndStatusForSelf(keyword, ugcStatus, authorId, page, size);
+            checkState(LocalDateTime.now().isAfter(lastCursor) && size > 0);
+            return ugcDAO.queryByKeywordAndStatusForSelfWithCursor(keyword, ugcStatus, authorId, lastCursor, size);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
@@ -95,6 +95,16 @@ public class UgcRepository {
         try {
             checkState(LocalDateTime.now().isAfter(lastCursor) && size > 0);
             return ugcDAO.queryByStatusWithTimeCursor(ugcStatus, lastCursor, size);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public List<UgcDocument> queryMainPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, LocalDateTime lastCursor, int size) {
+        try {
+            checkState(LocalDateTime.now().isAfter(lastCursor) && size > 0);
+            return ugcDAO.queryMainPageInfoWithIdCursor(categoryId, type, ugcStatus, lastCursor, size);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

@@ -1,5 +1,6 @@
 package com.youyi.domain.ugc.helper;
 
+import com.google.common.collect.ImmutableMap;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.domain.ugc.core.UgcService;
@@ -8,8 +9,11 @@ import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
@@ -40,9 +44,17 @@ public class UgcHelper {
         ugcRepository.deleteUgc(ugcDO.getUgcId());
     }
 
-    public Page<UgcDO> querySelfUgc(UgcDO ugcDO) {
+    public List<UgcDO> querySelfUgc(UgcDO ugcDO) {
+        // 1. 查询作者信息
         fillCurrUserAsAuthorInfo(ugcDO);
-        return ugcService.querySelfUgc(ugcDO);
+        // 2. 查询
+        List<UgcDocument> ugcDocuments = ugcService.querySelfUgcWithCursor(ugcDO);
+        // 3. 封装作者信息和游标信息
+        UserDO author = ugcDO.getAuthor();
+        List<UgcDO> ugcInfoList = userService.fillAuthorAndCursorInfo(ugcDocuments, ImmutableMap.of(author.getUserId(), author));
+        // 4. 过滤不必要的信息
+        filterNoNeedInfoForListPage(ugcInfoList);
+        return ugcInfoList;
     }
 
     public UgcDO queryByUgcId(UgcDO ugcDO) {
@@ -56,6 +68,19 @@ public class UgcHelper {
         checkSelfAuthor(ugcDO, ugcDocument);
         checkStatusValidation(ugcDO, ugcDocument);
         ugcRepository.updateUgcStatus(ugcDO.getUgcId(), ugcDO.getStatus().name());
+    }
+
+    public List<UgcDO> queryByCursorForMainPage(UgcDO ugcDO) {
+        // 1. 游标查询
+        List<UgcDocument> ugcDocumentList = ugcService.queryWithUgcIdCursor(ugcDO);
+        // 2. 批量查询作者信息
+        Set<String> authorIds = ugcDocumentList.stream().map(UgcDocument::getAuthorId).collect(Collectors.toSet());
+        Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);
+        // 3. 封装信息
+        List<UgcDO> ugcDOList = userService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
+        // 4. 过滤不必要的信息
+        filterNoNeedInfoForListPage(ugcDOList);
+        return ugcDOList;
     }
 
     void fillCurrUserAsAuthorInfo(UgcDO ugcDO) {
@@ -84,5 +109,12 @@ public class UgcHelper {
         if (updateStatus == UgcStatusType.PUBLISHED && !UgcStatusType.PRIVATE.name().equals(statusFromDB)) {
             throw AppBizException.of(OPERATION_DENIED, "非私密稿件无法设置为公开！");
         }
+    }
+
+    void filterNoNeedInfoForListPage(List<UgcDO> ugcDOList) {
+        ugcDOList.forEach(ugcDO -> {
+            // 列表页无需返回 content
+            ugcDO.setContent(null);
+        });
     }
 }

@@ -1,6 +1,5 @@
 package com.youyi.domain.user.assembler;
 
-import com.google.common.collect.Lists;
 import com.youyi.common.type.user.PermissionType;
 import com.youyi.common.type.user.UserRoleType;
 import com.youyi.common.util.GsonUtil;
@@ -54,21 +53,10 @@ public interface PermissionAssembler {
     })
     PermissionDO toPermissionDO(RolePermissionPO po);
 
-    default String toSavePermissions(PermissionDO permissionDO) {
-        List<PermissionType> permissions = permissionDO.getPermissions();
-        if (CollectionUtils.isEmpty(permissions)) {
-            return StringUtils.EMPTY;
-        }
-
-        List<String> permissionNames = permissions.stream().map(PermissionType::getValue).toList();
-
-        return GsonUtil.toJson(permissionNames);
-    }
-
     default List<PermissionType> toPermissions(RolePermissionPO po) {
         String permissions = po.getPermissions();
         if (StringUtils.isBlank(permissions)) {
-            return Lists.newArrayList();
+            return List.of();
         }
 
         return GsonUtil.fromJson(permissions, List.class, PermissionType.class);
@@ -76,7 +64,7 @@ public interface PermissionAssembler {
 
     default List<PermissionType> toPermissions(List<String> permissions) {
         if (CollectionUtils.isEmpty(permissions)) {
-            return Lists.newArrayList();
+            return List.of();
         }
 
         return permissions.stream().map(PermissionType::of).toList();

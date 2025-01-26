@@ -8,6 +8,7 @@ import com.youyi.domain.ugc.repository.po.UgcTagPO;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -70,9 +71,9 @@ public class UgcTagRepository {
         }
     }
 
-    public List<UgcTagPO> queryByCursor(long cursor, int size) {
+    public List<UgcTagPO> queryByCursor(String cursor, int size) {
         try {
-            checkState(cursor >= 0L && size > 0);
+            checkState(StringUtils.isNotBlank(cursor) && size > 0);
             return ugcTagMapper.queryByCursor(cursor, size);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);

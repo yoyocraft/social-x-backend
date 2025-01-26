@@ -1,6 +1,5 @@
 package com.youyi.domain.ugc.helper;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.youyi.common.type.ugc.UgcTagType;
 import com.youyi.domain.ugc.model.UgcCategoryInfo;
@@ -12,8 +11,8 @@ import com.youyi.domain.ugc.repository.po.UgcCategoryPO;
 import com.youyi.domain.ugc.repository.po.UgcTagPO;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class UgcMetadataHelper {
     public UgcMetadataDO queryUgcCategory() {
         List<UgcCategoryPO> allCategories = ugcCategoryRepository.queryAll();
         List<UgcCategoryInfo> ugcCategoryInfoList = allCategories.stream().map(UGC_METADATA_ASSEMBLER::toCategoryInfo).toList();
-        return UgcMetadataDO.of(ugcCategoryInfoList, Lists.newArrayList());
+        return UgcMetadataDO.of(ugcCategoryInfoList, List.of());
     }
 
     public UgcMetadataDO queryUgcInterestTag() {
@@ -49,10 +48,10 @@ public class UgcMetadataHelper {
         if (CollectionUtils.isEmpty(personalizedTags)) {
             tagInfoList.forEach(tagInfo -> tagInfo.setSelected(false));
         } else {
-            HashSet<String> userSelectedTags = Sets.newHashSet(personalizedTags);
+            Set<String> userSelectedTags = Sets.newHashSet(personalizedTags);
             tagInfoList.forEach(tagInfo -> tagInfo.setSelected(userSelectedTags.contains(tagInfo.getTagName())));
         }
-        return UgcMetadataDO.of(Lists.newArrayList(), tagInfoList);
+        return UgcMetadataDO.of(List.of(), tagInfoList);
     }
 
     public void queryUgcArticleTagWithCursor(UgcMetadataDO ugcMetadataDO) {
@@ -62,7 +61,7 @@ public class UgcMetadataHelper {
         ugcMetadataDO.setUgcTagList(tagInfoList);
         // 回填 cursor
         if (CollectionUtils.isNotEmpty(ugcTagPOList)) {
-            ugcMetadataDO.setCursor(ugcTagPOList.get(ugcTagPOList.size() - 1).getId() + 1);
+            ugcMetadataDO.setCursor(ugcTagPOList.get(ugcTagPOList.size() - 1).getTagId());
         }
     }
 
