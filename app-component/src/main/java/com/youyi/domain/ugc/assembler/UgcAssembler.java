@@ -3,9 +3,7 @@ package com.youyi.domain.ugc.assembler;
 import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.common.type.ugc.UgcType;
-import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.UgcDO;
-import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
@@ -56,8 +54,7 @@ public interface UgcAssembler {
 
     @Mappings({
         @Mapping(target = "ugcType", expression = "java(UgcType.of(ugcDocument.getType()))"),
-        @Mapping(target = "status", expression = "java(UgcStatusType.of(ugcDocument.getStatus()))"),
-        @Mapping(target = "extraData", expression = "java(toExtraData(ugcDocument.getExtraData()))")
+        @Mapping(target = "status", expression = "java(UgcStatusType.of(ugcDocument.getStatus()))")
     })
     UgcDO toDO(UgcDocument ugcDocument);
 
@@ -73,9 +70,5 @@ public interface UgcAssembler {
             return Math.toIntExact(getLongConfig(ConfigKey.DEFAULT_PAGE_SIZE));
         }
         return request.getSize();
-    }
-
-    default UgcExtraData toExtraData(String extra) {
-        return GsonUtil.fromJson(extra, UgcExtraData.class);
     }
 }

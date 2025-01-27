@@ -12,4 +12,9 @@ import lombok.Setter;
 public class UgcExtraData {
 
     private String auditRet;
+
+    /**
+     * 是否已解决
+     */
+    private Boolean hasSolved;
 }

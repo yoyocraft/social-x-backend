@@ -2,11 +2,9 @@ package com.youyi.domain.ugc.model;
 
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.common.type.ugc.UgcType;
-import com.youyi.common.util.GsonUtil;
 import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.user.model.UserDO;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,8 +46,8 @@ public class UgcDO {
 
     private UgcExtraData extraData;
 
-    private LocalDateTime gmtCreate;
-    private LocalDateTime gmtModified;
+    private Long gmtCreate;
+    private Long gmtModified;
 
     // for page query
     private int page;
@@ -81,9 +79,9 @@ public class UgcDO {
         ugcDocument.setStatus(status.name());
         ugcDocument.setCover(cover);
         ugcDocument.setAttachmentUrls(attachmentUrls);
-        ugcDocument.setGmtCreate(LocalDateTime.now());
-        ugcDocument.setGmtModified(LocalDateTime.now());
-        ugcDocument.setExtraData(GsonUtil.toJson(extraData));
+        ugcDocument.setGmtCreate(System.currentTimeMillis());
+        ugcDocument.setGmtModified(System.currentTimeMillis());
+        ugcDocument.setExtraData(extraData);
         return ugcDocument;
     }
 
@@ -108,7 +106,7 @@ public class UgcDO {
         ugcDocument.setCover(cover);
         ugcDocument.setAttachmentUrls(attachmentUrls);
         ugcDocument.setGmtCreate(gmtCreate);
-        ugcDocument.setGmtModified(LocalDateTime.now());
+        ugcDocument.setGmtModified(System.currentTimeMillis());
         return ugcDocument;
     }
 
@@ -127,7 +125,7 @@ public class UgcDO {
         this.status = UgcStatusType.of(ugcDocument.getStatus());
         this.cover = ugcDocument.getCover();
         this.attachmentUrls = ugcDocument.getAttachmentUrls();
-        this.extraData = GsonUtil.fromJson(ugcDocument.getExtraData(), UgcExtraData.class);
+        this.extraData = ugcDocument.getExtraData();
         this.gmtCreate = ugcDocument.getGmtCreate();
         this.gmtModified = ugcDocument.getGmtModified();
     }

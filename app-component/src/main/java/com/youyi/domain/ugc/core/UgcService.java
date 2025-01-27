@@ -6,7 +6,6 @@ import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.user.model.UserDO;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -43,7 +42,7 @@ public class UgcService {
     public List<UgcDocument> querySelfUgcWithCursor(UgcDO ugcDO) {
         UserDO author = ugcDO.getAuthor();
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
-        LocalDateTime cursor = getTimeCursor(ugcDO);
+        long cursor = getTimeCursor(ugcDO);
 
         return ugcRepository.queryByKeywordAndStatusForSelfWithCursor(
             ugcDO.getKeyword(),
@@ -56,7 +55,7 @@ public class UgcService {
 
     public List<UgcDocument> queryWithUgcIdCursor(UgcDO ugcDO) {
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
-        LocalDateTime cursor = getTimeCursor(ugcDO);
+        long cursor = getTimeCursor(ugcDO);
         // 2. 查询
         return ugcRepository.queryMainPageInfoWithIdCursor(
             ugcDO.getCategoryId(),
@@ -74,10 +73,10 @@ public class UgcService {
         }
     }
 
-    LocalDateTime getTimeCursor(UgcDO ugcDO) {
-        LocalDateTime cursor;
+    private long getTimeCursor(UgcDO ugcDO) {
+        long cursor;
         if (INIT_QUERY_CURSOR.equals(ugcDO.getCursor())) {
-            cursor = LocalDateTime.now();
+            cursor = System.currentTimeMillis();
         } else {
             UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getCursor());
             checkNotNull(ugcDocument);

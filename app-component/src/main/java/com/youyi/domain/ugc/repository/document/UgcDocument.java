@@ -3,6 +3,7 @@ package com.youyi.domain.ugc.repository.document;
 import com.youyi.common.base.BaseDocument;
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.common.type.ugc.UgcType;
+import com.youyi.domain.ugc.model.UgcExtraData;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -63,4 +64,5 @@ public class UgcDocument extends BaseDocument {
      */
     private List<String> attachmentUrls;
 
+    private UgcExtraData extraData;
 }

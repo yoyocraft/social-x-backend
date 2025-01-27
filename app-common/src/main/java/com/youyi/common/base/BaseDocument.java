@@ -2,7 +2,6 @@ package com.youyi.common.base;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,9 +16,7 @@ public abstract class BaseDocument implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private LocalDateTime gmtCreate;
+    private Long gmtCreate;
 
-    private LocalDateTime gmtModified;
-
-    private String extraData;
+    private Long gmtModified;
 }

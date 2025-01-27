@@ -5,8 +5,8 @@ import com.youyi.BaseIntegrationTest;
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.IdSeqUtil;
+import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,9 +26,13 @@ class UgcRepositoryTest extends BaseIntegrationTest {
 
     UgcDocument buildUgcDocument() {
         UgcDocument ugcDocument = new UgcDocument();
+        ugcDocument.setCategoryId("1");
+        ugcDocument.setCategoryName("test_category");
+        ugcDocument.setCover("test_cover");
+        ugcDocument.setAttachmentUrls(Lists.newArrayList("test_url1", "test_url2"));
         ugcDocument.setUgcId(IdSeqUtil.genUgcId());
         ugcDocument.setType(UgcType.ARTICLE.name());
-        ugcDocument.setAuthorId("1L");
+        ugcDocument.setAuthorId("1");
         ugcDocument.setTitle("test_title");
         ugcDocument.setContent("test_content");
         ugcDocument.setSummary("test_summary");
@@ -37,9 +41,12 @@ class UgcRepositoryTest extends BaseIntegrationTest {
         ugcDocument.setLikeCount(1000L);
         ugcDocument.setCommentCount(100L);
         ugcDocument.setStatus(UgcStatusType.PUBLISHED.name());
-        ugcDocument.setGmtCreate(LocalDateTime.now());
-        ugcDocument.setGmtModified(LocalDateTime.now());
-        ugcDocument.setExtraData("{}");
+        ugcDocument.setGmtCreate(System.currentTimeMillis());
+        ugcDocument.setGmtModified(System.currentTimeMillis());
+        UgcExtraData extraData = new UgcExtraData();
+        extraData.setAuditRet("审核通过");
+        extraData.setHasSolved(true);
+        ugcDocument.setExtraData(extraData);
         return ugcDocument;
     }
 }
