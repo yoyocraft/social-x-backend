@@ -75,8 +75,7 @@ public class UgcDAO {
         return mongoTemplate.findOne(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryByKeywordAndStatusForSelfWithCursor(String keyword, String ugcStatus, String authorId,
-        LocalDateTime lastCursor, int size) {
+    public List<UgcDocument> queryByKeywordAndStatusForSelfWithCursor(String keyword, String ugcStatus, String authorId, long lastCursor, int size) {
 
         Query query = new Query();
         query.addCriteria(Criteria.where(UGC_AUTHOR_ID).is(authorId));
@@ -86,14 +85,14 @@ public class UgcDAO {
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcStatus, LocalDateTime lastCursor, int size) {
+    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcStatus, long lastCursor, int size) {
         Query query = new Query();
         buildUgcStatusQueryCondition(ugcStatus, query);
         buildTimeCursorQueryCondition(lastCursor, size, query);
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryMainPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, LocalDateTime lastCursor, int size) {
+    public List<UgcDocument> queryMainPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
         Query query = new Query();
         buildUgcStatusQueryCondition(ugcStatus, query);
         if (StringUtils.isNotBlank(type)) {
@@ -129,7 +128,7 @@ public class UgcDAO {
 
     }
 
-    private static void buildTimeCursorQueryCondition(LocalDateTime lastCursor, int size, Query query) {
+    private static void buildTimeCursorQueryCondition(long lastCursor, int size, Query query) {
         // 时间倒序查询
         query.addCriteria(Criteria.where(UGC_GMT_MODIFIED).lt(lastCursor));
         query.limit(size);

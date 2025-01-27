@@ -6,7 +6,6 @@ import com.youyi.common.type.InfraType;
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.domain.ugc.repository.dao.UgcDAO;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -50,10 +49,9 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryByKeywordAndStatusForSelfWithCursor(String keyword, String ugcStatus, String authorId,
-        LocalDateTime lastCursor, int size) {
+    public List<UgcDocument> queryByKeywordAndStatusForSelfWithCursor(String keyword, String ugcStatus, String authorId, long lastCursor, int size) {
         try {
-            checkState(LocalDateTime.now().isAfter(lastCursor) && size > 0);
+            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return ugcDAO.queryByKeywordAndStatusForSelfWithCursor(keyword, ugcStatus, authorId, lastCursor, size);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
@@ -91,9 +89,9 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcStatus, LocalDateTime lastCursor, int size) {
+    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcStatus, long lastCursor, int size) {
         try {
-            checkState(LocalDateTime.now().isAfter(lastCursor) && size > 0);
+            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return ugcDAO.queryByStatusWithTimeCursor(ugcStatus, lastCursor, size);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
@@ -101,9 +99,9 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryMainPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, LocalDateTime lastCursor, int size) {
+    public List<UgcDocument> queryMainPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
         try {
-            checkState(LocalDateTime.now().isAfter(lastCursor) && size > 0);
+            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return ugcDAO.queryMainPageInfoWithIdCursor(categoryId, type, ugcStatus, lastCursor, size);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);

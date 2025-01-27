@@ -2,7 +2,6 @@ package com.youyi.runner.ugc.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.youyi.common.base.BaseResponse;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -67,8 +66,8 @@ public class UgcResponse extends BaseResponse {
     private List<String> tags;
 
     @SerializedName("gmtCreate")
-    private LocalDateTime gmtCreate;
+    private Long gmtCreate;
 
     @SerializedName("gmtModified")
-    private LocalDateTime gmtModified;
+    private Long gmtModified;
 }

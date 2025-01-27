@@ -4,13 +4,12 @@ import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.UgcStatusType;
-import com.youyi.common.util.GsonUtil;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +58,7 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
     }
 
     public void auditUgc() {
-        LocalDateTime cursor = LocalDateTime.now();
+        long cursor = System.currentTimeMillis();
         while (true) {
             List<UgcDocument> ugcPage = loadToAuditUgc(cursor);
             if (ugcPage.isEmpty()) {
@@ -70,7 +69,7 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
         }
     }
 
-    public List<UgcDocument> loadToAuditUgc(LocalDateTime cursor) {
+    public List<UgcDocument> loadToAuditUgc(long cursor) {
         return ugcRepository.queryByStatusWithTimeCursor(
             UgcStatusType.AUDITING.name(),
             cursor,
@@ -101,14 +100,14 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
         // 根据检测结果设置状态
         if (isAuditReject) {
             ugcDocument.setStatus(UgcStatusType.REJECTED.name());
-            UgcExtraData extraData = new UgcExtraData();
+            UgcExtraData extraData = Optional.ofNullable(ugcDocument.getExtraData()).orElseGet(UgcExtraData::new);
             extraData.setAuditRet(auditRetBuilder.toString());
-            ugcDocument.setExtraData(GsonUtil.toJson(extraData));
+            ugcDocument.setExtraData(extraData);
         } else {
             ugcDocument.setStatus(UgcStatusType.PUBLISHED.name());
         }
 
-        ugcDocument.setGmtModified(LocalDateTime.now());
+        ugcDocument.setGmtModified(System.currentTimeMillis());
         ugcRepository.updateUgc(ugcDocument);
 
         // TODO youyi 2025/1/24 接入 AI 审核
