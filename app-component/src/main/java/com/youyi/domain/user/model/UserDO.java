@@ -6,7 +6,7 @@ import com.youyi.common.type.user.UserRoleType;
 import com.youyi.common.type.user.UserStatusType;
 import com.youyi.common.type.user.WorkDirectionType;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.common.util.RandomGenUtil;
+import com.youyi.common.util.IdSeqUtil;
 import com.youyi.common.util.crypto.IvGenerator;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
@@ -18,8 +18,8 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import static com.youyi.common.type.conf.ConfigKey.DEFAULT_AVATAR;
-import static com.youyi.common.util.RandomGenUtil.genUserId;
-import static com.youyi.common.util.RandomGenUtil.genUserNickName;
+import static com.youyi.common.util.IdSeqUtil.genUserId;
+import static com.youyi.common.util.IdSeqUtil.genUserNickName;
 import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
 import static com.youyi.infra.privacy.DesensitizedManager.desensitizeEmail;
 import static com.youyi.infra.privacy.DesensitizedManager.desensitizeMobile;
@@ -63,8 +63,17 @@ public class UserDO {
     private String verifyCaptchaToken;
     private String toVerifiedCaptcha;
 
+    /**
+     * for set password
+     */
     private String newPassword;
     private String confirmPassword;
+
+    /**
+     * for follow user
+     */
+    private String followingUserId;
+    private Boolean followFlag;
 
     public void initUserId() {
         this.userId = genUserId();
@@ -161,7 +170,7 @@ public class UserDO {
     }
 
     public void initSalt() {
-        this.salt = RandomGenUtil.genPwdSalt();
+        this.salt = IdSeqUtil.genPwdSalt();
     }
 
     public void encryptPwd() {

@@ -42,6 +42,7 @@ public class UgcValidator {
                 request.getTags().size()
             )
             .putBatch(notBlankChecker("类别不能为空"), List.of(request.getCategoryId(), request.getCategoryName()))
+            .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();
     }
 

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.youyi.BaseIntegrationTest;
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.common.type.ugc.UgcType;
-import com.youyi.common.util.RandomGenUtil;
+import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ class UgcRepositoryTest extends BaseIntegrationTest {
 
     UgcDocument buildUgcDocument() {
         UgcDocument ugcDocument = new UgcDocument();
-        ugcDocument.setUgcId(RandomGenUtil.genUgcId());
+        ugcDocument.setUgcId(IdSeqUtil.genUgcId());
         ugcDocument.setType(UgcType.ARTICLE.name());
         ugcDocument.setAuthorId("1L");
         ugcDocument.setTitle("test_title");

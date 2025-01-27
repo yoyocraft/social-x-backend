@@ -8,7 +8,7 @@ import java.io.File;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.youyi.common.util.RandomGenUtil.genResourceKey;
+import static com.youyi.common.util.IdSeqUtil.genResourceKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

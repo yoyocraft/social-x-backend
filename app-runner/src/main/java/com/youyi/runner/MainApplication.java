@@ -5,6 +5,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
@@ -13,6 +14,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @EnableScheduling
 @EnableAspectJAutoProxy
+@EnableNeo4jRepositories(
+    basePackages = {
+        "com.youyi.domain.user.repository.relation"
+    }
+)
 @MapperScan(
     basePackages = {
         "com.youyi.infra.conf.repository.mapper",

@@ -7,6 +7,7 @@ import com.youyi.common.util.param.ParamChecker;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
+import com.youyi.domain.user.request.UserFollowRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import java.util.List;
@@ -74,6 +75,13 @@ public class UserValidator {
             .put(notBlankChecker("简介不能为空"), request.getBio())
             .put(notBlankChecker("工作公司不能为空"), request.getCompany())
             .put(notBlankChecker("工作职位不能为空"), request.getJobTitle())
+            .validateWithThrow();
+    }
+
+    public static void checkUserFollowRequest(UserFollowRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("关注用户ID不能为空"), request.getFollowingUserId())
+            .put(notBlankChecker("用户ID不能为空"), request.getReqId())
             .validateWithThrow();
     }
 }

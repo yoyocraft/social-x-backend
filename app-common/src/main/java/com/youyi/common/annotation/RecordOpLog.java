@@ -32,7 +32,7 @@ public @interface RecordOpLog {
     boolean desensitize() default false;
 
     /**
-     * 指定记录的参数字段（支持嵌套，例如 "user.id"）
+     * 指定记录的参数字段 Spring EL 表达式
      */
     String[] fields() default {};
 }

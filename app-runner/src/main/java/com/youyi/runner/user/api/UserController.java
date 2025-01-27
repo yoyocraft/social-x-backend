@@ -9,6 +9,7 @@ import com.youyi.domain.user.helper.UserHelper;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
+import com.youyi.domain.user.request.UserFollowRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import com.youyi.infra.lock.LocalLockUtil;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.youyi.domain.user.assembler.UserAssembler.USER_ASSEMBLER;
 import static com.youyi.runner.user.util.UserResponseUtil.editUserInfoSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.followUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.getCurrentUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.logoutSuccess;
@@ -113,4 +115,19 @@ public class UserController {
         );
         return editUserInfoSuccess(request);
     }
+
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.USER_FOLLOW_USER)
+    @RequestMapping(value = "/follow", method = RequestMethod.POST)
+    public Result<Boolean> followUser(@RequestBody UserFollowRequest request) {
+        UserValidator.checkUserFollowRequest(request);
+        UserDO userDO = USER_ASSEMBLER.toDO(request);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> userHelper.followUser(userDO),
+            CommonOperationUtil::tooManyRequestError,
+            request.getFollowingUserId(), request.getReqId()
+        );
+        return followUserSuccess(request);
+    }
+
 }
