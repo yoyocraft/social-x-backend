@@ -38,7 +38,7 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UgcAuditJob.class);
 
-    private static final long AUDIT_UGC_INTERVAL = 8000L;
+    private static final long AUDIT_UGC_INTERVAL = 30000L;
     private static ThreadPoolExecutor auditUgcExecutor;
 
     private final UgcRepository ugcRepository;

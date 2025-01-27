@@ -81,7 +81,7 @@ class GsonUtilTest {
         List<String> categories = Lists.newArrayList("求职", "后端", "前端", "客户端", "人工智能", "大数据", "云计算", "代码人生", "阅读", "开发工具");
         AtomicInteger priority = new AtomicInteger();
         List<UgcCategoryWrapper> categoryWrappers = categories.stream().map(category -> {
-            String categoryId = RandomGenUtil.genUgcCategoryId();
+            String categoryId = IdSeqUtil.genUgcCategoryId();
             UgcCategoryWrapper wrapper = new UgcCategoryWrapper();
             wrapper.setCategoryId(categoryId);
             wrapper.setCategoryName(category);
@@ -99,7 +99,7 @@ class GsonUtilTest {
         );
         AtomicInteger allTagPriority = new AtomicInteger();
         List<UgcTagWrapper> tagWrappers = allTags.stream().map(tag -> {
-            String tagId = RandomGenUtil.genUgcTagId();
+            String tagId = IdSeqUtil.genUgcTagId();
             UgcTagWrapper wrapper = new UgcTagWrapper();
             wrapper.setTagId(tagId);
             wrapper.setTagName(tag);
@@ -113,7 +113,7 @@ class GsonUtilTest {
         );
         AtomicInteger interestTagPriority = new AtomicInteger();
         List<UgcTagWrapper> interestTagWrappers = interestTags.stream().map(tag -> {
-            String tagId = RandomGenUtil.genUgcTagId();
+            String tagId = IdSeqUtil.genUgcTagId();
             UgcTagWrapper wrapper = new UgcTagWrapper();
             wrapper.setTagId(tagId);
             wrapper.setTagName(tag);

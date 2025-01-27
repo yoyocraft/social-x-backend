@@ -7,8 +7,10 @@ import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.model.UserLoginStateInfo;
+import com.youyi.domain.user.model.relation.UserNode;
 import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserInfoPO;
+import com.youyi.domain.user.repository.relation.UserRelationRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,7 @@ import static com.youyi.infra.conf.core.SystemConfigService.getBooleanConfig;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserRelationRepository userRelationRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
@@ -111,5 +114,28 @@ public class UserService {
                 ugcDO.setCursor(nextCursor);
                 return ugcDO;
             }).toList();
+    }
+
+    public void followUser(UserDO currentUser, UserDO followUser) {
+        // 1. 如果需要，创建用户节点
+        createUserIfNeed(currentUser);
+        createUserIfNeed(followUser);
+
+        // 2. 插入关注关系
+        userRelationRepository.addFollowingUserRelationship(currentUser.getUserId(), followUser.getUserId());
+    }
+
+    public void unfollowUser(UserDO currentUser, UserDO unfollowUser) {
+        // 0. 这里不需要创建用户节点，因为用户节点已经存在了
+        // 1. 删除关注关系
+        userRelationRepository.deleteFollowingUserRelationship(currentUser.getUserId(), unfollowUser.getUserId());
+    }
+
+    private void createUserIfNeed(UserDO userDO) {
+        Optional<UserNode> userNodeOptional = Optional.ofNullable(userRelationRepository.findByUserId(userDO.getUserId()));
+        if (userNodeOptional.isPresent()) {
+            return;
+        }
+        userRelationRepository.save(userDO.getUserId(), userDO.getNickName());
     }
 }

@@ -1,6 +1,6 @@
 package com.youyi.domain.notification.helper;
 
-import com.youyi.common.util.RandomGenUtil;
+import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.infra.cache.manager.CacheManager;
 import com.youyi.infra.email.EmailSender;
@@ -23,7 +23,7 @@ public class NotificationHelper {
 
     public void notifyEmailCaptcha(NotificationDO notificationDO) {
         // 生成验证码
-        String captcha = RandomGenUtil.genEmailCaptcha();
+        String captcha = IdSeqUtil.genEmailCaptcha();
         notificationDO.setCaptcha(captcha);
         // 保存验证码
         saveCaptcha(notificationDO);

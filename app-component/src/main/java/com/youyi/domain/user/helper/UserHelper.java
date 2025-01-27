@@ -9,11 +9,14 @@ import com.youyi.domain.user.helper.login.LoginStrategy;
 import com.youyi.domain.user.helper.login.LoginStrategyFactory;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.model.UserLoginStateInfo;
+import com.youyi.domain.user.model.relation.UserRelationship;
 import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
+import com.youyi.domain.user.repository.relation.UserRelationRepository;
 import com.youyi.infra.cache.manager.CacheManager;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,7 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.ReturnCode.NOT_LOGIN;
 import static com.youyi.common.type.ReturnCode.PERMISSION_DENIED;
-import static com.youyi.common.util.RandomGenUtil.genUserVerifyCaptchaToken;
+import static com.youyi.common.util.IdSeqUtil.genUserVerifyCaptchaToken;
 import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey;
 import static com.youyi.infra.cache.repo.UserCacheRepo.USER_VERIFY_TOKEN_TTL;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserVerifyTokenKey;
@@ -43,6 +46,7 @@ public class UserHelper {
     private final CacheManager cacheManager;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final UserRelationRepository userRelationRepository;
 
     public void login(UserDO userDO) {
         LoginStrategy loginStrategy = loginStrategyFactory.getLoginStrategy(userDO.getIdentityType());
@@ -87,7 +91,43 @@ public class UserHelper {
         updateCurrentUserInfo();
     }
 
-    void checkLogin() {
+    public void followUser(UserDO userDO) {
+        // 1. 获取当前用户信息
+        UserDO currentUser = userService.getCurrentUserInfo();
+        // 2. 校验
+        checkFollowUser(userDO, currentUser);
+        // 3. 关注 or 取消关注
+        if (Boolean.TRUE.equals(userDO.getFollowFlag())) {
+            doFollowUser(currentUser, userDO);
+            return;
+        }
+        doUnfollowUser(currentUser, userDO);
+    }
+
+    private void doFollowUser(UserDO currentUser, UserDO userDO) {
+        // 3. 幂等校验
+        Optional<UserRelationship> hasFollowOptional = Optional.ofNullable(userRelationRepository.queryFollowingUserRelations(currentUser.getUserId(), userDO.getFollowingUserId()));
+        if (hasFollowOptional.isPresent()) {
+            return;
+        }
+        // 4. 获取关注用户信息
+        UserDO followUserInfo = userService.queryByUserId(userDO.getFollowingUserId());
+        // 5. 关注用户
+        userService.followUser(currentUser, followUserInfo);
+    }
+
+    private void doUnfollowUser(UserDO currentUser, UserDO userDO) {
+        // 3. 幂等校验
+        Optional<UserRelationship> hasFollowOptional = Optional.ofNullable(userRelationRepository.queryFollowingUserRelations(currentUser.getUserId(), userDO.getFollowingUserId()));
+        if (hasFollowOptional.isEmpty()) {
+            return;
+        }
+        // 4. 获取取关用户信息
+        UserDO unfollowUserInfo = userService.queryByUserId(userDO.getFollowingUserId());
+        userService.unfollowUser(currentUser, unfollowUserInfo);
+    }
+
+    private void checkLogin() {
         boolean login = StpUtil.isLogin();
         if (!login) {
             throw AppBizException.of(NOT_LOGIN);
@@ -98,7 +138,7 @@ public class UserHelper {
         }
     }
 
-    void checkCaptcha(UserDO userDO) {
+    private void checkCaptcha(UserDO userDO) {
         String cacheCaptchaKey = ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType());
         String systemCaptcha = cacheManager.getString(cacheCaptchaKey);
         if (StringUtils.isBlank(systemCaptcha)) {
@@ -112,7 +152,7 @@ public class UserHelper {
         }
     }
 
-    void genTokenAndCleanCaptcha(UserDO userDO) {
+    private void genTokenAndCleanCaptcha(UserDO userDO) {
         String verifyToken = genUserVerifyCaptchaToken();
         userDO.setVerifyCaptchaToken(verifyToken);
         String verifyTokenCacheKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
@@ -120,7 +160,7 @@ public class UserHelper {
         cacheManager.delete(ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType()));
     }
 
-    void checkToken(UserDO userDO) {
+    private void checkToken(UserDO userDO) {
         LOGGER.debug("user:{} check verify token", userDO.getUserId());
         String cacheVerifyTokenKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
         String systemVerifyToken = (String) cacheManager.get(cacheVerifyTokenKey);
@@ -134,19 +174,19 @@ public class UserHelper {
         }
     }
 
-    void encryptPwd(UserDO userDO) {
+    private void encryptPwd(UserDO userDO) {
         userDO.initSalt();
         userDO.encryptPwd();
     }
 
-    void savePwd(UserDO userDO) {
+    private void savePwd(UserDO userDO) {
         userDO.preSetPwd();
         UserAuthPO userAuthPO = userDO.buildToSaveUserAuthPO();
         // insert or update
         userRepository.insertOrUpdateUserAuth(userAuthPO);
     }
 
-    void checkCanEdit(UserDO editUserDO, UserDO currentUserDO) {
+    private void checkCanEdit(UserDO editUserDO, UserDO currentUserDO) {
         if (currentUserDO.isAdmin()) {
             return;
         }
@@ -158,22 +198,28 @@ public class UserHelper {
         throw AppBizException.of(PERMISSION_DENIED, "无权限修改");
     }
 
-    void doEditUserInfo(UserDO userDO) {
+    private void doEditUserInfo(UserDO userDO) {
         UserInfoPO userInfoPO = userDO.buildToUpdateUserInfoPO();
         userRepository.editUserInfo(userInfoPO);
     }
 
-    void updateCurrentUserInfo() {
+    private void updateCurrentUserInfo() {
         UserDO userDO = userService.loadCurrentUserFromDB();
         UserLoginStateInfo loginStateInfo = userDO.buildLoginStateInfo();
         StpUtil.login(userDO.getUserId());
         StpUtil.getSession().set(USER_LOGIN_STATE, GsonUtil.toJson(loginStateInfo));
     }
 
-    void loadCurrentUserInfoForUpdate(UserDO userDO) {
+    private void loadCurrentUserInfoForUpdate(UserDO userDO) {
         UserDO currentUser = userService.loadCurrentUserFromSession();
         checkNotNull(currentUser);
         UserInfoPO userInfoPO = userRepository.queryUserInfoByUserId(currentUser.getUserId());
         userDO.fillUserInfo(userInfoPO);
+    }
+
+    private void checkFollowUser(UserDO userDO, UserDO currentUser) {
+        if (currentUser.getUserId().equals(userDO.getUserId())) {
+            throw AppBizException.of(PERMISSION_DENIED, "不可以关注自己哦～");
+        }
     }
 }

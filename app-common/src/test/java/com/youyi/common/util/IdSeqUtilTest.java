@@ -8,17 +8,17 @@ import org.junit.platform.commons.util.StringUtils;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/09
  */
-class RandomGenUtilTest {
+class IdSeqUtilTest {
 
     @Test
     void testGenEmailCaptcha() {
-        String result = RandomGenUtil.genEmailCaptcha();
+        String result = IdSeqUtil.genEmailCaptcha();
         Assertions.assertTrue(StringUtils.isNotBlank(result));
     }
 
     @Test
     void testGenUserVerifyCaptchaToken() {
-        String result = RandomGenUtil.genUserVerifyCaptchaToken();
+        String result = IdSeqUtil.genUserVerifyCaptchaToken();
         Assertions.assertTrue(StringUtils.isNotBlank(result));
     }
 }

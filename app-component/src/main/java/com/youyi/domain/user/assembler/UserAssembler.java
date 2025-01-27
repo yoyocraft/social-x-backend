@@ -6,6 +6,7 @@ import com.youyi.common.type.user.WorkDirectionType;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
+import com.youyi.domain.user.request.UserFollowRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +55,11 @@ public interface UserAssembler {
         @Mapping(target = "workDirection", expression = "java(WorkDirectionType.fromCode(request.getWorkDirection()))")
     })
     UserDO toDO(UserEditInfoRequest request);
+
+    @Mappings({
+        @Mapping(target = "followFlag", source = "follow")
+    })
+    UserDO toDO(UserFollowRequest request);
 
     default String originalEmail(UserAuthenticateRequest request) {
         IdentityType identityType = IdentityType.of(request.getIdentityType());

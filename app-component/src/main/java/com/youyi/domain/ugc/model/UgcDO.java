@@ -3,7 +3,7 @@ package com.youyi.domain.ugc.model;
 import com.youyi.common.type.ugc.UgcStatusType;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.common.util.RandomGenUtil;
+import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.user.model.UserDO;
 import java.time.LocalDateTime;
@@ -58,7 +58,7 @@ public class UgcDO {
     private String cursor;
 
     public void create() {
-        this.ugcId = RandomGenUtil.genUgcId();
+        this.ugcId = IdSeqUtil.genUgcId();
         this.viewCount = 0L;
         this.likeCount = 0L;
         this.commentCount = 0L;
