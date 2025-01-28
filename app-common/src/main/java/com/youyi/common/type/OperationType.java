@@ -32,6 +32,9 @@ public enum OperationType {
     UGC_PUBLISH,
     UGC_SET_STATUS,
     UGC_DELETE,
+
+    COMMENTARY_PUBLISH,
+    COMMENTARY_DELETE,
     ;
 
     public static OperationType of(String type) {

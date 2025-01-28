@@ -11,6 +11,8 @@ public class RepositoryConstant {
 
     public static final String INIT_QUERY_CURSOR = "0";
 
+    public static final String TOP_COMMENTARY_ID = "-1";
+
     public static final String MONGO_IGNORE_CASE_OPTION = "i";
 
     public static final String MONGO_FUZZY_QUERY_FORMAT = ".*%s.*";

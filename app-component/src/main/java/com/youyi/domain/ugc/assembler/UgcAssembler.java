@@ -1,7 +1,7 @@
 package com.youyi.domain.ugc.assembler;
 
 import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.ugc.UgcStatusType;
+import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
@@ -9,6 +9,7 @@ import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
+import java.util.Objects;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -24,7 +25,7 @@ import static com.youyi.infra.conf.core.SystemConfigService.getLongConfig;
 @Mapper(
     imports = {
         UgcType.class,
-        UgcStatusType.class
+        UgcStatus.class
     },
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
@@ -42,31 +43,31 @@ public interface UgcAssembler {
 
     @Mappings({
         @Mapping(target = "ugcType", expression = "java(UgcType.of(request.getUgcType()))"),
-        @Mapping(target = "status", expression = "java(UgcStatusType.of(request.getUgcStatus()))"),
+        @Mapping(target = "status", expression = "java(UgcStatus.of(request.getUgcStatus()))"),
         @Mapping(target = "size", expression = "java(calSize(request))")
     })
     UgcDO toDO(UgcQueryRequest request);
 
     @Mappings({
-        @Mapping(target = "status", expression = "java(UgcStatusType.of(request.getStatus()))"),
+        @Mapping(target = "status", expression = "java(UgcStatus.of(request.getStatus()))"),
     })
     UgcDO toDO(UgcSetStatusRequest request);
 
     @Mappings({
         @Mapping(target = "ugcType", expression = "java(UgcType.of(ugcDocument.getType()))"),
-        @Mapping(target = "status", expression = "java(UgcStatusType.of(ugcDocument.getStatus()))")
+        @Mapping(target = "status", expression = "java(UgcStatus.of(ugcDocument.getStatus()))")
     })
     UgcDO toDO(UgcDocument ugcDocument);
 
-    default UgcStatusType calStatusWhenPublish(UgcPublishRequest request) {
+    default UgcStatus calStatusWhenPublish(UgcPublishRequest request) {
         if (Boolean.TRUE.equals(request.getDrafting())) {
-            return UgcStatusType.DRAFT;
+            return UgcStatus.DRAFT;
         }
-        return UgcStatusType.AUDITING;
+        return UgcStatus.AUDITING;
     }
 
     default int calSize(UgcQueryRequest request) {
-        if (request.getSize() == 0) {
+        if (Objects.isNull(request.getSize()) || request.getSize() <= 0) {
             return Math.toIntExact(getLongConfig(ConfigKey.DEFAULT_PAGE_SIZE));
         }
         return request.getSize();

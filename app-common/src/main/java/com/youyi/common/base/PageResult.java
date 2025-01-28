@@ -2,7 +2,6 @@ package com.youyi.common.base;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -10,22 +9,28 @@ import lombok.Getter;
  * @date 2024/12/27
  */
 @Getter
-@AllArgsConstructor
 public class PageResult<T> {
 
     @SerializedName("total")
-    private Long total;
+    private final Long total;
 
     @SerializedName("pageNo")
-    private Long pageNo;
+    private final Long pageNo;
 
     @SerializedName("pageSize")
-    private Long pageSize;
+    private final Long pageSize;
 
     @SerializedName("data")
-    private List<T> data;
+    private final List<T> list;
 
-    public static <T> PageResult<T> of(Long total, Long pageNo, Long pageSize, List<T> data) {
-        return new PageResult<>(total, pageNo, pageSize, data);
+    private PageResult(Long total, Long pageNo, Long pageSize, List<T> list) {
+        this.total = total;
+        this.pageNo = pageNo;
+        this.pageSize = pageSize;
+        this.list = list;
+    }
+
+    public static <T> PageResult<T> of(Long total, Long pageNo, Long pageSize, List<T> list) {
+        return new PageResult<>(total, pageNo, pageSize, list);
     }
 }

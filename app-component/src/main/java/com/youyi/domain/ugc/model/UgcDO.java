@@ -1,6 +1,6 @@
 package com.youyi.domain.ugc.model;
 
-import com.youyi.common.type.ugc.UgcStatusType;
+import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
@@ -32,7 +32,7 @@ public class UgcDO {
     private Long likeCount;
     private Long commentCount;
 
-    private UgcStatusType status;
+    private UgcStatus status;
 
     /**
      * 封面地址
@@ -122,7 +122,7 @@ public class UgcDO {
         this.viewCount = ugcDocument.getViewCount();
         this.likeCount = ugcDocument.getLikeCount();
         this.commentCount = ugcDocument.getCommentCount();
-        this.status = UgcStatusType.of(ugcDocument.getStatus());
+        this.status = UgcStatus.of(ugcDocument.getStatus());
         this.cover = ugcDocument.getCover();
         this.attachmentUrls = ugcDocument.getAttachmentUrls();
         this.extraData = ugcDocument.getExtraData();

@@ -2,25 +2,23 @@ package com.youyi.domain.ugc.request;
 
 import com.google.gson.annotations.SerializedName;
 import com.youyi.common.base.BaseRequest;
-import com.youyi.common.type.ugc.UgcStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
- * @date 2025/01/24
+ * @date 2025/01/27
  */
 @Getter
 @Setter
-public class UgcSetStatusRequest extends BaseRequest {
+public class CommentaryPublishRequest extends BaseRequest {
 
     @SerializedName("ugcId")
     private String ugcId;
 
-    /**
-     * @see UgcStatus#PRIVATE, UgcStatus#PUBLISHED
-     */
-    @SerializedName("status")
-    private String status;
+    @SerializedName("parentId")
+    private String parentId;
 
+    @SerializedName("commentary")
+    private String commentary;
 }

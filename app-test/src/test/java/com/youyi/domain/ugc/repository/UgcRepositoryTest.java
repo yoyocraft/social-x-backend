@@ -2,7 +2,7 @@ package com.youyi.domain.ugc.repository;
 
 import com.google.common.collect.Lists;
 import com.youyi.BaseIntegrationTest;
-import com.youyi.common.type.ugc.UgcStatusType;
+import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.model.UgcExtraData;
@@ -40,7 +40,7 @@ class UgcRepositoryTest extends BaseIntegrationTest {
         ugcDocument.setViewCount(1000L);
         ugcDocument.setLikeCount(1000L);
         ugcDocument.setCommentCount(100L);
-        ugcDocument.setStatus(UgcStatusType.PUBLISHED.name());
+        ugcDocument.setStatus(UgcStatus.PUBLISHED.name());
         ugcDocument.setGmtCreate(System.currentTimeMillis());
         ugcDocument.setGmtModified(System.currentTimeMillis());
         UgcExtraData extraData = new UgcExtraData();

@@ -1,7 +1,7 @@
 package com.youyi.domain.ugc.repository.dao;
 
 import com.mongodb.client.result.UpdateResult;
-import com.youyi.common.type.ugc.UgcStatusType;
+import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +29,7 @@ import static com.youyi.common.constant.UgcConstant.UGC_SUMMARY;
 import static com.youyi.common.constant.UgcConstant.UGC_TAGS;
 import static com.youyi.common.constant.UgcConstant.UGC_TITLE;
 import static com.youyi.common.constant.UgcConstant.UGC_TYPE;
-import static com.youyi.common.constant.UgcConstant.excludeStatus;
+import static com.youyi.common.constant.UgcConstant.includeUgcStatus;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -57,7 +57,7 @@ public class UgcDAO {
             .set(UGC_ATTACHMENT_URLS, ugcDocument.getAttachmentUrls())
             .set(UGC_TAGS, ugcDocument.getTags())
             .set(UGC_STATUS, ugcDocument.getStatus())
-            .set(UGC_GMT_MODIFIED, ugcDocument.getGmtModified())
+            .set(UGC_GMT_MODIFIED, System.currentTimeMillis())
             .set(UGC_EXTRA_DATA, ugcDocument.getExtraData());
         return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
     }
@@ -76,47 +76,46 @@ public class UgcDAO {
     }
 
     public List<UgcDocument> queryByKeywordAndStatusForSelfWithCursor(String keyword, String ugcStatus, String authorId, long lastCursor, int size) {
-
         Query query = new Query();
         query.addCriteria(Criteria.where(UGC_AUTHOR_ID).is(authorId));
-        buildUgcStatusQueryCondition(ugcStatus, query);
-        buildKeywordQueryCondition(keyword, query);
-        buildTimeCursorQueryCondition(lastCursor, size, query);
+        buildUgcStatusQueryCondition(query, ugcStatus);
+        buildKeywordQueryCondition(query, keyword);
+        buildTimeCursorQueryCondition(query, lastCursor, size);
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
     public List<UgcDocument> queryByStatusWithTimeCursor(String ugcStatus, long lastCursor, int size) {
         Query query = new Query();
-        buildUgcStatusQueryCondition(ugcStatus, query);
-        buildTimeCursorQueryCondition(lastCursor, size, query);
+        buildUgcStatusQueryCondition(query, ugcStatus);
+        buildTimeCursorQueryCondition(query, lastCursor, size);
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
     public List<UgcDocument> queryMainPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
         Query query = new Query();
-        buildUgcStatusQueryCondition(ugcStatus, query);
+        buildUgcStatusQueryCondition(query, ugcStatus);
         if (StringUtils.isNotBlank(type)) {
             query.addCriteria(Criteria.where(UGC_TYPE).is(type));
         }
         if (StringUtils.isNotBlank(categoryId)) {
             query.addCriteria(Criteria.where(UGC_CATEGORY_ID).is(categoryId));
         }
-        buildTimeCursorQueryCondition(lastCursor, size, query);
+        buildTimeCursorQueryCondition(query, lastCursor, size);
 
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    private static void buildUgcStatusQueryCondition(String ugcStatus, Query query) {
-        if (UgcStatusType.ALL != UgcStatusType.of(ugcStatus)) {
+    private void buildUgcStatusQueryCondition(Query query, String ugcStatus) {
+        if (UgcStatus.ALL != UgcStatus.of(ugcStatus)) {
             // 查询指定状态的 UGC
             query.addCriteria(Criteria.where(UGC_STATUS).is(ugcStatus));
         } else {
             // 查询除 DRAFT, DELETED 的 UGC
-            query.addCriteria(Criteria.where(UGC_STATUS).nin(excludeStatus));
+            query.addCriteria(Criteria.where(UGC_STATUS).in(includeUgcStatus));
         }
     }
 
-    private static void buildKeywordQueryCondition(String keyword, Query query) {
+    private void buildKeywordQueryCondition(Query query, String keyword) {
         if (StringUtils.isBlank(keyword)) {
             return;
         }
@@ -128,7 +127,7 @@ public class UgcDAO {
 
     }
 
-    private static void buildTimeCursorQueryCondition(long lastCursor, int size, Query query) {
+    private void buildTimeCursorQueryCondition(Query query, long lastCursor, int size) {
         // 时间倒序查询
         query.addCriteria(Criteria.where(UGC_GMT_MODIFIED).lt(lastCursor));
         query.limit(size);

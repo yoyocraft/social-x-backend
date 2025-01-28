@@ -3,7 +3,7 @@ package com.youyi.domain.ugc.core;
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.ugc.UgcStatusType;
+import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.UgcRepository;
@@ -13,7 +13,6 @@ import java.util.Optional;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import static com.youyi.common.type.conf.ConfigKey.AUDIT_UGC_THREAD_POOL_CONFIG;
 import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
+import static com.youyi.domain.ugc.util.AuditUtil.checkSensitiveContent;
 import static com.youyi.infra.conf.core.SystemConfigService.checkConfig;
 import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
 import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
@@ -42,7 +42,7 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
 
     private final UgcRepository ugcRepository;
 
-    @Scheduled(fixedDelay = AUDIT_UGC_INTERVAL)
+    @Scheduled(initialDelay = AUDIT_UGC_INTERVAL, fixedDelay = AUDIT_UGC_INTERVAL)
     public void auditUgcJob() {
         try {
             runWithCost(LOGGER, this::auditUgc, "auditUgc");
@@ -60,7 +60,7 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
     public void auditUgc() {
         long cursor = System.currentTimeMillis();
         while (true) {
-            List<UgcDocument> ugcPage = loadToAuditUgc(cursor);
+            List<UgcDocument> ugcPage = loadAuditingUgc(cursor);
             if (ugcPage.isEmpty()) {
                 break;
             }
@@ -69,16 +69,16 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
         }
     }
 
-    public List<UgcDocument> loadToAuditUgc(long cursor) {
+    public List<UgcDocument> loadAuditingUgc(long cursor) {
         return ugcRepository.queryByStatusWithTimeCursor(
-            UgcStatusType.AUDITING.name(),
+            UgcStatus.AUDITING.name(),
             cursor,
             getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE)
         );
     }
 
     public void doAuditUgc(UgcDocument ugcDocument) {
-        if (!UgcStatusType.AUDITING.equals(UgcStatusType.valueOf(ugcDocument.getStatus()))) {
+        if (!UgcStatus.AUDITING.equals(UgcStatus.of(ugcDocument.getStatus()))) {
             return;
         }
 
@@ -99,29 +99,18 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
 
         // 根据检测结果设置状态
         if (isAuditReject) {
-            ugcDocument.setStatus(UgcStatusType.REJECTED.name());
+            ugcDocument.setStatus(UgcStatus.REJECTED.name());
             UgcExtraData extraData = Optional.ofNullable(ugcDocument.getExtraData()).orElseGet(UgcExtraData::new);
             extraData.setAuditRet(auditRetBuilder.toString());
             ugcDocument.setExtraData(extraData);
         } else {
-            ugcDocument.setStatus(UgcStatusType.PUBLISHED.name());
+            ugcDocument.setStatus(UgcStatus.PUBLISHED.name());
         }
 
         ugcDocument.setGmtModified(System.currentTimeMillis());
         ugcRepository.updateUgc(ugcDocument);
 
         // TODO youyi 2025/1/24 接入 AI 审核
-    }
-
-    /**
-     * 检查字段内容是否包含敏感词
-     */
-    private boolean checkSensitiveContent(String fieldName, String content, StringBuilder auditRetBuilder) {
-        if (StringUtils.isNotBlank(content) && SensitiveWordHelper.contains(content)) {
-            auditRetBuilder.append(fieldName).append("包含敏感词；").append(SymbolConstant.NEW_LINE);
-            return true;
-        }
-        return false;
     }
 
     private void initAsyncExecutor() {
