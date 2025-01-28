@@ -1,7 +1,7 @@
 package com.youyi.runner.ugc.util;
 
 import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.ugc.UgcStatusType;
+import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.ugc.request.UgcDeleteRequest;
@@ -41,7 +41,11 @@ public class UgcValidator {
                 lessThanOrEqualChecker(getIntegerConfig(ConfigKey.UGC_MAX_TAG_COUNT), "标签数量过多"),
                 request.getTags().size()
             )
-            .putBatch(notBlankChecker("类别不能为空"), List.of(request.getCategoryId(), request.getCategoryName()))
+            .putBatchIf(
+                () -> Boolean.TRUE.equals(request.getDrafting()),
+                notBlankChecker("类别不能为空"),
+                List.of(request.getCategoryId(), request.getCategoryName())
+            )
             .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();
     }
@@ -55,7 +59,7 @@ public class UgcValidator {
     public static void checkUgcQueryRequestForQuerySelfUgc(UgcQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
             .putIfNotBlank(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
-            .putIfNotBlank(enumExistChecker(UgcStatusType.class, "UGC状态不合法"), request.getUgcStatus())
+            .putIfNotBlank(enumExistChecker(UgcStatus.class, "UGC状态不合法"), request.getUgcStatus())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .put(notBlankChecker("cursor不合法"), request.getCursor())
             .validateWithThrow();
@@ -70,7 +74,7 @@ public class UgcValidator {
     public static void checkUgcSetStatusRequest(UgcSetStatusRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("UGC ID不能为空"), request.getUgcId())
-            .put(enumExistChecker(UgcStatusType.class, "UGC状态不合法"), request.getStatus())
+            .put(enumExistChecker(UgcStatus.class, "UGC状态不合法"), request.getStatus())
             .validateWithThrow();
     }
 

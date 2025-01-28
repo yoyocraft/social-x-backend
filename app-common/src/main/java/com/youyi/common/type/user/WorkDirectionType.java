@@ -27,6 +27,6 @@ public enum WorkDirectionType implements HasCode {
         return Arrays.stream(WorkDirectionType.values())
             .filter(item -> item.getCode().equals(code))
             .findFirst()
-            .orElse(null);
+            .orElse(UNKNOWN);
     }
 }

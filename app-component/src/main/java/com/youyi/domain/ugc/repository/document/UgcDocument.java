@@ -1,7 +1,7 @@
 package com.youyi.domain.ugc.repository.document;
 
 import com.youyi.common.base.BaseDocument;
-import com.youyi.common.type.ugc.UgcStatusType;
+import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.domain.ugc.model.UgcExtraData;
 import java.util.List;
@@ -50,7 +50,7 @@ public class UgcDocument extends BaseDocument {
     private Long commentCount;
 
     /**
-     * @see UgcStatusType
+     * @see UgcStatus
      */
     private String status;
 

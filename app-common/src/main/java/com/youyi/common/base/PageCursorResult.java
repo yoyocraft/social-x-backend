@@ -2,7 +2,6 @@ package com.youyi.common.base;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -10,16 +9,20 @@ import lombok.Getter;
  * @date 2024/12/27
  */
 @Getter
-@AllArgsConstructor
 public class PageCursorResult<CURSOR, T> {
 
-    @SerializedName("data")
-    private List<T> data;
+    @SerializedName("list")
+    private final List<T> list;
 
     @SerializedName("cursor")
-    private CURSOR cursor;
+    private final CURSOR cursor;
 
-    public static <CURSOR, T> PageCursorResult<CURSOR, T> of(List<T> data, CURSOR cursor) {
-        return new PageCursorResult<>(data, cursor);
+    private PageCursorResult(List<T> list, CURSOR cursor) {
+        this.list = list;
+        this.cursor = cursor;
+    }
+
+    public static <CURSOR, T> PageCursorResult<CURSOR, T> of(List<T> list, CURSOR cursor) {
+        return new PageCursorResult<>(list, cursor);
     }
 }

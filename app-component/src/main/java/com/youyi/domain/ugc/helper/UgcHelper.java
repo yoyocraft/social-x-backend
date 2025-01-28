@@ -2,7 +2,7 @@ package com.youyi.domain.ugc.helper;
 
 import com.google.common.collect.ImmutableMap;
 import com.youyi.common.exception.AppBizException;
-import com.youyi.common.type.ugc.UgcStatusType;
+import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.domain.ugc.core.UgcService;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.UgcRepository;
@@ -51,7 +51,7 @@ public class UgcHelper {
         List<UgcDocument> ugcDocuments = ugcService.querySelfUgcWithCursor(ugcDO);
         // 3. 封装作者信息和游标信息
         UserDO author = ugcDO.getAuthor();
-        List<UgcDO> ugcInfoList = userService.fillAuthorAndCursorInfo(ugcDocuments, ImmutableMap.of(author.getUserId(), author));
+        List<UgcDO> ugcInfoList = ugcService.fillAuthorAndCursorInfo(ugcDocuments, ImmutableMap.of(author.getUserId(), author));
         // 4. 过滤不必要的信息
         filterNoNeedInfoForListPage(ugcInfoList);
         return ugcInfoList;
@@ -77,18 +77,18 @@ public class UgcHelper {
         Set<String> authorIds = ugcDocumentList.stream().map(UgcDocument::getAuthorId).collect(Collectors.toSet());
         Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);
         // 3. 封装信息
-        List<UgcDO> ugcDOList = userService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
+        List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
         // 4. 过滤不必要的信息
         filterNoNeedInfoForListPage(ugcDOList);
         return ugcDOList;
     }
 
-    void fillCurrUserAsAuthorInfo(UgcDO ugcDO) {
+    private void fillCurrUserAsAuthorInfo(UgcDO ugcDO) {
         UserDO author = userService.getCurrentUserInfo();
         ugcDO.setAuthor(author);
     }
 
-    void checkSelfAuthor(UgcDO ugcDO, UgcDocument ugcDocument) {
+    private void checkSelfAuthor(UgcDO ugcDO, UgcDocument ugcDocument) {
         String authorId = ugcDocument.getAuthorId();
         UserDO author = ugcDO.getAuthor();
         if (authorId.equals(author.getUserId())) {
@@ -97,21 +97,21 @@ public class UgcHelper {
         throw AppBizException.of(OPERATION_DENIED, "无权修改！");
     }
 
-    void checkStatusValidation(UgcDO ugcDO, UgcDocument ugcDocument) {
-        UgcStatusType updateStatus = ugcDO.getStatus();
+    private void checkStatusValidation(UgcDO ugcDO, UgcDocument ugcDocument) {
+        UgcStatus updateStatus = ugcDO.getStatus();
         String statusFromDB = ugcDocument.getStatus();
 
         // 设置 PRIVATE 必须是 PUBLISHED
-        if (updateStatus == UgcStatusType.PRIVATE && !UgcStatusType.PUBLISHED.name().equals(statusFromDB)) {
+        if (updateStatus == UgcStatus.PRIVATE && !UgcStatus.PUBLISHED.name().equals(statusFromDB)) {
             throw AppBizException.of(OPERATION_DENIED, "非审核通过的稿件无法设置私密！");
         }
         // 设置 PUBLISHED 必须是 PRIVATE
-        if (updateStatus == UgcStatusType.PUBLISHED && !UgcStatusType.PRIVATE.name().equals(statusFromDB)) {
+        if (updateStatus == UgcStatus.PUBLISHED && !UgcStatus.PRIVATE.name().equals(statusFromDB)) {
             throw AppBizException.of(OPERATION_DENIED, "非私密稿件无法设置为公开！");
         }
     }
 
-    void filterNoNeedInfoForListPage(List<UgcDO> ugcDOList) {
+    private void filterNoNeedInfoForListPage(List<UgcDO> ugcDOList) {
         ugcDOList.forEach(ugcDO -> {
             // 列表页无需返回 content
             ugcDO.setContent(null);

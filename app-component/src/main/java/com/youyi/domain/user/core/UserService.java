@@ -1,10 +1,7 @@
 package com.youyi.domain.user.core;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.domain.ugc.model.UgcDO;
-import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.model.UserLoginStateInfo;
 import com.youyi.domain.user.model.relation.UserNode;
@@ -96,24 +93,6 @@ public class UserService {
                     }
                 )
             );
-    }
-
-    public List<UgcDO> fillAuthorAndCursorInfo(List<UgcDocument> ugcDocumentList, Map<String, UserDO> id2UserInfoMap) {
-        // 下一次查询的 cursor
-        final String nextCursor = Optional.ofNullable(
-            CollectionUtils.isEmpty(ugcDocumentList)
-                ? null
-                : ugcDocumentList.get(ugcDocumentList.size() - 1).getUgcId()
-        ).orElse(SymbolConstant.EMPTY);
-        return ugcDocumentList.stream()
-            .map(ugcDocument -> {
-                UserDO author = id2UserInfoMap.get(ugcDocument.getAuthorId());
-                UgcDO ugcDO = new UgcDO();
-                ugcDO.fillWithUgcDocument(ugcDocument);
-                ugcDO.setAuthor(author);
-                ugcDO.setCursor(nextCursor);
-                return ugcDO;
-            }).toList();
     }
 
     public void followUser(UserDO currentUser, UserDO followUser) {

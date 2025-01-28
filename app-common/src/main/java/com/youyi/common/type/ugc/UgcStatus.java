@@ -6,7 +6,7 @@ import org.apache.commons.lang3.EnumUtils;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/23
  */
-public enum UgcStatusType {
+public enum UgcStatus {
 
     /**
      * 所有
@@ -38,7 +38,7 @@ public enum UgcStatusType {
     DELETED,
     ;
 
-    public static UgcStatusType of(String status) {
-        return EnumUtils.getEnum(UgcStatusType.class, status, ALL);
+    public static UgcStatus of(String status) {
+        return EnumUtils.getEnum(UgcStatus.class, status, ALL);
     }
 }

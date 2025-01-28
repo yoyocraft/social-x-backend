@@ -3,7 +3,7 @@ package com.youyi.domain.ugc.repository;
 import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
-import com.youyi.common.type.ugc.UgcStatusType;
+import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.domain.ugc.repository.dao.UgcDAO;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.util.List;
@@ -42,7 +42,7 @@ public class UgcRepository {
     public void deleteUgc(String ugcId) {
         try {
             checkState(StringUtils.isNotBlank(ugcId));
-            ugcDAO.updateStatusByUgcId(ugcId, UgcStatusType.DELETED.name());
+            ugcDAO.updateStatusByUgcId(ugcId, UgcStatus.DELETED.name());
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
