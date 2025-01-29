@@ -46,16 +46,16 @@ public class UgcAuditJob {
     public void auditUgc() {
         long cursor = System.currentTimeMillis();
         while (true) {
-            List<UgcDocument> ugcPage = loadAuditingUgc(cursor);
-            if (ugcPage.isEmpty()) {
+            List<UgcDocument> ugcList = loadAuditingUgc(cursor);
+            if (ugcList.isEmpty()) {
                 break;
             }
-            ugcPage.forEach(ugcDocument -> ugcTpeContainer.getAuditUgcExecutor().execute(() -> doAuditUgc(ugcDocument)));
-            cursor = ugcPage.get(ugcPage.size() - 1).getGmtModified();
+            ugcList.forEach(ugcDocument -> ugcTpeContainer.getAuditUgcExecutor().execute(() -> doAuditUgc(ugcDocument)));
+            cursor = ugcList.get(ugcList.size() - 1).getGmtModified();
         }
     }
 
-    public List<UgcDocument> loadAuditingUgc(long cursor) {
+    private List<UgcDocument> loadAuditingUgc(long cursor) {
         return ugcRepository.queryByStatusWithTimeCursor(
             UgcStatus.AUDITING.name(),
             cursor,

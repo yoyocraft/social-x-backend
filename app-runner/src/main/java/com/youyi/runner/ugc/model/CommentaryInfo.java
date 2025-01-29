@@ -18,6 +18,7 @@ public class CommentaryInfo {
     private String commentatorNickName;
     private String commentatorAvatar;
     private String commentary;
+    private Long likeCount;
     private Long gmtCreate;
     private Long gmtModified;
     private String status;

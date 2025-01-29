@@ -45,6 +45,10 @@ public enum ConfigKey {
     INNER_UGC_CATEGORIES,
     INNER_UGC_TAGS,
     UGC_MAX_TAG_COUNT,
+
+    // ================ Redis ==================
+    INCR_WITH_EXPIRE_LUA_SCRIPT,
+    GET_AND_DEL_LUA_SCRIPT,
     ;
 
 }

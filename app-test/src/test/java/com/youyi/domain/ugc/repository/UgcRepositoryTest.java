@@ -24,6 +24,12 @@ class UgcRepositoryTest extends BaseIntegrationTest {
         ugcRepository.saveUgc(buildUgcDocument());
     }
 
+    @Test
+    void testIncrUgcStatisticCount() {
+        String ugcId = "1884571668249976832";
+        ugcRepository.incrUgcStatisticCount(ugcId, 0L, 0L, 0L);
+    }
+
     UgcDocument buildUgcDocument() {
         UgcDocument ugcDocument = new UgcDocument();
         ugcDocument.setCategoryId("1");

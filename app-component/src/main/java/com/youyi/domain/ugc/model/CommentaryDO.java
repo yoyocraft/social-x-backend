@@ -4,6 +4,7 @@ import com.youyi.common.type.ugc.CommentaryStatus;
 import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.user.model.UserDO;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -73,5 +74,12 @@ public class CommentaryDO {
         this.likeCount = document.getLikeCount();
         this.status = CommentaryStatus.of(document.getStatus());
         this.extraData = document.getExtraData();
+    }
+
+    public void calLikeCount(Long toAddCount) {
+        if (Objects.isNull(toAddCount) || toAddCount <= 0) {
+            return;
+        }
+        this.likeCount = this.likeCount + toAddCount;
     }
 }

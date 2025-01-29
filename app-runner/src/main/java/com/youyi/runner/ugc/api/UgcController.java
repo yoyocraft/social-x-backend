@@ -85,8 +85,8 @@ public class UgcController {
     public Result<UgcResponse> queryByUgcId(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForQueryByUgcId(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        UgcDO ugcDOInfo = ugcHelper.queryByUgcId(ugcDO);
-        return queryByUgcIdSuccess(ugcDOInfo, request);
+        ugcHelper.queryByUgcId(ugcDO);
+        return queryByUgcIdSuccess(ugcDO, request);
     }
 
     @SaCheckLogin

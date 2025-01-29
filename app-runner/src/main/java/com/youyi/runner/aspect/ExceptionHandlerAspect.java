@@ -51,7 +51,7 @@ public class ExceptionHandlerAspect implements Ordered {
                 response = Result.fail(SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, RequestState.UNKNOWN);
                 serverExpLog(LOGGER, ServerType.HTTP, methodName, GsonUtil.toJson(args), e);
             }
-            LOGGER.error(REQUEST_FAIL_LOG_FORMATTER, className, methodName, GsonUtil.toJson(args), GsonUtil.toJson(response));
+            LOGGER.error(REQUEST_FAIL_LOG_FORMATTER, className, methodName, GsonUtil.toJson(args), GsonUtil.toJson(response), e);
             return response;
         }
     }

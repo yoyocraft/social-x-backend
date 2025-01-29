@@ -3,6 +3,7 @@ package com.youyi.domain.ugc.core;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.domain.ugc.cache.UgcStatisticCacheManager;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
@@ -28,9 +29,10 @@ import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
 @RequiredArgsConstructor
 public class UgcService {
 
-    private final UgcTpeContainer ugcTpeContainer;
     private final UgcRepository ugcRepository;
     private final UgcRelationshipRepository ugcRelationshipRepository;
+
+    private final UgcStatisticCacheManager ugcStatisticCacheManager;
 
     public void publishUgc(UgcDO ugcDO) {
         if (ugcDO.isNew()) {
@@ -93,12 +95,13 @@ public class UgcService {
             }).toList();
     }
 
-    public void asyncIncrUgcViewCount(UgcDO ugcDO, UserDO currentUser) {
+    public void incrUgcViewCount(UgcDO ugcDO, UserDO currentUser) {
         boolean canIncr = checkIncrCondition(ugcDO, currentUser);
         if (!canIncr) {
             return;
         }
-        ugcTpeContainer.getUgcStatisticsExecutor().execute(() -> incrUgcViewCount(ugcDO));
+        // 先保存于内存
+        ugcStatisticCacheManager.incrOrDecrUgcViewCount(ugcDO.getUgcId(), true);
     }
 
     public void likeUgc(UgcDO ugcDO, UserDO currentUser) {
@@ -107,12 +110,16 @@ public class UgcService {
 
         // 插入喜欢关系
         ugcRelationshipRepository.addLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId());
+        // 增加点赞数
+        ugcStatisticCacheManager.incrOrDecrUgcLikeCount(ugcDO.getUgcId(), true);
     }
 
     public void cancelLikeUgc(UgcDO ugcDO, UserDO currentUser) {
         // 不需要创建节点
         // 删除喜欢关系
         ugcRelationshipRepository.deleteLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId());
+        // 减少点赞数
+        ugcStatisticCacheManager.incrOrDecrUgcLikeCount(ugcDO.getUgcId(), false);
     }
 
     public void collectUgc(UgcDO ugcDO, UserDO currentUser) {
@@ -121,12 +128,16 @@ public class UgcService {
 
         // 插入收藏关系
         ugcRelationshipRepository.addCollectRelationship(ugcDO.getUgcId(), currentUser.getUserId());
+        // 增加收藏数
+        ugcStatisticCacheManager.incrOrDecrUgcCollectCount(ugcDO.getUgcId(), true);
     }
 
     public void cancelCollectUgc(UgcDO ugcDO, UserDO currentUser) {
         // 不需要创建节点
         // 删除收藏关系
         ugcRelationshipRepository.deleteCollectRelationship(ugcDO.getUgcId(), currentUser.getUserId());
+        // 减少收藏数
+        ugcStatisticCacheManager.incrOrDecrUgcCollectCount(ugcDO.getUgcId(), false);
     }
 
     public void createUgcIfNeed(UgcDO ugcDO) {
@@ -137,9 +148,20 @@ public class UgcService {
         ugcRelationshipRepository.save(ugcDO.getUgcId());
     }
 
-    private void incrUgcViewCount(UgcDO ugcDO) {
-        // TODO youyi 2025/1/29 内存缓冲下，批量更新
-        ugcRepository.incrViewCount(ugcDO.getUgcId(), 1);
+    public void fillUgcStatistic(List<UgcDO> ugcInfoList) {
+        ugcInfoList.forEach(ugcDO -> {
+            // view
+            Long viewCount = ugcStatisticCacheManager.getUgcViewCount(ugcDO.getUgcId());
+            ugcDO.calViewCount(viewCount);
+
+            // like
+            Long likeCount = ugcStatisticCacheManager.getUgcLikeCount(ugcDO.getUgcId());
+            ugcDO.calLikeCount(likeCount);
+
+            // collect
+            Long collectCount = ugcStatisticCacheManager.getUgcCollectCount(ugcDO.getUgcId());
+            ugcDO.calCollectCount(collectCount);
+        });
     }
 
     private void checkStatusValidationBeforeUpdate(UgcDocument ugcDocument) {
