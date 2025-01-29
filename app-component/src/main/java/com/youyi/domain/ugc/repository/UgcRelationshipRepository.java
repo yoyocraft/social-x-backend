@@ -1,6 +1,6 @@
 package com.youyi.domain.ugc.repository;
 
-import com.youyi.domain.ugc.repository.relation.UgcLikeRelationship;
+import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
 import com.youyi.domain.ugc.repository.relation.UgcNode;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
@@ -36,8 +36,30 @@ public interface UgcRelationshipRepository extends Neo4jRepository<UgcNode, Long
     )
     void deleteLikeRelationship(@Param("ugcId") String ugcId, @Param("userId") String userId);
 
+    @Query(
+        """ 
+            MATCH (u:user {userId: $userId})
+            WITH u
+            MATCH (t:ugc {ugcId: $ugcId})
+            MERGE (u)-[r:COLLECT]->(t)
+            SET r.since = timestamp()
+            """
+    )
+    void addCollectRelationship(@Param("ugcId") String ugcId, @Param("userId") String userId);
+
+    @Query(
+        """
+            MATCH (u:user {userId: $userId})-[r:COLLECT]->(t:ugc {ugcId: $ugcId})
+            DELETE r
+            """
+    )
+    void deleteCollectRelationship(@Param("ugcId") String ugcId, @Param("userId") String userId);
+
     @Query("MATCH (u:user {userId: $userId})-[r:LIKE]->(t:ugc {ugcId: $ugcId}) RETURN u AS target, r.since AS since")
-    UgcLikeRelationship queryLikeRelationship(@Param("ugcId") String ugcId, @Param("userId") String userId);
+    UgcInteractRelationship queryLikeRelationship(@Param("ugcId") String ugcId, @Param("userId") String userId);
+
+    @Query("MATCH (u:user {userId: $userId})-[r:COLLECT]->(t:ugc {ugcId: $ugcId}) RETURN u AS target, r.since AS since")
+    UgcInteractRelationship queryCollectRelationship(@Param("ugcId") String ugcId, @Param("userId") String userId);
 
     @Query("MATCH (u:ugc {ugcId: $ugcId}) RETURN u")
     UgcNode findByUgcId(@Param("ugcId") String ugcId);

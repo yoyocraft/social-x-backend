@@ -115,6 +115,20 @@ public class UgcService {
         ugcRelationshipRepository.deleteLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId());
     }
 
+    public void collectUgc(UgcDO ugcDO, UserDO currentUser) {
+        // 如果需要，创建 UGC 节点
+        createUgcIfNeed(ugcDO);
+
+        // 插入收藏关系
+        ugcRelationshipRepository.addCollectRelationship(ugcDO.getUgcId(), currentUser.getUserId());
+    }
+
+    public void cancelCollectUgc(UgcDO ugcDO, UserDO currentUser) {
+        // 不需要创建节点
+        // 删除收藏关系
+        ugcRelationshipRepository.deleteCollectRelationship(ugcDO.getUgcId(), currentUser.getUserId());
+    }
+
     public void createUgcIfNeed(UgcDO ugcDO) {
         Optional<UgcNode> ugcNodeOptional = Optional.ofNullable(ugcRelationshipRepository.findByUgcId(ugcDO.getUgcId()));
         if (ugcNodeOptional.isPresent()) {
@@ -156,5 +170,4 @@ public class UgcService {
         // 非作者查看可以增加浏览量
         return !ugcDO.getAuthor().getUserId().equals(currentUser.getUserId());
     }
-
 }
