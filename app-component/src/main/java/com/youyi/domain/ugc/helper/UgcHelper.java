@@ -9,7 +9,7 @@ import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
-import com.youyi.domain.ugc.repository.relation.UgcLikeRelationship;
+import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
 import java.util.List;
@@ -133,7 +133,7 @@ public class UgcHelper {
 
     private void doLikeUgc(UgcDO ugcDO, UserDO currentUser) {
         // 幂等校验
-        Optional<UgcLikeRelationship> hasLikeOptional = Optional.ofNullable(ugcRelationshipRepository.queryLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId()));
+        Optional<UgcInteractRelationship> hasLikeOptional = Optional.ofNullable(ugcRelationshipRepository.queryLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId()));
         if (hasLikeOptional.isPresent()) {
             return;
         }
@@ -145,7 +145,7 @@ public class UgcHelper {
 
     private void doCancelLikeUgc(UgcDO ugcDO, UserDO currentUser) {
         // 幂等校验
-        Optional<UgcLikeRelationship> hasLikeOptional = Optional.ofNullable(ugcRelationshipRepository.queryLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId()));
+        Optional<UgcInteractRelationship> hasLikeOptional = Optional.ofNullable(ugcRelationshipRepository.queryLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId()));
         if (hasLikeOptional.isEmpty()) {
             return;
         }
@@ -153,11 +153,24 @@ public class UgcHelper {
     }
 
     private void doCollectUgc(UgcDO ugcDO, UserDO currentUser) {
-
+        // 幂等校验
+        Optional<UgcInteractRelationship> hasCollectOptional = Optional.ofNullable(ugcRelationshipRepository.queryCollectRelationship(ugcDO.getUgcId(), currentUser.getUserId()));
+        if (hasCollectOptional.isPresent()) {
+            return;
+        }
+        // 创建用户节点信息
+        userService.createUserIfNeed(currentUser);
+        // 添加收藏关系
+        ugcService.collectUgc(ugcDO, currentUser);
     }
 
     private void doCancelCollectUgc(UgcDO ugcDO, UserDO currentUser) {
-
+        // 幂等校验
+        Optional<UgcInteractRelationship> hasLikeOptional = Optional.ofNullable(ugcRelationshipRepository.queryCollectRelationship(ugcDO.getUgcId(), currentUser.getUserId()));
+        if (hasLikeOptional.isEmpty()) {
+            return;
+        }
+        ugcService.cancelCollectUgc(ugcDO, currentUser);
     }
 
     private void fillCurrUserAsAuthorInfo(UgcDO ugcDO) {

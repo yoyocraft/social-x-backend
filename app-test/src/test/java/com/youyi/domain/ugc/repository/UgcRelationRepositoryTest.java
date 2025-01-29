@@ -34,6 +34,13 @@ class UgcRelationRepositoryTest extends BaseIntegrationTest {
     }
 
     @Test
+    void testAddCollectRelationship() {
+        String ugcId = "1884419546954997760";
+        String userId = "1883829503093772288";
+        ugcRelationshipRepository.addCollectRelationship(ugcId, userId);
+    }
+
+    @Test
     void testDeleteLikeRelationship() {
         String ugcId = "1884419546954997760";
         String userId = "1883829503093772288";

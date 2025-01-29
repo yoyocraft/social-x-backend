@@ -26,8 +26,16 @@ public class UgcNode {
     private String ugcId;
 
     /**
+     * 喜欢
      * user --> ugc
      */
     @Relationship(type = "LIKE", direction = Relationship.Direction.INCOMING)
-    private List<UgcLikeRelationship> likes;
+    private List<UgcInteractRelationship> likes;
+
+    /**
+     * 收藏
+     * user --> ugc
+     */
+    @Relationship(type = "COLLECT", direction = Relationship.Direction.INCOMING)
+    private List<UgcInteractRelationship> collects;
 }

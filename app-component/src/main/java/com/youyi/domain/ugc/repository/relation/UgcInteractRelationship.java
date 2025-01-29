@@ -16,7 +16,7 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 @Getter
 @Setter
 @RelationshipProperties
-public class UgcLikeRelationship {
+public class UgcInteractRelationship {
 
     @Id
     @GeneratedValue
