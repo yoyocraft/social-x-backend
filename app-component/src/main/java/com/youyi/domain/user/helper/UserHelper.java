@@ -182,7 +182,6 @@ public class UserHelper {
     private void savePwd(UserDO userDO) {
         userDO.preSetPwd();
         UserAuthPO userAuthPO = userDO.buildToSaveUserAuthPO();
-        // insert or update
         userRepository.insertOrUpdateUserAuth(userAuthPO);
     }
 

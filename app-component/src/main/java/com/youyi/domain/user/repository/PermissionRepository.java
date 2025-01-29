@@ -8,8 +8,10 @@ import com.youyi.domain.user.repository.mapper.RolePermissionMapper;
 import com.youyi.domain.user.repository.po.PermissionPO;
 import com.youyi.domain.user.repository.po.RolePermissionPO;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -56,9 +58,15 @@ public class PermissionRepository {
 
     public void insertOrUpdateRolePermission(RolePermissionPO rolePermissionPO) {
         try {
-            checkNotNull(rolePermissionPO);
-            int ret = rolePermissionMapper.insertOrUpdate(rolePermissionPO);
-            checkState(ret >= SINGLE_DML_AFFECTED_ROWS);
+            checkState(Objects.nonNull(rolePermissionPO) && StringUtils.isNotBlank(rolePermissionPO.getRole()));
+            RolePermissionPO po = rolePermissionMapper.queryByRole(rolePermissionPO.getRole());
+            if (Objects.isNull(po)) {
+                int ret = rolePermissionMapper.insert(rolePermissionPO);
+                checkState(ret == SINGLE_DML_AFFECTED_ROWS);
+                return;
+            }
+            int ret = rolePermissionMapper.update(rolePermissionPO);
+            checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);

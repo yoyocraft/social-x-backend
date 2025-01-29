@@ -10,8 +10,10 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface RolePermissionMapper {
-
-    int insertOrUpdate(RolePermissionPO po);
-
+    
     RolePermissionPO queryByRole(@Param("role") String role);
+
+    int insert(RolePermissionPO po);
+
+    int update(RolePermissionPO po);
 }
