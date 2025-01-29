@@ -121,7 +121,7 @@ public class UgcController {
         LocalLockUtil.runWithLockFailSafe(
             () -> ugcHelper.interact(ugcDO),
             CommonOperationUtil::tooManyRequestError,
-            request.getUgcId(), request.getInteractionType(), request.getReqId()
+            request.getTargetId(), request.getInteractionType(), request.getReqId()
         );
         return interactSuccess(request);
     }

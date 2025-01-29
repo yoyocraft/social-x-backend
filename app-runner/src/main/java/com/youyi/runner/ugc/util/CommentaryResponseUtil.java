@@ -8,6 +8,7 @@ import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.request.CommentaryDeleteRequest;
 import com.youyi.domain.ugc.request.CommentaryPublishRequest;
 import com.youyi.domain.ugc.request.CommentaryQueryRequest;
+import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.runner.ugc.model.CommentaryInfo;
 import com.youyi.runner.ugc.model.CommentaryResponse;
 import java.util.ArrayList;
@@ -50,6 +51,12 @@ public class CommentaryResponseUtil {
     public static Result<Boolean> deleteSuccess(CommentaryDeleteRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         LOGGER.info("delete comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<Boolean> likeSuccess(UgcInteractionRequest request) {
+        Result<Boolean> response = Result.success(Boolean.TRUE);
+        LOGGER.info("like comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 

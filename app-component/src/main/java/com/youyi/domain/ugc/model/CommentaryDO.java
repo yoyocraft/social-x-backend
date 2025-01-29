@@ -38,6 +38,9 @@ public class CommentaryDO {
     private String cursor;
     private int size;
 
+    // for interact
+    private Boolean interactFlag;
+
     public void create() {
         this.commentaryId = IdSeqUtil.genCommentaryId();
         this.likeCount = 0L;

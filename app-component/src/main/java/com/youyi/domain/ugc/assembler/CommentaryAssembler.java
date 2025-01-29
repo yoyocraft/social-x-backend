@@ -6,6 +6,7 @@ import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.request.CommentaryDeleteRequest;
 import com.youyi.domain.ugc.request.CommentaryPublishRequest;
 import com.youyi.domain.ugc.request.CommentaryQueryRequest;
+import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import java.util.Objects;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -37,6 +38,12 @@ public interface CommentaryAssembler {
     CommentaryDO toDO(CommentaryQueryRequest request);
 
     CommentaryDO toDO(CommentaryDeleteRequest request);
+
+    @Mappings({
+        @Mapping(target = "commentaryId", source = "targetId"),
+        @Mapping(target = "interactFlag", source = "interact")
+    })
+    CommentaryDO toDO(UgcInteractionRequest request);
 
     default int calSize(CommentaryQueryRequest request) {
         if (Objects.isNull(request.getSize()) || request.getSize() <= 0) {

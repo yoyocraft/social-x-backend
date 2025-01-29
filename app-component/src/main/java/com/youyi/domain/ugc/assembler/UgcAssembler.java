@@ -57,7 +57,8 @@ public interface UgcAssembler {
 
     @Mappings({
         @Mapping(target = "interactionType", expression = "java(UgcInteractionType.of(request.getInteractionType()))"),
-        @Mapping(target = "interactFlag", source = "interact")
+        @Mapping(target = "interactFlag", source = "interact"),
+        @Mapping(target = "ugcId", source = "targetId")
     })
     UgcDO toDO(UgcInteractionRequest request);
 
