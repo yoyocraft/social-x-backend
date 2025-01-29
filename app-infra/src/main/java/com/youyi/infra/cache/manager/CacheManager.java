@@ -4,12 +4,14 @@ import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.util.LogUtil.infraLog;
@@ -91,6 +93,18 @@ public class CacheManager {
     public void delete(String key) {
         try {
             redisTemplate.delete(key);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
+    public <T> T execute(Class<T> returnType, String luaScript, String key, Object... args) {
+        try {
+            DefaultRedisScript<T> script = new DefaultRedisScript<>();
+            script.setScriptText(luaScript);
+            script.setResultType(returnType);
+            return redisTemplate.execute(script, Collections.singletonList(key), args);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);

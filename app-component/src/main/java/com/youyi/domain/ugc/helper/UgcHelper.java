@@ -12,6 +12,7 @@ import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,21 +58,24 @@ public class UgcHelper {
         // 3. 封装作者信息和游标信息
         UserDO author = ugcDO.getAuthor();
         List<UgcDO> ugcInfoList = ugcService.fillAuthorAndCursorInfo(ugcDocuments, ImmutableMap.of(author.getUserId(), author));
-        // 4. 过滤不必要的信息
+        // 4. 填充 statistic 数据
+        ugcService.fillUgcStatistic(ugcInfoList);
+        // 5. 过滤不必要的信息
         filterNoNeedInfoForListPage(ugcInfoList);
         return ugcInfoList;
     }
 
-    public UgcDO queryByUgcId(UgcDO ugcDO) {
+    public void queryByUgcId(UgcDO ugcDO) {
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
         checkNotNull(ugcDocument);
         ugcDO.fillWithUgcDocument(ugcDocument);
         // 填充作者信息
         UserDO author = userService.queryByUserId(ugcDocument.getAuthorId());
         ugcDO.setAuthor(author);
+        // 填充 Statistic 数据
+        ugcService.fillUgcStatistic(Collections.singletonList(ugcDO));
         // 视情况增加 viewCount
-        ugcService.asyncIncrUgcViewCount(ugcDO, userService.getCurrentUserInfo());
-        return ugcDO;
+        ugcService.incrUgcViewCount(ugcDO, userService.getCurrentUserInfo());
     }
 
     public void updateUgcStatus(UgcDO ugcDO) {
@@ -91,7 +95,9 @@ public class UgcHelper {
         Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);
         // 3. 封装信息
         List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
-        // 4. 过滤不必要的信息
+        // 4. 填充 Statistic 数据
+        ugcService.fillUgcStatistic(ugcDOList);
+        // 5. 过滤不必要的信息
         filterNoNeedInfoForListPage(ugcDOList);
         return ugcDOList;
     }
@@ -139,7 +145,7 @@ public class UgcHelper {
         }
         // 创建用户节点信息
         userService.createUserIfNeed(currentUser);
-        // 添加喜欢关系
+        // 添加喜欢关系，增加点赞数
         ugcService.likeUgc(ugcDO, currentUser);
     }
 

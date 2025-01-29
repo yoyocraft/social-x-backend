@@ -14,9 +14,11 @@ import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_GMT_MODIFIED;
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_ID;
+import static com.youyi.common.constant.UgcConstant.COMMENTARY_LIKE_COUNT;
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_PARENT_ID;
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_STATUS;
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_UGC_ID;
+import static com.youyi.common.constant.UgcConstant.UGC_GMT_MODIFIED;
 import static com.youyi.common.constant.UgcConstant.includeCommentaryStatus;
 
 /**
@@ -54,6 +56,13 @@ public class CommentaryDAO {
         return mongoTemplate.find(query, CommentaryDocument.class);
     }
 
+    public List<CommentaryDocument> queryWithTimeCursor(long lastCursor, int size) {
+        Query query = new Query();
+        buildCommentaryStatusQueryCondition(query, CommentaryStatus.ALL.name());
+        buildTimeCursorQueryCondition(query, lastCursor, size);
+        return mongoTemplate.find(query, CommentaryDocument.class);
+    }
+
     public UpdateResult updateStatusByCommentaryId(String commentaryId, String commentaryStatus) {
         Query query = new Query();
         query.addCriteria(Criteria.where(COMMENTARY_ID).is(commentaryId));
@@ -74,6 +83,17 @@ public class CommentaryDAO {
             .set(COMMENTARY_GMT_MODIFIED, System.currentTimeMillis());
 
         return mongoTemplate.updateMulti(query, updateDef, CommentaryDocument.class);
+    }
+
+    public UpdateResult updateCommentaryStatistics(String commentaryId, long incrLikeCount) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(COMMENTARY_ID).is(commentaryId));
+        Update updateDef = new Update();
+        if (incrLikeCount > 0) {
+            updateDef.inc(COMMENTARY_LIKE_COUNT, incrLikeCount);
+        }
+        updateDef.set(UGC_GMT_MODIFIED, System.currentTimeMillis());
+        return mongoTemplate.updateFirst(query, updateDef, CommentaryDocument.class);
     }
 
     private void buildCommentaryStatusQueryCondition(Query query, String commentaryStatus) {

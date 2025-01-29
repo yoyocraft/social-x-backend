@@ -109,30 +109,10 @@ public class UgcRepository {
         }
     }
 
-    public void incrViewCount(String ugcId, int incrViewCount) {
+    public void incrUgcStatisticCount(String ugcId, long incrViewCount, long incrLikeCount, long incrCollectCount) {
         try {
-            checkState(StringUtils.isNotBlank(ugcId) && incrViewCount > 0);
-            ugcDAO.updateUgcStatistics(ugcId, incrViewCount, 0, 0);
-        } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
-    }
-
-    public void incrLikeCount(String ugcId, int incrLikeCount) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId) && incrLikeCount > 0);
-            ugcDAO.updateUgcStatistics(ugcId, 0, incrLikeCount, 0);
-        } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
-    }
-
-    public void incrCollectCount(String ugcId, int incrCollectCount) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId) && incrCollectCount > 0);
-            ugcDAO.updateUgcStatistics(ugcId, 0, 0, incrCollectCount);
+            checkState(StringUtils.isNotBlank(ugcId));
+            ugcDAO.updateUgcStatistics(ugcId, incrViewCount, incrLikeCount, incrCollectCount);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

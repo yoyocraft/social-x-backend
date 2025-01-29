@@ -73,7 +73,7 @@ public class UgcDAO {
         return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
     }
 
-    public UpdateResult updateUgcStatistics(String ugcId, int incrViewCount, int incrLikeCount, int incrCollectCount) {
+    public UpdateResult updateUgcStatistics(String ugcId, long incrViewCount, long incrLikeCount, long incrCollectCount) {
         Query query = new Query(Criteria.where(UGC_ID).is(ugcId));
         Update updateDef = new Update();
         if (incrViewCount > 0) {
@@ -85,6 +85,7 @@ public class UgcDAO {
         if (incrCollectCount > 0) {
             updateDef.inc(UGC_COLLECT_COUNT, incrCollectCount);
         }
+        updateDef.set(UGC_GMT_MODIFIED, System.currentTimeMillis());
         return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
     }
 

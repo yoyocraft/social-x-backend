@@ -7,6 +7,7 @@ import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.user.model.UserDO;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -133,5 +134,26 @@ public class UgcDO {
         this.extraData = ugcDocument.getExtraData();
         this.gmtCreate = ugcDocument.getGmtCreate();
         this.gmtModified = ugcDocument.getGmtModified();
+    }
+
+    public void calViewCount(Long toAddCount) {
+        if (Objects.isNull(toAddCount) || toAddCount <= 0) {
+            return;
+        }
+        this.viewCount = this.viewCount + toAddCount;
+    }
+
+    public void calLikeCount(Long toAddCount) {
+        if (Objects.isNull(toAddCount) || toAddCount <= 0) {
+            return;
+        }
+        this.likeCount = this.likeCount + toAddCount;
+    }
+
+    public void calCollectCount(Long toAddCount) {
+        if (Objects.isNull(toAddCount) || toAddCount <= 0) {
+            return;
+        }
+        this.collectCount = this.collectCount + toAddCount;
     }
 }

@@ -70,6 +70,16 @@ public class CommentaryRepository {
         }
     }
 
+    public List<CommentaryDocument> queryWithTimeCursor(long lastCursor, int size) {
+        try {
+            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+            return commentaryDAO.queryWithTimeCursor(lastCursor, size);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
     public void deleteCommentary(String commentaryId) {
         try {
             checkState(StringUtils.isNotBlank(commentaryId));
@@ -84,6 +94,16 @@ public class CommentaryRepository {
         try {
             checkState(CollectionUtils.isNotEmpty(commentaryIds));
             commentaryDAO.batchUpdateStatusByCommentaryId(commentaryIds, CommentaryStatus.DELETED.name());
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public void incrLikeCount(String commentaryId, long incrLikeCount) {
+        try {
+            checkState(StringUtils.isNotBlank(commentaryId));
+            commentaryDAO.updateCommentaryStatistics(commentaryId, incrLikeCount);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

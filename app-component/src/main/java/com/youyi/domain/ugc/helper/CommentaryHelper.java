@@ -50,7 +50,10 @@ public class CommentaryHelper {
         List<CommentaryDocument> commentaryDocumentList = commentaryService.queryByUgcIdWithTimeCursor(commentaryDO);
         Set<String> commentatorIds = commentaryDocumentList.stream().map(CommentaryDocument::getCommentatorId).collect(Collectors.toSet());
         Map<String, UserDO> id2CommentatorMap = userService.queryBatchByUserId(commentatorIds);
-        return commentaryService.fillCommentatorAndCursorInfo(commentaryDocumentList, id2CommentatorMap);
+        List<CommentaryDO> commentaryDOList = commentaryService.fillCommentatorAndCursorInfo(commentaryDocumentList, id2CommentatorMap);
+        // 填充 Statistic 数据
+        commentaryService.fillCommentaryStatistic(commentaryDOList);
+        return commentaryDOList;
     }
 
     public void deleteCommentary(CommentaryDO commentaryDO) {
