@@ -1,4 +1,4 @@
-package com.youyi.domain.user.model.relation;
+package com.youyi.domain.ugc.repository.relation;
 
 import java.util.List;
 import lombok.Getter;
@@ -11,29 +11,23 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
- * @date 2025/01/27
+ * @date 2025/01/29
  */
 @Getter
 @Setter
-@Node(labels = "user")
-public class UserNode {
+@Node(labels = "ugc")
+public class UgcNode {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Property(value = "userId")
-    private String userId;
-
-    @Property(value = "nickName")
-    private String nickName;
+    @Property(value = "ugcId")
+    private String ugcId;
 
     /**
-     * 关注的用户
-     * <p>
-     * fan --> up
+     * user --> ugc
      */
-    @Relationship(type = "FOLLOWING", direction = Relationship.Direction.OUTGOING)
-    private List<UserRelationship> followingUsers;
-
+    @Relationship(type = "LIKE", direction = Relationship.Direction.INCOMING)
+    private List<UgcLikeRelationship> likes;
 }

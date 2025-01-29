@@ -4,8 +4,10 @@ import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.domain.ugc.model.UgcDO;
+import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.domain.ugc.repository.relation.UgcNode;
 import com.youyi.domain.user.model.UserDO;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,7 @@ public class UgcService {
 
     private final UgcTpeContainer ugcTpeContainer;
     private final UgcRepository ugcRepository;
+    private final UgcRelationshipRepository ugcRelationshipRepository;
 
     public void publishUgc(UgcDO ugcDO) {
         if (ugcDO.isNew()) {
@@ -98,6 +101,28 @@ public class UgcService {
         ugcTpeContainer.getUgcStatisticsExecutor().execute(() -> incrUgcViewCount(ugcDO));
     }
 
+    public void likeUgc(UgcDO ugcDO, UserDO currentUser) {
+        // 如果需要，创建 UGC 节点
+        createUgcIfNeed(ugcDO);
+
+        // 插入喜欢关系
+        ugcRelationshipRepository.addLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId());
+    }
+
+    public void cancelLikeUgc(UgcDO ugcDO, UserDO currentUser) {
+        // 不需要创建节点
+        // 删除喜欢关系
+        ugcRelationshipRepository.deleteLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId());
+    }
+
+    public void createUgcIfNeed(UgcDO ugcDO) {
+        Optional<UgcNode> ugcNodeOptional = Optional.ofNullable(ugcRelationshipRepository.findByUgcId(ugcDO.getUgcId()));
+        if (ugcNodeOptional.isPresent()) {
+            return;
+        }
+        ugcRelationshipRepository.save(ugcDO.getUgcId());
+    }
+
     private void incrUgcViewCount(UgcDO ugcDO) {
         // TODO youyi 2025/1/29 内存缓冲下，批量更新
         ugcRepository.incrViewCount(ugcDO.getUgcId(), 1);
@@ -131,4 +156,5 @@ public class UgcService {
         // 非作者查看可以增加浏览量
         return !ugcDO.getAuthor().getUserId().equals(currentUser.getUserId());
     }
+
 }

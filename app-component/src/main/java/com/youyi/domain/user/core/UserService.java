@@ -4,10 +4,10 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.model.UserLoginStateInfo;
-import com.youyi.domain.user.model.relation.UserNode;
+import com.youyi.domain.user.repository.UserRelationRepository;
 import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserInfoPO;
-import com.youyi.domain.user.repository.relation.UserRelationRepository;
+import com.youyi.domain.user.repository.relation.UserNode;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +110,7 @@ public class UserService {
         userRelationRepository.deleteFollowingUserRelationship(currentUser.getUserId(), unfollowUser.getUserId());
     }
 
-    private void createUserIfNeed(UserDO userDO) {
+    public void createUserIfNeed(UserDO userDO) {
         Optional<UserNode> userNodeOptional = Optional.ofNullable(userRelationRepository.findByUserId(userDO.getUserId()));
         if (userNodeOptional.isPresent()) {
             return;

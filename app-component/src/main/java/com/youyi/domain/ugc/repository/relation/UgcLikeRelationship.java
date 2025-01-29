@@ -1,5 +1,6 @@
-package com.youyi.domain.user.model.relation;
+package com.youyi.domain.ugc.repository.relation;
 
+import com.youyi.domain.user.repository.relation.UserNode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
@@ -10,20 +11,20 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
- * @date 2025/01/27
+ * @date 2025/01/29
  */
 @Getter
 @Setter
 @RelationshipProperties
-public class UserRelationship {
+public class UgcLikeRelationship {
 
     @Id
     @GeneratedValue
     private Long id;
 
+    @Property(value = "since")
+    private Long since;
+
     @TargetNode
     private UserNode target;
-
-    @Property
-    private Long since;
 }
