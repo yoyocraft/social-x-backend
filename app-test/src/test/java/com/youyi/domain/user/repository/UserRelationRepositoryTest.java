@@ -1,10 +1,10 @@
-package com.youyi.domain.user.repository.relation;
+package com.youyi.domain.user.repository;
 
 import com.google.common.collect.Lists;
 import com.youyi.BaseIntegrationTest;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.domain.user.model.relation.UserNode;
-import com.youyi.domain.user.model.relation.UserRelationship;
+import com.youyi.domain.user.repository.relation.UserNode;
+import com.youyi.domain.user.repository.relation.UserRelationship;
 import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;

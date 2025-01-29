@@ -16,7 +16,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAspectJAutoProxy
 @EnableNeo4jRepositories(
     basePackages = {
-        "com.youyi.domain.user.repository.relation"
+        "com.youyi.domain.user.repository",
+        "com.youyi.domain.ugc.repository"
     }
 )
 @MapperScan(

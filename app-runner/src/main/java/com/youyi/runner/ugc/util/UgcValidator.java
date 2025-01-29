@@ -1,10 +1,12 @@
 package com.youyi.runner.ugc.util;
 
 import com.youyi.common.type.conf.ConfigKey;
+import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.ugc.request.UgcDeleteRequest;
+import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
@@ -83,6 +85,14 @@ public class UgcValidator {
             .put(notBlankChecker("cursor不合法"), request.getCursor())
             .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
+            .validateWithThrow();
+    }
+
+    public static void checkUgcInteractionRequest(UgcInteractionRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("UGC ID不能为空"), request.getUgcId())
+            .put(enumExistChecker(UgcInteractionType.class, "UGC交互类型不合法"), request.getInteractionType())
+            .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();
     }
 }

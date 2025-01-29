@@ -1,0 +1,18 @@
+package com.youyi.common.type.ugc;
+
+import org.apache.commons.lang3.EnumUtils;
+
+/**
+ * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
+ * @date 2025/01/29
+ */
+public enum UgcInteractionType {
+    UNKNOWN,
+    LIKE,
+    COLLECT,
+    ;
+
+    public static UgcInteractionType of(String interactionType) {
+        return EnumUtils.getEnum(UgcInteractionType.class, interactionType, UNKNOWN);
+    }
+}

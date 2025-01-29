@@ -2,15 +2,19 @@ package com.youyi.domain.ugc.helper;
 
 import com.google.common.collect.ImmutableMap;
 import com.youyi.common.exception.AppBizException;
+import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.domain.ugc.core.UgcService;
 import com.youyi.domain.ugc.model.UgcDO;
+import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.domain.ugc.repository.relation.UgcLikeRelationship;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +35,7 @@ public class UgcHelper {
     private final UgcService ugcService;
 
     private final UgcRepository ugcRepository;
+    private final UgcRelationshipRepository ugcRelationshipRepository;
 
     public void publishUgc(UgcDO ugcDO) {
         fillCurrUserAsAuthorInfo(ugcDO);
@@ -89,6 +94,70 @@ public class UgcHelper {
         // 4. 过滤不必要的信息
         filterNoNeedInfoForListPage(ugcDOList);
         return ugcDOList;
+    }
+
+    public void interact(UgcDO ugcDO) {
+        UgcInteractionType interactionType = ugcDO.getInteractionType();
+        if (interactionType == UgcInteractionType.UNKNOWN) {
+            throw AppBizException.of(OPERATION_DENIED, "未知的交互类型！");
+        }
+
+        UserDO currentUser = userService.getCurrentUserInfo();
+        if (interactionType == UgcInteractionType.LIKE) {
+            handleLikeUgcInteraction(ugcDO, currentUser);
+            return;
+        }
+
+        if (interactionType == UgcInteractionType.COLLECT) {
+            handleCollectUgcInteraction(ugcDO, currentUser);
+        }
+    }
+
+    private void handleLikeUgcInteraction(UgcDO ugcDO, UserDO currentUser) {
+        // 喜欢
+        if (Boolean.TRUE.equals(ugcDO.getInteractFlag())) {
+            doLikeUgc(ugcDO, currentUser);
+            return;
+        }
+        // 取消喜欢
+        doCancelLikeUgc(ugcDO, currentUser);
+    }
+
+    private void handleCollectUgcInteraction(UgcDO ugcDO, UserDO currentUser) {
+        if (Boolean.TRUE.equals(ugcDO.getInteractFlag())) {
+            doCollectUgc(ugcDO, currentUser);
+            return;
+        }
+        doCancelCollectUgc(ugcDO, currentUser);
+    }
+
+    private void doLikeUgc(UgcDO ugcDO, UserDO currentUser) {
+        // 幂等校验
+        Optional<UgcLikeRelationship> hasLikeOptional = Optional.ofNullable(ugcRelationshipRepository.queryLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId()));
+        if (hasLikeOptional.isPresent()) {
+            return;
+        }
+        // 创建用户节点信息
+        userService.createUserIfNeed(currentUser);
+        // 添加喜欢关系
+        ugcService.likeUgc(ugcDO, currentUser);
+    }
+
+    private void doCancelLikeUgc(UgcDO ugcDO, UserDO currentUser) {
+        // 幂等校验
+        Optional<UgcLikeRelationship> hasLikeOptional = Optional.ofNullable(ugcRelationshipRepository.queryLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId()));
+        if (hasLikeOptional.isEmpty()) {
+            return;
+        }
+        ugcService.cancelLikeUgc(ugcDO, currentUser);
+    }
+
+    private void doCollectUgc(UgcDO ugcDO, UserDO currentUser) {
+
+    }
+
+    private void doCancelCollectUgc(UgcDO ugcDO, UserDO currentUser) {
+
     }
 
     private void fillCurrUserAsAuthorInfo(UgcDO ugcDO) {

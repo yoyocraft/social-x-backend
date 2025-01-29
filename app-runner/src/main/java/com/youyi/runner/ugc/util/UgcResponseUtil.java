@@ -6,6 +6,7 @@ import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.request.UgcDeleteRequest;
+import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
@@ -62,6 +63,12 @@ public class UgcResponseUtil {
         String cursor = Optional.ofNullable(ugcDOList.isEmpty() ? null : ugcDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
         Result<PageCursorResult<String, UgcResponse>> response = Result.success(PageCursorResult.of(data, cursor));
         LOGGER.info("query ugc article by cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<Boolean> interactSuccess(UgcInteractionRequest request) {
+        Result<Boolean> response = Result.success(Boolean.TRUE);
+        LOGGER.info("interact ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 

@@ -1,5 +1,6 @@
 package com.youyi.domain.ugc.model;
 
+import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.IdSeqUtil;
@@ -54,6 +55,10 @@ public class UgcDO {
     private int size;
     private String keyword;
     private String cursor;
+
+    // for like and collect
+    private UgcInteractionType interactionType;
+    private Boolean interactFlag;
 
     public void create() {
         this.ugcId = IdSeqUtil.genUgcId();

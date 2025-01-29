@@ -9,6 +9,7 @@ import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.ugc.helper.UgcHelper;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.request.UgcDeleteRequest;
+import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.youyi.domain.ugc.assembler.UgcAssembler.UGC_ASSEMBLER;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.deleteSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.interactSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryByCursorForMainPageSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryByUgcIdSuccess;
@@ -108,5 +110,19 @@ public class UgcController {
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.queryByCursorForMainPage(ugcDO);
         return queryByCursorForMainPageSuccess(ugcDOList, request);
+    }
+
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.UGC_INTERACT)
+    @RequestMapping(value = "/interact", method = RequestMethod.POST)
+    public Result<Boolean> interact(@RequestBody UgcInteractionRequest request) {
+        UgcValidator.checkUgcInteractionRequest(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> ugcHelper.interact(ugcDO),
+            CommonOperationUtil::tooManyRequestError,
+            request.getUgcId(), request.getInteractionType(), request.getReqId()
+        );
+        return interactSuccess(request);
     }
 }

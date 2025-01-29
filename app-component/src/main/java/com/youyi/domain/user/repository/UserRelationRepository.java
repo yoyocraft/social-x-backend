@@ -1,7 +1,7 @@
-package com.youyi.domain.user.repository.relation;
+package com.youyi.domain.user.repository;
 
-import com.youyi.domain.user.model.relation.UserNode;
-import com.youyi.domain.user.model.relation.UserRelationship;
+import com.youyi.domain.user.repository.relation.UserNode;
+import com.youyi.domain.user.repository.relation.UserRelationship;
 import java.util.List;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;

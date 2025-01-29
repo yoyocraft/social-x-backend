@@ -32,6 +32,7 @@ public enum OperationType {
     UGC_PUBLISH,
     UGC_SET_STATUS,
     UGC_DELETE,
+    UGC_INTERACT,
 
     COMMENTARY_PUBLISH,
     COMMENTARY_DELETE,
