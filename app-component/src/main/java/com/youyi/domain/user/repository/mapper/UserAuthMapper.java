@@ -13,8 +13,8 @@ public interface UserAuthMapper {
 
     int insert(UserAuthPO po);
 
-    int insertOrUpdate(UserAuthPO po);
-
     UserAuthPO queryByIdentityTypeAndIdentifier(@Param("identityType") String identityType, @Param("identifier") String identifier);
+
+    int update(UserAuthPO po);
 
 }

@@ -9,6 +9,7 @@ import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -77,10 +78,19 @@ public class UserRepository {
 
     public void insertOrUpdateUserAuth(UserAuthPO userAuthPO) {
         try {
-            checkNotNull(userAuthPO);
-            // TODO youyi 2025/1/25 拆分成两句 SQL
-            int ret = userAuthMapper.insertOrUpdate(userAuthPO);
-            checkState(ret >= SINGLE_DML_AFFECTED_ROWS);
+            checkState(
+                Objects.nonNull(userAuthPO)
+                    && StringUtils.isNotBlank(userAuthPO.getIdentityType())
+                    && StringUtils.isNotBlank(userAuthPO.getIdentifier())
+            );
+            UserAuthPO po = userAuthMapper.queryByIdentityTypeAndIdentifier(userAuthPO.getIdentityType(), userAuthPO.getIdentifier());
+            if (Objects.isNull(po)) {
+                int ret = userAuthMapper.insert(userAuthPO);
+                checkState(ret == SINGLE_DML_AFFECTED_ROWS);
+                return;
+            }
+            int ret = userAuthMapper.update(userAuthPO);
+            checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
