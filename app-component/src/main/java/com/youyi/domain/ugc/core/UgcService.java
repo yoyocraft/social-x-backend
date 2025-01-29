@@ -26,6 +26,7 @@ import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
 @RequiredArgsConstructor
 public class UgcService {
 
+    private final UgcTpeContainer ugcTpeContainer;
     private final UgcRepository ugcRepository;
 
     public void publishUgc(UgcDO ugcDO) {
@@ -38,6 +39,7 @@ public class UgcService {
 
         // find by ugcId
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
+        checkNotNull(ugcDocument);
         checkStatusValidationBeforeUpdate(ugcDocument);
         ugcDO.fillBeforeUpdateWhenPublish(ugcDocument);
         ugcRepository.updateUgc(ugcDO.buildToUpdateUgcDocumentWhenPublish());
@@ -88,7 +90,20 @@ public class UgcService {
             }).toList();
     }
 
-    void checkStatusValidationBeforeUpdate(UgcDocument ugcDocument) {
+    public void asyncIncrUgcViewCount(UgcDO ugcDO, UserDO currentUser) {
+        boolean canIncr = checkIncrCondition(ugcDO, currentUser);
+        if (!canIncr) {
+            return;
+        }
+        ugcTpeContainer.getUgcStatisticsExecutor().execute(() -> incrUgcViewCount(ugcDO));
+    }
+
+    private void incrUgcViewCount(UgcDO ugcDO) {
+        // TODO youyi 2025/1/29 内存缓冲下，批量更新
+        ugcRepository.incrViewCount(ugcDO.getUgcId(), 1);
+    }
+
+    private void checkStatusValidationBeforeUpdate(UgcDocument ugcDocument) {
         // 私密的稿件禁止修改
         if (UgcStatus.PRIVATE.name().equals(ugcDocument.getStatus())) {
             throw AppBizException.of(OPERATION_DENIED, "私密稿件禁止修改！");
@@ -105,5 +120,15 @@ public class UgcService {
             cursor = ugcDocument.getGmtModified();
         }
         return cursor;
+    }
+
+    private boolean checkIncrCondition(UgcDO ugcDO, UserDO currentUser) {
+        // 仅公开稿件才可增加浏览量
+        if (ugcDO.getStatus() != UgcStatus.PUBLISHED) {
+            return false;
+        }
+
+        // 非作者查看可以增加浏览量
+        return !ugcDO.getAuthor().getUserId().equals(currentUser.getUserId());
     }
 }

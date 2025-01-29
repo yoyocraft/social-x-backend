@@ -47,7 +47,7 @@ public class UgcDocument extends BaseDocument {
 
     private Long likeCount;
 
-    private Long commentCount;
+    private Long collectCount;
 
     /**
      * @see UgcStatus

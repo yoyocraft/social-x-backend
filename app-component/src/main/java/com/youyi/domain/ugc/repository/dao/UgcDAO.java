@@ -19,16 +19,19 @@ import static com.youyi.common.constant.RepositoryConstant.ofFuzzyQuery;
 import static com.youyi.common.constant.UgcConstant.UGC_ATTACHMENT_URLS;
 import static com.youyi.common.constant.UgcConstant.UGC_AUTHOR_ID;
 import static com.youyi.common.constant.UgcConstant.UGC_CATEGORY_ID;
+import static com.youyi.common.constant.UgcConstant.UGC_COLLECT_COUNT;
 import static com.youyi.common.constant.UgcConstant.UGC_CONTENT;
 import static com.youyi.common.constant.UgcConstant.UGC_COVER;
 import static com.youyi.common.constant.UgcConstant.UGC_EXTRA_DATA;
 import static com.youyi.common.constant.UgcConstant.UGC_GMT_MODIFIED;
 import static com.youyi.common.constant.UgcConstant.UGC_ID;
+import static com.youyi.common.constant.UgcConstant.UGC_LIKE_COUNT;
 import static com.youyi.common.constant.UgcConstant.UGC_STATUS;
 import static com.youyi.common.constant.UgcConstant.UGC_SUMMARY;
 import static com.youyi.common.constant.UgcConstant.UGC_TAGS;
 import static com.youyi.common.constant.UgcConstant.UGC_TITLE;
 import static com.youyi.common.constant.UgcConstant.UGC_TYPE;
+import static com.youyi.common.constant.UgcConstant.UGC_VIEW_COUNT;
 import static com.youyi.common.constant.UgcConstant.includeUgcStatus;
 
 /**
@@ -67,6 +70,21 @@ public class UgcDAO {
         Update updateDef = new Update()
             .set(UGC_STATUS, ugcStatus)
             .set(UGC_GMT_MODIFIED, LocalDateTime.now());
+        return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
+    }
+
+    public UpdateResult updateUgcStatistics(String ugcId, int incrViewCount, int incrLikeCount, int incrCollectCount) {
+        Query query = new Query(Criteria.where(UGC_ID).is(ugcId));
+        Update updateDef = new Update();
+        if (incrViewCount > 0) {
+            updateDef.inc(UGC_VIEW_COUNT, incrViewCount);
+        }
+        if (incrLikeCount > 0) {
+            updateDef.inc(UGC_LIKE_COUNT, incrLikeCount);
+        }
+        if (incrCollectCount > 0) {
+            updateDef.inc(UGC_COLLECT_COUNT, incrCollectCount);
+        }
         return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
     }
 

@@ -39,7 +39,7 @@ class UgcRepositoryTest extends BaseIntegrationTest {
         ugcDocument.setTags(Lists.newArrayList("test_tag1", "test_tag2"));
         ugcDocument.setViewCount(1000L);
         ugcDocument.setLikeCount(1000L);
-        ugcDocument.setCommentCount(100L);
+        ugcDocument.setCollectCount(100L);
         ugcDocument.setStatus(UgcStatus.PUBLISHED.name());
         ugcDocument.setGmtCreate(System.currentTimeMillis());
         ugcDocument.setGmtModified(System.currentTimeMillis());

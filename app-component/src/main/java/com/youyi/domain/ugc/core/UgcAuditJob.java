@@ -4,27 +4,19 @@ import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.UgcStatus;
-import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ThreadPoolExecutor;
-import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import static com.youyi.common.type.conf.ConfigKey.AUDIT_UGC_THREAD_POOL_CONFIG;
 import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
 import static com.youyi.domain.ugc.util.AuditUtil.checkSensitiveContent;
-import static com.youyi.infra.conf.core.SystemConfigService.checkConfig;
-import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
 import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
 
 /**
@@ -33,12 +25,12 @@ import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
  */
 @Component
 @RequiredArgsConstructor
-public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
+public class UgcAuditJob {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UgcAuditJob.class);
 
     private static final long AUDIT_UGC_INTERVAL = 30000L;
-    private static ThreadPoolExecutor auditUgcExecutor;
+    private final UgcTpeContainer ugcTpeContainer;
 
     private final UgcRepository ugcRepository;
 
@@ -51,12 +43,6 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
         }
     }
 
-    @Override
-    public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
-        checkConfig(AUDIT_UGC_THREAD_POOL_CONFIG);
-        initAsyncExecutor();
-    }
-
     public void auditUgc() {
         long cursor = System.currentTimeMillis();
         while (true) {
@@ -64,7 +50,7 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
             if (ugcPage.isEmpty()) {
                 break;
             }
-            ugcPage.forEach(ugcDocument -> auditUgcExecutor.execute(() -> doAuditUgc(ugcDocument)));
+            ugcPage.forEach(ugcDocument -> ugcTpeContainer.getAuditUgcExecutor().execute(() -> doAuditUgc(ugcDocument)));
             cursor = ugcPage.get(ugcPage.size() - 1).getGmtModified();
         }
     }
@@ -111,18 +97,5 @@ public class UgcAuditJob implements ApplicationListener<ApplicationReadyEvent> {
         ugcRepository.updateUgc(ugcDocument);
 
         // TODO youyi 2025/1/24 接入 AI 审核
-    }
-
-    private void initAsyncExecutor() {
-        ThreadPoolConfigWrapper auditUgcTpeConfig = getCacheValue(AUDIT_UGC_THREAD_POOL_CONFIG, ThreadPoolConfigWrapper.class);
-        auditUgcExecutor = new ThreadPoolExecutor(
-            auditUgcTpeConfig.getCorePoolSize(),
-            auditUgcTpeConfig.getMaximumPoolSize(),
-            auditUgcTpeConfig.getKeepAliveTime(),
-            auditUgcTpeConfig.getTimeUnit(),
-            auditUgcTpeConfig.getQueue(),
-            auditUgcTpeConfig.getThreadFactory(LOGGER),
-            auditUgcTpeConfig.getRejectedHandler()
-        );
     }
 }

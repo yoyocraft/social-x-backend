@@ -17,6 +17,7 @@ public enum ConfigKey {
     // ================ ThreadPool ================
     RECORD_OP_LOG_THREAD_POOL_CONFIG,
     AUDIT_UGC_THREAD_POOL_CONFIG,
+    UGC_STATISTICS_THREAD_POOL_CONFIG,
 
     // ================ Feature AB Switch ================
     SEND_EMAIL_AB_SWITCH,
