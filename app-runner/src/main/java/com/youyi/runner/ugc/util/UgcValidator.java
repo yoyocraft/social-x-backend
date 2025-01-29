@@ -90,7 +90,7 @@ public class UgcValidator {
 
     public static void checkUgcInteractionRequest(UgcInteractionRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(notBlankChecker("UGC ID不能为空"), request.getUgcId())
+            .put(notBlankChecker("UGC ID不能为空"), request.getTargetId())
             .put(enumExistChecker(UgcInteractionType.class, "UGC交互类型不合法"), request.getInteractionType())
             .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();

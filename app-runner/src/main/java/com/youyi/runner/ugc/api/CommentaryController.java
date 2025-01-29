@@ -11,6 +11,7 @@ import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.request.CommentaryDeleteRequest;
 import com.youyi.domain.ugc.request.CommentaryPublishRequest;
 import com.youyi.domain.ugc.request.CommentaryQueryRequest;
+import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.infra.lock.LocalLockUtil;
 import com.youyi.runner.ugc.model.CommentaryResponse;
 import com.youyi.runner.ugc.util.CommentaryValidator;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.youyi.domain.ugc.assembler.CommentaryAssembler.COMMENTARY_ASSEMBLER;
 import static com.youyi.runner.ugc.util.CommentaryResponseUtil.deleteSuccess;
+import static com.youyi.runner.ugc.util.CommentaryResponseUtil.likeSuccess;
 import static com.youyi.runner.ugc.util.CommentaryResponseUtil.publishSuccess;
 import static com.youyi.runner.ugc.util.CommentaryResponseUtil.queryUgcCommentarySuccess;
 
@@ -72,5 +74,19 @@ public class CommentaryController {
             commentaryDO.getUgcId()
         );
         return deleteSuccess(request);
+    }
+
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.UGC_INTERACT)
+    @RequestMapping(value = "/like", method = RequestMethod.POST)
+    public Result<Boolean> like(@RequestBody UgcInteractionRequest request) {
+        CommentaryValidator.checkUgcInteractionRequest(request);
+        CommentaryDO commentaryDO = COMMENTARY_ASSEMBLER.toDO(request);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> commentaryHelper.like(commentaryDO),
+            CommonOperationUtil::tooManyRequestError,
+            commentaryDO.getUgcId(), request.getReqId()
+        );
+        return likeSuccess(request);
     }
 }

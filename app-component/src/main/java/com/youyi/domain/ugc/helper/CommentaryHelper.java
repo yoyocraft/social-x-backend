@@ -6,8 +6,10 @@ import com.youyi.common.type.ugc.CommentaryStatus;
 import com.youyi.domain.ugc.core.CommentaryService;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
+import com.youyi.domain.ugc.repository.CommentaryRelationshipRepository;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
+import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
 import java.util.List;
@@ -35,6 +37,7 @@ public class CommentaryHelper {
     private final UserService userService;
     private final CommentaryService commentaryService;
     private final CommentaryRepository commentaryRepository;
+    private final CommentaryRelationshipRepository commentaryRelationshipRepository;
 
     public void publish(CommentaryDO commentaryDO) {
         fillCurrUserAsCommentator(commentaryDO);
@@ -55,6 +58,38 @@ public class CommentaryHelper {
         CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryDO.getCommentaryId());
         checkSelfCommentator(commentaryDO, commentaryDocument);
         commentaryService.deleteCommentary(commentaryDO);
+    }
+
+    public void like(CommentaryDO commentaryDO) {
+        UserDO currentUser = userService.getCurrentUserInfo();
+        if (Boolean.TRUE.equals(commentaryDO.getInteractFlag())) {
+            doLike(commentaryDO, currentUser);
+            return;
+        }
+
+        doCancelLike(commentaryDO, currentUser);
+    }
+
+    private void doLike(CommentaryDO commentaryDO, UserDO currentUser) {
+        // 幂等校验
+        Optional<UgcInteractRelationship> hasLikeOptional = Optional.ofNullable(commentaryRelationshipRepository.queryLikeRelationship(commentaryDO.getCommentaryId(), currentUser.getUserId()));
+        if (hasLikeOptional.isPresent()) {
+            return;
+        }
+        // 创建用户节点信息
+        userService.createUserIfNeed(currentUser);
+        // 添加喜欢关系
+        commentaryService.likeCommentary(commentaryDO, currentUser);
+    }
+
+    private void doCancelLike(CommentaryDO commentaryDO, UserDO currentUser) {
+        // 幂等校验
+        Optional<UgcInteractRelationship> hasLikeOptional = Optional.ofNullable(commentaryRelationshipRepository.queryLikeRelationship(commentaryDO.getCommentaryId(), currentUser.getUserId()));
+        if (hasLikeOptional.isEmpty()) {
+            return;
+        }
+        // 删除喜欢关系
+        commentaryService.cancelLikeCommentary(commentaryDO, currentUser);
     }
 
     private void fillCurrUserAsCommentator(CommentaryDO commentaryDO) {

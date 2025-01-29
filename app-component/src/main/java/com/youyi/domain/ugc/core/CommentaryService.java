@@ -2,8 +2,10 @@ package com.youyi.domain.ugc.core;
 
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.domain.ugc.model.CommentaryDO;
+import com.youyi.domain.ugc.repository.CommentaryRelationshipRepository;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
+import com.youyi.domain.ugc.repository.relation.CommentaryNode;
 import com.youyi.domain.user.model.UserDO;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ import static com.youyi.common.constant.RepositoryConstant.INIT_QUERY_CURSOR;
 public class CommentaryService {
 
     private final CommentaryRepository commentaryRepository;
+    private final CommentaryRelationshipRepository commentaryRelationshipRepository;
 
     public List<CommentaryDocument> queryByUgcIdWithTimeCursor(CommentaryDO commentaryDO) {
         long cursor = getTimeCursor(commentaryDO);
@@ -76,5 +79,27 @@ public class CommentaryService {
         }
         // 删除父评论
         commentaryRepository.deleteCommentary(commentaryDO.getCommentaryId());
+    }
+
+    public void likeCommentary(CommentaryDO commentaryDO, UserDO currentUser) {
+        // 如果需要创建评论节点
+        createCommentaryIfNeed(commentaryDO);
+
+        // 创建喜欢关系
+        commentaryRelationshipRepository.addLikeRelationship(commentaryDO.getCommentaryId(), currentUser.getUserId());
+    }
+
+    public void cancelLikeCommentary(CommentaryDO commentaryDO, UserDO currentUser) {
+        // 无需创建节点
+        // 删除喜欢关系
+        commentaryRelationshipRepository.deleteLikeRelationship(commentaryDO.getCommentaryId(), currentUser.getUserId());
+    }
+
+    public void createCommentaryIfNeed(CommentaryDO commentaryDO) {
+        Optional<CommentaryNode> commentaryNodeOptional = Optional.ofNullable(commentaryRelationshipRepository.findByCommentaryId(commentaryDO.getCommentaryId()));
+        if (commentaryNodeOptional.isPresent()) {
+            return;
+        }
+        commentaryRelationshipRepository.save(commentaryDO.getCommentaryId());
     }
 }

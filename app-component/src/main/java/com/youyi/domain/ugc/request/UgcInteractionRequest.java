@@ -16,9 +16,13 @@ public class UgcInteractionRequest extends BaseRequest {
     @SerializedName("interactionType")
     String interactionType;
 
-    @SerializedName("ugcId")
-    String ugcId;
+    @SerializedName("targetId")
+    String targetId;
 
+    /**
+     * 点赞 / 取消点赞
+     * 收藏 / 取消收藏
+     */
     @SerializedName("interact")
     Boolean interact;
 
