@@ -2,7 +2,6 @@ package com.youyi.domain.conf.assembler;
 
 import com.youyi.domain.conf.model.ConfigDO;
 import com.youyi.domain.conf.request.ConfigUpdateRequest;
-import com.youyi.infra.conf.repository.po.ConfigPO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -25,14 +24,5 @@ public class ConfigAssemblerTest {
         Assertions.assertEquals("configKey", configDO.getConfigKey());
         Assertions.assertEquals("newConfigValue", configDO.getConfigValue());
         Assertions.assertEquals(1, configDO.getVersion());
-    }
-
-    @Test
-    void testDOToUpdatePO() {
-        ConfigDO configDO = new ConfigDO();
-
-        ConfigPO po = ConfigAssembler.CONFIG_ASSEMBLER.toUpdateOrDeletePO(configDO);
-
-        Assertions.assertNotNull(po.getGmtModified());
     }
 }

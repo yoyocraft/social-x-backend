@@ -1,5 +1,6 @@
 package com.youyi.domain.ugc.model;
 
+import com.youyi.domain.ugc.repository.po.UgcCategoryPO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +15,10 @@ public class UgcCategoryInfo {
     private String categoryId;
     private String categoryName;
     private Integer priority;
+
+    public void fillWithUgcCategoryPO(UgcCategoryPO po) {
+        this.categoryId = po.getCategoryId();
+        this.categoryName = po.getCategoryName();
+        this.priority = po.getPriority();
+    }
 }

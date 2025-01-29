@@ -28,4 +28,11 @@ public class OperationLogDO {
         return toSaveOperationLog;
     }
 
+    public void fillWithOperationLogPO(OperationLogPO operationLogPO) {
+        this.operationType = OperationType.of(operationLogPO.getOperationType());
+        this.operatorId = operationLogPO.getOperatorId();
+        this.operatorName = operationLogPO.getOperatorName();
+        this.extraData = GsonUtil.fromJson(operationLogPO.getExtraData(), OperationLogExtraData.class);
+    }
+
 }

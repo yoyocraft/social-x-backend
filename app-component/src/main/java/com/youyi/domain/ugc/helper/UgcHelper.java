@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
-import static com.youyi.domain.ugc.assembler.UgcAssembler.UGC_ASSEMBLER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -59,7 +58,9 @@ public class UgcHelper {
 
     public UgcDO queryByUgcId(UgcDO ugcDO) {
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
-        return UGC_ASSEMBLER.toDO(ugcDocument);
+        ugcDO.fillWithUgcDocument(ugcDocument);
+        // 填充作者信息
+        return ugcDO;
     }
 
     public void updateUgcStatus(UgcDO ugcDO) {

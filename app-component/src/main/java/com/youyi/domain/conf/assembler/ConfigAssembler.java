@@ -5,7 +5,6 @@ import com.youyi.domain.conf.request.ConfigCreateRequest;
 import com.youyi.domain.conf.request.ConfigDeleteRequest;
 import com.youyi.domain.conf.request.ConfigQueryRequest;
 import com.youyi.domain.conf.request.ConfigUpdateRequest;
-import com.youyi.infra.conf.repository.po.ConfigPO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -38,14 +37,4 @@ public interface ConfigAssembler {
     ConfigDO toDO(ConfigUpdateRequest request);
 
     ConfigDO toDO(ConfigDeleteRequest request);
-
-    @Mappings({
-        @Mapping(source = "id", target = "configId")
-    })
-    ConfigDO toDO(ConfigPO configPO);
-
-    @Mappings({
-        @Mapping(source = "configId", target = "id"),
-    })
-    ConfigPO toUpdateOrDeletePO(ConfigDO configDO);
 }

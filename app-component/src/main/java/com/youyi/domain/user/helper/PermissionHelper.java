@@ -9,8 +9,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.youyi.domain.user.assembler.PermissionAssembler.PERMISSION_ASSEMBLER;
-
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/14
@@ -48,6 +46,8 @@ public class PermissionHelper {
 
     public PermissionDO queryPermissionByRole(UserRoleType role) {
         RolePermissionPO po = permissionRepository.queryRolePermissionByRole(role.name());
-        return PERMISSION_ASSEMBLER.toPermissionDO(po);
+        PermissionDO permissionDO = new PermissionDO();
+        permissionDO.fillWithRolePermissionPO(po);
+        return permissionDO;
     }
 }

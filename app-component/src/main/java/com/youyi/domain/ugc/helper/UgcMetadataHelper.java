@@ -17,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
-import static com.youyi.domain.ugc.assembler.UgcMetadataAssembler.UGC_METADATA_ASSEMBLER;
-
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/25
@@ -34,14 +32,26 @@ public class UgcMetadataHelper {
 
     public UgcMetadataDO queryUgcCategory() {
         List<UgcCategoryPO> allCategories = ugcCategoryRepository.queryAll();
-        List<UgcCategoryInfo> ugcCategoryInfoList = allCategories.stream().map(UGC_METADATA_ASSEMBLER::toCategoryInfo).toList();
+        List<UgcCategoryInfo> ugcCategoryInfoList = allCategories.stream()
+            .map(po -> {
+                UgcCategoryInfo info = new UgcCategoryInfo();
+                info.fillWithUgcCategoryPO(po);
+                return info;
+            })
+            .toList();
         return UgcMetadataDO.of(ugcCategoryInfoList, List.of());
     }
 
     public UgcMetadataDO queryUgcInterestTag() {
         // 1. 查询所有兴趣标签
         List<UgcTagPO> interestTags = ugcTagRepository.queryByType(UgcTagType.FOR_USER_INTEREST.getType());
-        List<UgcTagInfo> tagInfoList = interestTags.stream().map(UGC_METADATA_ASSEMBLER::toTagInfo).toList();
+        List<UgcTagInfo> tagInfoList = interestTags.stream()
+            .map(po -> {
+                UgcTagInfo info = new UgcTagInfo();
+                info.fillWithUgcTagPO(po);
+                return info;
+            })
+            .toList();
         // 2. 标记用户已经选择的标签
         UserDO currUserInfo = userService.getCurrentUserInfo();
         List<String> personalizedTags = currUserInfo.getPersonalizedTags();
@@ -56,7 +66,13 @@ public class UgcMetadataHelper {
 
     public void queryUgcArticleTagWithCursor(UgcMetadataDO ugcMetadataDO) {
         List<UgcTagPO> ugcTagPOList = ugcTagRepository.queryByCursor(ugcMetadataDO.getCursor(), ugcMetadataDO.getSize());
-        List<UgcTagInfo> tagInfoList = ugcTagPOList.stream().map(UGC_METADATA_ASSEMBLER::toTagInfo).toList();
+        List<UgcTagInfo> tagInfoList = ugcTagPOList.stream()
+            .map(po -> {
+                UgcTagInfo info = new UgcTagInfo();
+                info.fillWithUgcTagPO(po);
+                return info;
+            })
+            .toList();
         // 回填数据
         ugcMetadataDO.setUgcTagList(tagInfoList);
         // 回填 cursor

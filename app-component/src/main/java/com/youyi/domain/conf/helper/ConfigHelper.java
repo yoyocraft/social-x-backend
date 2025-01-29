@@ -6,8 +6,6 @@ import com.youyi.infra.conf.repository.po.ConfigPO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.youyi.domain.conf.assembler.ConfigAssembler.CONFIG_ASSEMBLER;
-
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2024/12/30
@@ -23,19 +21,19 @@ public class ConfigHelper {
         configRepository.insert(toSaveConfig);
     }
 
-    public ConfigDO queryConfig(ConfigDO configDO) {
+    public void queryConfig(ConfigDO configDO) {
         ConfigPO configPO = configRepository.queryByConfigKey(configDO.getConfigKey());
-        return CONFIG_ASSEMBLER.toDO(configPO);
+        configDO.fillWithConfigPO(configPO);
     }
 
     public void updateConfig(ConfigDO configDO) {
-        ConfigPO configPO = CONFIG_ASSEMBLER.toUpdateOrDeletePO(configDO);
+        ConfigPO configPO = configDO.buildToUpdateOrDeletePO();
         configRepository.updateConfigValueAndEnv(configPO);
     }
 
     public void deleteConfig(ConfigDO configDO) {
-        configDO.preDelete();
-        ConfigPO configPO = CONFIG_ASSEMBLER.toUpdateOrDeletePO(configDO);
+        configDO.delete();
+        ConfigPO configPO = configDO.buildToUpdateOrDeletePO();
         configRepository.deleteByConfigKeyAndEnv(configPO);
     }
 }

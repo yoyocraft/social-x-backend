@@ -30,7 +30,27 @@ public class ConfigDO {
         return toSaveConfig;
     }
 
-    public void preDelete() {
+    public ConfigPO buildToUpdateOrDeletePO() {
+        ConfigPO toUpdateConfig = new ConfigPO();
+        toUpdateConfig.setId(configId);
+        toUpdateConfig.setVersion(version);
+        toUpdateConfig.setConfigKey(configKey);
+        toUpdateConfig.setConfigValue(configValue);
+        toUpdateConfig.setExtraData(extraData);
+        toUpdateConfig.setDeletedAt(deletedAt);
+        return toUpdateConfig;
+    }
+
+    public void delete() {
         this.deletedAt = System.currentTimeMillis();
+    }
+
+    public void fillWithConfigPO(ConfigPO configPO) {
+        this.configId = configPO.getId();
+        this.configKey = configPO.getConfigKey();
+        this.configValue = configPO.getConfigValue();
+        this.version = configPO.getVersion();
+        this.extraData = configPO.getExtraData();
+        this.deletedAt = configPO.getDeletedAt();
     }
 }
