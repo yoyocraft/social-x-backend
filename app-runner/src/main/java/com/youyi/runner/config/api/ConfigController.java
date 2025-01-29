@@ -56,8 +56,8 @@ public class ConfigController {
     public Result<ConfigInfoResponse> queryConfig(ConfigQueryRequest request) {
         ConfigValidator.validateConfigQueryRequest(request);
         ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
-        ConfigDO config = configHelper.queryConfig(configDO);
-        return querySuccess(config, request);
+        configHelper.queryConfig(configDO);
+        return querySuccess(configDO, request);
     }
 
     @SaCheckPermission(value = {CONFIG_MANAGER, UPDATE_CONFIG}, mode = SaMode.OR)

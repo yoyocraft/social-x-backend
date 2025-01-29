@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -48,6 +49,17 @@ public class PermissionDO {
         po.setRole(role.name());
         po.setPermissions(GsonUtil.toJson(permissions));
         return po;
+    }
+
+    public void fillWithRolePermissionPO(RolePermissionPO rolePermissionPO) {
+        String permissions = rolePermissionPO.getPermissions();
+        List<PermissionType> permissionsFromPO;
+        if (StringUtils.isBlank(permissions)) {
+            permissionsFromPO = Lists.newArrayList();
+        } else {
+            permissionsFromPO = GsonUtil.fromJson(permissions, List.class, PermissionType.class);
+        }
+        this.permissions = permissionsFromPO;
     }
 
     public void mergePermission(RolePermissionPO rolePermissionPO) {

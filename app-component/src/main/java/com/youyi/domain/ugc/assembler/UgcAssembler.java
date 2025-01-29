@@ -4,7 +4,6 @@ import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.domain.ugc.model.UgcDO;
-import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
@@ -52,12 +51,6 @@ public interface UgcAssembler {
         @Mapping(target = "status", expression = "java(UgcStatus.of(request.getStatus()))"),
     })
     UgcDO toDO(UgcSetStatusRequest request);
-
-    @Mappings({
-        @Mapping(target = "ugcType", expression = "java(UgcType.of(ugcDocument.getType()))"),
-        @Mapping(target = "status", expression = "java(UgcStatus.of(ugcDocument.getStatus()))")
-    })
-    UgcDO toDO(UgcDocument ugcDocument);
 
     default UgcStatus calStatusWhenPublish(UgcPublishRequest request) {
         if (Boolean.TRUE.equals(request.getDrafting())) {
