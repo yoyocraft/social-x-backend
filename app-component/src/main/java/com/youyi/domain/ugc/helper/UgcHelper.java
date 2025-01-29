@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
 
 /**
@@ -58,14 +59,20 @@ public class UgcHelper {
 
     public UgcDO queryByUgcId(UgcDO ugcDO) {
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
+        checkNotNull(ugcDocument);
         ugcDO.fillWithUgcDocument(ugcDocument);
         // 填充作者信息
+        UserDO author = userService.queryByUserId(ugcDocument.getAuthorId());
+        ugcDO.setAuthor(author);
+        // 视情况增加 viewCount
+        ugcService.asyncIncrUgcViewCount(ugcDO, userService.getCurrentUserInfo());
         return ugcDO;
     }
 
     public void updateUgcStatus(UgcDO ugcDO) {
         fillCurrUserAsAuthorInfo(ugcDO);
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
+        checkNotNull(ugcDocument);
         checkSelfAuthor(ugcDO, ugcDocument);
         checkStatusValidation(ugcDO, ugcDocument);
         ugcRepository.updateUgcStatus(ugcDO.getUgcId(), ugcDO.getStatus().name());

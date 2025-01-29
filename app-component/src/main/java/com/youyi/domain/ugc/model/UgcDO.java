@@ -30,7 +30,7 @@ public class UgcDO {
 
     private Long viewCount;
     private Long likeCount;
-    private Long commentCount;
+    private Long collectCount;
 
     private UgcStatus status;
 
@@ -59,7 +59,7 @@ public class UgcDO {
         this.ugcId = IdSeqUtil.genUgcId();
         this.viewCount = 0L;
         this.likeCount = 0L;
-        this.commentCount = 0L;
+        this.collectCount = 0L;
     }
 
     public UgcDocument buildToSaveUgcDocument() {
@@ -75,7 +75,7 @@ public class UgcDO {
         ugcDocument.setTags(tags);
         ugcDocument.setViewCount(viewCount);
         ugcDocument.setLikeCount(likeCount);
-        ugcDocument.setCommentCount(commentCount);
+        ugcDocument.setCollectCount(collectCount);
         ugcDocument.setStatus(status.name());
         ugcDocument.setCover(cover);
         ugcDocument.setAttachmentUrls(attachmentUrls);
@@ -121,7 +121,7 @@ public class UgcDO {
         this.tags = ugcDocument.getTags();
         this.viewCount = ugcDocument.getViewCount();
         this.likeCount = ugcDocument.getLikeCount();
-        this.commentCount = ugcDocument.getCommentCount();
+        this.collectCount = ugcDocument.getCollectCount();
         this.status = UgcStatus.of(ugcDocument.getStatus());
         this.cover = ugcDocument.getCover();
         this.attachmentUrls = ugcDocument.getAttachmentUrls();

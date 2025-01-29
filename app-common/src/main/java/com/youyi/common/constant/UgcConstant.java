@@ -23,6 +23,9 @@ public class UgcConstant {
     public static final String UGC_COVER = "cover";
     public static final String UGC_ATTACHMENT_URLS = "attachmentUrls";
     public static final String UGC_CATEGORY_ID = "categoryId";
+    public static final String UGC_VIEW_COUNT = "viewCount";
+    public static final String UGC_LIKE_COUNT = "likeCount";
+    public static final String UGC_COLLECT_COUNT = "collectCount";
 
     public static List<String> includeUgcStatus = List.of(
         UgcStatus.PUBLISHED.name(),

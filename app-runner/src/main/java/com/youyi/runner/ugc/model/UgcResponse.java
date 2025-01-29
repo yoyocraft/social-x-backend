@@ -50,8 +50,8 @@ public class UgcResponse extends BaseResponse {
     @SerializedName("likeCount")
     private Long likeCount;
 
-    @SerializedName("commentCount")
-    private Long commentCount;
+    @SerializedName("collectCount")
+    private Long collectCount;
 
     @SerializedName("status")
     private String status;
