@@ -1,5 +1,6 @@
 package com.youyi.domain.ugc.repository;
 
+import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
@@ -102,7 +103,18 @@ public class UgcRepository {
     public List<UgcDocument> queryMainPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryMainPageInfoWithIdCursor(categoryId, type, ugcStatus, lastCursor, size);
+            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, SymbolConstant.EMPTY, lastCursor, size);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public List<UgcDocument> queryUserPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, String authorId,
+        long lastCursor, int size) {
+        try {
+            checkState(System.currentTimeMillis() >= lastCursor && size > 0 && StringUtils.isNotBlank(authorId));
+            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, authorId, lastCursor, size);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

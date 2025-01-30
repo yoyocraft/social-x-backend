@@ -104,11 +104,20 @@ public class UgcController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/cursor", method = RequestMethod.GET)
+    @RequestMapping(value = "/main", method = RequestMethod.GET)
     public Result<PageCursorResult<String, UgcResponse>> queryByCursorForMainPage(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForMainPage(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.queryByCursorForMainPage(ugcDO);
+        return queryByCursorForMainPageSuccess(ugcDOList, request);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "/cursor", method = RequestMethod.GET)
+    public Result<PageCursorResult<String, UgcResponse>> queryByCursorForUserPage(UgcQueryRequest request) {
+        UgcValidator.checkUgcQueryRequestForUserPage(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        List<UgcDO> ugcDOList = ugcHelper.queryByCursorForUserPage(ugcDO);
         return queryByCursorForMainPageSuccess(ugcDOList, request);
     }
 

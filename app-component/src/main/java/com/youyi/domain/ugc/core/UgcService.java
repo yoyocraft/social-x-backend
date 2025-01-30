@@ -77,6 +77,20 @@ public class UgcService {
         );
     }
 
+    public List<UgcDocument> queryWithUgcIdAndAuthorIdCursor(UgcDO ugcDO) {
+        // 1. 根据 cursor 查询 gmt_modified 作为查询游标
+        long cursor = getTimeCursor(ugcDO);
+        // 2. 查询
+        return ugcRepository.queryUserPageInfoWithIdCursor(
+            ugcDO.getCategoryId(),
+            ugcDO.getUgcType().name(),
+            UgcStatus.PUBLISHED.name(),
+            ugcDO.getAuthorId(),
+            cursor,
+            ugcDO.getSize()
+        );
+    }
+
     public List<UgcDO> fillAuthorAndCursorInfo(List<UgcDocument> ugcDocumentList, Map<String, UserDO> id2UserInfoMap) {
         // 下一次查询的 cursor
         final String nextCursor = Optional.ofNullable(

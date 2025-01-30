@@ -110,7 +110,8 @@ public class UgcDAO {
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryMainPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
+    public List<UgcDocument> queryInfoWithIdCursor(String categoryId, String type, String ugcStatus, String authorId, long lastCursor,
+        int size) {
         Query query = new Query();
         buildUgcStatusQueryCondition(query, ugcStatus);
         if (StringUtils.isNotBlank(type)) {
@@ -118,6 +119,9 @@ public class UgcDAO {
         }
         if (StringUtils.isNotBlank(categoryId)) {
             query.addCriteria(Criteria.where(UGC_CATEGORY_ID).is(categoryId));
+        }
+        if (StringUtils.isNotBlank(authorId)) {
+            query.addCriteria(Criteria.where(UGC_AUTHOR_ID).is(authorId));
         }
         buildTimeCursorQueryCondition(query, lastCursor, size);
 
