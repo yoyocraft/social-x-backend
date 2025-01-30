@@ -1,5 +1,7 @@
 package com.youyi.runner.ugc.model;
 
+import com.google.gson.annotations.SerializedName;
+import com.youyi.common.base.BaseResponse;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +12,11 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CommentaryResponse {
+public class CommentaryResponse extends BaseResponse {
 
+    @SerializedName("topCommentary")
     private CommentaryInfo topCommentary;
+
+    @SerializedName("replyList")
     private List<CommentaryInfo> replyList;
 }

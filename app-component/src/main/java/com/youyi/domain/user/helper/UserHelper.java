@@ -15,6 +15,7 @@ import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.domain.user.repository.UserRelationRepository;
 import com.youyi.infra.cache.manager.CacheManager;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +56,10 @@ public class UserHelper {
 
     public UserDO getCurrentUser() {
         checkLogin();
-        return userService.getCurrentUserInfo();
+        UserDO currentUserInfo = userService.getCurrentUserInfo();
+        // 填充关注、粉丝信息
+        userService.fillRelationship(currentUserInfo);
+        return currentUserInfo;
     }
 
     public void logout() {
@@ -102,6 +106,33 @@ public class UserHelper {
             return;
         }
         doUnfollowUser(currentUser, userDO);
+    }
+
+    public List<UserDO> queryFollowingUsers(UserDO userDO) {
+        List<UserDO> followingUsers = userService.queryFollowingUsers(userDO);
+        UserDO currentUser = getCurrentUser();
+        boolean isSelf = currentUser.getUserId().equals(userDO.getUserId());
+        followingUsers.forEach(followingUser ->
+            followingUser.setHasFollowed(
+                isSelf || Optional
+                    .ofNullable(userRelationRepository.queryFollowingUserRelations(currentUser.getUserId(), followingUser.getUserId()))
+                    .isPresent()
+            )
+        );
+        return followingUsers;
+    }
+
+    public List<UserDO> queryFollowers(UserDO userDO) {
+        List<UserDO> followers = userService.queryFollowers(userDO);
+        UserDO currentUser = getCurrentUser();
+        followers.forEach(follower ->
+            follower.setHasFollowed(
+                Optional
+                    .ofNullable(userRelationRepository.queryFollowingUserRelations(currentUser.getUserId(), follower.getUserId()))
+                    .isPresent()
+            )
+        );
+        return followers;
     }
 
     private void doFollowUser(UserDO currentUser, UserDO userDO) {

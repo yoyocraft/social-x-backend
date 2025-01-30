@@ -45,4 +45,43 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
             """
     )
     void deleteFollowingUserRelationship(@Param("userId") String userId, @Param("followingUserId") String followingUserId);
+
+    @Query("""
+            MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)
+            RETURN COUNT(r) AS followingCount
+        """)
+    int getFollowingCount(@Param("userId") String userId);
+
+    // 查询用户的粉丝数量
+    @Query("""
+            MATCH (u:user)-[r:FOLLOWING]->(f:user {userId: $userId})
+            RETURN COUNT(r) AS followerCount
+        """)
+    int getFollowerCount(@Param("userId") String userId);
+
+    @Query("""
+            MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)
+            WHERE f.userId > $lastUserId
+            RETURN f AS target, r.since AS since
+            ORDER BY f.since DESC, f.userId DESC
+            LIMIT $pageSize
+        """)
+    List<UserRelationship> getFollowingUsers(
+        @Param("userId") String userId,
+        @Param("lastUserId") String lastUserId,
+        @Param("pageSize") int pageSize
+    );
+
+    @Query("""
+            MATCH (u:user)-[r:FOLLOWING]->(f:user {userId: $userId})
+            WHERE u.userId > $lastUserId
+            RETURN u AS target, r.since AS since
+            ORDER BY u.since DESC, u.userId DESC
+            LIMIT $pageSize
+        """)
+    List<UserRelationship> getFollowers(
+        @Param("userId") String userId,
+        @Param("lastUserId") String lastUserId,
+        @Param("pageSize") int pageSize
+    );
 }

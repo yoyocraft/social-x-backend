@@ -1,6 +1,7 @@
 package com.youyi.domain.user.core;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.google.common.collect.Lists;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.model.UserLoginStateInfo;
@@ -8,6 +9,7 @@ import com.youyi.domain.user.repository.UserRelationRepository;
 import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.domain.user.repository.relation.UserNode;
+import com.youyi.domain.user.repository.relation.UserRelationship;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -116,5 +118,35 @@ public class UserService {
             return;
         }
         userRelationRepository.save(userDO.getUserId(), userDO.getNickName());
+    }
+
+    public void fillRelationship(UserDO userDO) {
+        int followingCount = userRelationRepository.getFollowingCount(userDO.getUserId());
+        int followerCount = userRelationRepository.getFollowerCount(userDO.getUserId());
+
+        userDO.setFollowingCount(followingCount);
+        userDO.setFollowerCount(followerCount);
+    }
+
+    public List<UserDO> queryFollowingUsers(UserDO userDO) {
+        String cursor = userDO.getCursor();
+        List<UserRelationship> followingUserRelations = userRelationRepository.getFollowingUsers(userDO.getUserId(), cursor, userDO.getSize());
+        List<String> followingUserIds = followingUserRelations.stream()
+            .map(UserRelationship::getTarget)
+            .map(UserNode::getUserId)
+            .toList();
+        Map<String, UserDO> id2UserDOMapping = queryBatchByUserId(followingUserIds);
+        return Lists.newArrayList(id2UserDOMapping.values());
+    }
+
+    public List<UserDO> queryFollowers(UserDO userDO) {
+        String cursor = userDO.getCursor();
+        List<UserRelationship> followerRelations = userRelationRepository.getFollowers(userDO.getUserId(), cursor, userDO.getSize());
+        List<String> followerUserIds = followerRelations.stream()
+            .map(UserRelationship::getTarget)
+            .map(UserNode::getUserId)
+            .toList();
+        Map<String, UserDO> id2UserDOMapping = queryBatchByUserId(followerUserIds);
+        return Lists.newArrayList(id2UserDOMapping.values());
     }
 }

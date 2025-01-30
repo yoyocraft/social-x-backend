@@ -1,14 +1,19 @@
 package com.youyi.runner.user.util;
 
+import com.youyi.common.base.PageCursorResult;
 import com.youyi.common.base.Result;
+import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
 import com.youyi.domain.user.request.UserFollowRequest;
+import com.youyi.domain.user.request.UserQueryRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import com.youyi.runner.user.model.UserBasicInfoResponse;
 import com.youyi.runner.user.model.VerifyCaptchaResponse;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +68,24 @@ public class UserResponseUtil {
     public static Result<Boolean> followUserSuccess(UserFollowRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         LOGGER.info("follow user, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<PageCursorResult<String, UserBasicInfoResponse>> queryFollowingUsersSuccess(List<UserDO> userDOList,
+        UserQueryRequest request) {
+        List<UserBasicInfoResponse> data = userDOList.stream().map(USER_CONVERTER::toResponse).toList();
+        String cursor = Optional.ofNullable(userDOList.isEmpty() ? null : userDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
+
+        Result<PageCursorResult<String, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor));
+        LOGGER.info("query following users, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<PageCursorResult<String, UserBasicInfoResponse>> queryFollowersSuccess(List<UserDO> userDOList, UserQueryRequest request) {
+        List<UserBasicInfoResponse> data = userDOList.stream().map(USER_CONVERTER::toResponse).toList();
+        String cursor = Optional.ofNullable(userDOList.isEmpty() ? null : userDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
+        Result<PageCursorResult<String, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor));
+        LOGGER.info("query followers, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }
