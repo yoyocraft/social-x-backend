@@ -2,8 +2,11 @@ package com.youyi.domain.ugc.helper;
 
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.youyi.common.exception.AppBizException;
+import com.youyi.common.type.task.TaskType;
 import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.ugc.core.CommentaryService;
+import com.youyi.domain.ugc.core.UgcTpeContainer;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
 import com.youyi.domain.ugc.repository.CommentaryRelationshipRepository;
@@ -34,6 +37,9 @@ public class CommentaryHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommentaryHelper.class);
 
+    private final UgcTpeContainer ugcTpeContainer;
+    private final SysTaskService sysTaskService;
+
     private final UserService userService;
     private final CommentaryService commentaryService;
     private final CommentaryRepository commentaryRepository;
@@ -61,6 +67,8 @@ public class CommentaryHelper {
         CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryDO.getCommentaryId());
         checkSelfCommentator(commentaryDO, commentaryDocument);
         commentaryService.deleteCommentary(commentaryDO);
+        // 异步写入本地消息
+        ugcTpeContainer.getUgcDeleteTaskExecutor().execute(() -> sysTaskService.saveUgcDeleteTask(commentaryDO.getCommentaryId(), TaskType.COMMENTARY_DELETE_EVENT));
     }
 
     public void like(CommentaryDO commentaryDO) {

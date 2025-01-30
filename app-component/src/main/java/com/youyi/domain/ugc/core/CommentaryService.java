@@ -40,6 +40,15 @@ public class CommentaryService {
         );
     }
 
+    public List<CommentaryDocument> queryRootCommentaryByUgcIdWithTimeCursor(CommentaryDO commentaryDO) {
+        long cursor = getTimeCursor(commentaryDO);
+        return commentaryRepository.queryRootCommentaryByUgcIdWithTimeCursor(
+            commentaryDO.getUgcId(),
+            cursor,
+            commentaryDO.getSize()
+        );
+    }
+
     public List<CommentaryDO> fillCommentatorAndCursorInfo(List<CommentaryDocument> commentaryDocuments, Map<String, UserDO> id2CommentatorMap) {
         // 下一次查询的 cursor
         final String nextCursor = Optional.ofNullable(

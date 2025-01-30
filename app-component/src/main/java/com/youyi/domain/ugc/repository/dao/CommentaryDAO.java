@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import static com.youyi.common.constant.RepositoryConstant.TOP_COMMENTARY_ID;
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_GMT_MODIFIED;
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_ID;
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_LIKE_COUNT;
@@ -38,6 +39,15 @@ public class CommentaryDAO {
     public List<CommentaryDocument> queryByUgcIdWithTimeCursor(String ugcId, long lastCursor, int size) {
         Query query = new Query();
         query.addCriteria(Criteria.where(COMMENTARY_UGC_ID).is(ugcId));
+        buildCommentaryStatusQueryCondition(query, CommentaryStatus.ALL.name());
+        buildTimeCursorQueryCondition(query, lastCursor, size);
+        return mongoTemplate.find(query, CommentaryDocument.class);
+    }
+
+    public List<CommentaryDocument> queryRootCommentaryByUgcIdWithTimeCursor(String ugcId, long lastCursor, int size) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(COMMENTARY_UGC_ID).is(ugcId));
+        query.addCriteria(Criteria.where(COMMENTARY_PARENT_ID).is(TOP_COMMENTARY_ID));
         buildCommentaryStatusQueryCondition(query, CommentaryStatus.ALL.name());
         buildTimeCursorQueryCondition(query, lastCursor, size);
         return mongoTemplate.find(query, CommentaryDocument.class);

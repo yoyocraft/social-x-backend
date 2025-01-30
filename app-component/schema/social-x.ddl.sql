@@ -147,3 +147,18 @@ CREATE TABLE `ugc_tag` (
    UNIQUE KEY `uk_tag_id` (`tag_id`),
    UNIQUE KEY `uk_tag_name_type_priority` (`tag_name`, `type`, `priority`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'ugc tag';
+
+DROP TABLE IF EXISTS `sys_task`;
+
+CREATE TABLE `sys_task` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
+    `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
+    `extra_data` JSON COMMENT 'extra data',
+    `task_id` VARCHAR(64) NOT NULL COMMENT 'task id',
+    `task_type` VARCHAR(64) NOT NULL COMMENT 'task type',
+    `task_status` VARCHAR(64) NOT NULL COMMENT 'task status',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_task_id` (`task_id`)
+) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'sys task';

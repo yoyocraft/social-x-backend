@@ -60,6 +60,16 @@ public class CommentaryRepository {
         }
     }
 
+    public List<CommentaryDocument> queryRootCommentaryByUgcIdWithTimeCursor(String ugcId, long lastCursor, int size) {
+        try {
+            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+            return commentaryDAO.queryRootCommentaryByUgcIdWithTimeCursor(ugcId, lastCursor, size);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
     public List<CommentaryDocument> queryByParentId(String parentId) {
         try {
             checkState(StringUtils.isNotBlank(parentId));
