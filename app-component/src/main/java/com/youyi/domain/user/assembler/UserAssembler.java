@@ -1,12 +1,14 @@
 package com.youyi.domain.user.assembler;
 
 import com.youyi.common.type.BizType;
+import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.user.IdentityType;
 import com.youyi.common.type.user.WorkDirectionType;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
 import com.youyi.domain.user.request.UserFollowRequest;
+import com.youyi.domain.user.request.UserQueryRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +17,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+
+import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -61,11 +65,20 @@ public interface UserAssembler {
     })
     UserDO toDO(UserFollowRequest request);
 
+    @Mappings({
+        @Mapping(target = "size", expression = "java(calSize(request.getSize()))")
+    })
+    UserDO toDO(UserQueryRequest request);
+
     default String originalEmail(UserAuthenticateRequest request) {
         IdentityType identityType = IdentityType.of(request.getIdentityType());
         if (identityType == IdentityType.EMAIL_CAPTCHA || identityType == IdentityType.EMAIL_PASSWORD) {
             return request.getIdentifier();
         }
         return StringUtils.EMPTY;
+    }
+
+    default int calSize(int size) {
+        return Math.min(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), size);
     }
 }

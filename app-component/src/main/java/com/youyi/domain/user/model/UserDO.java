@@ -11,6 +11,7 @@ import com.youyi.common.util.crypto.IvGenerator;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.infra.privacy.CryptoManager;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -56,6 +57,11 @@ public class UserDO {
     private UserStatusType status;
     private UserRoleType role;
 
+    private LocalDateTime joinTime;
+
+    private Integer followerCount;
+    private Integer followingCount;
+
     /**
      * for captcha check
      */
@@ -74,6 +80,11 @@ public class UserDO {
      */
     private String followingUserId;
     private Boolean followFlag;
+
+    private String cursor;
+    private Integer size;
+
+    private Boolean hasFollowed;
 
     public void initUserId() {
         this.userId = genUserId();
@@ -116,6 +127,7 @@ public class UserDO {
             .workDirection(workDirection)
             .desensitizedMobile(desensitizeMobile(originalPhone))
             .desensitizedEmail(desensitizeEmail(originalEmail))
+            .joinTime(joinTime)
             .build();
     }
 
@@ -151,6 +163,7 @@ public class UserDO {
 
         this.status = UserStatusType.of(userInfoPO.getStatus());
         this.role = UserRoleType.of(userInfoPO.getRole());
+        this.joinTime = userInfoPO.getGmtCreate();
     }
 
     public void fillUserInfo(UserLoginStateInfo userLoginStateInfo) {
@@ -167,6 +180,7 @@ public class UserDO {
         this.originalEmail = userLoginStateInfo.getDesensitizedEmail();
         this.originalPhone = userLoginStateInfo.getDesensitizedMobile();
         this.status = userLoginStateInfo.getStatus();
+        this.joinTime = userLoginStateInfo.getJoinTime();
     }
 
     public void initSalt() {

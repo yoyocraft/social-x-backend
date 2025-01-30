@@ -2,6 +2,7 @@ package com.youyi.runner.user.api;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.youyi.common.annotation.RecordOpLog;
+import com.youyi.common.base.PageCursorResult;
 import com.youyi.common.base.Result;
 import com.youyi.common.type.OperationType;
 import com.youyi.common.util.CommonOperationUtil;
@@ -10,12 +11,14 @@ import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
 import com.youyi.domain.user.request.UserFollowRequest;
+import com.youyi.domain.user.request.UserQueryRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import com.youyi.infra.lock.LocalLockUtil;
 import com.youyi.runner.user.model.UserBasicInfoResponse;
 import com.youyi.runner.user.model.VerifyCaptchaResponse;
 import com.youyi.runner.user.util.UserValidator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -27,6 +30,8 @@ import static com.youyi.domain.user.assembler.UserAssembler.USER_ASSEMBLER;
 import static com.youyi.runner.user.util.UserResponseUtil.editUserInfoSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.followUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.getCurrentUserSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.queryFollowersSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.queryFollowingUsersSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.logoutSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.setPwdSuccess;
@@ -130,4 +135,21 @@ public class UserController {
         return followUserSuccess(request);
     }
 
+    @SaCheckLogin
+    @RequestMapping(value = "/following", method = RequestMethod.GET)
+    public Result<PageCursorResult<String, UserBasicInfoResponse>> queryFollowingUsers(UserQueryRequest request) {
+        UserValidator.checkUserQueryRequest(request);
+        UserDO userDO = USER_ASSEMBLER.toDO(request);
+        List<UserDO> followingUsers = userHelper.queryFollowingUsers(userDO);
+        return queryFollowingUsersSuccess(followingUsers, request);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "/follower", method = RequestMethod.GET)
+    public Result<PageCursorResult<String, UserBasicInfoResponse>> queryFollowers(UserQueryRequest request) {
+        UserValidator.checkUserQueryRequest(request);
+        UserDO userDO = USER_ASSEMBLER.toDO(request);
+        List<UserDO> followingUsers = userHelper.queryFollowers(userDO);
+        return queryFollowersSuccess(followingUsers, request);
+    }
 }

@@ -49,4 +49,16 @@ public class UserBasicInfoResponse extends BaseResponse {
 
     @SerializedName("role")
     private String role;
+
+    @SerializedName("joinTime")
+    public Long joinTime;
+
+    @SerializedName("followerCount")
+    public Long followerCount;
+
+    @SerializedName("followingCount")
+    public Long followingCount;
+
+    @SerializedName("hasFollowed")
+    private Boolean hasFollowed;
 }

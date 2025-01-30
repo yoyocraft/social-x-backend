@@ -1,6 +1,7 @@
 package com.youyi.runner.user.util;
 
 import com.youyi.common.type.BizType;
+import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.user.IdentityType;
 import com.youyi.common.type.user.WorkDirectionType;
 import com.youyi.common.util.param.ParamChecker;
@@ -8,6 +9,7 @@ import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
 import com.youyi.domain.user.request.UserFollowRequest;
+import com.youyi.domain.user.request.UserQueryRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import java.util.List;
@@ -18,8 +20,10 @@ import static com.youyi.common.util.param.ParamChecker.emailChecker;
 import static com.youyi.common.util.param.ParamChecker.enumCodeExistChecker;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.equalsChecker;
+import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
 import static com.youyi.common.util.param.ParamChecker.passwordChecker;
+import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -82,6 +86,14 @@ public class UserValidator {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("关注用户ID不能为空"), request.getFollowingUserId())
             .put(notBlankChecker("用户ID不能为空"), request.getReqId())
+            .validateWithThrow();
+    }
+
+    public static void checkUserQueryRequest(UserQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
+            .put(notBlankChecker("cursor不合法"), request.getCursor())
+            .put(notBlankChecker("用户ID不能为空"), request.getUserId())
             .validateWithThrow();
     }
 }
