@@ -63,4 +63,25 @@ public interface UgcRelationshipRepository extends Neo4jRepository<UgcNode, Long
 
     @Query("MATCH (u:ugc {ugcId: $ugcId}) RETURN u")
     UgcNode findByUgcId(@Param("ugcId") String ugcId);
+
+    @Query("""
+            MATCH (u:user)-[r:LIKE]->(t:ugc {ugcId: $ugcId})
+            DELETE r
+        """
+    )
+    void deleteAllLikeRelationships(@Param("ugcId") String ugcId);
+
+    @Query("""
+            MATCH (u:user)-[r:COLLECT]->(t:ugc {ugcId: $ugcId})
+            DELETE r
+        """
+    )
+    void deleteAllCollectRelationships(@Param("ugcId") String ugcId);
+
+    @Query("""
+        MATCH (t:ugc {ugcId: $ugcId})
+        DELETE t
+        """
+    )
+    void deleteUgcNode(@Param("ugcId") String ugcId);
 }

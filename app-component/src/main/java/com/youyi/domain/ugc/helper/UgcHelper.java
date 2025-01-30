@@ -2,9 +2,12 @@ package com.youyi.domain.ugc.helper;
 
 import com.google.common.collect.ImmutableMap;
 import com.youyi.common.exception.AppBizException;
+import com.youyi.common.type.task.TaskType;
 import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.ugc.core.UgcService;
+import com.youyi.domain.ugc.core.UgcTpeContainer;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
@@ -32,6 +35,9 @@ import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
 @RequiredArgsConstructor
 public class UgcHelper {
 
+    private final UgcTpeContainer ugcTpeContainer;
+    private final SysTaskService sysTaskService;
+
     private final UserService userService;
     private final UgcService ugcService;
 
@@ -48,6 +54,8 @@ public class UgcHelper {
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
         checkSelfAuthor(ugcDO, ugcDocument);
         ugcRepository.deleteUgc(ugcDO.getUgcId());
+        // 异步写入本地消息
+        ugcTpeContainer.getUgcDeleteTaskExecutor().execute(() -> sysTaskService.saveUgcDeleteTask(ugcDO.getUgcId(), TaskType.UGC_DELETE_EVENT));
     }
 
     public List<UgcDO> querySelfUgc(UgcDO ugcDO) {
