@@ -110,6 +110,21 @@ public class UgcHelper {
         return ugcDOList;
     }
 
+    public List<UgcDO> queryByCursorForUserPage(UgcDO ugcDO) {
+        // 1. 游标查询
+        List<UgcDocument> ugcDocumentList = ugcService.queryWithUgcIdAndAuthorIdCursor(ugcDO);
+        // 2. 批量查询作者信息
+        String authorId = ugcDO.getAuthorId();
+        UserDO userDO = userService.queryByUserId(authorId);
+        // 3. 封装信息
+        List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, ImmutableMap.of(authorId, userDO));
+        // 4. 填充 Statistic 数据
+        ugcService.fillUgcStatistic(ugcDOList);
+        // 5. 过滤不必要的信息
+        filterNoNeedInfoForListPage(ugcDOList);
+        return ugcDOList;
+    }
+
     public void interact(UgcDO ugcDO) {
         UgcInteractionType interactionType = ugcDO.getInteractionType();
         if (interactionType == UgcInteractionType.UNKNOWN) {

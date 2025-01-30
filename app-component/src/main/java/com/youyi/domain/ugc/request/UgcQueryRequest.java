@@ -33,4 +33,7 @@ public class UgcQueryRequest extends BasePageRequest {
 
     @SerializedName("categoryId")
     private String categoryId;
+
+    @SerializedName("authorId")
+    private String authorId;
 }

@@ -56,6 +56,7 @@ public class UgcDO {
     private int size;
     private String keyword;
     private String cursor;
+    private String authorId;
 
     // for like and collect
     private UgcInteractionType interactionType;

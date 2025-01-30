@@ -95,4 +95,12 @@ public class UgcValidator {
             .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();
     }
+
+    public static void checkUgcQueryRequestForUserPage(UgcQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("cursor不合法"), request.getCursor())
+            .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
+            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
+            .validateWithThrow();
+    }
 }
