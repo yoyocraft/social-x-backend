@@ -72,7 +72,6 @@ public class UserController {
     }
 
     @SaCheckLogin
-    @RecordOpLog(opType = OperationType.USER_LOGOUT)
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public Result<Boolean> logout() {
         userHelper.logout();

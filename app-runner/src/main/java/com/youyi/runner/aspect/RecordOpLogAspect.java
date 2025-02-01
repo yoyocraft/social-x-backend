@@ -113,7 +113,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         List<String> paramValues = filterFields(parameterNames, parameterValues, recordOpLog.fields(), recordOpLog.desensitize());
 
         List<String> paramTypes = Arrays.stream(parameterTypes)
-            .map(Class::getSimpleName)
+            .map(Class::getName)
             .toList();
         // 构建 Extra Info
         OperationLogExtraData extraData = OperationLogExtraData.builder()

@@ -15,7 +15,6 @@ public enum OperationType {
     DELETE_CONFIG,
 
     USER_LOGIN,
-    USER_LOGOUT,
     USER_SET_PASSWORD,
     USER_EDIT_INFO,
     USER_FOLLOW_USER,
