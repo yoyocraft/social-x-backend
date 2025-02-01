@@ -241,7 +241,7 @@ public class UserHelper {
     }
 
     private void loadCurrentUserInfoForUpdate(UserDO userDO) {
-        UserDO currentUser = userService.loadCurrentUserFromSession();
+        UserDO currentUser = userService.getCurrentUserInfo();
         checkNotNull(currentUser);
         UserInfoPO userInfoPO = userRepository.queryUserInfoByUserId(currentUser.getUserId());
         userDO.fillUserInfo(userInfoPO);
