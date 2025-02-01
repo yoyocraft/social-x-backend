@@ -10,14 +10,15 @@ import com.youyi.domain.audit.model.OperationLogDO;
 import com.youyi.domain.audit.model.OperationLogExtraData;
 import com.youyi.domain.user.helper.UserHelper;
 import com.youyi.domain.user.model.UserDO;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -51,16 +52,21 @@ import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
 public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEvent>, Ordered {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordOpLogAspect.class);
+    private static final ExpressionParser expressionParser = new SpelExpressionParser();
+    private static ThreadPoolExecutor asyncRecordOpLogExecutor;
 
     private final OperationLogHelper operationLogHelper;
     private final UserHelper userHelper;
-    private static ThreadPoolExecutor asyncRecordOpLogExecutor;
-    private static final ExpressionParser expressionParser = new SpelExpressionParser();
 
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
         checkConfig(RECORD_OP_LOG_THREAD_POOL_CONFIG);
         initAsyncExecutor();
+    }
+
+    @Override
+    public int getOrder() {
+        return AspectOrdered.RECORD_OP_LOG.getOrder();
     }
 
     @Pointcut("@annotation(com.youyi.common.annotation.RecordOpLog)")
@@ -85,7 +91,6 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
         try {
             final OperationLogDO operationLogDO = preRecordOpLog(joinPoint);
-
             asyncRecordOpLogExecutor.execute(() -> {
                 buildOperationLogDO(joinPoint, operationLogDO, result, exception);
                 doRecordOpLog(operationLogDO);
@@ -97,19 +102,25 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
     private void buildOperationLogDO(JoinPoint jp, OperationLogDO operationLogDO, Object result, Throwable exception) {
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
-        RecordOpLog recordOpLog = methodSignature.getMethod().getAnnotation(RecordOpLog.class);
-        String methodName = methodSignature.getName();
+        Method method = methodSignature.getMethod();
+        RecordOpLog recordOpLog = method.getAnnotation(RecordOpLog.class);
         String className = jp.getTarget().getClass().getName();
         String[] parameterNames = methodSignature.getParameterNames();
+        Class<?>[] parameterTypes = methodSignature.getParameterTypes();
         // 记录参数值
         Object[] parameterValues = jp.getArgs();
-        String[] fields = recordOpLog.fields();
-        List<String> paramValues = filterFields(parameterNames, parameterValues, fields, recordOpLog.desensitize());
+        // 过滤出需要记录的字段
+        List<String> paramValues = filterFields(parameterNames, parameterValues, recordOpLog.fields(), recordOpLog.desensitize());
 
-        // 构建额外数据
+        List<String> paramTypes = Arrays.stream(parameterTypes)
+            .map(Class::getSimpleName)
+            .toList();
+        // 构建 Extra Info
         OperationLogExtraData extraData = OperationLogExtraData.builder()
-            .method(methodName)
+            .method(method.getName())
             .className(className)
+            .argType(StringUtils.join(paramTypes, SymbolConstant.COMMA))
+            .argName(StringUtils.join(parameterNames, SymbolConstant.COMMA))
             .argValue(StringUtils.join(paramValues, SymbolConstant.COMMA))
             .build();
 
@@ -123,22 +134,34 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         operationLogDO.setExtraData(extraData);
     }
 
+    /**
+     * 1. 非脱敏 && fields 为空，记录所有参数值
+     * 2. 脱敏 && fields 为空，不记录参数值
+     * 3. 非脱敏 && fields 不为空，记录 fields 中配置的字段值
+     * 4. 脱敏 && fields 不为空，记录 fields 中配置的字段值
+     */
     private List<String> filterFields(String[] parameterNames, Object[] parameterValues, String[] fields, boolean desensitize) {
+        // 配置了 fields，优先解析
         if (fields.length > 0) {
-            // 使用 SpEL 表达式解析字段值
-            return Arrays.stream(fields)
-                .map(field -> extractFieldValueWithSpEL(parameterNames, parameterValues, field))
-                .filter(Objects::nonNull)
-                .map(this::toStringValue)
-                .toList();
+            Map<String, Object> fieldMap = new HashMap<>(fields.length);
+            for (String field : fields) {
+                // 使用 SpEL 表达式解析字段值
+                Object fieldValue = extractFieldValueWithSpEL(parameterNames, parameterValues, field);
+                if (fieldValue != null) {
+                    fieldMap.put(field, fieldValue);
+                }
+            }
+            return Collections.singletonList(GsonUtil.toJson(fieldMap));
         }
 
+        // 脱敏，不记录参数值
         if (desensitize) {
             return Collections.emptyList();
         }
 
+        // 非脱敏，记录所有参数值
         return Arrays.stream(parameterValues)
-            .map(this::toStringValue)
+            .map(GsonUtil::toJson)
             .toList();
     }
 
@@ -192,19 +215,5 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
             recordOpLogExecutorConfig.getThreadFactory(LOGGER),
             recordOpLogExecutorConfig.getRejectedHandler()
         );
-    }
-
-    @Override
-    public int getOrder() {
-        return AspectOrdered.RECORD_OP_LOG.getOrder();
-    }
-
-    private String toStringValue(Object value) {
-        // 如果是基本类型、包装类型或 String，直接返回 toString()
-        if (value instanceof String || ClassUtils.isPrimitiveOrWrapper(value.getClass())) {
-            return value.toString();
-        }
-        // 否则，将对象序列化为 JSON
-        return GsonUtil.toJson(value);
     }
 }
