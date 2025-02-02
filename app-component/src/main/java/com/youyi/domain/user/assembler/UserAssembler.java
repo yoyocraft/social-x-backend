@@ -11,6 +11,7 @@ import com.youyi.domain.user.request.UserFollowRequest;
 import com.youyi.domain.user.request.UserQueryRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -66,7 +67,7 @@ public interface UserAssembler {
     UserDO toDO(UserFollowRequest request);
 
     @Mappings({
-        @Mapping(target = "size", expression = "java(calSize(request.getSize()))")
+        @Mapping(target = "size", expression = "java(calSize(request))")
     })
     UserDO toDO(UserQueryRequest request);
 
@@ -78,7 +79,10 @@ public interface UserAssembler {
         return StringUtils.EMPTY;
     }
 
-    default int calSize(int size) {
-        return Math.min(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), size);
+    default int calSize(UserQueryRequest request) {
+        if (Objects.isNull(request.getSize()) || request.getSize() <= 0) {
+            return getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
+        }
+        return Math.min(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), request.getSize());
     }
 }
