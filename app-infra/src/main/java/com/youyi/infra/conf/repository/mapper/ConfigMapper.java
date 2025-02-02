@@ -22,4 +22,6 @@ public interface ConfigMapper {
 
     List<ConfigPO> queryAll(@Param("includeDeleted") boolean includeDeleted);
 
+    List<ConfigPO> queryByCursor(@Param("cursor") Long cursor, @Param("size") Integer size, @Param("includeDeleted") boolean includeDeleted);
+
 }

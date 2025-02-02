@@ -1,7 +1,7 @@
 package com.youyi.domain.conf.request;
 
 import com.google.gson.annotations.SerializedName;
-import com.youyi.common.base.BaseRequest;
+import com.youyi.common.base.BasePageRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +11,11 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ConfigQueryRequest extends BaseRequest {
+public class ConfigQueryRequest extends BasePageRequest {
 
     @SerializedName("key")
     private String key;
+
+    @SerializedName("cursor")
+    private Long cursor;
 }

@@ -17,7 +17,7 @@ import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-import static com.youyi.infra.conf.core.SystemConfigService.getLongConfig;
+import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -71,8 +71,8 @@ public interface UgcAssembler {
 
     default int calSize(UgcQueryRequest request) {
         if (Objects.isNull(request.getSize()) || request.getSize() <= 0) {
-            return Math.toIntExact(getLongConfig(ConfigKey.DEFAULT_PAGE_SIZE));
+            return getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
         }
-        return request.getSize();
+        return Math.min(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), request.getSize());
     }
 }

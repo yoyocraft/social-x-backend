@@ -78,6 +78,12 @@ public interface ParamChecker<T> {
             : CheckResult.of(INVALID_PARAM, errorMsg);
     }
 
+    static ParamChecker<Long> greaterThanOrEqualChecker(long min, String errorMsg) {
+        return param -> param != null && param >= min
+            ? CheckResult.success()
+            : CheckResult.of(INVALID_PARAM, errorMsg);
+    }
+
     static ParamChecker<Integer> greaterThanOrEqualChecker(int min, String errorMsg) {
         return param -> param != null && param >= min
             ? CheckResult.success()

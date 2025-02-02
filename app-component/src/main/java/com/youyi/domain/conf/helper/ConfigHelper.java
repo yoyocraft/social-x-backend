@@ -3,7 +3,10 @@ package com.youyi.domain.conf.helper;
 import com.youyi.domain.conf.model.ConfigDO;
 import com.youyi.infra.conf.repository.ConfigRepository;
 import com.youyi.infra.conf.repository.po.ConfigPO;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,6 +27,22 @@ public class ConfigHelper {
     public void queryConfig(ConfigDO configDO) {
         ConfigPO configPO = configRepository.queryByConfigKey(configDO.getConfigKey());
         configDO.fillWithConfigPO(configPO);
+    }
+
+    public List<ConfigDO> queryConfigByCursor(ConfigDO configDO) {
+        List<ConfigPO> poList = configRepository.queryByCursor(configDO.getCursor(), configDO.getSize());
+        final Long nextCursor = Optional.ofNullable(
+            CollectionUtils.isEmpty(poList)
+                ? null
+                : poList.get(poList.size() - 1).getId()
+        ).orElse(Long.MAX_VALUE);
+        return poList.stream()
+            .map(po -> {
+                ConfigDO config = new ConfigDO();
+                config.fillWithConfigPO(po);
+                config.setCursor(nextCursor);
+                return config;
+            }).toList();
     }
 
     public void updateConfig(ConfigDO configDO) {

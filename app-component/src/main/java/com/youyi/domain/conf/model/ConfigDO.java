@@ -1,6 +1,8 @@
 package com.youyi.domain.conf.model;
 
+import com.youyi.common.type.conf.ConfigType;
 import com.youyi.infra.conf.repository.po.ConfigPO;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,15 +19,22 @@ public class ConfigDO {
     private Long configId;
     private String configKey;
     private String configValue;
+    private ConfigType configType;
     private Integer version;
     private String extraData;
     private Long deletedAt;
+    private LocalDateTime gmtCreate;
+    private LocalDateTime gmtModified;
+
+    private Long cursor;
+    private Integer size;
 
     public ConfigPO buildToSaveConfig() {
         ConfigPO toSaveConfig = new ConfigPO();
         toSaveConfig.setConfigKey(configKey);
         toSaveConfig.setConfigValue(configValue);
         toSaveConfig.setVersion(INIT_VERSION);
+        toSaveConfig.setConfigType(configType.name());
         toSaveConfig.setExtraData(extraData);
         return toSaveConfig;
     }
@@ -49,8 +58,11 @@ public class ConfigDO {
         this.configId = configPO.getId();
         this.configKey = configPO.getConfigKey();
         this.configValue = configPO.getConfigValue();
+        this.configType = ConfigType.of(configPO.getConfigType());
         this.version = configPO.getVersion();
         this.extraData = configPO.getExtraData();
         this.deletedAt = configPO.getDeletedAt();
+        this.gmtCreate = configPO.getGmtCreate();
+        this.gmtModified = configPO.getGmtModified();
     }
 }

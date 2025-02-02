@@ -19,6 +19,9 @@ public class ConfigCreateRequest extends BaseRequest {
     @SerializedName("configValue")
     private String configValue;
 
+    @SerializedName("configType")
+    private String configType;
+
     @SerializedName("extraData")
     private String extraData;
 }

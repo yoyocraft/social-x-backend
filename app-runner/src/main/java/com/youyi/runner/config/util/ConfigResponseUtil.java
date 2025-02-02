@@ -1,5 +1,6 @@
 package com.youyi.runner.config.util;
 
+import com.youyi.common.base.PageCursorResult;
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.conf.model.ConfigDO;
@@ -8,6 +9,8 @@ import com.youyi.domain.conf.request.ConfigDeleteRequest;
 import com.youyi.domain.conf.request.ConfigQueryRequest;
 import com.youyi.domain.conf.request.ConfigUpdateRequest;
 import com.youyi.runner.config.model.ConfigInfoResponse;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +33,15 @@ public class ConfigResponseUtil {
     public static Result<ConfigInfoResponse> querySuccess(ConfigDO configDO, ConfigQueryRequest request) {
         Result<ConfigInfoResponse> response = Result.success(CONFIG_CONVERTER.toResponse(configDO));
         LOGGER.info("query config, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<PageCursorResult<Long, ConfigInfoResponse>> queryConfigForMainPageSuccess(List<ConfigDO> configDOList,
+        ConfigQueryRequest request) {
+        Long cursor = Optional.ofNullable(configDOList.isEmpty() ? null : configDOList.get(0).getCursor()).orElse(Long.MAX_VALUE);
+        List<ConfigInfoResponse> configInfoResponseList = configDOList.stream().map(CONFIG_CONVERTER::toResponse).toList();
+        Result<PageCursorResult<Long, ConfigInfoResponse>> response = Result.success(PageCursorResult.of(configInfoResponseList, cursor));
+        LOGGER.info("query config for main page, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 

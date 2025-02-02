@@ -24,4 +24,10 @@ public class ConfigInfoResponse extends BaseResponse {
 
     @SerializedName("version")
     private Integer version;
+
+    @SerializedName("configType")
+    private String configType;
+
+    @SerializedName("lastModified")
+    private Long lastModified;
 }

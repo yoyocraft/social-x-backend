@@ -9,6 +9,7 @@ CREATE TABLE `config` (
     `extra_data` JSON COMMENT 'extra data',
     `config_key` VARCHAR(255) NOT NULL COMMENT 'config key',
     `config_value` TEXT NOT NULL COMMENT 'config value',
+    `config_type` VARCHAR(32) NOT NULL DEFAULT 'STRING' COMMENT 'STRING, JSON, INTEGER, BOOLEAN, etc.',
     `version` INT(11) NOT NULL DEFAULT 0 COMMENT 'version',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_config_key_deleted_at` (`config_key`, `deleted_at`)

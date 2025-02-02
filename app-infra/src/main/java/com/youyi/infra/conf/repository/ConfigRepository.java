@@ -50,6 +50,16 @@ public class ConfigRepository {
         }
     }
 
+    public List<ConfigPO> queryByCursor(Long cursor, Integer size) {
+        try {
+            checkState(cursor != null && size > 0);
+            return configMapper.queryByCursor(cursor, size, true);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
+
     public void updateConfigValueAndEnv(ConfigPO po) {
         try {
             checkNotNull(po);

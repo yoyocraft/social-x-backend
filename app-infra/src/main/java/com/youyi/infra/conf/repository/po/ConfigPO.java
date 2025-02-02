@@ -16,5 +16,7 @@ public class ConfigPO extends BasePO {
 
     private String configValue;
 
+    private String configType;
+
     private Integer version;
 }
