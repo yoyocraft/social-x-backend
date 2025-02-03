@@ -40,7 +40,7 @@ public class PermissionController {
     private final PermissionHelper permissionHelper;
 
     @SaCheckPermission(value = {PERMISSION_MANAGER, ADD_PERMISSION}, mode = SaMode.OR)
-    @RecordOpLog(opType = OperationType.ADD_PERMISSION, system = true)
+    @RecordOpLog(opType = OperationType.ADD_PERMISSION)
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public Result<Boolean> addPermission(@RequestBody PermissionAddRequest request) {
         PermissionValidator.checkPermissionAddRequest(request);
@@ -50,7 +50,7 @@ public class PermissionController {
     }
 
     @SaCheckPermission(value = {PERMISSION_MANAGER, AUTHORIZE_PERMISSION}, mode = SaMode.OR)
-    @RecordOpLog(opType = OperationType.AUTHORIZE_PERMISSION, system = true)
+    @RecordOpLog(opType = OperationType.AUTHORIZE_PERMISSION)
     @RequestMapping(value = "/authorize", method = RequestMethod.POST)
     public Result<Boolean> authorize(@RequestBody RolePermissionAuthorizeRequest request) {
         PermissionValidator.checkRolePermissionAuthorizeRequest(request);
@@ -64,7 +64,7 @@ public class PermissionController {
     }
 
     @SaCheckPermission(value = {PERMISSION_MANAGER, REVOKE_PERMISSION}, mode = SaMode.OR)
-    @RecordOpLog(opType = OperationType.REVOKE_PERMISSION, system = true)
+    @RecordOpLog(opType = OperationType.REVOKE_PERMISSION)
     @RequestMapping(value = "/revoke", method = RequestMethod.POST)
     public Result<Boolean> revoke(@RequestBody RolePermissionRevokeRequest request) {
         PermissionValidator.checkRolePermissionRevokeRequest(request);

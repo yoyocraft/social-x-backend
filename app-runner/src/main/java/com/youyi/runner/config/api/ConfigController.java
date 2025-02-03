@@ -47,7 +47,7 @@ public class ConfigController {
     private final ConfigHelper configHelper;
 
     @SaCheckPermission(value = {CONFIG_MANAGER, CREATE_CONFIG}, mode = SaMode.OR)
-    @RecordOpLog(opType = OperationType.INSERT_CONFIG, system = true)
+    @RecordOpLog(opType = OperationType.INSERT_CONFIG)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Result<Boolean> createConfig(@RequestBody ConfigCreateRequest request) {
         ConfigValidator.validateConfigCreateRequest(request);
@@ -79,7 +79,7 @@ public class ConfigController {
     }
 
     @SaCheckPermission(value = {CONFIG_MANAGER, UPDATE_CONFIG}, mode = SaMode.OR)
-    @RecordOpLog(opType = OperationType.UPDATE_CONFIG, system = true)
+    @RecordOpLog(opType = OperationType.UPDATE_CONFIG)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Result<Boolean> updateConfig(@RequestBody ConfigUpdateRequest request) {
         ConfigValidator.validateConfigUpdateRequest(request);
@@ -93,7 +93,7 @@ public class ConfigController {
     }
 
     @SaCheckPermission(value = {CONFIG_MANAGER, DELETE_CONFIG}, mode = SaMode.OR)
-    @RecordOpLog(opType = OperationType.DELETE_CONFIG, system = true)
+    @RecordOpLog(opType = OperationType.DELETE_CONFIG)
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Result<Boolean> deleteConfig(@RequestBody ConfigDeleteRequest request) {
         ConfigValidator.validateConfigDeleteRequest(request);
