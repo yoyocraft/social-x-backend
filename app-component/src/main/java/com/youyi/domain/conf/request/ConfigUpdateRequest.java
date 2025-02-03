@@ -21,4 +21,7 @@ public class ConfigUpdateRequest extends BaseRequest {
 
     @SerializedName("currVersion")
     private Integer currVersion;
+
+    @SerializedName("configDesc")
+    private String configDesc;
 }

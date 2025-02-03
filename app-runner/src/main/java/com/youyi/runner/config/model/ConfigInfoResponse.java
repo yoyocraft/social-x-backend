@@ -30,4 +30,10 @@ public class ConfigInfoResponse extends BaseResponse {
 
     @SerializedName("lastModified")
     private Long lastModified;
+
+    @SerializedName("deleted")
+    private Boolean deleted;
+
+    @SerializedName("configDesc")
+    private String configDesc;
 }

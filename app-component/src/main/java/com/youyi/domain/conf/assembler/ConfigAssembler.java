@@ -45,7 +45,8 @@ public interface ConfigAssembler {
 
     @Mappings({
         @Mapping(source = "newConfigValue", target = "configValue"),
-        @Mapping(source = "currVersion", target = "version")
+        @Mapping(source = "currVersion", target = "version"),
+        @Mapping(target = "configDesc", source = "configDesc"),
     })
     ConfigDO toDO(ConfigUpdateRequest request);
 

@@ -21,7 +21,7 @@ public class ConfigDO {
     private String configValue;
     private ConfigType configType;
     private Integer version;
-    private String extraData;
+    private String configDesc;
     private Long deletedAt;
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;
@@ -35,7 +35,7 @@ public class ConfigDO {
         toSaveConfig.setConfigValue(configValue);
         toSaveConfig.setVersion(INIT_VERSION);
         toSaveConfig.setConfigType(configType.name());
-        toSaveConfig.setExtraData(extraData);
+        toSaveConfig.setConfigDesc(configDesc);
         return toSaveConfig;
     }
 
@@ -45,7 +45,7 @@ public class ConfigDO {
         toUpdateConfig.setVersion(version);
         toUpdateConfig.setConfigKey(configKey);
         toUpdateConfig.setConfigValue(configValue);
-        toUpdateConfig.setExtraData(extraData);
+        toUpdateConfig.setConfigDesc(configDesc);
         toUpdateConfig.setDeletedAt(deletedAt);
         return toUpdateConfig;
     }
@@ -60,7 +60,7 @@ public class ConfigDO {
         this.configValue = configPO.getConfigValue();
         this.configType = ConfigType.of(configPO.getConfigType());
         this.version = configPO.getVersion();
-        this.extraData = configPO.getExtraData();
+        this.configDesc = configPO.getConfigDesc();
         this.deletedAt = configPO.getDeletedAt();
         this.gmtCreate = configPO.getGmtCreate();
         this.gmtModified = configPO.getGmtModified();

@@ -20,7 +20,8 @@ public interface ConfigConverter {
 
     @Mappings({
         @Mapping(target = "lastModified", expression = "java(dateToLong(configDO.getGmtModified()))"),
-        @Mapping(target = "configType", expression = "java(configDO.getConfigType().name())")
+        @Mapping(target = "configType", expression = "java(configDO.getConfigType().name())"),
+        @Mapping(target = "deleted", expression = "java(configDO.getDeletedAt() != 0L)")
     })
     ConfigInfoResponse toResponse(ConfigDO configDO);
 

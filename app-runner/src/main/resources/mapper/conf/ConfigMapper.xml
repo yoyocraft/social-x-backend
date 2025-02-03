@@ -12,20 +12,21 @@
         <result property="configKey" column="config_key"/>
         <result property="configValue" column="config_value"/>
         <result property="configType" column="config_type"/>
+        <result property="configDesc" column="config_desc"/>
         <result property="version" column="version"/>
     </resultMap>
 
     <sql id="result_cols">
-        id, gmt_create, gmt_modified, deleted_at, extra_data, config_key, config_value, config_type, version
+        id, gmt_create, gmt_modified, deleted_at, config_key, config_value, config_type, version, config_desc
     </sql>
 
     <insert id="insert" parameterType="com.youyi.infra.conf.repository.po.ConfigPO">
-        INSERT INTO `config` (extra_data, config_key, config_value, config_type, version)
-        VALUES (#{extraData}, #{configKey}, #{configValue}, #{configType}, #{version})
+        INSERT INTO `config` (config_key, config_value, config_type, version, config_desc)
+        VALUES (#{configKey}, #{configValue}, #{configType}, #{version}, #{configDesc})
     </insert>
     <update id="updateConfigValueAndEnv" parameterType="com.youyi.infra.conf.repository.po.ConfigPO">
         UPDATE `config`
-        SET `config_value` = #{configValue}, `version` = version + 1
+        SET `config_value` = #{configValue}, `version` = version + 1, `config_desc` = #{configDesc}
         WHERE `config_key` = #{configKey}
         AND `version` = #{version}
         AND `deleted_at` = 0

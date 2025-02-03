@@ -84,7 +84,11 @@ public class ConfigController {
     public Result<Boolean> updateConfig(@RequestBody ConfigUpdateRequest request) {
         ConfigValidator.validateConfigUpdateRequest(request);
         ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
-        configHelper.updateConfig(configDO);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> configHelper.updateConfig(configDO),
+            CommonOperationUtil::tooManyRequestError,
+            request.getConfigKey()
+        );
         return updateSuccess(request);
     }
 

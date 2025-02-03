@@ -25,6 +25,7 @@ public class ConfigValidator {
             .put(notBlankChecker("configKey不能为空"), request.getConfigKey())
             .put(notBlankChecker("configValue不能为空"), request.getConfigValue())
             .put(enumExistChecker(ConfigType.class, "configType不合法"), request.getConfigType())
+            .put(notBlankChecker("configDesc不能为空"), request.getConfigDesc())
             .validateWithThrow();
     }
 
@@ -46,6 +47,7 @@ public class ConfigValidator {
             .put(notBlankChecker("configKey不能为空"), request.getConfigKey())
             .put(notBlankChecker("newConfigValue不能为空"), request.getNewConfigValue())
             .put(greaterThanOrEqualChecker(0, "version不合法"), request.getCurrVersion())
+            .put(notBlankChecker("configDesc不能为空"), request.getConfigDesc())
             .validateWithThrow();
     }
 
