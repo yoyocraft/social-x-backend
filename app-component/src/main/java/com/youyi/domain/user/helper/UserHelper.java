@@ -236,7 +236,6 @@ public class UserHelper {
     private void updateCurrentUserInfo() {
         UserDO userDO = userService.loadCurrentUserFromDB();
         UserLoginStateInfo loginStateInfo = userDO.buildLoginStateInfo();
-        StpUtil.login(userDO.getUserId());
         StpUtil.getSession().set(USER_LOGIN_STATE, GsonUtil.toJson(loginStateInfo));
     }
 

@@ -15,11 +15,14 @@ public interface LoginStrategy {
 
     void login(UserDO userDO);
 
+    default void doLogin(UserDO userDO) {
+        StpUtil.login(userDO.getUserId());
+    }
+
     default void saveUserLoginState(UserDO userDO) {
         // 生成用户登录态信息
         UserLoginStateInfo loginStateInfo = userDO.buildLoginStateInfo();
         // 存储用户登录态
-        StpUtil.login(userDO.getUserId());
         StpUtil.getSession().set(USER_LOGIN_STATE, GsonUtil.toJson(loginStateInfo));
     }
 }

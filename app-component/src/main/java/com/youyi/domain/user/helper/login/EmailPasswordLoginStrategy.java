@@ -36,7 +36,9 @@ public class EmailPasswordLoginStrategy implements LoginStrategy {
         // 3. 查询用户信息
         UserInfoPO userInfoPO = userRepository.queryUserInfoByEmail(encryptedEmail);
         userDO.fillUserInfo(userInfoPO);
-        // 4. 用户登录态
+        // 4. 执行登录
+        doLogin(userDO);
+        // 5. 用户登录态
         saveUserLoginState(userDO);
     }
 
