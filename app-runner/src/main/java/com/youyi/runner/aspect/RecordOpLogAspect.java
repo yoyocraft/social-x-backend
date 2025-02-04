@@ -24,6 +24,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
@@ -53,6 +54,9 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordOpLogAspect.class);
     private static final ExpressionParser expressionParser = new SpelExpressionParser();
+
+    private final ThreadLocal<OperationLogDO> opLogThreadLocal = new ThreadLocal<>();
+
     private static ThreadPoolExecutor asyncRecordOpLogExecutor;
 
     private final OperationLogHelper operationLogHelper;
@@ -73,13 +77,26 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
     public void pointCut() {
     }
 
+    @Before("pointCut()")
+    public void beforeProcess(JoinPoint joinPoint) {
+        // 如果需要记录前置操作，创建 OperationLogDO
+        if (needRecordBefore(joinPoint)) {
+            preRecordOpLog(joinPoint);
+        }
+    }
+
     @AfterReturning(value = "pointCut()", returning = "result")
     public void afterReturning(JoinPoint joinPoint, Object result) {
+        // 如果不需要记录前置操作，创建 OperationLogDO
+        if (!needRecordBefore(joinPoint)) {
+            preRecordOpLog(joinPoint);
+        }
         processOperationLog(joinPoint, result, null);
     }
 
     @AfterThrowing(value = "pointCut()", throwing = "exception")
     public void afterThrowing(JoinPoint joinPoint, Throwable exception) {
+        preRecordOpLog(joinPoint);
         processOperationLog(joinPoint, null, exception);
     }
 
@@ -90,13 +107,15 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         }
 
         try {
-            final OperationLogDO operationLogDO = preRecordOpLog(joinPoint);
+            final OperationLogDO operationLogDO = opLogThreadLocal.get();
             asyncRecordOpLogExecutor.execute(() -> {
                 buildOperationLogDO(joinPoint, operationLogDO, result, exception);
                 doRecordOpLog(operationLogDO);
             });
         } catch (Exception e) {
             LOGGER.error("Failed to submit async task to record operation log: {}", e.getMessage(), e);
+        } finally {
+            opLogThreadLocal.remove();
         }
     }
 
@@ -178,7 +197,15 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         }
     }
 
-    private OperationLogDO preRecordOpLog(JoinPoint jp) {
+    private boolean needRecordBefore(JoinPoint joinPoint) {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method method = methodSignature.getMethod();
+        RecordOpLog recordOpLog = method.getAnnotation(RecordOpLog.class);
+
+        return recordOpLog.preRecord();
+    }
+
+    private void preRecordOpLog(JoinPoint jp) {
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
         RecordOpLog recordOpLog = methodSignature.getMethod().getAnnotation(RecordOpLog.class);
 
@@ -193,7 +220,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
             operationLogDO.setOperatorId(currentUser.getUserId());
             operationLogDO.setOperatorName(currentUser.getNickName());
         }
-        return operationLogDO;
+        opLogThreadLocal.set(operationLogDO);
     }
 
     private void doRecordOpLog(OperationLogDO operationLogDO) {

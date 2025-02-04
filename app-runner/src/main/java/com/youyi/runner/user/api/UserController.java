@@ -72,6 +72,7 @@ public class UserController {
     }
 
     @SaCheckLogin
+    @RecordOpLog(opType = OperationType.USER_LOGOUT, preRecord = true)
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public Result<Boolean> logout() {
         userHelper.logout();
@@ -93,7 +94,7 @@ public class UserController {
     }
 
     @SaCheckLogin
-    @RecordOpLog(opType = OperationType.USER_SET_PASSWORD, desensitize = true)
+    @RecordOpLog(opType = OperationType.USER_SET_PASSWORD, desensitize = true, preRecord = true)
     @RequestMapping(value = "/auth/set-pwd", method = RequestMethod.POST)
     public Result<Boolean> setPwd(@RequestBody UserSetPwdRequest request, @RequestHeader("Authorization") String token) {
         UserValidator.checkUserSetPwdRequestAndToken(request, token);

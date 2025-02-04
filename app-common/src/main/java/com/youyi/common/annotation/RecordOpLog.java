@@ -35,5 +35,10 @@ public @interface RecordOpLog {
      * 指定记录的参数字段 Spring EL 表达式
      */
     String[] fields() default {};
+
+    /**
+     * 是否在方法执行前记录
+     */
+    boolean preRecord() default false;
 }
 

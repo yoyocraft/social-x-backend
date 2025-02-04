@@ -63,9 +63,7 @@ public class UserHelper {
     }
 
     public void logout() {
-        Object loginId = StpUtil.getLoginIdDefaultNull();
-        StpUtil.logout();
-        StpUtil.getSessionByLoginId(loginId).delete(USER_LOGIN_STATE);
+        doLogoutAndClearUserLoginState();
     }
 
     public void verifyCaptcha(UserDO userDO) {
@@ -82,6 +80,10 @@ public class UserHelper {
         encryptPwd(userDO);
         // 4. 保存
         savePwd(userDO);
+        // 5. 清理验证码
+        clearToken(userDO);
+        // 6. 清理当前用户信息
+        doLogoutAndClearUserLoginState();
     }
 
     public void editUserInfo(UserDO userDO) {
@@ -133,6 +135,12 @@ public class UserHelper {
             )
         );
         return followers;
+    }
+
+    private void doLogoutAndClearUserLoginState() {
+        Object loginId = StpUtil.getLoginIdDefaultNull();
+        StpUtil.logout();
+        StpUtil.getSessionByLoginId(loginId).delete(USER_LOGIN_STATE);
     }
 
     private void doFollowUser(UserDO currentUser, UserDO userDO) {
@@ -203,6 +211,11 @@ public class UserHelper {
         if (!systemVerifyToken.equals(userDO.getVerifyCaptchaToken())) {
             throw AppBizException.of(ReturnCode.ILLEGAL_OPERATION);
         }
+    }
+
+    private void clearToken(UserDO userDO) {
+        String cacheVerifyTokenKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
+        cacheManager.delete(cacheVerifyTokenKey);
     }
 
     private void encryptPwd(UserDO userDO) {
