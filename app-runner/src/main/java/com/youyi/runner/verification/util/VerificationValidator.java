@@ -1,8 +1,8 @@
-package com.youyi.runner.notification.util;
+package com.youyi.runner.verification.util;
 
 import com.youyi.common.type.BizType;
 import com.youyi.common.util.param.ParamCheckerChain;
-import com.youyi.domain.notification.request.CaptchaNotifyRequest;
+import com.youyi.domain.verification.request.CaptchaVerifyRequest;
 
 import static com.youyi.common.util.param.ParamChecker.emailChecker;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
@@ -12,9 +12,9 @@ import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/09
  */
-public class NotificationValidator {
+public class VerificationValidator {
 
-    public static void checkCaptchaNotifyRequest(CaptchaNotifyRequest request) {
+    public static void checkCaptchaVerifyRequest(CaptchaVerifyRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("email不能为空"), request.getEmail())
             .put(emailChecker("email格式不合法"), request.getEmail())

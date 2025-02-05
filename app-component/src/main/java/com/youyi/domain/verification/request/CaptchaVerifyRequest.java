@@ -1,4 +1,4 @@
-package com.youyi.domain.notification.request;
+package com.youyi.domain.verification.request;
 
 import com.google.gson.annotations.SerializedName;
 import com.youyi.common.base.BaseRequest;
@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class CaptchaNotifyRequest extends BaseRequest {
+public class CaptchaVerifyRequest extends BaseRequest {
 
     /**
      * @see BizType
