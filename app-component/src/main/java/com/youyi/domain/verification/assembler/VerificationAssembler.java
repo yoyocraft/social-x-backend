@@ -1,8 +1,8 @@
-package com.youyi.domain.notification.assembler;
+package com.youyi.domain.verification.assembler;
 
 import com.youyi.common.type.BizType;
-import com.youyi.domain.notification.model.NotificationDO;
-import com.youyi.domain.notification.request.CaptchaNotifyRequest;
+import com.youyi.domain.verification.model.VerificationDO;
+import com.youyi.domain.verification.request.CaptchaVerifyRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -19,11 +19,11 @@ import org.mapstruct.factory.Mappers;
     },
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
-public interface NotificationAssembler {
-    NotificationAssembler NOTIFICATION_ASSEMBLER = Mappers.getMapper(NotificationAssembler.class);
+public interface VerificationAssembler {
+    VerificationAssembler VERIFICATION_ASSEMBLER = Mappers.getMapper(VerificationAssembler.class);
 
     @Mappings({
         @Mapping(target = "bizType", expression = "java(BizType.of(request.getBizType()))")
     })
-    NotificationDO toDO(CaptchaNotifyRequest request);
+    VerificationDO toDO(CaptchaVerifyRequest request);
 }

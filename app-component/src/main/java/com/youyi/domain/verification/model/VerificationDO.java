@@ -1,4 +1,4 @@
-package com.youyi.domain.notification.model;
+package com.youyi.domain.verification.model;
 
 import com.youyi.common.type.BizType;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class NotificationDO {
+public class VerificationDO {
 
     private String email;
     private String captcha;

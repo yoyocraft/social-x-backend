@@ -1,7 +1,7 @@
-package com.youyi.domain.notification.helper;
+package com.youyi.domain.verification.helper;
 
 import com.youyi.common.util.IdSeqUtil;
-import com.youyi.domain.notification.model.NotificationDO;
+import com.youyi.domain.verification.model.VerificationDO;
 import com.youyi.infra.cache.manager.CacheManager;
 import com.youyi.infra.email.EmailSender;
 import lombok.RequiredArgsConstructor;
@@ -16,24 +16,24 @@ import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey
  */
 @Service
 @RequiredArgsConstructor
-public class NotificationHelper {
+public class VerificationHelper {
 
     private final EmailSender emailSender;
     private final CacheManager cacheManager;
 
-    public void notifyEmailCaptcha(NotificationDO notificationDO) {
+    public void verifyEmailCaptcha(VerificationDO verificationDO) {
         // 生成验证码
         String captcha = IdSeqUtil.genEmailCaptcha();
-        notificationDO.setCaptcha(captcha);
+        verificationDO.setCaptcha(captcha);
         // 保存验证码
-        saveCaptcha(notificationDO);
+        saveCaptcha(verificationDO);
         // 发送邮件
         // TODO youyi 2025/1/9 支持重试，防抖，异步发送即可
-        emailSender.sendCaptchaEmail(notificationDO.getEmail(), captcha);
+        emailSender.sendCaptchaEmail(verificationDO.getEmail(), captcha);
     }
 
-    private void saveCaptcha(NotificationDO notificationDO) {
-        String cacheKey = ofEmailCaptchaKey(notificationDO.getEmail(), notificationDO.getBizType());
-        cacheManager.set(cacheKey, notificationDO.getCaptcha(), EMAIL_CAPTCHA_TTL);
+    private void saveCaptcha(VerificationDO verificationDO) {
+        String cacheKey = ofEmailCaptchaKey(verificationDO.getEmail(), verificationDO.getBizType());
+        cacheManager.set(cacheKey, verificationDO.getCaptcha(), EMAIL_CAPTCHA_TTL);
     }
 }
