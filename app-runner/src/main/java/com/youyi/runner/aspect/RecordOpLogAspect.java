@@ -2,6 +2,7 @@ package com.youyi.runner.aspect;
 
 import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.constant.SymbolConstant;
+import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.aspect.AspectOrdered;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
@@ -54,6 +55,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordOpLogAspect.class);
     private static final ExpressionParser expressionParser = new SpelExpressionParser();
+    private static final UserDO SYSTEM_USER = new UserDO();
 
     private final ThreadLocal<OperationLogDO> opLogThreadLocal = new ThreadLocal<>();
 
@@ -61,6 +63,11 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
     private final OperationLogHelper operationLogHelper;
     private final UserHelper userHelper;
+
+    static {
+        SYSTEM_USER.setUserId(SYSTEM_OPERATOR_ID);
+        SYSTEM_USER.setNickName(SYSTEM_OPERATOR_NAME);
+    }
 
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
@@ -209,18 +216,34 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         MethodSignature methodSignature = (MethodSignature) jp.getSignature();
         RecordOpLog recordOpLog = methodSignature.getMethod().getAnnotation(RecordOpLog.class);
 
+        // 创建操作日志对象
         OperationLogDO operationLogDO = new OperationLogDO();
-
         operationLogDO.setOperationType(recordOpLog.opType());
-        if (recordOpLog.system()) {
-            operationLogDO.setOperatorId(SYSTEM_OPERATOR_ID);
-            operationLogDO.setOperatorName(SYSTEM_OPERATOR_NAME);
-        } else {
-            UserDO currentUser = userHelper.getCurrentUser();
-            operationLogDO.setOperatorId(currentUser.getUserId());
-            operationLogDO.setOperatorName(currentUser.getNickName());
-        }
+
+        // 设置操作员信息
+        setOperatorInfo(recordOpLog, operationLogDO);
+
+        // 将操作日志保存到线程本地
         opLogThreadLocal.set(operationLogDO);
+    }
+
+    private void setOperatorInfo(RecordOpLog recordOpLog, OperationLogDO operationLogDO) {
+        UserDO operator;
+        if (recordOpLog.system()) {
+            operator = SYSTEM_USER;
+        } else {
+            operator = getCurrentUserSafely();
+        }
+        operationLogDO.setOperatorId(operator.getUserId());
+        operationLogDO.setOperatorName(operator.getNickName());
+    }
+
+    private UserDO getCurrentUserSafely() {
+        try {
+            return userHelper.getCurrentUser();
+        } catch (AppBizException e) {
+            return SYSTEM_USER;
+        }
     }
 
     private void doRecordOpLog(OperationLogDO operationLogDO) {
