@@ -12,7 +12,7 @@ import static com.youyi.infra.cache.util.CacheUtil.ofKey;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/10
  */
-public class NotificationCacheRepo {
+public class VerificationCacheRepo {
 
     public static final String EMAIL_CAPTCHA_KEY = ofKey("em", "cap", "${email}", "${bizType}");
     public static final Duration EMAIL_CAPTCHA_TTL = Duration.ofMinutes(10);

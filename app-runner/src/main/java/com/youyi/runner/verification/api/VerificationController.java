@@ -29,7 +29,7 @@ public class VerificationController {
 
     private final VerificationHelper verificationHelper;
 
-    @RecordOpLog(opType = OperationType.NOTIFY_CAPTCHA, system = true)
+    @RecordOpLog(opType = OperationType.NOTIFY_CAPTCHA)
     @RequestMapping(value = "/email/captcha", method = RequestMethod.POST)
     public Result<Boolean> notifyEmailCaptcha(@RequestBody CaptchaVerifyRequest request) {
         VerificationValidator.checkCaptchaVerifyRequest(request);

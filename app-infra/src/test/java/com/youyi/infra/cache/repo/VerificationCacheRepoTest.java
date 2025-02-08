@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/10
  */
-class NotificationCacheRepoTest {
+class VerificationCacheRepoTest {
 
     @Test
     void testOfEmailCaptchaKey() {
-        String result = NotificationCacheRepo.ofEmailCaptchaKey("test@example.com", BizType.LOGIN);
-        Assertions.assertEquals("email:captcha:test@example.com:LOGIN", result);
+        String result = VerificationCacheRepo.ofEmailCaptchaKey("test@example.com", BizType.LOGIN);
+        Assertions.assertEquals("em:cap:test@example.com:LOGIN", result);
     }
 }
 
