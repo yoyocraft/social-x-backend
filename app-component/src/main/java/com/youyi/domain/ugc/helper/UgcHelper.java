@@ -5,6 +5,7 @@ import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.task.TaskType;
 import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.ugc.core.UgcService;
 import com.youyi.domain.ugc.core.UgcTpeContainer;
@@ -37,6 +38,7 @@ public class UgcHelper {
 
     private final UgcTpeContainer ugcTpeContainer;
     private final SysTaskService sysTaskService;
+    private final NotificationManager notificationManager;
 
     private final UserService userService;
     private final UgcService ugcService;
@@ -126,12 +128,8 @@ public class UgcHelper {
     }
 
     public void interact(UgcDO ugcDO) {
-        UgcInteractionType interactionType = ugcDO.getInteractionType();
-        if (interactionType == UgcInteractionType.UNKNOWN) {
-            throw AppBizException.of(OPERATION_DENIED, "未知的交互类型！");
-        }
-
         UserDO currentUser = userService.getCurrentUserInfo();
+        UgcInteractionType interactionType = ugcDO.getInteractionType();
         if (interactionType == UgcInteractionType.LIKE) {
             handleLikeUgcInteraction(ugcDO, currentUser);
             return;
@@ -170,6 +168,8 @@ public class UgcHelper {
         userService.createUserIfNeed(currentUser);
         // 添加喜欢关系，增加点赞数
         ugcService.likeUgc(ugcDO, currentUser);
+        // 发送通知给作者
+        notificationManager.sendUgcLikeNotification(currentUser, ugcDO.getUgcId());
     }
 
     private void doCancelLikeUgc(UgcDO ugcDO, UserDO currentUser) {

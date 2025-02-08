@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.ReturnCode;
 import com.youyi.common.util.GsonUtil;
+import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.helper.login.LoginStrategy;
 import com.youyi.domain.user.helper.login.LoginStrategyFactory;
@@ -29,7 +30,7 @@ import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.ReturnCode.NOT_LOGIN;
 import static com.youyi.common.type.ReturnCode.PERMISSION_DENIED;
 import static com.youyi.common.util.IdSeqUtil.genUserVerifyCaptchaToken;
-import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey;
+import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
 import static com.youyi.infra.cache.repo.UserCacheRepo.USER_VERIFY_TOKEN_TTL;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserVerifyTokenKey;
 
@@ -45,6 +46,7 @@ public class UserHelper {
 
     private final LoginStrategyFactory loginStrategyFactory;
     private final CacheManager cacheManager;
+    private final NotificationManager notificationManager;
     private final UserService userService;
     private final UserRepository userRepository;
     private final UserRelationRepository userRelationRepository;
@@ -153,6 +155,8 @@ public class UserHelper {
         UserDO followUserInfo = userService.queryByUserId(userDO.getFollowingUserId());
         // 5. 关注用户
         userService.followUser(currentUser, followUserInfo);
+        // 6. 发送通知给用户
+        notificationManager.sendUserFollowNotification(currentUser, followUserInfo);
     }
 
     private void doUnfollowUser(UserDO currentUser, UserDO userDO) {

@@ -48,6 +48,15 @@ public class SystemConfigService {
         return getCacheValue(configKey, mapType, defaultValue);
     }
 
+    public static <K, V> Map<K, V> getMapConfig(ConfigKey configKey, Class<K> keyType, Class<V> valueType) {
+        return getMapConfig(configKey.name(), keyType, valueType, Map.of());
+    }
+
+    public static <K, V> Map<K, V> getMapConfig(ConfigKey configKey, Class<K> keyType, Class<V> valueType, Map<K, V> defaultValue) {
+        Type mapType = TypeToken.getParameterized(Map.class, keyType, valueType).getType();
+        return getCacheValue(configKey.name(), mapType, defaultValue);
+    }
+
     // ====================== list type ======================
     public static <T> List<T> getListConfig(String configKey, Class<T> valueType) {
         return getListConfig(configKey, valueType, List.of());

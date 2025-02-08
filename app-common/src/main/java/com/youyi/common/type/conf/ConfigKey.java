@@ -19,6 +19,7 @@ public enum ConfigKey {
     AUDIT_UGC_THREAD_POOL_CONFIG,
     UGC_STATISTICS_THREAD_POOL_CONFIG,
     UGC_DELETE_TASK_THREAD_POOL_CONFIG,
+    NOTIFICATION_THREAD_POOL_CONFIG,
 
     // ================ Feature AB Switch ================
     SEND_EMAIL_AB_SWITCH,
@@ -50,6 +51,9 @@ public enum ConfigKey {
     // ================ Redis ==================
     INCR_WITH_EXPIRE_LUA_SCRIPT,
     GET_AND_DEL_LUA_SCRIPT,
+
+    // ================ Notification ==================
+    NOTIFICATION_SUMMARY_TEMPLATE,
     ;
 
 }

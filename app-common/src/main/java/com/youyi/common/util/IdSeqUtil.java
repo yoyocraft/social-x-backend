@@ -23,6 +23,8 @@ public class IdSeqUtil {
     private static final Snowflake COMMENTARY_ID_SEQ = IdUtil.getSnowflake(COMMENTARY_ID_WORKER);
     private static final long SYS_TASK_ID_WORKER = 6L;
     private static final Snowflake SYS_TASK_ID_SEQ = IdUtil.getSnowflake(SYS_TASK_ID_WORKER);
+    private static final long NOTIFICATION_ID_WORKER = 7L;
+    private static final Snowflake NOTIFICATION_ID_SEQ = IdUtil.getSnowflake(NOTIFICATION_ID_WORKER);
 
     // ============================= Constants ==============================
     private static final int EMAIL_CAPTCHA_LENGTH = 6;
@@ -57,6 +59,10 @@ public class IdSeqUtil {
 
     public static String genSysTaskId() {
         return SYS_TASK_ID_SEQ.nextIdStr();
+    }
+
+    public static String genNotificationId() {
+        return NOTIFICATION_ID_SEQ.nextIdStr();
     }
 
     public static String genEmailCaptcha() {

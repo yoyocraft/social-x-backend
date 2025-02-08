@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youyi.domain.notification.repository.mapper.NotificationMapper">
+
+    <resultMap id="NotificationResultMap" type="com.youyi.domain.notification.repository.po.NotificationPO">
+        <id column="id" property="id"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="extraData" column="extra_data"/>
+        <result property="deletedAt" column="deleted_at"/>
+        <result property="notificationId" column="notification_id"/>
+        <result property="notificationType" column="notification_type"/>
+        <result property="notificationStatus" column="notification_status"/>
+        <result property="receiverId" column="receiver_id"/>
+        <result property="senderId" column="sender_id"/>
+        <result property="readAt" column="read_at"/>
+    </resultMap>
+
+    <sql id="result_cols">
+        id, gmt_create, gmt_modified, deleted_at, extra_data, notification_id, notification_type, notification_status,
+        receiver_id, sender_id, read_at
+    </sql>
+    <insert id="insert">
+        INSERT INTO notification (extra_data, notification_id, notification_type, notification_status, receiver_id, sender_id)
+        VALUES (#{extraData}, #{notificationId}, #{notificationType}, #{notificationStatus}, #{receiverId}, #{senderId})
+    </insert>
+    <update id="updateStatusByNotificationIdWithReadTime">
+        UPDATE notification
+        SET notification_status = #{status}, read_at = #{readAt}
+        WHERE notification_id = #{notificationId}
+        AND receiver_id = #{receiverId}
+        AND notification_status = #{oldStatus}
+    </update>
+    <update id="updateStatusByReceiverIdWithReadTime">
+        UPDATE notification
+        SET notification_status = #{status}, read_at = #{readAt}
+        WHERE receiver_id = #{receiverId}
+        AND notification_status = #{oldStatus}
+    </update>
+    <update id="updateStatusByTypeAndReceiverIdWithReadTime">
+        UPDATE notification
+        SET notification_status = #{status}, read_at = #{readAt}
+        WHERE notification_type = #{type}
+        AND receiver_id = #{receiverId}
+        AND notification_status = #{oldStatus}
+    </update>
+    <select id="querySelfByTypeWithCursor" resultType="com.youyi.domain.notification.repository.po.NotificationPO">
+        SELECT
+            <include refid="result_cols"/>
+        FROM notification
+        WHERE notification_type = #{type}
+        AND receiver_id = #{receiverId}
+        AND read_at = 0
+        <if test="cursor != null">
+            AND notification_id <![CDATA[ < ]]> #{cursor}
+        </if>
+        ORDER BY notification_id DESC
+        LIMIT #{size}
+    </select>
+    <select id="queryUnreadCountGroupByType" resultType="com.youyi.domain.notification.model.NotificationUnreadInfo">
+        SELECT
+            notification_type as notificationType,
+            COUNT(*) as unreadCount
+        FROM notification
+        WHERE receiver_id = #{receiverId}
+        AND read_at = 0
+        GROUP BY notification_type
+    </select>
+    <select id="queryUnreadCount" resultType="java.lang.Long">
+        SELECT
+            COUNT(*)
+        FROM notification
+        WHERE receiver_id = #{receiverId}
+        AND read_at = 0
+    </select>
+
+</mapper>
+
