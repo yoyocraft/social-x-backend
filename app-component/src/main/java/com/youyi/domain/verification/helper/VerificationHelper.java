@@ -7,8 +7,8 @@ import com.youyi.infra.email.EmailSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.youyi.infra.cache.repo.NotificationCacheRepo.EMAIL_CAPTCHA_TTL;
-import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey;
+import static com.youyi.infra.cache.repo.VerificationCacheRepo.EMAIL_CAPTCHA_TTL;
+import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

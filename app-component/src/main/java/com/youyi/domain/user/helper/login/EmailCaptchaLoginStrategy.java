@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import static com.youyi.common.type.BizType.LOGIN;
-import static com.youyi.infra.cache.repo.NotificationCacheRepo.ofEmailCaptchaKey;
+import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
