@@ -1,6 +1,7 @@
 package com.youyi.domain.ugc.core;
 
 import com.youyi.common.constant.SymbolConstant;
+import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.ugc.cache.UgcStatisticCacheManager;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.repository.CommentaryRelationshipRepository;
@@ -30,6 +31,7 @@ public class CommentaryService {
     private final CommentaryRelationshipRepository commentaryRelationshipRepository;
 
     private final UgcStatisticCacheManager ugcStatisticCacheManager;
+    private final NotificationManager notificationManager;
 
     public List<CommentaryDocument> queryByUgcIdWithTimeCursor(CommentaryDO commentaryDO) {
         long cursor = getTimeCursor(commentaryDO);
@@ -124,5 +126,16 @@ public class CommentaryService {
             return;
         }
         commentaryRelationshipRepository.save(commentaryDO.getCommentaryId());
+    }
+
+    public void sendNotification(CommentaryDO commentaryDO) {
+        if (commentaryDO.isTopCommentary()) {
+            // 发送UGC_COMMENT通知
+            notificationManager.sendUgcCommentNotification(commentaryDO.getCommentator(), commentaryDO.getUgcId(), commentaryDO.getCommentary());
+            return;
+        }
+
+        // 发送UGC_COMMENT_REPLY通知
+        notificationManager.sendUgcCommentReplyNotification(commentaryDO.getCommentator(), commentaryDO.getParentId(), commentaryDO.getCommentary());
     }
 }

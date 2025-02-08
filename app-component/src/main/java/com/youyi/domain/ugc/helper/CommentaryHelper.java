@@ -46,10 +46,16 @@ public class CommentaryHelper {
     private final CommentaryRelationshipRepository commentaryRelationshipRepository;
 
     public void publish(CommentaryDO commentaryDO) {
+        // 0. 填充当前用户信息作为评论者
         fillCurrUserAsCommentator(commentaryDO);
+        // 1. 创建评论
         commentaryDO.create();
+        // 2. 敏感词处理
         sensitiveHandle(commentaryDO);
+        // 3. 存储到数据库中
         commentaryRepository.saveCommentary(commentaryDO.buildToSaveCommentaryDocument());
+        // 4. 发送通知
+        commentaryService.sendNotification(commentaryDO);
     }
 
     public List<CommentaryDO> queryUgcCommentary(CommentaryDO commentaryDO) {

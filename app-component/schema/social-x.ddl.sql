@@ -163,3 +163,22 @@ CREATE TABLE `sys_task` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_task_id` (`task_id`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'sys task';
+
+DROP TABLE IF EXISTS `notification`;
+
+CREATE TABLE `notification` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
+    `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
+    `extra_data` JSON COMMENT 'extra data',
+    `notification_id` VARCHAR(64) NOT NULL COMMENT 'notification id',
+    `notification_type` VARCHAR(64) NOT NULL COMMENT 'notification type',
+    `notification_status` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'notification status, e.g. UNREAD(0), READ(1), DELETED(Integer.MAX_VALUE)',
+    `receiver_id` VARCHAR(64) NOT NULL COMMENT 'receiver id',
+    `sender_id` VARCHAR(64) NOT NULL COMMENT 'sender id',
+    `read_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'read time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_notification_id` (`notification_id`),
+    KEY `idx_receiver_id_status` (`receiver_id`, `notification_status`)
+) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'notification';

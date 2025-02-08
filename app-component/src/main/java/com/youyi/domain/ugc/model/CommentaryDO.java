@@ -82,4 +82,8 @@ public class CommentaryDO {
         }
         this.likeCount = this.likeCount + toAddCount;
     }
+
+    public boolean isTopCommentary() {
+        return TOP_COMMENTARY_ID.equals(parentId);
+    }
 }

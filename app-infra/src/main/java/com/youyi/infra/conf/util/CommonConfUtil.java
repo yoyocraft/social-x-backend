@@ -1,0 +1,21 @@
+package com.youyi.infra.conf.util;
+
+import com.youyi.common.base.BasePageRequest;
+import com.youyi.common.type.conf.ConfigKey;
+import java.util.Objects;
+
+import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
+
+/**
+ * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
+ * @date 2025/02/07
+ */
+public class CommonConfUtil {
+
+    public static int calSize(BasePageRequest request) {
+        if (Objects.isNull(request.getSize()) || request.getSize() <= 0) {
+            return getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
+        }
+        return Math.min(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), request.getSize());
+    }
+}

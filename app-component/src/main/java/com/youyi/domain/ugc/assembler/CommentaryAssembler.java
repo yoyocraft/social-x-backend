@@ -1,20 +1,17 @@
 package com.youyi.domain.ugc.assembler;
 
-import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.CommentaryStatus;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.request.CommentaryDeleteRequest;
 import com.youyi.domain.ugc.request.CommentaryPublishRequest;
 import com.youyi.domain.ugc.request.CommentaryQueryRequest;
 import com.youyi.domain.ugc.request.UgcInteractionRequest;
-import java.util.Objects;
+import com.youyi.infra.conf.util.CommonConfUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-
-import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -22,7 +19,8 @@ import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
  */
 @Mapper(
     imports = {
-        CommentaryStatus.class
+        CommentaryStatus.class,
+        CommonConfUtil.class
     },
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
@@ -33,7 +31,7 @@ public interface CommentaryAssembler {
     CommentaryDO toDO(CommentaryPublishRequest request);
 
     @Mappings({
-        @Mapping(target = "size", expression = "java(calSize(request))")
+        @Mapping(target = "size", expression = "java(CommonConfUtil.calSize(request))")
     })
     CommentaryDO toDO(CommentaryQueryRequest request);
 
@@ -45,10 +43,4 @@ public interface CommentaryAssembler {
     })
     CommentaryDO toDO(UgcInteractionRequest request);
 
-    default int calSize(CommentaryQueryRequest request) {
-        if (Objects.isNull(request.getSize()) || request.getSize() <= 0) {
-            return getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
-        }
-        return Math.min(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), request.getSize());
-    }
 }

@@ -1,6 +1,5 @@
 package com.youyi.domain.ugc.assembler;
 
-import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
@@ -10,14 +9,12 @@ import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
-import java.util.Objects;
+import com.youyi.infra.conf.util.CommonConfUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-
-import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -27,7 +24,8 @@ import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
     imports = {
         UgcType.class,
         UgcStatus.class,
-        UgcInteractionType.class
+        UgcInteractionType.class,
+        CommonConfUtil.class
     },
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
@@ -46,7 +44,7 @@ public interface UgcAssembler {
     @Mappings({
         @Mapping(target = "ugcType", expression = "java(UgcType.of(request.getUgcType()))"),
         @Mapping(target = "status", expression = "java(UgcStatus.of(request.getUgcStatus()))"),
-        @Mapping(target = "size", expression = "java(calSize(request))")
+        @Mapping(target = "size", expression = "java(CommonConfUtil.calSize(request))")
     })
     UgcDO toDO(UgcQueryRequest request);
 
@@ -67,12 +65,5 @@ public interface UgcAssembler {
             return UgcStatus.DRAFT;
         }
         return UgcStatus.AUDITING;
-    }
-
-    default int calSize(UgcQueryRequest request) {
-        if (Objects.isNull(request.getSize()) || request.getSize() <= 0) {
-            return getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
-        }
-        return Math.min(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), request.getSize());
     }
 }

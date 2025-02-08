@@ -199,4 +199,10 @@ public class UserDO {
     public boolean isAdmin() {
         return UserRoleType.ADMIN.equals(this.role);
     }
+
+    public static UserDO of(String userId) {
+        UserDO userDO = new UserDO();
+        userDO.setUserId(userId);
+        return userDO;
+    }
 }

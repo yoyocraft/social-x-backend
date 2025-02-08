@@ -1,7 +1,6 @@
 package com.youyi.domain.user.assembler;
 
 import com.youyi.common.type.BizType;
-import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.user.IdentityType;
 import com.youyi.common.type.user.WorkDirectionType;
 import com.youyi.domain.user.model.UserDO;
@@ -11,15 +10,13 @@ import com.youyi.domain.user.request.UserFollowRequest;
 import com.youyi.domain.user.request.UserQueryRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
-import java.util.Objects;
+import com.youyi.infra.conf.util.CommonConfUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
-
-import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -29,7 +26,8 @@ import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
     imports = {
         IdentityType.class,
         BizType.class,
-        WorkDirectionType.class
+        WorkDirectionType.class,
+        CommonConfUtil.class
     },
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
@@ -67,7 +65,7 @@ public interface UserAssembler {
     UserDO toDO(UserFollowRequest request);
 
     @Mappings({
-        @Mapping(target = "size", expression = "java(calSize(request))")
+        @Mapping(target = "size", expression = "java(CommonConfUtil.calSize(request))")
     })
     UserDO toDO(UserQueryRequest request);
 
@@ -79,10 +77,4 @@ public interface UserAssembler {
         return StringUtils.EMPTY;
     }
 
-    default int calSize(UserQueryRequest request) {
-        if (Objects.isNull(request.getSize()) || request.getSize() <= 0) {
-            return getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
-        }
-        return Math.min(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), request.getSize());
-    }
 }
