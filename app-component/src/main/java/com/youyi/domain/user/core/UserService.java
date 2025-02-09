@@ -10,10 +10,13 @@ import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.domain.user.repository.relation.UserNode;
 import com.youyi.domain.user.repository.relation.UserRelationship;
+import com.youyi.infra.cache.manager.CacheManager;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,6 +27,7 @@ import org.springframework.stereotype.Component;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.conf.ConfigKey.QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH;
+import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserFollowIdsKey;
 import static com.youyi.infra.conf.core.SystemConfigService.getBooleanConfig;
 
 /**
@@ -36,6 +40,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserRelationRepository userRelationRepository;
+
+    private final CacheManager cacheManager;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
@@ -148,5 +154,29 @@ public class UserService {
             .toList();
         Map<String, UserDO> id2UserDOMapping = queryBatchByUserId(followerUserIds);
         return Lists.newArrayList(id2UserDOMapping.values());
+    }
+
+    public void polishUserFollowCache(UserDO currentUser, UserDO followUserInfo, boolean follow) {
+        String followCacheKey = ofUserFollowIdsKey(currentUser.getUserId());
+        // 如果是关注，则添加到缓存中，否则从缓存中移除
+        if (follow) {
+            cacheManager.addToSet(followCacheKey, followUserInfo.getUserId());
+            return;
+        }
+        cacheManager.removeFromSet(followCacheKey, followUserInfo.getUserId());
+    }
+
+    public Set<String> queryFollowingUserIdsFromCache(UserDO userDO) {
+        String followCacheKey = ofUserFollowIdsKey(userDO.getUserId());
+        Set<Object> cachedFollowIds = cacheManager.getSetMembers(followCacheKey);
+
+        // 如果缓存为空，直接返回空集合
+        if (cachedFollowIds == null || cachedFollowIds.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        return cachedFollowIds.stream()
+            .map(String.class::cast)
+            .collect(Collectors.toUnmodifiableSet());
     }
 }

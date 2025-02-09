@@ -169,4 +169,13 @@ public interface ParamChecker<T> {
                 : CheckResult.of(INVALID_PARAM, errorMsg);
         };
     }
+
+    static ParamChecker<Boolean> trueChecker(String errorMsg) {
+        return param -> {
+            boolean validate = Boolean.TRUE.equals(param);
+            return validate
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
+    }
 }

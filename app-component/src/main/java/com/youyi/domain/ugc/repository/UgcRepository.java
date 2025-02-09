@@ -1,12 +1,13 @@
 package com.youyi.domain.ugc.repository;
 
-import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.domain.ugc.repository.dao.UgcDAO;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -103,7 +104,7 @@ public class UgcRepository {
     public List<UgcDocument> queryMainPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, SymbolConstant.EMPTY, lastCursor, size);
+            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.emptyList(), lastCursor, size);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
@@ -114,7 +115,18 @@ public class UgcRepository {
         long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0 && StringUtils.isNotBlank(authorId));
-            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, authorId, lastCursor, size);
+            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.singletonList(authorId), lastCursor, size);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public List<UgcDocument> queryFollowPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, Collection<String> authorIds,
+        long lastCursor, int size) {
+        try {
+            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, authorIds, lastCursor, size);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

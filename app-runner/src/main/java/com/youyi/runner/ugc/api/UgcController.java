@@ -27,6 +27,7 @@ import static com.youyi.domain.ugc.assembler.UgcAssembler.UGC_ASSEMBLER;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.deleteSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.interactSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryByCursorForFollowPageSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryByCursorForMainPageSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryByUgcIdSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.querySelfUgcSuccess;
@@ -91,7 +92,7 @@ public class UgcController {
 
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.UGC_SET_STATUS)
-    @RequestMapping(value = "/set-status", method = RequestMethod.POST)
+    @RequestMapping(value = "/set_status", method = RequestMethod.POST)
     public Result<Boolean> setStatus(@RequestBody UgcSetStatusRequest request) {
         UgcValidator.checkUgcSetStatusRequest(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
@@ -119,6 +120,15 @@ public class UgcController {
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.queryByCursorForUserPage(ugcDO);
         return queryByCursorForMainPageSuccess(ugcDOList, request);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "/follow_feed", method = RequestMethod.GET)
+    public Result<PageCursorResult<String, UgcResponse>> queryByCursorForFollowPage(UgcQueryRequest request) {
+        UgcValidator.checkUgcQueryRequestForFollowPage(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        List<UgcDO> ugcDOList = ugcHelper.queryByCursorForFollowPage(ugcDO);
+        return queryByCursorForFollowPageSuccess(ugcDOList, request);
     }
 
     @SaCheckLogin

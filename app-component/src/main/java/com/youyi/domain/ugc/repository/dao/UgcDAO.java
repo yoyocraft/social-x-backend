@@ -4,8 +4,10 @@ import com.mongodb.client.result.UpdateResult;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -110,7 +112,7 @@ public class UgcDAO {
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryInfoWithIdCursor(String categoryId, String type, String ugcStatus, String authorId, long lastCursor,
+    public List<UgcDocument> queryInfoWithIdCursor(String categoryId, String type, String ugcStatus, Collection<String> authorIds, long lastCursor,
         int size) {
         Query query = new Query();
         buildUgcStatusQueryCondition(query, ugcStatus);
@@ -120,8 +122,8 @@ public class UgcDAO {
         if (StringUtils.isNotBlank(categoryId)) {
             query.addCriteria(Criteria.where(UGC_CATEGORY_ID).is(categoryId));
         }
-        if (StringUtils.isNotBlank(authorId)) {
-            query.addCriteria(Criteria.where(UGC_AUTHOR_ID).is(authorId));
+        if (CollectionUtils.isNotEmpty(authorIds)) {
+            query.addCriteria(Criteria.where(UGC_AUTHOR_ID).in(authorIds));
         }
         buildTimeCursorQueryCondition(query, lastCursor, size);
 

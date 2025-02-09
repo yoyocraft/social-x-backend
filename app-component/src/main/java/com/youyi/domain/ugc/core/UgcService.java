@@ -10,6 +10,8 @@ import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.repository.relation.UgcNode;
 import com.youyi.domain.user.model.UserDO;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -86,6 +88,23 @@ public class UgcService {
             ugcDO.getUgcType().name(),
             UgcStatus.PUBLISHED.name(),
             ugcDO.getAuthorId(),
+            cursor,
+            ugcDO.getSize()
+        );
+    }
+
+    public List<UgcDocument> queryByAuthorIdsWithCursor(UgcDO ugcDO, Collection<String> authorIds) {
+        if (CollectionUtils.isEmpty(authorIds)) {
+            return Collections.emptyList();
+        }
+        // 1. 根据 cursor 查询 gmt_modified 作为查询游标
+        long cursor = getTimeCursor(ugcDO);
+        // 2. 查询
+        return ugcRepository.queryFollowPageInfoWithIdCursor(
+            SymbolConstant.EMPTY,
+            SymbolConstant.EMPTY,
+            UgcStatus.PUBLISHED.name(),
+            authorIds,
             cursor,
             ugcDO.getSize()
         );
