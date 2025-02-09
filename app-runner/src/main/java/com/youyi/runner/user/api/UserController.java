@@ -81,7 +81,7 @@ public class UserController {
 
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.VERIFY_CAPTCHA)
-    @RequestMapping(value = "/auth/verify-captcha", method = RequestMethod.POST)
+    @RequestMapping(value = "/auth/captcha/verify", method = RequestMethod.POST)
     public Result<VerifyCaptchaResponse> verifyCaptcha(@RequestBody UserVerifyCaptchaRequest request) {
         UserValidator.checkUserVerifyCaptchaRequest(request);
         UserDO userDO = USER_ASSEMBLER.toDO(request);
@@ -95,7 +95,7 @@ public class UserController {
 
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.USER_SET_PASSWORD, desensitize = true, preRecord = true)
-    @RequestMapping(value = "/auth/set-pwd", method = RequestMethod.POST)
+    @RequestMapping(value = "/auth/set_pwd", method = RequestMethod.POST)
     public Result<Boolean> setPwd(@RequestBody UserSetPwdRequest request, @RequestHeader("Authorization") String token) {
         UserValidator.checkUserSetPwdRequestAndToken(request, token);
         UserDO userDO = USER_ASSEMBLER.toDO(request, token);

@@ -38,14 +38,14 @@ public class UgcMetadataController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/metadata/interest-tag", method = RequestMethod.GET)
+    @RequestMapping(value = "/metadata/interest_tag", method = RequestMethod.GET)
     public Result<UgcMetadataResponse> queryUgcInterestTag() {
         UgcMetadataDO ugcMetadataDO = ugcMetadataHelper.queryUgcInterestTag();
         return queryUgcInterestTagSuccess(ugcMetadataDO);
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/metadata/article-tag", method = RequestMethod.GET)
+    @RequestMapping(value = "/metadata/article_tag", method = RequestMethod.GET)
     public Result<PageCursorResult<String, UgcTagInfoResponse>> queryUgcArticleTagWithCursor(UgcTagQueryRequest request) {
         UgcMetadataValidator.checkUgcTagQueryRequest(request);
         UgcMetadataDO ugcMetadataDO = UGC_METADATA_ASSEMBLER.toDO(request);

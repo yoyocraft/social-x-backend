@@ -66,6 +66,14 @@ public class UgcResponseUtil {
         return response;
     }
 
+    public static Result<PageCursorResult<String, UgcResponse>> queryByCursorForFollowPageSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
+        List<UgcResponse> data = ugcDOList.stream().map(UGC_CONVERTER::toResponse).toList();
+        String cursor = Optional.ofNullable(ugcDOList.isEmpty() ? null : ugcDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
+        Result<PageCursorResult<String, UgcResponse>> response = Result.success(PageCursorResult.of(data, cursor));
+        LOGGER.info("query ugc article by cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
     public static Result<Boolean> interactSuccess(UgcInteractionRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         LOGGER.info("interact ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));

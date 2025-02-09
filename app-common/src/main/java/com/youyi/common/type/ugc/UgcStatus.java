@@ -39,6 +39,6 @@ public enum UgcStatus {
     ;
 
     public static UgcStatus of(String status) {
-        return EnumUtils.getEnum(UgcStatus.class, status, ALL);
+        return EnumUtils.getEnum(UgcStatus.class, status, PUBLISHED);
     }
 }

@@ -6,6 +6,7 @@ import com.youyi.common.type.InfraType;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ public class CacheManager {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
+    // ============================= STRING OPS =================================
     public void set(String key, Object value) {
         try {
             redisTemplate.opsForValue().set(key, value);
@@ -88,6 +90,53 @@ public class CacheManager {
             return defaultValue;
         }
         return value;
+    }
+
+    // ============================= SET OPS =================================
+
+    public void addToSet(String key, Object value) {
+        try {
+            redisTemplate.opsForSet().add(key, value);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
+    public void addToSet(String key, Object... values) {
+        try {
+            redisTemplate.opsForSet().add(key, values);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
+    public void removeFromSet(String key, Object value) {
+        try {
+            redisTemplate.opsForSet().remove(key, value);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
+    public Set<Object> getSetMembers(String key) {
+        try {
+            return redisTemplate.opsForSet().members(key);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
+    public boolean isMemberOfSet(String key, Object value) {
+        try {
+            return Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(key, value));
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
     }
 
     public void delete(String key) {

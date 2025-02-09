@@ -16,6 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
+import static com.youyi.common.util.param.ParamChecker.trueChecker;
 import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
 
 /**
@@ -98,8 +99,17 @@ public class UgcValidator {
 
     public static void checkUgcQueryRequestForUserPage(UgcQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("作者ID不能为空"), request.getAuthorId())
             .put(notBlankChecker("cursor不合法"), request.getCursor())
             .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
+            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
+            .validateWithThrow();
+    }
+
+    public static void checkUgcQueryRequestForFollowPage(UgcQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(trueChecker("followFeed不能为空"), request.getFollowFeed())
+            .put(notBlankChecker("cursor不合法"), request.getCursor())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
     }

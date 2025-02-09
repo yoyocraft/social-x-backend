@@ -155,7 +155,9 @@ public class UserHelper {
         UserDO followUserInfo = userService.queryByUserId(userDO.getFollowingUserId());
         // 5. 关注用户
         userService.followUser(currentUser, followUserInfo);
-        // 6. 发送通知给用户
+        // 6. 更新缓存信息
+        userService.polishUserFollowCache(currentUser, followUserInfo, true);
+        // 7. 发送通知给用户
         notificationManager.sendUserFollowNotification(currentUser, followUserInfo);
     }
 

@@ -20,11 +20,24 @@ public class UserCacheRepo {
     public static final String USER_VERIFY_TOKEN_KEY = ofKey("u", "vrf", "cap", "${email}", "${bizType}");
     public static final Duration USER_VERIFY_TOKEN_TTL = Duration.ofMinutes(10);
 
+    /**
+     * u:fl:${userId}
+     * 常驻缓存
+     */
+    public static final String USER_FOLLOW_IDS_KEY = ofKey("u", "fl", "${userId}");
+
     public static String ofUserVerifyTokenKey(String email, BizType bizType) {
         Map<String, String> dataMap = ImmutableMap.of(
             "email", email,
             "bizType", bizType.name()
         );
         return buildKey(USER_VERIFY_TOKEN_KEY, dataMap);
+    }
+
+    public static String ofUserFollowIdsKey(String userId) {
+        Map<String, String> dataMap = ImmutableMap.of(
+            "userId", userId
+        );
+        return buildKey(USER_FOLLOW_IDS_KEY, dataMap);
     }
 }
