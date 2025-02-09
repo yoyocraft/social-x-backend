@@ -10,7 +10,10 @@ public enum UgcInteractionType {
     UNKNOWN,
     LIKE,
     COLLECT,
-    ;
+    /**
+     * 采纳
+     */
+    ADOPT;
 
     public static UgcInteractionType of(String interactionType) {
         return EnumUtils.getEnum(UgcInteractionType.class, interactionType, UNKNOWN);

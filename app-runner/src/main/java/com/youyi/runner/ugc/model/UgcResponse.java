@@ -65,6 +65,9 @@ public class UgcResponse extends BaseResponse {
     @SerializedName("tags")
     private List<String> tags;
 
+    @SerializedName("hasSolved")
+    private Boolean hasSolved;
+
     @SerializedName("gmtCreate")
     private Long gmtCreate;
 

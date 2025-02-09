@@ -39,7 +39,8 @@ public class SysTaskTrigger {
 
     private static final EnumSet<TaskType> needHandleTasks = EnumSet.of(
         TaskType.UGC_DELETE_EVENT,
-        TaskType.COMMENTARY_DELETE_EVENT
+        TaskType.COMMENTARY_DELETE_EVENT,
+        TaskType.UGC_ADOPT_EVENT
     );
 
     private static final List<String> needToCompensateTaskStatus = List.of(

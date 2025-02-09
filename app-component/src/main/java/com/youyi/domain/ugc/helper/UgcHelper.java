@@ -56,8 +56,8 @@ public class UgcHelper {
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
         checkSelfAuthor(ugcDO, ugcDocument);
         ugcRepository.deleteUgc(ugcDO.getUgcId());
-        // 异步写入本地消息
-        ugcTpeContainer.getUgcDeleteTaskExecutor().execute(() -> sysTaskService.saveUgcDeleteTask(ugcDO.getUgcId(), TaskType.UGC_DELETE_EVENT));
+        // 异步写入本地 SysTask，异步处理删除后续
+        ugcTpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(ugcDO.getUgcId(), TaskType.UGC_DELETE_EVENT));
     }
 
     public List<UgcDO> querySelfUgc(UgcDO ugcDO) {
@@ -209,6 +209,8 @@ public class UgcHelper {
         userService.createUserIfNeed(currentUser);
         // 添加收藏关系
         ugcService.collectUgc(ugcDO, currentUser);
+        // 发送通知给作者
+        notificationManager.sendUgcCollectNotification(currentUser, ugcDO.getUgcId());
     }
 
     private void doCancelCollectUgc(UgcDO ugcDO, UserDO currentUser) {

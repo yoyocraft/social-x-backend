@@ -16,6 +16,8 @@ public enum NotificationType {
     USER_FOLLOW,
 
     UGC_LIKE,
+    UGC_COLLECT,
+    UGC_ADOPT,
     UGC_COMMENT,
     UGC_COMMENT_REPLY,
     ;

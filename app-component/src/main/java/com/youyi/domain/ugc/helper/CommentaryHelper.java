@@ -4,14 +4,18 @@ import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.task.TaskType;
 import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.ugc.core.CommentaryService;
 import com.youyi.domain.ugc.core.UgcTpeContainer;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
+import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.CommentaryRelationshipRepository;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
+import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
+import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
@@ -44,6 +48,9 @@ public class CommentaryHelper {
     private final CommentaryService commentaryService;
     private final CommentaryRepository commentaryRepository;
     private final CommentaryRelationshipRepository commentaryRelationshipRepository;
+    private final UgcRepository ugcRepository;
+
+    private final NotificationManager notificationManager;
 
     public void publish(CommentaryDO commentaryDO) {
         // 0. 填充当前用户信息作为评论者
@@ -74,7 +81,7 @@ public class CommentaryHelper {
         checkSelfCommentator(commentaryDO, commentaryDocument);
         commentaryService.deleteCommentary(commentaryDO);
         // 异步写入本地消息
-        ugcTpeContainer.getUgcDeleteTaskExecutor().execute(() -> sysTaskService.saveUgcDeleteTask(commentaryDO.getCommentaryId(), TaskType.COMMENTARY_DELETE_EVENT));
+        ugcTpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(commentaryDO.getCommentaryId(), TaskType.COMMENTARY_DELETE_EVENT));
     }
 
     public void like(CommentaryDO commentaryDO) {
@@ -85,6 +92,40 @@ public class CommentaryHelper {
         }
 
         doCancelLike(commentaryDO, currentUser);
+    }
+
+    public void adopt(CommentaryDO commentaryDO) {
+        UserDO currentUser = userService.getCurrentUserInfo();
+        CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryDO.getCommentaryId());
+        // 检测 Commentary 不属于当前用户
+        checkNotSelfCommentary(currentUser, commentaryDocument);
+
+        CommentaryExtraData extraData = Optional.ofNullable(commentaryDocument.getExtraData()).orElseGet(CommentaryExtraData::new);
+        // 幂等处理
+        Boolean adopted = extraData.getAdopted();
+        if (Boolean.TRUE.equals(adopted)) {
+            LOGGER.info("commentary already adopted, commentatorId: {}, commentId: {}", commentaryDocument.getCommentatorId(), commentaryDocument.getCommentaryId());
+            return;
+        }
+
+        // 检测ugc是否属于当前用户
+        String ugcId = commentaryDocument.getUgcId();
+        UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
+        checkSelfUgc(currentUser, ugcDocument);
+
+        // 设置 Commentary 状态为采纳
+        extraData.setAdopted(true);
+        commentaryRepository.updateCommentaryExtraData(commentaryDocument.getCommentaryId(), extraData);
+
+        // 写入 SysTask, 设置 UGC 状态为已采纳
+        UgcExtraData ugcExtraData = Optional.ofNullable(ugcDocument.getExtraData()).orElseGet(UgcExtraData::new);
+        if (Boolean.TRUE.equals(ugcExtraData.getHasSolved())) {
+            return;
+        }
+        ugcTpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(ugcDocument.getUgcId(), TaskType.UGC_ADOPT_EVENT));
+
+        // 发送通知
+        notificationManager.sendUgcAdoptNotification(currentUser, commentaryDO.getCommentaryId());
     }
 
     private void doLike(CommentaryDO commentaryDO, UserDO currentUser) {
@@ -136,5 +177,21 @@ public class CommentaryHelper {
             return;
         }
         throw AppBizException.of(OPERATION_DENIED, "无权修改！");
+    }
+
+    private void checkSelfUgc(UserDO userDO, UgcDocument ugcDocument) {
+        String authorId = ugcDocument.getAuthorId();
+        if (authorId.equals(userDO.getUserId())) {
+            return;
+        }
+        throw AppBizException.of(OPERATION_DENIED, "无权修改！");
+    }
+
+    private void checkNotSelfCommentary(UserDO userDO, CommentaryDocument commentaryDocument) {
+        String commentatorId = commentaryDocument.getCommentatorId();
+        if (!commentatorId.equals(userDO.getUserId())) {
+            return;
+        }
+        throw AppBizException.of(OPERATION_DENIED, "不能采纳自己的评论");
     }
 }

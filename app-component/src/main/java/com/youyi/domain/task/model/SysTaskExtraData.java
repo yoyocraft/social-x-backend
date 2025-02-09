@@ -13,8 +13,6 @@ public class SysTaskExtraData {
 
     private String targetId;
 
-    public SysTaskExtraData() {}
-
     private SysTaskExtraData(String targetId) {
         this.targetId = targetId;
     }

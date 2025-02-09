@@ -29,7 +29,7 @@ public class UgcTpeContainer implements ApplicationListener<ApplicationReadyEven
 
     private ThreadPoolExecutor ugcStatisticsExecutor;
 
-    private ThreadPoolExecutor ugcDeleteTaskExecutor;
+    private ThreadPoolExecutor ugcSysTaskExecutor;
 
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
@@ -70,8 +70,8 @@ public class UgcTpeContainer implements ApplicationListener<ApplicationReadyEven
     }
 
     private void initUgcDeleteTaskExecutor() {
-        ThreadPoolConfigWrapper ugcDeleteTaskTpeConfig = getCacheValue(ConfigKey.UGC_DELETE_TASK_THREAD_POOL_CONFIG, ThreadPoolConfigWrapper.class);
-        ugcDeleteTaskExecutor = new ThreadPoolExecutor(
+        ThreadPoolConfigWrapper ugcDeleteTaskTpeConfig = getCacheValue(ConfigKey.UGC_SYS_TASK_THREAD_POOL_CONFIG, ThreadPoolConfigWrapper.class);
+        ugcSysTaskExecutor = new ThreadPoolExecutor(
             ugcDeleteTaskTpeConfig.getCorePoolSize(),
             ugcDeleteTaskTpeConfig.getMaximumPoolSize(),
             ugcDeleteTaskTpeConfig.getKeepAliveTime(),
@@ -85,6 +85,6 @@ public class UgcTpeContainer implements ApplicationListener<ApplicationReadyEven
     private void checkTpeConfig() {
         checkConfig(ConfigKey.AUDIT_UGC_THREAD_POOL_CONFIG);
         checkConfig(ConfigKey.UGC_STATISTICS_THREAD_POOL_CONFIG);
-        checkConfig(ConfigKey.UGC_DELETE_TASK_THREAD_POOL_CONFIG);
+        checkConfig(ConfigKey.UGC_SYS_TASK_THREAD_POOL_CONFIG);
     }
 }

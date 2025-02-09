@@ -1,6 +1,7 @@
 package com.youyi.domain.ugc.assembler;
 
 import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.request.CommentaryDeleteRequest;
 import com.youyi.domain.ugc.request.CommentaryPublishRequest;
@@ -20,7 +21,8 @@ import org.mapstruct.factory.Mappers;
 @Mapper(
     imports = {
         CommentaryStatus.class,
-        CommonConfUtil.class
+        CommonConfUtil.class,
+        UgcInteractionType.class
     },
     unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
@@ -39,7 +41,8 @@ public interface CommentaryAssembler {
 
     @Mappings({
         @Mapping(target = "commentaryId", source = "targetId"),
-        @Mapping(target = "interactFlag", source = "interact")
+        @Mapping(target = "interactFlag", source = "interact"),
+        @Mapping(target = "interactionType", expression = "java(UgcInteractionType.of(request.getInteractionType()))"),
     })
     CommentaryDO toDO(UgcInteractionRequest request);
 

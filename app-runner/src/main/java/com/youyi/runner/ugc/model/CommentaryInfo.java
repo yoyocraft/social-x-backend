@@ -44,4 +44,7 @@ public class CommentaryInfo {
 
     @SerializedName("status")
     private String status;
+
+    @SerializedName("adopted")
+    private Boolean adopted;
 }

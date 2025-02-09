@@ -8,4 +8,6 @@ public class SystemConstant {
 
     public static final String SYSTEM_OPERATOR_ID = "-1";
     public static final String SYSTEM_OPERATOR_NAME = "SocialX System";
+
+    public static final String DEFAULT_KEY = "DEFAULT";
 }

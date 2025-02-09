@@ -24,7 +24,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import static com.youyi.common.constant.SystemConstant.DEFAULT_KEY;
 import static com.youyi.common.type.conf.ConfigKey.NOTIFICATION_SUMMARY_TEMPLATE;
+import static com.youyi.common.type.notification.NotificationType.UGC_ADOPT;
+import static com.youyi.common.type.notification.NotificationType.UGC_COLLECT;
 import static com.youyi.common.type.notification.NotificationType.UGC_COMMENT;
 import static com.youyi.common.type.notification.NotificationType.UGC_COMMENT_REPLY;
 import static com.youyi.common.type.notification.NotificationType.UGC_LIKE;
@@ -99,6 +102,40 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
     }
 
     /**
+     * 发送 UGC 收藏通知
+     */
+    public void sendUgcCollectNotification(UserDO sender, String ugcId) {
+        notificationExecutor.execute(() -> {
+            UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
+            sendNotificationAsync(
+                sender,
+                ugcDocument.getAuthorId(),
+                UGC_COLLECT,
+                ugcId,
+                NotificationTemplateConfig.generateSummary(UGC_COLLECT, sender.getNickName(), UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
+                SymbolConstant.EMPTY
+            );
+        });
+    }
+
+    /**
+     * 发送 UGC 采纳通知
+     */
+    public void sendUgcAdoptNotification(UserDO sender, String commentaryId) {
+        notificationExecutor.execute(() -> {
+            CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryId);
+            sendNotificationAsync(
+                sender,
+                commentaryDocument.getCommentatorId(),
+                UGC_ADOPT,
+                commentaryId,
+                NotificationTemplateConfig.generateSummary(UGC_ADOPT, sender.getNickName()),
+                commentaryDocument.getCommentary()
+            );
+        });
+    }
+
+    /**
      * 发送 UGC 评论通知
      */
     public void sendUgcCommentNotification(UserDO sender, String ugcId, String content) {
@@ -161,8 +198,6 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
     }
 
     static class NotificationTemplateConfig {
-        private static final String DEFAULT_KEY = "DEFAULT";
-
         public static String generateSummary(NotificationType type, Object... args) {
             Map<String, String> templateMapping = getMapConfig(NOTIFICATION_SUMMARY_TEMPLATE, String.class, String.class);
             String template = templateMapping.getOrDefault(type.name(), templateMapping.get(DEFAULT_KEY));

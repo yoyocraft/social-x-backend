@@ -2,6 +2,7 @@ package com.youyi.domain.task.core;
 
 import com.youyi.common.type.task.TaskType;
 import com.youyi.domain.ugc.processor.CommentaryDeleteProcessor;
+import com.youyi.domain.ugc.processor.UgcAdoptProcessor;
 import com.youyi.domain.ugc.processor.UgcDeleteProcessor;
 import java.util.EnumMap;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class TaskProcessorFactory implements SmartInitializingSingleton {
 
     private final UgcDeleteProcessor ugcDeleteProcessor;
     private final CommentaryDeleteProcessor commentaryDeleteProcessor;
+    private final UgcAdoptProcessor ugcAdoptProcessor;
 
     public TaskProcessor getTaskProcessor(TaskType taskType) {
         return taskProcessorMap.get(taskType);
@@ -30,5 +32,6 @@ public class TaskProcessorFactory implements SmartInitializingSingleton {
         taskProcessorMap = new EnumMap<>(TaskType.class);
         taskProcessorMap.put(TaskType.UGC_DELETE_EVENT, ugcDeleteProcessor);
         taskProcessorMap.put(TaskType.COMMENTARY_DELETE_EVENT, commentaryDeleteProcessor);
+        taskProcessorMap.put(TaskType.UGC_ADOPT_EVENT, ugcAdoptProcessor);
     }
 }

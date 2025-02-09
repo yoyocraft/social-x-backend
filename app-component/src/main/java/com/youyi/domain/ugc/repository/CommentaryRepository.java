@@ -4,6 +4,7 @@ import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.domain.ugc.model.CommentaryExtraData;
 import com.youyi.domain.ugc.repository.dao.CommentaryDAO;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import java.util.List;
@@ -114,6 +115,16 @@ public class CommentaryRepository {
         try {
             checkState(StringUtils.isNotBlank(commentaryId));
             commentaryDAO.updateCommentaryStatistics(commentaryId, incrLikeCount);
+        } catch (Exception e) {
+            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public void updateCommentaryExtraData(String commentaryId, CommentaryExtraData extraData) {
+        try {
+            checkState(StringUtils.isNotBlank(commentaryId));
+            commentaryDAO.updateCommentaryExtraData(commentaryId, extraData);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

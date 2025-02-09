@@ -60,6 +60,12 @@ public class CommentaryResponseUtil {
         return response;
     }
 
+    public static Result<Boolean> adoptSuccess(UgcInteractionRequest request) {
+        Result<Boolean> response = Result.success(Boolean.TRUE);
+        LOGGER.info("adopt comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
     private static List<CommentaryResponse> groupCommentariesByParentId(List<CommentaryInfo> commentaryInfoList) {
         Map<String, List<CommentaryInfo>> groupedCommentaries = commentaryInfoList
             .stream()
