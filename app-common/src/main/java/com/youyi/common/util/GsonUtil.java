@@ -81,6 +81,13 @@ public class GsonUtil {
         return GSON.fromJson(json, type);
     }
 
+    public static <T> T fromJson(String json, @Nonnull TypeToken<T> typeToken) {
+        if (json == null) {
+            return null;
+        }
+        return GSON.fromJson(json, typeToken);
+    }
+
     public static <T> T fromJson(String json, @Nonnull Class<T> clazz) {
         if (json == null) {
             return null;
