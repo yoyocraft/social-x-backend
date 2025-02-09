@@ -20,7 +20,7 @@ public class SysTaskService {
 
     private final SysTaskRepository sysTaskRepository;
 
-    public void saveUgcDeleteTask(String targetId, TaskType taskType) {
+    public void saveCommonSysTask(String targetId, TaskType taskType) {
         SysTaskDO sysTaskDO = new SysTaskDO();
         sysTaskDO.create();
         sysTaskDO.setTaskType(taskType);
@@ -30,7 +30,7 @@ public class SysTaskService {
         sysTaskRepository.insert(po);
     }
 
-    public void saveUgcDeleteTask(List<String> targetIds, TaskType taskType) {
+    public void saveCommonSysTask(List<String> targetIds, TaskType taskType) {
         if (CollectionUtils.isEmpty(targetIds)) {
             return;
         }

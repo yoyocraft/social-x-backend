@@ -18,7 +18,7 @@ public enum ConfigKey {
     RECORD_OP_LOG_THREAD_POOL_CONFIG,
     AUDIT_UGC_THREAD_POOL_CONFIG,
     UGC_STATISTICS_THREAD_POOL_CONFIG,
-    UGC_DELETE_TASK_THREAD_POOL_CONFIG,
+    UGC_SYS_TASK_THREAD_POOL_CONFIG,
     NOTIFICATION_THREAD_POOL_CONFIG,
 
     // ================ Feature AB Switch ================
@@ -54,6 +54,7 @@ public enum ConfigKey {
 
     // ================ Notification ==================
     NOTIFICATION_SUMMARY_TEMPLATE,
+    NOTIFICATION_GROUP_CONFIG,
     ;
 
 }

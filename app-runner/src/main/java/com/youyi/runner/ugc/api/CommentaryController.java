@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.youyi.domain.ugc.assembler.CommentaryAssembler.COMMENTARY_ASSEMBLER;
+import static com.youyi.runner.ugc.util.CommentaryResponseUtil.adoptSuccess;
 import static com.youyi.runner.ugc.util.CommentaryResponseUtil.deleteSuccess;
 import static com.youyi.runner.ugc.util.CommentaryResponseUtil.likeSuccess;
 import static com.youyi.runner.ugc.util.CommentaryResponseUtil.publishSuccess;
@@ -85,8 +86,22 @@ public class CommentaryController {
         LocalLockUtil.runWithLockFailSafe(
             () -> commentaryHelper.like(commentaryDO),
             CommonOperationUtil::tooManyRequestError,
-            commentaryDO.getUgcId(), request.getReqId()
+            commentaryDO.getCommentaryId(), request.getReqId()
         );
         return likeSuccess(request);
+    }
+
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.UGC_ADOPT)
+    @RequestMapping(value = "/adopt", method = RequestMethod.POST)
+    public Result<Boolean> adopt(@RequestBody UgcInteractionRequest request) {
+        CommentaryValidator.checkUgcInteractionRequest(request);
+        CommentaryDO commentaryDO = COMMENTARY_ASSEMBLER.toDO(request);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> commentaryHelper.adopt(commentaryDO),
+            CommonOperationUtil::tooManyRequestError,
+            commentaryDO.getCommentaryId(), request.getReqId()
+        );
+        return adoptSuccess(request);
     }
 }

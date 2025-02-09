@@ -36,4 +36,7 @@ public class NotificationResponse extends BaseResponse {
 
     @SerializedName("read")
     private Boolean read;
+
+    @SerializedName("notificationGroup")
+    private String notificationGroup;
 }

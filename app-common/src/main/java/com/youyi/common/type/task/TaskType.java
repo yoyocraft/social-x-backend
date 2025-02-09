@@ -11,6 +11,7 @@ public enum TaskType {
     UNKNOWN,
     UGC_DELETE_EVENT,
     COMMENTARY_DELETE_EVENT,
+    UGC_ADOPT_EVENT,
     ;
 
     public static TaskType of(String type) {

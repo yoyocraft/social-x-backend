@@ -2,6 +2,7 @@ package com.youyi.domain.ugc.repository.dao;
 
 import com.mongodb.client.result.UpdateResult;
 import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.domain.ugc.model.CommentaryExtraData;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.RepositoryConstant.TOP_COMMENTARY_ID;
+import static com.youyi.common.constant.UgcConstant.COMMENTARY_EXTRA_DATA;
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_GMT_MODIFIED;
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_ID;
 import static com.youyi.common.constant.UgcConstant.COMMENTARY_LIKE_COUNT;
@@ -103,6 +105,15 @@ public class CommentaryDAO {
             updateDef.inc(COMMENTARY_LIKE_COUNT, incrLikeCount);
         }
         updateDef.set(UGC_GMT_MODIFIED, System.currentTimeMillis());
+        return mongoTemplate.updateFirst(query, updateDef, CommentaryDocument.class);
+    }
+
+    public UpdateResult updateCommentaryExtraData(String commentaryId, CommentaryExtraData extraData) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(COMMENTARY_ID).is(commentaryId));
+        Update updateDef = new Update()
+            .set(COMMENTARY_EXTRA_DATA, extraData)
+            .set(COMMENTARY_GMT_MODIFIED, System.currentTimeMillis());
         return mongoTemplate.updateFirst(query, updateDef, CommentaryDocument.class);
     }
 

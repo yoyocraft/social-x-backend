@@ -1,6 +1,7 @@
 package com.youyi.domain.ugc.model;
 
 import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.user.model.UserDO;
@@ -41,6 +42,7 @@ public class CommentaryDO {
 
     // for interact
     private Boolean interactFlag;
+    private UgcInteractionType interactionType;
 
     public void create() {
         this.commentaryId = IdSeqUtil.genCommentaryId();

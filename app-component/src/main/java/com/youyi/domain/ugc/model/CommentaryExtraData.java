@@ -14,7 +14,7 @@ public class CommentaryExtraData {
     /**
      * 是否被采纳
      */
-    private Boolean accepted;
+    private Boolean adopted;
 
     /**
      * 是否精选

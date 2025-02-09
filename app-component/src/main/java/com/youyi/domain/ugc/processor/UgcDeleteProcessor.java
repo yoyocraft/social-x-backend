@@ -76,6 +76,6 @@ public class UgcDeleteProcessor implements TaskProcessor {
             commentaryDO.setCursor(nextCursor);
         }
         LOGGER.info("delete related commentary, ugcId: {}, allToDeleteCommentaryIds: {}", ugcId, allToDeleteCommentaryIds);
-        sysTaskService.saveUgcDeleteTask(allToDeleteCommentaryIds, TaskType.COMMENTARY_DELETE_EVENT);
+        sysTaskService.saveCommonSysTask(allToDeleteCommentaryIds, TaskType.COMMENTARY_DELETE_EVENT);
     }
 }
