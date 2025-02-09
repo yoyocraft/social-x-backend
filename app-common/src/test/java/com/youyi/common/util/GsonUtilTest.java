@@ -94,11 +94,11 @@ class GsonUtilTest {
 
     @Test
     void testTags() {
-        Set<String> allTags = ImmutableSet.of(
-            "编程挑战", "学习新技术", "技术笔记", "职业发展", "数据科学", "前端框架", "后端开发", "开源项目贡献", "技术交流", "AI与大数据", "全栈开发", "软件架构", "代码复审", "算法设计", "面试准备", "技术博客写作", "技术工具推荐", "团队协作", "技术大会", "程序设计", "云服务", "自动化测试", "产品管理", "敏捷开发", "跨平台开发", "UI/UX设计", "技术栈更新", "Python编程", "数据可视化", "机器学习入门", "编程语言比较", "数据结构与算法", "个人成长", "职场社交", "技术讲座", "代码挑战", "技术管理", "后端", "前端", "客户端", "大数据", "人工智能", "机器学习", "深度学习", "区块链", "云计算", "微服务", "DevOps", "测试开发", "代码人生", "技术博客", "阅读", "开发工具", "求职", "职业规划", "开源项目", "技术分享", "算法", "架构设计", "数据库", "分布式系统", "网络安全", "容器化", "Kubernetes", "高并发", "系统设计", "产品设计", "用户体验", "技术面试", "职业成长", "职场经验", "代码优化", "性能调优", "AI生成内容", "低代码开发"
+        Set<String> articleTags = ImmutableSet.of(
+            "面试技巧", "简历优化", "职场经验", "面试题", "求职心态", "Java", "Spring", "数据库", "微服务", "API设计", "Docker", "Redis", "JavaScript", "React", "Vue", "前端架构", "TypeScript", "CSS", "Web性能优化", "Android", "iOS", "Flutter", "React Native", "移动性能优化", "App架构", "机器学习", "深度学习", "自然语言处理", "计算机视觉", "AI算法", "TensorFlow", "PyTorch", "Hadoop", "Spark", "Kafka", "数据仓库", "数据挖掘", "数据分析", "AWS", "Azure", "GCP", "Kubernetes", "容器化", "云架构", "编程思维", "时间管理", "开发者心态", "职业规划", "学习方法", "编程书籍", "技术阅读", "经典书籍", "开发者必读", "Git", "VS Code", "IDE", "Postman", "DevOps"
         );
         AtomicInteger allTagPriority = new AtomicInteger();
-        List<UgcTagWrapper> tagWrappers = allTags.stream().map(tag -> {
+        List<UgcTagWrapper> tagWrappers = articleTags.stream().map(tag -> {
             String tagId = IdSeqUtil.genUgcTagId();
             UgcTagWrapper wrapper = new UgcTagWrapper();
             wrapper.setTagId(tagId);
@@ -109,7 +109,7 @@ class GsonUtilTest {
         }).toList();
 
         Set<String> interestTags = ImmutableSet.of(
-            "编程挑战", "学习新技术", "技术笔记", "职业发展", "数据科学", "前端框架", "后端开发", "开源项目贡献", "技术交流", "AI与大数据", "全栈开发", "软件架构", "代码复审", "算法设计", "面试准备", "技术博客写作", "技术工具推荐", "团队协作", "技术大会", "程序设计", "云服务", "自动化测试", "产品管理", "敏捷开发", "跨平台开发", "UI/UX设计", "技术栈更新", "Python编程", "数据可视化", "机器学习入门", "编程语言比较", "数据结构与算法", "个人成长", "职场社交", "技术讲座", "代码挑战", "技术管理"
+            "面试技巧", "求职心态", "简历优化", "Java", "Spring", "微服务", "数据库", "JavaScript", "React", "前端架构", "Web性能优化", "Android", "iOS", "React Native", "App架构", "机器学习", "深度学习", "自然语言处理", "AI算法", "Hadoop", "Spark", "数据分析", "数据挖掘", "AWS", "Kubernetes", "Docker", "云架构", "编程思维", "时间管理", "开发者心态", "编程书籍", "技术阅读", "经典书籍", "Git", "VS Code", "DevOps"
         );
         AtomicInteger interestTagPriority = new AtomicInteger();
         List<UgcTagWrapper> interestTagWrappers = interestTags.stream().map(tag -> {
