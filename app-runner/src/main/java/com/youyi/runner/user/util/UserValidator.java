@@ -21,7 +21,8 @@ import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.equalsChecker;
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
-import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
+import static com.youyi.common.util.param.ParamChecker.snowflakeIdChecker;
+import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -34,12 +35,12 @@ public class UserValidator {
             .put(ParamChecker.enumExistChecker(IdentityType.class, "登录类型不合法"), request.getIdentityType())
             .putIf(
                 () -> IdentityType.EMAIL_CAPTCHA.name().equals(request.getIdentityType()) || IdentityType.EMAIL_PASSWORD.name().equals(request.getIdentityType()),
-                emailChecker("邮箱格式不合法"),
+                emailChecker(),
                 request.getIdentifier()
             )
             .putIf(
                 () -> IdentityType.EMAIL_CAPTCHA.name().equals(request.getIdentityType()),
-                captchaChecker("验证码不合法"),
+                captchaChecker(),
                 request.getCredential()
             )
             .validateWithThrow();
@@ -47,8 +48,8 @@ public class UserValidator {
 
     public static void checkUserVerifyCaptchaRequest(UserVerifyCaptchaRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(emailChecker("邮箱格式不合法"), request.getEmail())
-            .put(captchaChecker("验证码不合法"), request.getCaptcha())
+            .put(emailChecker(), request.getEmail())
+            .put(captchaChecker(), request.getCaptcha())
             .put(enumExistChecker(BizType.class, "业务类型不合法"), request.getBizType())
             .validateWithThrow();
     }
@@ -64,7 +65,7 @@ public class UserValidator {
 
     public static void checkUserEditInfoRequest(UserEditInfoRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(notBlankChecker("用户ID不能为空"), request.getUserId())
+            .put(snowflakeIdChecker("用户ID不能为空"), request.getUserId())
             .put(notBlankChecker("昵称不能为空"), request.getNickName())
             .put(notBlankChecker("工作开始时间不能为空"), request.getWorkStartTime())
             .put(enumCodeExistChecker(WorkDirectionType.class, "工作方向不合法"), request.getWorkDirection())
@@ -76,16 +77,16 @@ public class UserValidator {
 
     public static void checkUserFollowRequest(UserFollowRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(notBlankChecker("关注用户ID不能为空"), request.getFollowingUserId())
-            .put(notBlankChecker("用户ID不能为空"), request.getReqId())
+            .put(snowflakeIdChecker("关注用户ID不能为空"), request.getFollowingUserId())
+            .put(snowflakeIdChecker("用户ID不能为空"), request.getReqId())
             .validateWithThrow();
     }
 
     public static void checkUserQueryRequest(UserQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
+            .put(snowflakeIdChecker("用户ID不能为空"), request.getUserId())
             .put(notBlankChecker("cursor不合法"), request.getCursor())
-            .put(notBlankChecker("用户ID不能为空"), request.getUserId())
+            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
     }
 }

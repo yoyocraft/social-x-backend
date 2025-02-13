@@ -32,9 +32,9 @@ import static com.youyi.common.type.notification.NotificationType.UGC_COMMENT;
 import static com.youyi.common.type.notification.NotificationType.UGC_COMMENT_REPLY;
 import static com.youyi.common.type.notification.NotificationType.UGC_LIKE;
 import static com.youyi.common.type.notification.NotificationType.USER_FOLLOW;
-import static com.youyi.infra.conf.core.SystemConfigService.checkConfig;
-import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
-import static com.youyi.infra.conf.core.SystemConfigService.getMapConfig;
+import static com.youyi.infra.conf.core.Conf.checkConfig;
+import static com.youyi.infra.conf.core.Conf.getCacheValue;
+import static com.youyi.infra.conf.core.Conf.getMapConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

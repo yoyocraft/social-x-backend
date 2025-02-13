@@ -21,7 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import static com.youyi.common.type.conf.ConfigKey.DEFAULT_AVATAR;
 import static com.youyi.common.util.IdSeqUtil.genUserId;
 import static com.youyi.common.util.IdSeqUtil.genUserNickName;
-import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
+import static com.youyi.infra.conf.core.Conf.getStringConfig;
 import static com.youyi.infra.privacy.DesensitizedManager.desensitizeEmail;
 import static com.youyi.infra.privacy.DesensitizedManager.desensitizeMobile;
 import static org.apache.commons.lang3.StringUtils.EMPTY;

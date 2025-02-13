@@ -15,8 +15,8 @@ import static com.youyi.infra.cache.repo.StatisticCacheRepo.COMMENTARY_LIKE_COUN
 import static com.youyi.infra.cache.repo.StatisticCacheRepo.UGC_COLLECT_COUNT_TTL;
 import static com.youyi.infra.cache.repo.StatisticCacheRepo.UGC_LIKE_COUNT_TTL;
 import static com.youyi.infra.cache.repo.StatisticCacheRepo.UGC_VIEW_COUNT_TTL;
-import static com.youyi.infra.conf.core.SystemConfigService.checkConfig;
-import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
+import static com.youyi.infra.conf.core.Conf.checkConfig;
+import static com.youyi.infra.conf.core.Conf.getStringConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

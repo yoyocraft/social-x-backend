@@ -12,7 +12,7 @@ import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.greaterThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
-import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
+import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -20,7 +20,7 @@ import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
  */
 public class ConfigValidator {
 
-    public static void validateConfigCreateRequest(ConfigCreateRequest request) {
+    public static void checkConfigCreateRequest(ConfigCreateRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("configKey不能为空"), request.getConfigKey())
             .put(notBlankChecker("configValue不能为空"), request.getConfigValue())
@@ -29,20 +29,20 @@ public class ConfigValidator {
             .validateWithThrow();
     }
 
-    public static void validateConfigQueryRequest(ConfigQueryRequest request) {
+    public static void checkConfigQueryRequest(ConfigQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("configKey不能为空"), request.getKey())
             .validateWithThrow();
     }
 
-    public static void validateConfigQueryRequestForMainPage(ConfigQueryRequest request) {
+    public static void checkConfigQueryRequestForMainPage(ConfigQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(greaterThanOrEqualChecker(0L, "cursor不能为空"), request.getCursor())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
     }
 
-    public static void validateConfigUpdateRequest(ConfigUpdateRequest request) {
+    public static void checkConfigUpdateRequest(ConfigUpdateRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("configKey不能为空"), request.getConfigKey())
             .put(notBlankChecker("newConfigValue不能为空"), request.getNewConfigValue())
@@ -51,7 +51,7 @@ public class ConfigValidator {
             .validateWithThrow();
     }
 
-    public static void validateConfigDeleteRequest(ConfigDeleteRequest request) {
+    public static void checkConfigDeleteRequest(ConfigDeleteRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("configKey不能为空"), request.getConfigKey())
             .validateWithThrow();

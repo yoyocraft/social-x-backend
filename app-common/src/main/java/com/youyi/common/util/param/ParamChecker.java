@@ -13,8 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.youyi.common.constant.ErrorCodeConstant.INVALID_PARAM;
-import static com.youyi.common.constant.ValidateRegex.VALIDATE_EMAIL_PATTERN;
-import static com.youyi.common.constant.ValidateRegex.VALIDATE_SIX_DIGITS_PATTERN;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -143,21 +141,21 @@ public interface ParamChecker<T> {
         };
     }
 
-    static ParamChecker<String> emailChecker(String errorMsg) {
+    static ParamChecker<String> emailChecker() {
         return param -> {
-            boolean validate = StringUtils.isNotBlank(param) && VALIDATE_EMAIL_PATTERN.matcher(param).matches();
+            boolean validate = OrderNoRule.EMAIL_RULE.isValid(param);
             return validate
                 ? CheckResult.success()
-                : CheckResult.of(INVALID_PARAM, errorMsg);
+                : CheckResult.of(INVALID_PARAM, "邮箱格式不合法");
         };
     }
 
-    static ParamChecker<String> captchaChecker(String errorMsg) {
+    static ParamChecker<String> captchaChecker() {
         return param -> {
-            boolean validate = StringUtils.isNotBlank(param) && VALIDATE_SIX_DIGITS_PATTERN.matcher(param).matches();
+            boolean validate = OrderNoRule.CAPTCHA_RULE.isValid(param);
             return validate
                 ? CheckResult.success()
-                : CheckResult.of(INVALID_PARAM, errorMsg);
+                : CheckResult.of(INVALID_PARAM, "验证码不合法");
         };
     }
 
@@ -173,6 +171,19 @@ public interface ParamChecker<T> {
     static ParamChecker<Boolean> trueChecker(String errorMsg) {
         return param -> {
             boolean validate = Boolean.TRUE.equals(param);
+            return validate
+                ? CheckResult.success()
+                : CheckResult.of(INVALID_PARAM, errorMsg);
+        };
+    }
+
+    static ParamChecker<String> snowflakeIdChecker() {
+        return snowflakeIdChecker("id不合法");
+    }
+
+    static ParamChecker<String> snowflakeIdChecker(String errorMsg) {
+        return param -> {
+            boolean validate = OrderNoRule.COMMON_ID_RULE_64.isValid(param);
             return validate
                 ? CheckResult.success()
                 : CheckResult.of(INVALID_PARAM, errorMsg);

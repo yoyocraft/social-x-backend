@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.conf.ConfigKey.QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserFollowIdsKey;
-import static com.youyi.infra.conf.core.SystemConfigService.getBooleanConfig;
+import static com.youyi.infra.conf.core.Conf.getBooleanConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

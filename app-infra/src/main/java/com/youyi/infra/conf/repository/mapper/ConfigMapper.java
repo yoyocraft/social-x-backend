@@ -16,9 +16,9 @@ public interface ConfigMapper {
 
     ConfigPO queryByConfigKey(@Param("configKey") String configKey, @Param("includeDeleted") boolean includeDeleted);
 
-    int updateConfigValueAndEnv(ConfigPO po);
+    int updateConfig(ConfigPO po);
 
-    int deleteByConfigKeyAndEnv(ConfigPO po);
+    int deleteByConfigKey(ConfigPO po);
 
     List<ConfigPO> queryAll(@Param("includeDeleted") boolean includeDeleted);
 

@@ -1,6 +1,5 @@
 package com.youyi.infra.conf.core;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.youyi.infra.conf.repository.ConfigRepository;
 import com.youyi.infra.conf.repository.po.ConfigPO;
 import java.util.List;
@@ -45,8 +44,7 @@ public class ConfigLoader implements SmartInitializingSingleton {
         }
     }
 
-    @VisibleForTesting
-    protected void doRefreshConfigCache() {
+    private void doRefreshConfigCache() {
         List<ConfigPO> configPOList = configRepository.queryAllConfig();
         if (CollectionUtils.isEmpty(configPOList)) {
             return;

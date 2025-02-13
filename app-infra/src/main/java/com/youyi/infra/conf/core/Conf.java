@@ -17,9 +17,9 @@ import static com.youyi.infra.conf.core.ConfigCache.getCacheRawValue;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/01
  */
-public class SystemConfigService {
+public class Conf {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SystemConfigService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Conf.class);
 
     private static final String CHECK_CONFIG_ERROR_MSG_FORMATTER = "can not find %s config";
 

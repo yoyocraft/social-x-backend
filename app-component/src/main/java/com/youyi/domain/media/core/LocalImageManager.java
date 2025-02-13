@@ -24,8 +24,8 @@ import static com.youyi.common.type.conf.ConfigKey.MEDIA_STORAGE_BASE_PATH;
 import static com.youyi.common.type.media.ResourceType.IMAGE;
 import static com.youyi.common.util.CommonOperationUtil.buildFullPath;
 import static com.youyi.common.util.ext.MoreFeatures.runCatching;
-import static com.youyi.infra.conf.core.SystemConfigService.checkConfig;
-import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
+import static com.youyi.infra.conf.core.Conf.checkConfig;
+import static com.youyi.infra.conf.core.Conf.getStringConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

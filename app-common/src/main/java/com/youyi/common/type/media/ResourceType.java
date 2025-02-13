@@ -10,16 +10,18 @@ import org.apache.commons.lang3.EnumUtils;
 @Getter
 public enum ResourceType {
 
-    UNKNOWN,
-    IMAGE,
-    FILE,
+    UNKNOWN("unknown"),
+    IMAGE("image"),
+    FILE("file"),
     ;
+
+    private final String type;
+
+    ResourceType(String type) {
+        this.type = type;
+    }
 
     public static ResourceType of(String type) {
         return EnumUtils.getEnum(ResourceType.class, type, UNKNOWN);
-    }
-
-    public String getType() {
-        return name().toLowerCase();
     }
 }

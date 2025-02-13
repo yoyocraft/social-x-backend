@@ -9,7 +9,8 @@ import com.youyi.domain.notification.request.NotificationReadRequest;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
-import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
+import static com.youyi.common.util.param.ParamChecker.snowflakeIdChecker;
+import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -26,7 +27,7 @@ public class NotificationValidator {
 
     public static void checkNotificationReadRequestForSingleRead(NotificationReadRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(notBlankChecker("通知id不能为空"), request.getNotificationId())
+            .put(snowflakeIdChecker(), request.getNotificationId())
             .validateWithThrow();
     }
 

@@ -11,18 +11,18 @@ import lombok.Getter;
 @Getter
 public class PageCursorResult<CURSOR, T> {
 
-    @SerializedName("list")
-    private final List<T> list;
+    @SerializedName("data")
+    private final List<T> data;
 
     @SerializedName("cursor")
     private final CURSOR cursor;
 
-    private PageCursorResult(List<T> list, CURSOR cursor) {
-        this.list = list;
+    private PageCursorResult(List<T> data, CURSOR cursor) {
+        this.data = data;
         this.cursor = cursor;
     }
 
-    public static <CURSOR, T> PageCursorResult<CURSOR, T> of(List<T> list, CURSOR cursor) {
-        return new PageCursorResult<>(list, cursor);
+    public static <CURSOR, T> PageCursorResult<CURSOR, T> of(List<T> data, CURSOR cursor) {
+        return new PageCursorResult<>(data, cursor);
     }
 }
