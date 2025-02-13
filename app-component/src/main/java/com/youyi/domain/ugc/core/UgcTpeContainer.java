@@ -12,8 +12,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.type.conf.ConfigKey.AUDIT_UGC_THREAD_POOL_CONFIG;
-import static com.youyi.infra.conf.core.SystemConfigService.checkConfig;
-import static com.youyi.infra.conf.core.SystemConfigService.getCacheValue;
+import static com.youyi.infra.conf.core.Conf.checkConfig;
+import static com.youyi.infra.conf.core.Conf.getCacheValue;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

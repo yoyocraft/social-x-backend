@@ -53,6 +53,6 @@ public class ConfigHelper {
     public void deleteConfig(ConfigDO configDO) {
         configDO.delete();
         ConfigPO configPO = configDO.buildToUpdateOrDeletePO();
-        configRepository.deleteByConfigKeyAndEnv(configPO);
+        configRepository.deleteByConfigKey(configPO);
     }
 }

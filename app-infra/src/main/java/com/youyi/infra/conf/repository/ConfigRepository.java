@@ -63,17 +63,17 @@ public class ConfigRepository {
     public void updateConfigValueAndEnv(ConfigPO po) {
         try {
             checkNotNull(po);
-            configMapper.updateConfigValueAndEnv(po);
+            configMapper.updateConfig(po);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
 
-    public void deleteByConfigKeyAndEnv(ConfigPO po) {
+    public void deleteByConfigKey(ConfigPO po) {
         try {
             checkNotNull(po);
-            configMapper.deleteByConfigKeyAndEnv(po);
+            configMapper.deleteByConfigKey(po);
         } catch (Exception e) {
             infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);

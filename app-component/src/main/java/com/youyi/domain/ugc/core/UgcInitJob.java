@@ -6,7 +6,7 @@ import com.youyi.domain.ugc.repository.UgcCategoryRepository;
 import com.youyi.domain.ugc.repository.UgcTagRepository;
 import com.youyi.domain.ugc.repository.po.UgcCategoryPO;
 import com.youyi.domain.ugc.repository.po.UgcTagPO;
-import com.youyi.infra.conf.core.SystemConfigService;
+import com.youyi.infra.conf.core.Conf;
 import java.util.List;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ public class UgcInitJob implements ApplicationListener<ApplicationReadyEvent> {
             LOGGER.info("[UgcInitJob] inner ugc categories already exists, skip init");
             return;
         }
-        List<UgcCategoryWrapper> categoryWrappers = SystemConfigService.getListConfig(INNER_UGC_CATEGORIES, UgcCategoryWrapper.class);
+        List<UgcCategoryWrapper> categoryWrappers = Conf.getListConfig(INNER_UGC_CATEGORIES, UgcCategoryWrapper.class);
         checkState(
             CollectionUtils.isNotEmpty(categoryWrappers),
             "inner ugc categories is empty, please check INNER_UGC_CATEGORIES config"
@@ -73,7 +73,7 @@ public class UgcInitJob implements ApplicationListener<ApplicationReadyEvent> {
             return;
         }
 
-        List<UgcTagWrapper> tagWrappers = SystemConfigService.getListConfig(INNER_UGC_TAGS, UgcTagWrapper.class);
+        List<UgcTagWrapper> tagWrappers = Conf.getListConfig(INNER_UGC_TAGS, UgcTagWrapper.class);
         checkState(
             CollectionUtils.isNotEmpty(tagWrappers),
             "inner ugc tags is empty, please check INNER_UGC_TAGS config"

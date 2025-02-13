@@ -8,7 +8,7 @@ import com.youyi.common.util.crypto.IvGenerator;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 
-import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
+import static com.youyi.infra.conf.core.Conf.getStringConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

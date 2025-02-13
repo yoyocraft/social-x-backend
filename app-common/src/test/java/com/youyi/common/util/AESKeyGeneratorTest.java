@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 class AESKeyGeneratorTest {
 
     @Test
-    void testGenerateAESKey() throws Exception {
-        String result = AESKeyGenerator.generateAESKey();
+    void testGenerateAESKey() {
+        String result = Assertions.assertDoesNotThrow(AESKeyGenerator::generateAESKey);
         Assertions.assertEquals(24, result.length());
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import static com.youyi.common.type.conf.ConfigKey.MAX_UPLOAD_FILE_SIZE;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
-import static com.youyi.infra.conf.core.SystemConfigService.getLongConfig;
+import static com.youyi.infra.conf.core.Conf.getLongConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

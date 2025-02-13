@@ -4,7 +4,7 @@ import com.youyi.common.base.BasePageRequest;
 import com.youyi.common.type.conf.ConfigKey;
 import java.util.Objects;
 
-import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
+import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

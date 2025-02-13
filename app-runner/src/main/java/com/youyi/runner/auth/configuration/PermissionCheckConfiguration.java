@@ -33,7 +33,7 @@ public class PermissionCheckConfiguration implements StpInterface {
         }
         return permissionDO.getPermissions()
             .stream()
-            .map(PermissionType::getValue)
+            .map(PermissionType::name)
             .collect(Collectors.toList());
     }
 

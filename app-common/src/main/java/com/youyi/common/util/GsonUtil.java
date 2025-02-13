@@ -7,13 +7,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.Strictness;
-import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 
@@ -31,24 +27,7 @@ public class GsonUtil {
     private static final Gson PRETTY_GSON;
 
     static {
-        TypeAdapter<Object> customizedAdapter = new CustomizedTypeAdapter();
         GSON = Converters.registerAll(new GsonBuilder())
-            .registerTypeAdapter(new TypeToken<Map>() {
-            }.getType(), customizedAdapter)
-            .registerTypeAdapter(new TypeToken<HashMap>() {
-            }.getType(), customizedAdapter)
-            .registerTypeAdapter(new TypeToken<Map<String, Object>>() {
-            }.getType(), customizedAdapter)
-            .registerTypeAdapter(new TypeToken<HashMap<String, Object>>() {
-            }.getType(), customizedAdapter)
-            .registerTypeAdapter(new TypeToken<List>() {
-            }.getType(), customizedAdapter)
-            .registerTypeAdapter(new TypeToken<ArrayList>() {
-            }.getType(), customizedAdapter)
-            .registerTypeAdapter(new TypeToken<List<Object>>() {
-            }.getType(), customizedAdapter)
-            .registerTypeAdapter(new TypeToken<ArrayList<Object>>() {
-            }.getType(), customizedAdapter)
             .setStrictness(Strictness.LENIENT)
             .create();
 

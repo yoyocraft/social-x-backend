@@ -15,7 +15,7 @@ import org.mapstruct.factory.Mappers;
 
 import static com.youyi.common.constant.SystemConstant.DEFAULT_KEY;
 import static com.youyi.common.type.conf.ConfigKey.NOTIFICATION_GROUP_CONFIG;
-import static com.youyi.infra.conf.core.SystemConfigService.getMapConfig;
+import static com.youyi.infra.conf.core.Conf.getMapConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

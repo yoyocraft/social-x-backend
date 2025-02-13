@@ -21,16 +21,16 @@ public class PageResult<T> {
     private final Long pageSize;
 
     @SerializedName("data")
-    private final List<T> list;
+    private final List<T> data;
 
-    private PageResult(Long total, Long pageNo, Long pageSize, List<T> list) {
+    private PageResult(Long total, Long pageNo, Long pageSize, List<T> data) {
         this.total = total;
         this.pageNo = pageNo;
         this.pageSize = pageSize;
-        this.list = list;
+        this.data = data;
     }
 
-    public static <T> PageResult<T> of(Long total, Long pageNo, Long pageSize, List<T> list) {
-        return new PageResult<>(total, pageNo, pageSize, list);
+    public static <T> PageResult<T> of(Long total, Long pageNo, Long pageSize, List<T> data) {
+        return new PageResult<>(total, pageNo, pageSize, data);
     }
 }

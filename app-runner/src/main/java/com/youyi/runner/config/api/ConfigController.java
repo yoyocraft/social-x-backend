@@ -50,7 +50,7 @@ public class ConfigController {
     @RecordOpLog(opType = OperationType.INSERT_CONFIG)
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Result<Boolean> createConfig(@RequestBody ConfigCreateRequest request) {
-        ConfigValidator.validateConfigCreateRequest(request);
+        ConfigValidator.checkConfigCreateRequest(request);
         ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
             () -> configHelper.createConfig(configDO),
@@ -63,7 +63,7 @@ public class ConfigController {
     @SaCheckPermission(value = {CONFIG_MANAGER, READ_CONFIG}, mode = SaMode.OR)
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Result<ConfigInfoResponse> queryConfig(ConfigQueryRequest request) {
-        ConfigValidator.validateConfigQueryRequest(request);
+        ConfigValidator.checkConfigQueryRequest(request);
         ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
         configHelper.queryConfig(configDO);
         return querySuccess(configDO, request);
@@ -72,7 +72,7 @@ public class ConfigController {
     @SaCheckPermission(value = {CONFIG_MANAGER, READ_CONFIG}, mode = SaMode.OR)
     @RequestMapping(value = "/cursor", method = RequestMethod.GET)
     public Result<PageCursorResult<Long, ConfigInfoResponse>> queryConfigForMainPage(ConfigQueryRequest request) {
-        ConfigValidator.validateConfigQueryRequestForMainPage(request);
+        ConfigValidator.checkConfigQueryRequestForMainPage(request);
         ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
         List<ConfigDO> configDOList = configHelper.queryConfigByCursor(configDO);
         return queryConfigForMainPageSuccess(configDOList, request);
@@ -82,7 +82,7 @@ public class ConfigController {
     @RecordOpLog(opType = OperationType.UPDATE_CONFIG)
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public Result<Boolean> updateConfig(@RequestBody ConfigUpdateRequest request) {
-        ConfigValidator.validateConfigUpdateRequest(request);
+        ConfigValidator.checkConfigUpdateRequest(request);
         ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
             () -> configHelper.updateConfig(configDO),
@@ -96,7 +96,7 @@ public class ConfigController {
     @RecordOpLog(opType = OperationType.DELETE_CONFIG)
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Result<Boolean> deleteConfig(@RequestBody ConfigDeleteRequest request) {
-        ConfigValidator.validateConfigDeleteRequest(request);
+        ConfigValidator.checkConfigDeleteRequest(request);
         ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
         configHelper.deleteConfig(configDO);
         return deleteSuccess(request);

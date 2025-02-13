@@ -1,7 +1,6 @@
 package com.youyi.infra.email;
 
 import com.youyi.common.exception.AppSystemException;
-import com.youyi.infra.conf.core.SystemConfigService;
 import java.text.MessageFormat;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import static com.youyi.common.type.InfraCode.SEND_EMAIL_ERROR;
 import static com.youyi.common.type.conf.ConfigKey.CAPTCHA_EMAIL_SUBJECT;
 import static com.youyi.common.type.conf.ConfigKey.CAPTCHA_EMAIL_TEMPLATE;
 import static com.youyi.common.type.conf.ConfigKey.CAPTCHA_EMAIL_TITLE;
@@ -18,8 +18,8 @@ import static com.youyi.common.type.conf.ConfigKey.CAPTCHA_PROCESS_CN_TITLE;
 import static com.youyi.common.type.conf.ConfigKey.MAIL_FROM;
 import static com.youyi.common.type.conf.ConfigKey.PLATFORM_RESPONSIBLE_PERSON;
 import static com.youyi.common.type.conf.ConfigKey.SEND_EMAIL_AB_SWITCH;
-import static com.youyi.common.type.InfraCode.SEND_EMAIL_ERROR;
-import static com.youyi.infra.conf.core.SystemConfigService.getStringConfig;
+import static com.youyi.infra.conf.core.Conf.getBooleanConfig;
+import static com.youyi.infra.conf.core.Conf.getStringConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -36,7 +36,7 @@ public class EmailSender {
     private static final String MAIL_FROM_FORMATTER = "%s<%s>";
 
     public void sendCaptchaEmail(String emailTo, String captcha) {
-        boolean canSend = SystemConfigService.getBooleanConfig(SEND_EMAIL_AB_SWITCH);
+        boolean canSend = getBooleanConfig(SEND_EMAIL_AB_SWITCH);
         if (!canSend) {
             LOGGER.info("[EmailSender] send captcha:{} to email:{}", captcha, emailTo);
             return;

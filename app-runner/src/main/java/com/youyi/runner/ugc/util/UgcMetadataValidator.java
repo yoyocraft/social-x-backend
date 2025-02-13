@@ -6,7 +6,7 @@ import com.youyi.domain.ugc.request.UgcTagQueryRequest;
 
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
-import static com.youyi.infra.conf.core.SystemConfigService.getIntegerConfig;
+import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
