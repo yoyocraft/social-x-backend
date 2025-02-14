@@ -26,7 +26,7 @@ import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 @RequiredArgsConstructor
 public class UgcStatisticSyncJob {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcStatisticSyncJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcStatisticSyncJob.class);
 
     private static final long SYNC_INTERVAL = 60 * 60 * 1000L;
     private static final long SYNC_INIT_DELAY_INTERVAL = 5 * 60 * 1000L;
@@ -39,10 +39,10 @@ public class UgcStatisticSyncJob {
     @Scheduled(initialDelay = SYNC_INIT_DELAY_INTERVAL, fixedDelay = SYNC_INTERVAL)
     public void syncJob() {
         try {
-            runWithCost(LOGGER, this::syncUgcStatistic, "syncUgcStatistic");
-            runWithCost(LOGGER, this::syncCommentaryStatistic, "syncCommentaryStatistic");
+            runWithCost(logger, this::syncUgcStatistic, "syncUgcStatistic");
+            runWithCost(logger, this::syncCommentaryStatistic, "syncCommentaryStatistic");
         } catch (Exception e) {
-            LOGGER.error("[UgcStatisticSyncJob] sync exp", e);
+            logger.error("[UgcStatisticSyncJob] sync exp", e);
         }
     }
 

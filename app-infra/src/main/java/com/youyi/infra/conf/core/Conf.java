@@ -19,7 +19,7 @@ import static com.youyi.infra.conf.core.ConfigCache.getCacheRawValue;
  */
 public class Conf {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Conf.class);
+    private static final Logger logger = LoggerFactory.getLogger(Conf.class);
 
     private static final String CHECK_CONFIG_ERROR_MSG_FORMATTER = "can not find %s config";
 
@@ -161,7 +161,7 @@ public class Conf {
         String value = getCacheRawValue(configKey);
 
         if (value == null) {
-            LOGGER.warn("Config not found for key:{}. Returning default value: {}", configKey, defaultValue);
+            logger.warn("Config not found for key:{}. Returning default value: {}", configKey, defaultValue);
             return defaultValue;
         }
 
@@ -171,7 +171,7 @@ public class Conf {
             }
             return GsonUtil.fromJson(value, type);
         } catch (Exception e) {
-            LOGGER.error("Error parsing cache value for key:{}, expected type:{}", configKey, type.getName(), e);
+            logger.error("Error parsing cache value for key:{}, expected type:{}", configKey, type.getName(), e);
             return defaultValue;
         }
     }
@@ -186,14 +186,14 @@ public class Conf {
         String value = getCacheRawValue(configKey);
 
         if (value == null) {
-            LOGGER.warn("Config not found for key:{}. Returning default value: {}", configKey, defaultValue);
+            logger.warn("Config not found for key:{}. Returning default value: {}", configKey, defaultValue);
             return defaultValue;
         }
 
         try {
             return GsonUtil.fromJson(value, type);
         } catch (Exception e) {
-            LOGGER.error("Error parsing cache value for key:{}, expected type: {}", configKey, type.getTypeName(), e);
+            logger.error("Error parsing cache value for key:{}, expected type: {}", configKey, type.getTypeName(), e);
             return defaultValue;
         }
     }

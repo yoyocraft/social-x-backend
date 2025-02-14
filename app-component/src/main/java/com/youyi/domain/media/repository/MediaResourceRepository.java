@@ -23,7 +23,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class MediaResourceRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MediaResourceRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(MediaResourceRepository.class);
 
     private final MediaResourceMapper mediaResourceMapper;
 
@@ -33,7 +33,7 @@ public class MediaResourceRepository {
             int ret = mediaResourceMapper.insert(mediaResourcePO);
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }

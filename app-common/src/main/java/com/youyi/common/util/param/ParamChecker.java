@@ -21,7 +21,7 @@ import static com.youyi.common.constant.ErrorCodeConstant.INVALID_PARAM;
 @FunctionalInterface
 public interface ParamChecker<T> {
 
-    Logger LOGGER = LoggerFactory.getLogger(ParamChecker.class);
+    Logger logger = LoggerFactory.getLogger(ParamChecker.class);
 
     @Nonnull
     CheckResult validate(T data);
@@ -32,7 +32,7 @@ public interface ParamChecker<T> {
             return CheckResult.success();
         }
 
-        LOGGER.warn("invalid param:{}, result:{}", GsonUtil.toJson(data), GsonUtil.toJson(ret));
+        logger.warn("invalid param:{}, result:{}", GsonUtil.toJson(data), GsonUtil.toJson(ret));
         return ret;
     }
 

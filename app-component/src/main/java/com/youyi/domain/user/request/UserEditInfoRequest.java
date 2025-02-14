@@ -17,12 +17,9 @@ public class UserEditInfoRequest extends BaseRequest {
     @SerializedName("userId")
     private String userId;
 
-    @SerializedName("nickName")
-    private String nickName;
+    @SerializedName("nickname")
+    private String nickname;
 
-    /**
-     * yyyy-MM
-     */
     @SerializedName("workStartTime")
     private String workStartTime;
 

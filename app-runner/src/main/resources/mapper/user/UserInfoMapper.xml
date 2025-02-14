@@ -14,7 +14,7 @@
         <result property="emailIv" column="email_iv"/>
         <result property="phone" column="phone"/>
         <result property="phoneIv" column="phone_iv"/>
-        <result property="nickName" column="nick_name"/>
+        <result property="nickname" column="nickname"/>
         <result property="avatar" column="avatar"/>
         <result property="workStartTime" column="work_start_time"/>
         <result property="workDirection" column="work_direction"/>
@@ -27,18 +27,18 @@
     </resultMap>
 
     <sql id="result_cols">
-        id, gmt_create, gmt_modified, deleted_at, extra_data, user_id, email, email_iv, phone, phone_iv, nick_name,
+        id, gmt_create, gmt_modified, deleted_at, extra_data, user_id, email, email_iv, phone, phone_iv, nickname,
         avatar, work_start_time, work_direction, bio, personalized_tags, job_title, company, status, role
     </sql>
     <insert id="insert">
-        INSERT INTO `user_info` (user_id, email, email_iv, phone, phone_iv, nick_name, avatar)
-        VALUES (#{userId}, #{email}, #{emailIv}, #{phone}, #{phoneIv}, #{nickName}, #{avatar})
+        INSERT INTO `user_info` (user_id, email, email_iv, phone, phone_iv, nickname, avatar)
+        VALUES (#{userId}, #{email}, #{emailIv}, #{phone}, #{phoneIv}, #{nickname}, #{avatar})
     </insert>
     <update id="update">
         UPDATE `user_info`
         <set>
-            <if test="nickName !=null">
-                nick_name = #{nickName},
+            <if test="nickname !=null">
+                nickname = #{nickname},
             </if>
             <if test="avatar != null">
                 avatar = #{avatar},

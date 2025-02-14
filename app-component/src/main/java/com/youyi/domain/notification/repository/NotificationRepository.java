@@ -26,7 +26,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class NotificationRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(NotificationRepository.class);
 
     private final NotificationMapper notificationMapper;
 
@@ -36,7 +36,7 @@ public class NotificationRepository {
             int ret = notificationMapper.insert(po);
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -46,7 +46,7 @@ public class NotificationRepository {
             checkState(StringUtils.isNoneBlank(notificationType, receiverId) && size > 0);
             return notificationMapper.querySelfByTypeWithCursor(notificationType, receiverId, cursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -56,7 +56,7 @@ public class NotificationRepository {
             checkState(StringUtils.isNoneBlank(notificationId, receiverId) && readAt > 0);
             notificationMapper.updateStatusByNotificationIdWithReadTime(notificationId, receiverId, status, oldStatus, readAt);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -66,7 +66,7 @@ public class NotificationRepository {
             checkState(StringUtils.isNotBlank(receiverId) && readAt > 0);
             notificationMapper.updateStatusByReceiverIdWithReadTime(receiverId, status, oldStatus, readAt);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -76,7 +76,7 @@ public class NotificationRepository {
             checkState(StringUtils.isNoneBlank(type, receiverId) && readAt > 0);
             notificationMapper.updateStatusByTypeAndReceiverIdWithReadTime(type, receiverId, status, oldStatus, readAt);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -86,7 +86,7 @@ public class NotificationRepository {
             checkState(StringUtils.isNotBlank(receiverId));
             return notificationMapper.queryUnreadCountGroupByType(receiverId);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -96,7 +96,7 @@ public class NotificationRepository {
             checkState(StringUtils.isNotBlank(receiverId));
             return notificationMapper.queryUnreadCount(receiverId);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }

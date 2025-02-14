@@ -23,7 +23,7 @@ public interface UgcConverter {
 
     @Mappings({
         @Mapping(target = "authorId", source = "author.userId"),
-        @Mapping(target = "authorName", source = "author.nickName"),
+        @Mapping(target = "authorName", source = "author.nickname"),
         @Mapping(target = "authorAvatar", source = "author.avatar"),
         @Mapping(target = "type", expression = "java(ugcDO.getUgcType().name())"),
         @Mapping(target = "status", expression = "java(ugcDO.getStatus().name())"),

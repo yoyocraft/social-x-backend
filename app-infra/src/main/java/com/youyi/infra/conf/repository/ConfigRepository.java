@@ -25,7 +25,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class ConfigRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigRepository.class);
 
     private final ConfigMapper configMapper;
 
@@ -35,7 +35,7 @@ public class ConfigRepository {
             int ret = configMapper.insert(po);
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -45,7 +45,7 @@ public class ConfigRepository {
             checkState(StringUtils.isNoneBlank(configKey));
             return configMapper.queryByConfigKey(configKey, false);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -55,7 +55,7 @@ public class ConfigRepository {
             checkState(cursor != null && size > 0);
             return configMapper.queryByCursor(cursor, size, true);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -65,7 +65,7 @@ public class ConfigRepository {
             checkNotNull(po);
             configMapper.updateConfig(po);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -75,7 +75,7 @@ public class ConfigRepository {
             checkNotNull(po);
             configMapper.deleteByConfigKey(po);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -84,7 +84,7 @@ public class ConfigRepository {
         try {
             return configMapper.queryAll(false);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }

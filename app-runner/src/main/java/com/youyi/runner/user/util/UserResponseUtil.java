@@ -25,49 +25,49 @@ import static com.youyi.runner.user.util.UserConverter.USER_CONVERTER;
  */
 public class UserResponseUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserResponseUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserResponseUtil.class);
 
     public static Result<Boolean> loginSuccess(UserAuthenticateRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         // 脱敏
         request.setCredential(null);
-        LOGGER.info("user login, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("user login, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<UserBasicInfoResponse> getCurrentUserSuccess(UserDO userDO) {
         Result<UserBasicInfoResponse> response = Result.success(USER_CONVERTER.toResponse(userDO));
-        LOGGER.info("get current user, response:{}", GsonUtil.toJson(response));
+        logger.info("get current user, response:{}", GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> logoutSuccess() {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("user logout, response:{}", GsonUtil.toJson(response));
+        logger.info("user logout, response:{}", GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<VerifyCaptchaResponse> verifyCaptchaSuccess(UserDO userDO, UserVerifyCaptchaRequest request) {
         Result<VerifyCaptchaResponse> response = Result.success(USER_CONVERTER.toVerifyCaptchaResponse(userDO));
-        LOGGER.info("verify captcha, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("verify captcha, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> setPwdSuccess() {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("set password, response:{}", GsonUtil.toJson(response));
+        logger.info("set password, response:{}", GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> editUserInfoSuccess(UserEditInfoRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("edit user info, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("edit user info, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> followUserSuccess(UserFollowRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("follow user, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("follow user, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
@@ -77,7 +77,7 @@ public class UserResponseUtil {
         String cursor = Optional.ofNullable(userDOList.isEmpty() ? null : userDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
 
         Result<PageCursorResult<String, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor));
-        LOGGER.info("query following users, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query following users, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
@@ -85,7 +85,7 @@ public class UserResponseUtil {
         List<UserBasicInfoResponse> data = userDOList.stream().map(USER_CONVERTER::toResponse).toList();
         String cursor = Optional.ofNullable(userDOList.isEmpty() ? null : userDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
         Result<PageCursorResult<String, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor));
-        LOGGER.info("query followers, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query followers, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

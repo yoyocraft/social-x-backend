@@ -26,7 +26,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class UgcTagRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcTagRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcTagRepository.class);
 
     private final UgcTagMapper ugcTagMapper;
 
@@ -36,7 +36,7 @@ public class UgcTagRepository {
             int ret = ugcTagMapper.insert(po);
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -47,7 +47,7 @@ public class UgcTagRepository {
             int ret = ugcTagMapper.insertBatch(poList);
             checkState(ret == poList.size());
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -57,7 +57,7 @@ public class UgcTagRepository {
             checkNotNull(type);
             return ugcTagMapper.queryByType(type);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -66,7 +66,7 @@ public class UgcTagRepository {
         try {
             return ugcTagMapper.queryAll();
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -76,7 +76,7 @@ public class UgcTagRepository {
             checkState(StringUtils.isNotBlank(cursor) && size > 0);
             return ugcTagMapper.queryByCursor(cursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }

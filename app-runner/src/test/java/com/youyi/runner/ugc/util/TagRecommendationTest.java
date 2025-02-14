@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TagRecommendationTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TagRecommendationTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TagRecommendationTest.class);
 
     private static final List<String> allTags = Arrays.asList(
         "面试技巧", "简历优化", "职场经验", "面试题", "求职心态", "Java", "Spring", "数据库", "微服务", "API设计",
@@ -101,13 +101,13 @@ public class TagRecommendationTest {
         // 获取Top 10 推荐标签
         List<String> recommendedTags = getTop10RecommendedTags(userInterestTags);
 
-        LOGGER.info("推荐的标签：{}", GsonUtil.toJson(recommendedTags));
+        logger.info("推荐的标签：{}", GsonUtil.toJson(recommendedTags));
 
         // 基于推荐标签从文章库筛选文章（模拟）
         List<Map<String, Set<String>>> articles = getArticleData();
         List<Map<String, Set<String>>> recommendedArticles = getArticlesByTags(recommendedTags, articles);
 
-        LOGGER.info("推荐的文章：{}", GsonUtil.toJson(recommendedArticles));
+        logger.info("推荐的文章：{}", GsonUtil.toJson(recommendedArticles));
     }
 
     // 模拟文章数据

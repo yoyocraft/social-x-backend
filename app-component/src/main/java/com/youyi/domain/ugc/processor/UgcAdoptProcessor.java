@@ -20,22 +20,22 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UgcAdoptProcessor implements TaskProcessor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcDeleteProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcDeleteProcessor.class);
 
     private final UgcRepository ugcRepository;
 
     @Override
     public void process(String taskId, SysTaskExtraData extraData) {
         if (Objects.isNull(extraData)) {
-            LOGGER.warn("extraData is null, taskId: {}", taskId);
+            logger.warn("extraData is null, taskId: {}", taskId);
             return;
         }
         String ugcId = extraData.getTargetId();
-        LOGGER.info("[TaskProcessor]adopt ugc, taskId: {}, extraData: {}", taskId, GsonUtil.toJson(extraData));
+        logger.info("[TaskProcessor]adopt ugc, taskId: {}, extraData: {}", taskId, GsonUtil.toJson(extraData));
 
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
         if (Objects.isNull(ugcDocument)) {
-            LOGGER.warn("ugcDocument is null, taskId: {}, extraData: {}", taskId, GsonUtil.toJson(extraData));
+            logger.warn("ugcDocument is null, taskId: {}, extraData: {}", taskId, GsonUtil.toJson(extraData));
             return;
         }
         Optional.ofNullable(ugcDocument.getExtraData())

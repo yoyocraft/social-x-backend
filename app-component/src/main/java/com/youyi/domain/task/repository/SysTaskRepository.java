@@ -26,7 +26,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class SysTaskRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SysTaskRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(SysTaskRepository.class);
 
     private final SysTaskMapper sysTaskMapper;
 
@@ -36,7 +36,7 @@ public class SysTaskRepository {
             int ret = sysTaskMapper.insert(po);
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -47,7 +47,7 @@ public class SysTaskRepository {
             int ret = sysTaskMapper.insertBatch(poList);
             checkState(ret == poList.size());
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -57,7 +57,7 @@ public class SysTaskRepository {
             checkState(StringUtils.isNotBlank(taskStatus));
             return sysTaskMapper.updateStatus(taskIds, taskStatus);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -67,7 +67,7 @@ public class SysTaskRepository {
             checkState(StringUtils.isNotBlank(taskType) && CollectionUtils.isNotEmpty(taskStatus) && size > 0);
             return sysTaskMapper.queryByTypeAndStatusWithCursor(taskType, taskStatus, cursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -77,7 +77,7 @@ public class SysTaskRepository {
             checkState(StringUtils.isNotBlank(taskType) && CollectionUtils.isNotEmpty(taskStatus) && size > 0);
             return sysTaskMapper.queryToCompensationTasksWithCursor(taskType, taskStatus, cursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }

@@ -25,7 +25,7 @@ import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
 @RequiredArgsConstructor
 public class ConfigLoader implements SmartInitializingSingleton {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigLoader.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
     private static final int CONFIG_CACHE_REFRESH_INTERVAL = 10000;
 
     private final ConfigRepository configRepository;
@@ -38,9 +38,9 @@ public class ConfigLoader implements SmartInitializingSingleton {
     @Scheduled(initialDelay = CONFIG_CACHE_REFRESH_INTERVAL, fixedDelay = CONFIG_CACHE_REFRESH_INTERVAL)
     public void refreshCache() {
         try {
-            runWithCost(LOGGER, this::doRefreshConfigCache, "refreshConfigCache");
+            runWithCost(logger, this::doRefreshConfigCache, "refreshConfigCache");
         } catch (Exception e) {
-            LOGGER.error("[ConfigLoader] refreshCache exp", e);
+            logger.error("[ConfigLoader] refreshCache exp", e);
         }
     }
 

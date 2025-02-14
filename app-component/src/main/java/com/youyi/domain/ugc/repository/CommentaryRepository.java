@@ -27,7 +27,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class CommentaryRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommentaryRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommentaryRepository.class);
 
     private final CommentaryDAO commentaryDAO;
 
@@ -36,7 +36,7 @@ public class CommentaryRepository {
             checkNotNull(commentaryDocument);
             commentaryDAO.save(commentaryDocument);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -46,7 +46,7 @@ public class CommentaryRepository {
             checkNotNull(commentaryId);
             return commentaryDAO.queryByCommentaryId(commentaryId);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -56,7 +56,7 @@ public class CommentaryRepository {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return commentaryDAO.queryByUgcIdWithTimeCursor(ugcId, lastCursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -66,7 +66,7 @@ public class CommentaryRepository {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return commentaryDAO.queryRootCommentaryByUgcIdWithTimeCursor(ugcId, lastCursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -76,7 +76,7 @@ public class CommentaryRepository {
             checkState(StringUtils.isNotBlank(parentId));
             return commentaryDAO.queryByParentId(parentId);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -86,7 +86,7 @@ public class CommentaryRepository {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return commentaryDAO.queryWithTimeCursor(lastCursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -96,7 +96,7 @@ public class CommentaryRepository {
             checkState(StringUtils.isNotBlank(commentaryId));
             commentaryDAO.updateStatusByCommentaryId(commentaryId, CommentaryStatus.DELETED.name());
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -106,7 +106,7 @@ public class CommentaryRepository {
             checkState(CollectionUtils.isNotEmpty(commentaryIds));
             commentaryDAO.batchUpdateStatusByCommentaryId(commentaryIds, CommentaryStatus.DELETED.name());
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -116,7 +116,7 @@ public class CommentaryRepository {
             checkState(StringUtils.isNotBlank(commentaryId));
             commentaryDAO.updateCommentaryStatistics(commentaryId, incrLikeCount);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -126,7 +126,7 @@ public class CommentaryRepository {
             checkState(StringUtils.isNotBlank(commentaryId));
             commentaryDAO.updateCommentaryExtraData(commentaryId, extraData);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }

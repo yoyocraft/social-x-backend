@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import static com.youyi.common.type.conf.ConfigKey.DEFAULT_AVATAR;
 import static com.youyi.common.util.IdSeqUtil.genUserId;
-import static com.youyi.common.util.IdSeqUtil.genUserNickName;
+import static com.youyi.common.util.IdSeqUtil.genUserNickname;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
 import static com.youyi.infra.privacy.DesensitizedManager.desensitizeEmail;
 import static com.youyi.infra.privacy.DesensitizedManager.desensitizeMobile;
@@ -45,7 +45,7 @@ public class UserDO {
 
     private String encryptedPhone;
     private String originalPhone;
-    private String nickName;
+    private String nickname;
     private String avatar;
     private String workStartTime;
     private WorkDirectionType workDirection;
@@ -98,7 +98,7 @@ public class UserDO {
         userInfoPO.setPhone(EMPTY);
         userInfoPO.setPhoneIv(EMPTY);
         userInfoPO.setAvatar(getStringConfig(DEFAULT_AVATAR));
-        userInfoPO.setNickName(genUserNickName());
+        userInfoPO.setNickname(genUserNickname());
         return userInfoPO;
     }
 
@@ -118,23 +118,23 @@ public class UserDO {
             .role(role)
             .userId(userId)
             .avatar(avatar)
-            .nickName(nickName)
             .status(status)
-            .personalizedTags(personalizedTags)
-            .jobTitle(jobTitle)
             .company(company)
+            .nickname(nickname)
+            .jobTitle(jobTitle)
+            .joinTime(joinTime)
             .workStartTime(workStartTime)
             .workDirection(workDirection)
-            .desensitizedMobile(desensitizeMobile(originalPhone))
+            .personalizedTags(personalizedTags)
             .desensitizedEmail(desensitizeEmail(originalEmail))
-            .joinTime(joinTime)
+            .desensitizedMobile(desensitizeMobile(originalPhone))
             .build();
     }
 
     public UserInfoPO buildToUpdateUserInfoPO() {
         UserInfoPO userInfoPO = new UserInfoPO();
         userInfoPO.setUserId(this.userId);
-        userInfoPO.setNickName(this.nickName);
+        userInfoPO.setNickname(this.nickname);
         userInfoPO.setAvatar(this.avatar);
         userInfoPO.setWorkStartTime(this.workStartTime);
         userInfoPO.setWorkDirection(this.workDirection.getCode());
@@ -150,9 +150,10 @@ public class UserDO {
         this.originalEmail = CryptoManager.aesDecrypt(userInfoPO.getEmail(), userInfoPO.getEmailIv());
         this.encryptedEmail = userInfoPO.getEmail();
         this.encryptedPhone = userInfoPO.getPhone();
-        this.originalPhone = StringUtils.isNotBlank(encryptedPhone)
-            ? CryptoManager.aesDecrypt(userInfoPO.getPhone(), userInfoPO.getPhoneIv()) : EMPTY;
-        this.nickName = userInfoPO.getNickName();
+        this.originalPhone = StringUtils.isNotBlank(userInfoPO.getPhone())
+            ? CryptoManager.aesDecrypt(userInfoPO.getPhone(), userInfoPO.getPhoneIv())
+            : EMPTY;
+        this.nickname = userInfoPO.getNickname();
         this.avatar = userInfoPO.getAvatar();
         this.bio = userInfoPO.getBio();
         this.personalizedTags = GsonUtil.fromJson(userInfoPO.getPersonalizedTags(), List.class, String.class);
@@ -168,7 +169,7 @@ public class UserDO {
 
     public void fillUserInfo(UserLoginStateInfo userLoginStateInfo) {
         this.userId = userLoginStateInfo.getUserId();
-        this.nickName = userLoginStateInfo.getNickName();
+        this.nickname = userLoginStateInfo.getNickname();
         this.avatar = userLoginStateInfo.getAvatar();
         this.bio = userLoginStateInfo.getBio();
         this.personalizedTags = userLoginStateInfo.getPersonalizedTags();
@@ -197,7 +198,7 @@ public class UserDO {
     }
 
     public boolean isAdmin() {
-        return UserRoleType.ADMIN.equals(this.role);
+        return UserRoleType.ADMIN == this.role;
     }
 
     public static UserDO of(String userId) {

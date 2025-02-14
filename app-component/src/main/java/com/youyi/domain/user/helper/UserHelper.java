@@ -10,14 +10,13 @@ import com.youyi.domain.user.helper.login.LoginStrategy;
 import com.youyi.domain.user.helper.login.LoginStrategyFactory;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.model.UserLoginStateInfo;
-import com.youyi.domain.user.repository.relation.UserRelationship;
+import com.youyi.domain.user.repository.UserRelationRepository;
 import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
-import com.youyi.domain.user.repository.UserRelationRepository;
+import com.youyi.domain.user.repository.relation.UserRelationship;
 import com.youyi.infra.cache.manager.CacheManager;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -27,12 +26,11 @@ import org.springframework.stereotype.Service;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
-import static com.youyi.common.type.ReturnCode.NOT_LOGIN;
 import static com.youyi.common.type.ReturnCode.PERMISSION_DENIED;
 import static com.youyi.common.util.IdSeqUtil.genUserVerifyCaptchaToken;
-import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
 import static com.youyi.infra.cache.repo.UserCacheRepo.USER_VERIFY_TOKEN_TTL;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserVerifyTokenKey;
+import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -42,7 +40,7 @@ import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserVerifyTokenKey;
 @RequiredArgsConstructor
 public class UserHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserHelper.class);
 
     private final LoginStrategyFactory loginStrategyFactory;
     private final CacheManager cacheManager;
@@ -57,15 +55,14 @@ public class UserHelper {
     }
 
     public UserDO getCurrentUser() {
-        checkLogin();
         UserDO currentUserInfo = userService.getCurrentUserInfo();
         // 填充关注、粉丝信息
-        userService.fillRelationship(currentUserInfo);
+        userService.fillRelationshipInfo(currentUserInfo);
         return currentUserInfo;
     }
 
     public void logout() {
-        doLogoutAndClearUserLoginState();
+        logoutAndClearUserLoginState();
     }
 
     public void verifyCaptcha(UserDO userDO) {
@@ -83,9 +80,9 @@ public class UserHelper {
         // 4. 保存
         savePwd(userDO);
         // 5. 清理验证码
-        clearToken(userDO);
+        clearVerifyToken(userDO);
         // 6. 清理当前用户信息
-        doLogoutAndClearUserLoginState();
+        logoutAndClearUserLoginState();
     }
 
     public void editUserInfo(UserDO userDO) {
@@ -103,7 +100,7 @@ public class UserHelper {
         // 1. 获取当前用户信息
         UserDO currentUser = userService.getCurrentUserInfo();
         // 2. 校验
-        checkFollowUser(userDO, currentUser);
+        checkCanFollowUser(userDO, currentUser);
         // 3. 关注 or 取消关注
         if (Boolean.TRUE.equals(userDO.getFollowFlag())) {
             doFollowUser(currentUser, userDO);
@@ -114,11 +111,10 @@ public class UserHelper {
 
     public List<UserDO> queryFollowingUsers(UserDO userDO) {
         List<UserDO> followingUsers = userService.queryFollowingUsers(userDO);
-        UserDO currentUser = getCurrentUser();
-        boolean isSelf = currentUser.getUserId().equals(userDO.getUserId());
+        UserDO currentUser = userService.getCurrentUserInfo();
         followingUsers.forEach(followingUser ->
             followingUser.setHasFollowed(
-                isSelf || Optional
+                Optional
                     .ofNullable(userRelationRepository.queryFollowingUserRelations(currentUser.getUserId(), followingUser.getUserId()))
                     .isPresent()
             )
@@ -128,7 +124,7 @@ public class UserHelper {
 
     public List<UserDO> queryFollowers(UserDO userDO) {
         List<UserDO> followers = userService.queryFollowers(userDO);
-        UserDO currentUser = getCurrentUser();
+        UserDO currentUser = userService.getCurrentUserInfo();
         followers.forEach(follower ->
             follower.setHasFollowed(
                 Optional
@@ -139,48 +135,47 @@ public class UserHelper {
         return followers;
     }
 
-    private void doLogoutAndClearUserLoginState() {
+    private void logoutAndClearUserLoginState() {
         Object loginId = StpUtil.getLoginIdDefaultNull();
         StpUtil.logout();
         StpUtil.getSessionByLoginId(loginId).delete(USER_LOGIN_STATE);
     }
 
     private void doFollowUser(UserDO currentUser, UserDO userDO) {
-        // 3. 幂等校验
-        Optional<UserRelationship> hasFollowOptional = Optional.ofNullable(userRelationRepository.queryFollowingUserRelations(currentUser.getUserId(), userDO.getFollowingUserId()));
+        // 1. 幂等校验
+        Optional<UserRelationship> hasFollowOptional = Optional.ofNullable(
+            userRelationRepository.queryFollowingUserRelations(
+                currentUser.getUserId(),
+                userDO.getFollowingUserId()
+            )
+        );
         if (hasFollowOptional.isPresent()) {
             return;
         }
-        // 4. 获取关注用户信息
-        UserDO followUserInfo = userService.queryByUserId(userDO.getFollowingUserId());
-        // 5. 关注用户
-        userService.followUser(currentUser, followUserInfo);
-        // 6. 更新缓存信息
-        userService.polishUserFollowCache(currentUser, followUserInfo, true);
-        // 7. 发送通知给用户
-        notificationManager.sendUserFollowNotification(currentUser, followUserInfo);
+        // 2. 获取关注用户信息
+        UserDO toFollowUserInfo = userService.queryByUserId(userDO.getFollowingUserId());
+        // 3. 关注用户
+        userService.followUser(currentUser, toFollowUserInfo);
+        // 4. 更新缓存信息
+        userService.polishUserFollowCache(currentUser, toFollowUserInfo, true);
+        // 5. 发送通知给用户
+        notificationManager.sendUserFollowNotification(currentUser, toFollowUserInfo);
     }
 
     private void doUnfollowUser(UserDO currentUser, UserDO userDO) {
         // 3. 幂等校验
-        Optional<UserRelationship> hasFollowOptional = Optional.ofNullable(userRelationRepository.queryFollowingUserRelations(currentUser.getUserId(), userDO.getFollowingUserId()));
+        Optional<UserRelationship> hasFollowOptional = Optional.ofNullable(
+            userRelationRepository.queryFollowingUserRelations(
+                currentUser.getUserId(),
+                userDO.getFollowingUserId()
+            )
+        );
         if (hasFollowOptional.isEmpty()) {
             return;
         }
         // 4. 获取取关用户信息
         UserDO unfollowUserInfo = userService.queryByUserId(userDO.getFollowingUserId());
         userService.unfollowUser(currentUser, unfollowUserInfo);
-    }
-
-    private void checkLogin() {
-        boolean login = StpUtil.isLogin();
-        if (!login) {
-            throw AppBizException.of(NOT_LOGIN);
-        }
-        Object loginId = StpUtil.getLoginIdDefaultNull();
-        if (Objects.isNull(loginId)) {
-            throw AppBizException.of(NOT_LOGIN);
-        }
     }
 
     private void checkCaptcha(UserDO userDO) {
@@ -190,8 +185,8 @@ public class UserHelper {
             // 验证码过期
             throw AppBizException.of(ReturnCode.CAPTCHA_EXPIRED);
         }
-        String userInputCaptcha = userDO.getToVerifiedCaptcha();
 
+        String userInputCaptcha = userDO.getToVerifiedCaptcha();
         if (!systemCaptcha.equals(userInputCaptcha)) {
             throw AppBizException.of(ReturnCode.CAPTCHA_ERROR);
         }
@@ -201,12 +196,14 @@ public class UserHelper {
         String verifyToken = genUserVerifyCaptchaToken();
         userDO.setVerifyCaptchaToken(verifyToken);
         String verifyTokenCacheKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
+        // 缓存 token
         cacheManager.set(verifyTokenCacheKey, verifyToken, USER_VERIFY_TOKEN_TTL);
+        // 清理验证码
         cacheManager.delete(ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType()));
     }
 
     private void checkToken(UserDO userDO) {
-        LOGGER.debug("user:{} check verify token", userDO.getUserId());
+        logger.debug("user:{} check verify token", userDO.getUserId());
         String cacheVerifyTokenKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
         String systemVerifyToken = (String) cacheManager.get(cacheVerifyTokenKey);
 
@@ -219,7 +216,7 @@ public class UserHelper {
         }
     }
 
-    private void clearToken(UserDO userDO) {
+    private void clearVerifyToken(UserDO userDO) {
         String cacheVerifyTokenKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
         cacheManager.delete(cacheVerifyTokenKey);
     }
@@ -244,7 +241,7 @@ public class UserHelper {
             return;
         }
 
-        throw AppBizException.of(PERMISSION_DENIED, "无权限修改");
+        throw AppBizException.of(PERMISSION_DENIED, "您没有权限修改该用户的信息～");
     }
 
     private void doEditUserInfo(UserDO userDO) {
@@ -253,6 +250,7 @@ public class UserHelper {
     }
 
     private void updateCurrentUserInfo() {
+        // 获取数据库最新的用户信息
         UserDO userDO = userService.loadCurrentUserFromDB();
         UserLoginStateInfo loginStateInfo = userDO.buildLoginStateInfo();
         StpUtil.getSession().set(USER_LOGIN_STATE, GsonUtil.toJson(loginStateInfo));
@@ -265,7 +263,7 @@ public class UserHelper {
         userDO.fillUserInfo(userInfoPO);
     }
 
-    private void checkFollowUser(UserDO userDO, UserDO currentUser) {
+    private void checkCanFollowUser(UserDO userDO, UserDO currentUser) {
         if (currentUser.getUserId().equals(userDO.getUserId())) {
             throw AppBizException.of(PERMISSION_DENIED, "不可以关注自己哦～");
         }

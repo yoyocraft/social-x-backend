@@ -30,7 +30,7 @@ import static com.youyi.common.util.LogUtil.serverExpLog;
 @RequiredArgsConstructor
 public class ExceptionHandlerAspect implements Ordered {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlerAspect.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlerAspect.class);
 
     @Pointcut("execution(* com.youyi.runner.*.api..*.*(..))")
     public void pointCut() {
@@ -49,9 +49,9 @@ public class ExceptionHandlerAspect implements Ordered {
                 response = Result.fail(biz.getCode(), biz.getMessage());
             } else {
                 response = Result.fail(SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, RequestState.UNKNOWN);
-                serverExpLog(LOGGER, ServerType.HTTP, methodName, GsonUtil.toJson(args), e);
+                serverExpLog(logger, ServerType.HTTP, methodName, GsonUtil.toJson(args), e);
             }
-            LOGGER.error(REQUEST_FAIL_LOG_FORMATTER, className, methodName, GsonUtil.toJson(args), GsonUtil.toJson(response), e);
+            logger.error(REQUEST_FAIL_LOG_FORMATTER, className, methodName, GsonUtil.toJson(args), GsonUtil.toJson(response), e);
             return response;
         }
     }

@@ -22,17 +22,17 @@ import static com.youyi.runner.config.util.ConfigConverter.CONFIG_CONVERTER;
  */
 public class ConfigResponseUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigResponseUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConfigResponseUtil.class);
 
     public static Result<Boolean> createSuccess(ConfigCreateRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("create config, request:{}, response: {}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("create config, request:{}, response: {}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<ConfigInfoResponse> querySuccess(ConfigDO configDO, ConfigQueryRequest request) {
         Result<ConfigInfoResponse> response = Result.success(CONFIG_CONVERTER.toResponse(configDO));
-        LOGGER.info("query config, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query config, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
@@ -41,19 +41,19 @@ public class ConfigResponseUtil {
         Long cursor = Optional.ofNullable(configDOList.isEmpty() ? null : configDOList.get(0).getCursor()).orElse(Long.MAX_VALUE);
         List<ConfigInfoResponse> configInfoResponseList = configDOList.stream().map(CONFIG_CONVERTER::toResponse).toList();
         Result<PageCursorResult<Long, ConfigInfoResponse>> response = Result.success(PageCursorResult.of(configInfoResponseList, cursor));
-        LOGGER.info("query config for main page, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query config for main page, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> updateSuccess(ConfigUpdateRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("update config, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("update config, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> deleteSuccess(ConfigDeleteRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("delete config, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("delete config, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

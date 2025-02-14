@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -44,7 +45,7 @@ import static com.youyi.infra.conf.core.Conf.getMapConfig;
 @RequiredArgsConstructor
 public class NotificationManager implements ApplicationListener<ApplicationReadyEvent> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(NotificationManager.class);
     private static ThreadPoolExecutor notificationExecutor;
 
     private final NotificationRepository notificationRepository;
@@ -65,7 +66,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
             notificationTpeConfig.getKeepAliveTime(),
             notificationTpeConfig.getTimeUnit(),
             notificationTpeConfig.getQueue(),
-            notificationTpeConfig.getThreadFactory(LOGGER),
+            notificationTpeConfig.getThreadFactory(logger),
             notificationTpeConfig.getRejectedHandler()
         );
     }
@@ -79,7 +80,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
             receiver.getUserId(),
             USER_FOLLOW,
             receiver.getUserId(),
-            NotificationTemplateConfig.generateSummary(USER_FOLLOW, sender.getNickName()),
+            generateSummary(USER_FOLLOW, sender.getNickname()),
             SymbolConstant.EMPTY
         );
     }
@@ -95,7 +96,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
                 ugcDocument.getAuthorId(),
                 UGC_LIKE,
                 ugcId,
-                NotificationTemplateConfig.generateSummary(UGC_LIKE, sender.getNickName(), UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
+                generateSummary(UGC_LIKE, sender.getNickname(), UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
                 SymbolConstant.EMPTY
             );
         });
@@ -112,7 +113,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
                 ugcDocument.getAuthorId(),
                 UGC_COLLECT,
                 ugcId,
-                NotificationTemplateConfig.generateSummary(UGC_COLLECT, sender.getNickName(), UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
+                generateSummary(UGC_COLLECT, sender.getNickname(), UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
                 SymbolConstant.EMPTY
             );
         });
@@ -129,7 +130,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
                 commentaryDocument.getCommentatorId(),
                 UGC_ADOPT,
                 commentaryId,
-                NotificationTemplateConfig.generateSummary(UGC_ADOPT, sender.getNickName()),
+                generateSummary(UGC_ADOPT, sender.getNickname()),
                 commentaryDocument.getCommentary()
             );
         });
@@ -146,7 +147,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
                 ugcDocument.getAuthorId(),
                 UGC_COMMENT,
                 ugcId,
-                NotificationTemplateConfig.generateSummary(UGC_COMMENT, sender.getNickName(), UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
+                generateSummary(UGC_COMMENT, sender.getNickname(), UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
                 content
             );
         });
@@ -163,7 +164,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
                 commentaryDocument.getCommentatorId(),
                 UGC_COMMENT_REPLY,
                 commentaryId,
-                NotificationTemplateConfig.generateSummary(UGC_COMMENT_REPLY, sender.getNickName()),
+                generateSummary(UGC_COMMENT_REPLY, sender.getNickname()),
                 content
             );
         });
@@ -181,7 +182,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
             extraData.setSummary(summary);
 
             NotificationDO notification = new NotificationDO();
-            notification.setSender(UserDO.of(sender.getUserId()));
+            notification.setSender(sender);
             notification.setReceiver(UserDO.of(receiverId));
             notification.setNotificationType(type);
             notification.setExtraData(extraData);
@@ -189,20 +190,18 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
 
             notificationRepository.insert(notification.buildToSaveNotificationPO());
         } catch (Exception e) {
-            LOGGER.error("Failed to send notification of type {}", type, e);
+            logger.error("Failed to send notification of type {}", type, e);
         }
     }
 
     private boolean needNotify(String senderId, String receiverId) {
-        return !senderId.equals(receiverId);
+        return StringUtils.isNoneBlank(senderId, receiverId) && !senderId.equals(receiverId);
     }
 
-    static class NotificationTemplateConfig {
-        public static String generateSummary(NotificationType type, Object... args) {
-            Map<String, String> templateMapping = getMapConfig(NOTIFICATION_SUMMARY_TEMPLATE, String.class, String.class);
-            String template = templateMapping.getOrDefault(type.name(), templateMapping.get(DEFAULT_KEY));
-            return MessageFormat.format(template, args);
-        }
+    private String generateSummary(NotificationType type, Object... args) {
+        Map<String, String> templateMapping = getMapConfig(NOTIFICATION_SUMMARY_TEMPLATE, String.class, String.class);
+        String template = templateMapping.getOrDefault(type.name(), templateMapping.get(DEFAULT_KEY));
+        return MessageFormat.format(template, args);
     }
 }
 

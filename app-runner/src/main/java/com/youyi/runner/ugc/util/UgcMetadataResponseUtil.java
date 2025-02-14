@@ -20,13 +20,13 @@ import static com.youyi.runner.ugc.util.UgcMetadataConverter.UGC_METADATA_CONVER
  */
 public class UgcMetadataResponseUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcMetadataResponseUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcMetadataResponseUtil.class);
 
     public static Result<UgcMetadataResponse> queryUgcCategorySuccess(UgcMetadataDO ugcMetadataDO) {
         List<UgcCategoryInfoResponse> ugcCategoryInfoResponseList = ugcMetadataDO.getUgcCategoryList().stream()
             .map(UGC_METADATA_CONVERTER::toCategoryInfoResponse).toList();
         Result<UgcMetadataResponse> response = Result.success(UgcMetadataResponse.of(ugcCategoryInfoResponseList, List.of()));
-        LOGGER.info("query ugc category, response:{}", GsonUtil.toJson(response));
+        logger.info("query ugc category, response:{}", GsonUtil.toJson(response));
         return response;
     }
 
@@ -34,7 +34,7 @@ public class UgcMetadataResponseUtil {
         List<UgcTagInfoResponse> ugcTagInfoResponseList = ugcMetadataDO.getUgcTagList().stream()
             .map(UGC_METADATA_CONVERTER::toTagInfoResponse).toList();
         Result<UgcMetadataResponse> response = Result.success(UgcMetadataResponse.of(List.of(), ugcTagInfoResponseList));
-        LOGGER.info("query ugc interest tag, response:{}", GsonUtil.toJson(response));
+        logger.info("query ugc interest tag, response:{}", GsonUtil.toJson(response));
         return response;
     }
 
@@ -44,7 +44,7 @@ public class UgcMetadataResponseUtil {
             .map(UGC_METADATA_CONVERTER::toTagInfoResponse).toList();
 
         Result<PageCursorResult<String, UgcTagInfoResponse>> response = Result.success(PageCursorResult.of(ugcTagInfoResponseList, ugcMetadataDO.getCursor()));
-        LOGGER.info("query ugc article tag with cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query ugc article tag with cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

@@ -23,7 +23,7 @@ public interface CommentaryConverter {
 
     @Mappings({
         @Mapping(target = "commentatorId", source = "commentator.userId"),
-        @Mapping(target = "commentatorNickName", source = "commentator.nickName"),
+        @Mapping(target = "commentatorNickname", source = "commentator.nickname"),
         @Mapping(target = "commentatorAvatar", source = "commentator.avatar"),
         @Mapping(target = "status", expression = "java(commentDO.getStatus().name())"),
         @Mapping(target = "adopted", expression = "java(Objects.nonNull(commentDO.getExtraData()) && Boolean.TRUE.equals(commentDO.getExtraData().getAdopted()))")

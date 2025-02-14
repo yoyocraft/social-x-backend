@@ -24,8 +24,8 @@ public class CommentaryInfo {
     @SerializedName("commentatorId")
     private String commentatorId;
 
-    @SerializedName("commentatorNickName")
-    private String commentatorNickName;
+    @SerializedName("commentatorNickname")
+    private String commentatorNickname;
 
     @SerializedName("commentatorAvatar")
     private String commentatorAvatar;

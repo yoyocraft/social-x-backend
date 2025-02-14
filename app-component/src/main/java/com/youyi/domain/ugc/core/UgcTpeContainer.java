@@ -23,7 +23,7 @@ import static com.youyi.infra.conf.core.Conf.getCacheValue;
 @Component
 public class UgcTpeContainer implements ApplicationListener<ApplicationReadyEvent> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcTpeContainer.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcTpeContainer.class);
 
     private ThreadPoolExecutor auditUgcExecutor;
 
@@ -51,7 +51,7 @@ public class UgcTpeContainer implements ApplicationListener<ApplicationReadyEven
             auditUgcTpeConfig.getKeepAliveTime(),
             auditUgcTpeConfig.getTimeUnit(),
             auditUgcTpeConfig.getQueue(),
-            auditUgcTpeConfig.getThreadFactory(LOGGER),
+            auditUgcTpeConfig.getThreadFactory(logger),
             auditUgcTpeConfig.getRejectedHandler()
         );
     }
@@ -64,7 +64,7 @@ public class UgcTpeContainer implements ApplicationListener<ApplicationReadyEven
             ugcStatisticsTpeConfig.getKeepAliveTime(),
             ugcStatisticsTpeConfig.getTimeUnit(),
             ugcStatisticsTpeConfig.getQueue(),
-            ugcStatisticsTpeConfig.getThreadFactory(LOGGER),
+            ugcStatisticsTpeConfig.getThreadFactory(logger),
             ugcStatisticsTpeConfig.getRejectedHandler()
         );
     }
@@ -77,7 +77,7 @@ public class UgcTpeContainer implements ApplicationListener<ApplicationReadyEven
             ugcDeleteTaskTpeConfig.getKeepAliveTime(),
             ugcDeleteTaskTpeConfig.getTimeUnit(),
             ugcDeleteTaskTpeConfig.getQueue(),
-            ugcDeleteTaskTpeConfig.getThreadFactory(LOGGER),
+            ugcDeleteTaskTpeConfig.getThreadFactory(logger),
             ugcDeleteTaskTpeConfig.getRejectedHandler()
         );
     }

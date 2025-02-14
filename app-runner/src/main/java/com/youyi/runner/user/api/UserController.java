@@ -60,11 +60,12 @@ public class UserController {
         LocalLockUtil.runWithLockFailSafe(
             () -> userHelper.login(userDO),
             CommonOperationUtil::tooManyRequestError,
-            request.getIdentityType(), request.getIdentifier()
+            request.getIdentityType(), request.getIdentifier() // key: identityType#identifier
         );
         return loginSuccess(request);
     }
 
+    @SaCheckLogin
     @RequestMapping(value = "/curr", method = RequestMethod.GET)
     public Result<UserBasicInfoResponse> getCurrentUser() {
         UserDO userDO = userHelper.getCurrentUser();

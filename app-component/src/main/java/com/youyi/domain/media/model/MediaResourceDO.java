@@ -44,7 +44,7 @@ public class MediaResourceDO {
         this.accessUrl = accessUrl;
     }
 
-    public void fillCreatorInfo(UserDO currentUser) {
-        this.creatorId = currentUser.getUserId();
+    public void fillCreatorInfo(UserDO creator) {
+        this.creatorId = creator.getUserId();
     }
 }
