@@ -1,6 +1,7 @@
 package com.youyi.infra.lock;
 
 import com.youyi.common.constant.SymbolConstant;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -17,7 +18,7 @@ import static com.youyi.infra.conf.core.Conf.getLongConfig;
  */
 public class LocalLockUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LocalLockUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(LocalLockUtil.class);
 
     private static final long DEFAULT_TIMEOUT = 5000L;
 
@@ -31,11 +32,11 @@ public class LocalLockUtil {
     }
 
     public static void runWithLockFailSafe(Runnable runWithLock, Runnable runWithFailedGotLock, long timeout, String... keys) {
-        if (keys == null || keys.length == 0) {
+        if (keys == null || keys.length == 0 && StringUtils.isNoneBlank(keys)) {
             throw new IllegalArgumentException("Keys cannot be null or empty");
         }
 
-        String key = StringUtils.join(keys, SymbolConstant.HASH);
+        String key = StringUtils.join(keys, SymbolConstant.HASH).toUpperCase(Locale.ROOT);
 
         ReentrantLock lock = LOCK_MAP.computeIfAbsent(key, k -> new ReentrantLock());
         boolean acquired = false;
@@ -49,7 +50,7 @@ public class LocalLockUtil {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            LOGGER.error("Interrupted while trying to acquire lock for key: {}", key, e);
+            logger.error("Interrupted while trying to acquire lock for key: {}", key, e);
             runWithFailedGotLock.run();
         } finally {
             if (acquired) {

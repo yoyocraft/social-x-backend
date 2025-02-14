@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CommentaryDeleteProcessor implements TaskProcessor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcDeleteProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcDeleteProcessor.class);
 
     private final CommentaryRepository commentaryRepository;
     private final CommentaryRelationshipRepository commentaryRelationshipRepository;
@@ -31,10 +31,10 @@ public class CommentaryDeleteProcessor implements TaskProcessor {
     @Override
     public void process(String taskId, SysTaskExtraData extraData) {
         if (Objects.isNull(extraData)) {
-            LOGGER.warn("extraData is null, taskId: {}", taskId);
+            logger.warn("extraData is null, taskId: {}", taskId);
             return;
         }
-        LOGGER.info("[TaskProcessor]delete commentary, taskId: {}, extraData: {}", taskId, GsonUtil.toJson(extraData));
+        logger.info("[TaskProcessor]delete commentary, taskId: {}, extraData: {}", taskId, GsonUtil.toJson(extraData));
         String commentaryId = extraData.getTargetId();
         List<String> allToDeleteCommentaryIds = Lists.newArrayList(commentaryId);
         List<CommentaryDocument> childDocuments = commentaryRepository.queryByParentId(commentaryId);
@@ -47,7 +47,7 @@ public class CommentaryDeleteProcessor implements TaskProcessor {
         // 删除父评论的点赞关系
         commentaryRelationshipRepository.deleteAllLikeRelationships(commentaryId);
         // 删除所有的评论节点
-        LOGGER.info("delete commentary nodes, ids:{}", GsonUtil.toJson(allToDeleteCommentaryIds));
+        logger.info("delete commentary nodes, ids:{}", GsonUtil.toJson(allToDeleteCommentaryIds));
         commentaryRelationshipRepository.deleteCommentaryNode(allToDeleteCommentaryIds);
     }
 }

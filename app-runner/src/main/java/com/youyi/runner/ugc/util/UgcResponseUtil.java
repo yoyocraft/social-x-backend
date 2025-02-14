@@ -24,17 +24,17 @@ import static com.youyi.runner.ugc.util.UgcConverter.UGC_CONVERTER;
  */
 public class UgcResponseUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcResponseUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcResponseUtil.class);
 
     public static Result<Boolean> publishSuccess(UgcPublishRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("publish ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("publish ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> deleteSuccess(UgcDeleteRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("delete ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("delete ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
@@ -42,19 +42,19 @@ public class UgcResponseUtil {
         List<UgcResponse> data = ugcPageInfo.stream().map(UGC_CONVERTER::toResponse).toList();
         String cursor = Optional.ofNullable(ugcPageInfo.isEmpty() ? null : ugcPageInfo.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
         Result<PageCursorResult<String, UgcResponse>> response = Result.success(PageCursorResult.of(data, cursor));
-        LOGGER.info("query self ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query self ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<UgcResponse> queryByUgcIdSuccess(UgcDO ugcDO, UgcQueryRequest request) {
         Result<UgcResponse> response = Result.success(UGC_CONVERTER.toResponse(ugcDO));
-        LOGGER.info("query ugc by ugcId, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query ugc by ugcId, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> setStatusSuccess(UgcSetStatusRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("set ugc status, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("set ugc status, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
@@ -62,7 +62,7 @@ public class UgcResponseUtil {
         List<UgcResponse> data = ugcDOList.stream().map(UGC_CONVERTER::toResponse).toList();
         String cursor = Optional.ofNullable(ugcDOList.isEmpty() ? null : ugcDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
         Result<PageCursorResult<String, UgcResponse>> response = Result.success(PageCursorResult.of(data, cursor));
-        LOGGER.info("query ugc article by cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query ugc article by cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
@@ -70,13 +70,13 @@ public class UgcResponseUtil {
         List<UgcResponse> data = ugcDOList.stream().map(UGC_CONVERTER::toResponse).toList();
         String cursor = Optional.ofNullable(ugcDOList.isEmpty() ? null : ugcDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
         Result<PageCursorResult<String, UgcResponse>> response = Result.success(PageCursorResult.of(data, cursor));
-        LOGGER.info("query ugc article by cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query ugc article by cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> interactSuccess(UgcInteractionRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("interact ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("interact ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 

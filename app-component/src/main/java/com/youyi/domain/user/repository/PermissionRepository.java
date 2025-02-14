@@ -29,7 +29,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class PermissionRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PermissionRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(PermissionRepository.class);
 
     private final PermissionMapper permissionMapper;
     private final RolePermissionMapper rolePermissionMapper;
@@ -40,7 +40,7 @@ public class PermissionRepository {
             int ret = permissionMapper.insert(permissionPO);
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -51,7 +51,7 @@ public class PermissionRepository {
             int ret = permissionMapper.insertBatch(permissionPOs);
             checkState(ret == permissionPOs.size());
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -68,7 +68,7 @@ public class PermissionRepository {
             int ret = rolePermissionMapper.update(rolePermissionPO);
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -78,7 +78,7 @@ public class PermissionRepository {
             checkNotNull(role);
             return rolePermissionMapper.queryByRole(role);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }

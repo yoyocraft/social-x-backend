@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> {
 
-    @Query("CREATE (u:user {userId: $userId, nickName: $nickName}) RETURN u")
-    UserNode save(@Param("userId") String userId, @Param("nickName") String nickName);
+    @Query("CREATE (u:user {userId: $userId, nickname: $nickname}) RETURN u")
+    UserNode save(@Param("userId") String userId, @Param("nickname") String nickname);
 
     @Query("MATCH (u:user {userId: $userId}) RETURN u")
     UserNode findByUserId(@Param("userId") String userId);
@@ -24,27 +24,27 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
     @Query("MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user) RETURN f AS target, r.since AS since")
     List<UserRelationship> queryFollowingUserRelations(@Param("userId") String userId);
 
-    @Query("MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user {userId: $followingUserId}) RETURN f AS target, r.since AS since")
-    UserRelationship queryFollowingUserRelations(@Param("userId") String userId, @Param("followingUserId") String followingUserId);
+    @Query("MATCH (u:user {userId: $subscriberId})-[r:FOLLOWING]->(f:user {userId: $creatorId}) RETURN f AS target, r.since AS since")
+    UserRelationship queryFollowingUserRelations(@Param("subscriberId") String subscriberId, @Param("creatorId") String creatorId);
 
     @Query(
         """ 
-            MATCH (f:user {userId: $userId})
+            MATCH (f:user {userId: $subscriberId})
             WITH f
-            MATCH (t:user {userId: $followingUserId})
+            MATCH (t:user {userId: $creatorId})
             MERGE (f)-[r:FOLLOWING]->(t)
             SET r.since = timestamp()
             """
     )
-    void addFollowingUserRelationship(@Param("userId") String userId, @Param("followingUserId") String followingUserId);
+    void addFollowingUserRelationship(@Param("subscriberId") String subscriberId, @Param("creatorId") String creatorId);
 
     @Query(
         """
-            MATCH (f:user {userId: $userId})-[r:FOLLOWING]->(t:user {userId: $followingUserId})
+            MATCH (f:user {userId: $subscriberId})-[r:FOLLOWING]->(t:user {userId: $creatorId})
             DELETE r
             """
     )
-    void deleteFollowingUserRelationship(@Param("userId") String userId, @Param("followingUserId") String followingUserId);
+    void deleteFollowingUserRelationship(@Param("subscriberId") String subscriberId, @Param("creatorId") String creatorId);
 
     @Query("""
             MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)
@@ -52,7 +52,6 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
         """)
     int getFollowingCount(@Param("userId") String userId);
 
-    // 查询用户的粉丝数量
     @Query("""
             MATCH (u:user)-[r:FOLLOWING]->(f:user {userId: $userId})
             RETURN COUNT(r) AS followerCount

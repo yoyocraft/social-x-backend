@@ -14,23 +14,23 @@ import org.slf4j.LoggerFactory;
  */
 public class PermissionResponseUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PermissionResponseUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(PermissionResponseUtil.class);
 
     public static Result<Boolean> addSuccess(PermissionAddRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("add permission, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("add permission, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> authorizeSuccess(RolePermissionAuthorizeRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("authorize permission, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("authorize permission, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> revokeSuccess(RolePermissionRevokeRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("revoke permission, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("revoke permission, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

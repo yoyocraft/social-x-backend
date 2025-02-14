@@ -16,6 +16,10 @@ public class UserFollowRequest extends BaseRequest {
     @SerializedName("followingUserId")
     private String followingUserId;
 
+    /**
+     * true => 关注
+     * false => 取消关注
+     */
     @SerializedName("follow")
     private Boolean follow;
 }

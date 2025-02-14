@@ -31,7 +31,7 @@ import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
 @RequiredArgsConstructor
 public class UgcInitJob implements ApplicationListener<ApplicationReadyEvent> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcInitJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcInitJob.class);
 
     private final UgcCategoryRepository ugcCategoryRepository;
     private final UgcTagRepository ugcTagRepository;
@@ -45,7 +45,7 @@ public class UgcInitJob implements ApplicationListener<ApplicationReadyEvent> {
     private void initUgcCategories() {
         List<UgcCategoryPO> categoriesFromDB = ugcCategoryRepository.queryAll();
         if (CollectionUtils.isNotEmpty(categoriesFromDB)) {
-            LOGGER.info("[UgcInitJob] inner ugc categories already exists, skip init");
+            logger.info("[UgcInitJob] inner ugc categories already exists, skip init");
             return;
         }
         List<UgcCategoryWrapper> categoryWrappers = Conf.getListConfig(INNER_UGC_CATEGORIES, UgcCategoryWrapper.class);
@@ -63,13 +63,13 @@ public class UgcInitJob implements ApplicationListener<ApplicationReadyEvent> {
                 return po;
             }).toList();
 
-        runWithCost(LOGGER, () -> ugcCategoryRepository.insertBatchCategory(categoryPOList), "initUgcCategories");
+        runWithCost(logger, () -> ugcCategoryRepository.insertBatchCategory(categoryPOList), "initUgcCategories");
     }
 
     private void initUgcTags() {
         List<UgcTagPO> tagsFromDB = ugcTagRepository.queryAll();
         if (CollectionUtils.isNotEmpty(tagsFromDB)) {
-            LOGGER.info("[UgcInitJob] inner ugc tags already exists, skip init");
+            logger.info("[UgcInitJob] inner ugc tags already exists, skip init");
             return;
         }
 
@@ -90,6 +90,6 @@ public class UgcInitJob implements ApplicationListener<ApplicationReadyEvent> {
                 return po;
             }).toList();
 
-        runWithCost(LOGGER, () -> ugcTagRepository.insertBatchTag(tagPOList), "initUgcTags");
+        runWithCost(logger, () -> ugcTagRepository.insertBatchTag(tagPOList), "initUgcTags");
     }
 }

@@ -29,7 +29,7 @@ public class IdSeqUtil {
     // ============================= Constants ==============================
     private static final int EMAIL_CAPTCHA_LENGTH = 6;
     private static final String USER_NICK_NAME_PREFIX = "social_x_";
-    private static final int USER_NICK_NAME_SUFFIX_LENGTH = 8;
+    private static final int USER_NICKNAME_SUFFIX_LENGTH = 8;
     private static final int USER_VERIFY_CAPTCHA_TOKEN_LENGTH = 64;
     private static final int USER_PWD_SALT_LENGTH = 64;
     private static final int RESOURCE_KEY_LENGTH = 128;
@@ -69,8 +69,8 @@ public class IdSeqUtil {
         return RandomStringUtils.secure().nextNumeric(EMAIL_CAPTCHA_LENGTH);
     }
 
-    public static String genUserNickName() {
-        return USER_NICK_NAME_PREFIX + RandomStringUtils.secure().nextNumeric(USER_NICK_NAME_SUFFIX_LENGTH);
+    public static String genUserNickname() {
+        return USER_NICK_NAME_PREFIX + RandomStringUtils.secure().nextNumeric(USER_NICKNAME_SUFFIX_LENGTH);
     }
 
     public static String genUserVerifyCaptchaToken() {

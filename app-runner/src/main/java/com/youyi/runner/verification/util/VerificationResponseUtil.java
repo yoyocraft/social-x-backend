@@ -12,11 +12,11 @@ import org.slf4j.LoggerFactory;
  */
 public class VerificationResponseUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(VerificationResponseUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(VerificationResponseUtil.class);
 
     public static Result<Boolean> notifyCaptchaSuccess(CaptchaVerifyRequest request) {
         Result<Boolean> response = Result.success(true);
-        LOGGER.info("notify captcha, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("notify captcha, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

@@ -27,7 +27,7 @@ import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 @RequiredArgsConstructor
 public class UgcAuditJob {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcAuditJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcAuditJob.class);
 
     private static final long AUDIT_UGC_INTERVAL = 30000L;
     private final UgcTpeContainer ugcTpeContainer;
@@ -37,9 +37,9 @@ public class UgcAuditJob {
     @Scheduled(initialDelay = AUDIT_UGC_INTERVAL, fixedDelay = AUDIT_UGC_INTERVAL)
     public void auditUgcJob() {
         try {
-            runWithCost(LOGGER, this::auditUgc, "auditUgc");
+            runWithCost(logger, this::auditUgc, "auditUgc");
         } catch (Exception e) {
-            LOGGER.error("[UgcAuditJob] audit ugc exp", e);
+            logger.error("[UgcAuditJob] audit ugc exp", e);
         }
     }
 

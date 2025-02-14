@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 class UserRelationRepositoryTest extends BaseIntegrationTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserRelationRepositoryTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserRelationRepositoryTest.class);
 
     @Autowired
     UserRelationRepository userRelationRepository;
@@ -27,25 +27,25 @@ class UserRelationRepositoryTest extends BaseIntegrationTest {
     @Test
     void testSave() {
         String userId = "444";
-        String nickName = "fan3";
+        String nickname = "fan3";
 
-        UserNode userNode = userRelationRepository.save(userId, nickName);
-        LOGGER.info("userNode: {}", GsonUtil.toJson(userNode));
+        UserNode userNode = userRelationRepository.save(userId, nickname);
+        logger.info("userNode: {}", GsonUtil.toJson(userNode));
     }
 
     @Test
     void saveRelation() {
         UserNode up = new UserNode();
         up.setUserId("111");
-        up.setNickName("youyi");
+        up.setNickname("youyi");
 
         UserNode up2 = new UserNode();
         up2.setUserId("555");
-        up2.setNickName("youyi5");
+        up2.setNickname("youyi5");
 
         UserNode fan = new UserNode();
         fan.setUserId("222");
-        fan.setNickName("fan");
+        fan.setNickname("fan");
 
         UserRelationship userRelationship = new UserRelationship();
         userRelationship.setSince(System.currentTimeMillis());
@@ -63,7 +63,7 @@ class UserRelationRepositoryTest extends BaseIntegrationTest {
     @Test
     void testFindByUserId() {
         UserNode userNode = userRelationRepository.findByUserId("222");
-        LOGGER.info("userNode: {}", GsonUtil.toJson(userNode));
+        logger.info("userNode: {}", GsonUtil.toJson(userNode));
     }
 
     @Test

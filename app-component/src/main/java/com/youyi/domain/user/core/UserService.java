@@ -43,19 +43,19 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public UserDO getCurrentUserInfo() {
         boolean queryFromDB = getBooleanConfig(QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH);
         if (queryFromDB) {
-            LOGGER.info("[UserHelper] load current user from db");
+            logger.debug("[UserHelper] load current user from db");
             return loadCurrentUserFromDB();
         }
         return loadCurrentUserFromSession();
     }
 
     public UserDO loadCurrentUserFromSession() {
-        Object loginId = StpUtil.getLoginIdDefaultNull();
+        Object loginId = StpUtil.getLoginId();
         String loginUserStateInfoJson = (String) StpUtil.getSessionByLoginId(loginId).get(USER_LOGIN_STATE);
         UserLoginStateInfo loginStateInfo = GsonUtil.fromJson(loginUserStateInfoJson, UserLoginStateInfo.class);
         UserDO userDO = new UserDO();
@@ -64,13 +64,9 @@ public class UserService {
     }
 
     public UserDO loadCurrentUserFromDB() {
-        Object loginId = StpUtil.getLoginIdDefaultNull();
+        Object loginId = StpUtil.getLoginId();
         String userId = (String) loginId;
-        UserInfoPO userInfoPO = userRepository.queryUserInfoByUserId(userId);
-        checkNotNull(userInfoPO);
-        UserDO userDO = new UserDO();
-        userDO.fillUserInfo(userInfoPO);
-        return userDO;
+        return queryByUserId(userId);
     }
 
     public UserDO queryByUserId(String userId) {
@@ -103,19 +99,19 @@ public class UserService {
             );
     }
 
-    public void followUser(UserDO currentUser, UserDO followUser) {
+    public void followUser(UserDO subscriber, UserDO creator) {
         // 1. 如果需要，创建用户节点
-        createUserIfNeed(currentUser);
-        createUserIfNeed(followUser);
+        createUserIfNeed(subscriber);
+        createUserIfNeed(creator);
 
         // 2. 插入关注关系
-        userRelationRepository.addFollowingUserRelationship(currentUser.getUserId(), followUser.getUserId());
+        userRelationRepository.addFollowingUserRelationship(subscriber.getUserId(), creator.getUserId());
     }
 
-    public void unfollowUser(UserDO currentUser, UserDO unfollowUser) {
+    public void unfollowUser(UserDO subscriber, UserDO creator) {
         // 0. 这里不需要创建用户节点，因为用户节点已经存在了
         // 1. 删除关注关系
-        userRelationRepository.deleteFollowingUserRelationship(currentUser.getUserId(), unfollowUser.getUserId());
+        userRelationRepository.deleteFollowingUserRelationship(subscriber.getUserId(), creator.getUserId());
     }
 
     public void createUserIfNeed(UserDO userDO) {
@@ -123,10 +119,10 @@ public class UserService {
         if (userNodeOptional.isPresent()) {
             return;
         }
-        userRelationRepository.save(userDO.getUserId(), userDO.getNickName());
+        userRelationRepository.save(userDO.getUserId(), userDO.getNickname());
     }
 
-    public void fillRelationship(UserDO userDO) {
+    public void fillRelationshipInfo(UserDO userDO) {
         int followingCount = userRelationRepository.getFollowingCount(userDO.getUserId());
         int followerCount = userRelationRepository.getFollowerCount(userDO.getUserId());
 
@@ -135,8 +131,11 @@ public class UserService {
     }
 
     public List<UserDO> queryFollowingUsers(UserDO userDO) {
-        String cursor = userDO.getCursor();
-        List<UserRelationship> followingUserRelations = userRelationRepository.getFollowingUsers(userDO.getUserId(), cursor, userDO.getSize());
+        List<UserRelationship> followingUserRelations = userRelationRepository.getFollowingUsers(
+            userDO.getUserId(),
+            userDO.getCursor(),
+            userDO.getSize()
+        );
         List<String> followingUserIds = followingUserRelations.stream()
             .map(UserRelationship::getTarget)
             .map(UserNode::getUserId)
@@ -146,8 +145,11 @@ public class UserService {
     }
 
     public List<UserDO> queryFollowers(UserDO userDO) {
-        String cursor = userDO.getCursor();
-        List<UserRelationship> followerRelations = userRelationRepository.getFollowers(userDO.getUserId(), cursor, userDO.getSize());
+        List<UserRelationship> followerRelations = userRelationRepository.getFollowers(
+            userDO.getUserId(),
+            userDO.getCursor(),
+            userDO.getSize()
+        );
         List<String> followerUserIds = followerRelations.stream()
             .map(UserRelationship::getTarget)
             .map(UserNode::getUserId)

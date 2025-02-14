@@ -18,7 +18,7 @@ public class UserInfoPO extends BasePO {
     private String phone;
     private String phoneIv;
 
-    private String nickName;
+    private String nickname;
     private String avatar;
     private String workStartTime;
     private Integer workDirection;

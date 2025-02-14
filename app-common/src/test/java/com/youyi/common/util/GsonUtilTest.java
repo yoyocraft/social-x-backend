@@ -78,7 +78,10 @@ class GsonUtilTest {
 
     @Test
     void testCategories() {
-        List<String> categories = Lists.newArrayList("求职", "后端", "前端", "客户端", "人工智能", "大数据", "云计算", "代码人生", "阅读", "开发工具");
+        List<String> categories = List.of(
+            "求职", "后端", "前端", "客户端", "人工智能", "大数据",
+            "云计算", "代码人生", "阅读", "开发工具"
+        );
         AtomicInteger priority = new AtomicInteger();
         List<UgcCategoryWrapper> categoryWrappers = categories.stream().map(category -> {
             String categoryId = IdSeqUtil.genUgcCategoryId();
@@ -95,7 +98,14 @@ class GsonUtilTest {
     @Test
     void testTags() {
         Set<String> articleTags = ImmutableSet.of(
-            "面试技巧", "简历优化", "职场经验", "面试题", "求职心态", "Java", "Spring", "数据库", "微服务", "API设计", "Docker", "Redis", "JavaScript", "React", "Vue", "前端架构", "TypeScript", "CSS", "Web性能优化", "Android", "iOS", "Flutter", "React Native", "移动性能优化", "App架构", "机器学习", "深度学习", "自然语言处理", "计算机视觉", "AI算法", "TensorFlow", "PyTorch", "Hadoop", "Spark", "Kafka", "数据仓库", "数据挖掘", "数据分析", "AWS", "Azure", "GCP", "Kubernetes", "容器化", "云架构", "编程思维", "时间管理", "开发者心态", "职业规划", "学习方法", "编程书籍", "技术阅读", "经典书籍", "开发者必读", "Git", "VS Code", "IDE", "Postman", "DevOps"
+            "面试技巧", "简历优化", "职场经验", "面试题", "求职心态", "Java", "Spring", "数据库",
+            "微服务", "API设计", "Docker", "Redis", "JavaScript", "React", "Vue", "前端架构",
+            "TypeScript", "CSS", "Web性能优化", "Android", "iOS", "Flutter", "React Native",
+            "移动性能优化", "App架构", "机器学习", "深度学习", "自然语言处理", "计算机视觉", "AI算法",
+            "TensorFlow", "PyTorch", "Hadoop", "Spark", "Kafka", "数据仓库", "数据挖掘", "数据分析",
+            "AWS", "Azure", "GCP", "Kubernetes", "容器化", "云架构", "编程思维", "时间管理", "开发者心态",
+            "职业规划", "学习方法", "编程书籍", "技术阅读", "经典书籍", "开发者必读", "Git", "VS Code", "IDE",
+            "Postman", "DevOps"
         );
         AtomicInteger allTagPriority = new AtomicInteger();
         List<UgcTagWrapper> tagWrappers = articleTags.stream().map(tag -> {
@@ -109,7 +119,11 @@ class GsonUtilTest {
         }).toList();
 
         Set<String> interestTags = ImmutableSet.of(
-            "面试技巧", "求职心态", "简历优化", "Java", "Spring", "微服务", "数据库", "JavaScript", "React", "前端架构", "Web性能优化", "Android", "iOS", "React Native", "App架构", "机器学习", "深度学习", "自然语言处理", "AI算法", "Hadoop", "Spark", "数据分析", "数据挖掘", "AWS", "Kubernetes", "Docker", "云架构", "编程思维", "时间管理", "开发者心态", "编程书籍", "技术阅读", "经典书籍", "Git", "VS Code", "DevOps"
+            "面试技巧", "求职心态", "简历优化", "Java", "Spring", "微服务", "数据库", "JavaScript",
+            "React", "前端架构", "Web性能优化", "Android", "iOS", "React Native", "App架构",
+            "机器学习", "深度学习", "自然语言处理", "AI算法", "Hadoop", "Spark", "数据分析", "数据挖掘",
+            "AWS", "Kubernetes", "Docker", "云架构", "编程思维", "时间管理", "开发者心态", "编程书籍",
+            "技术阅读", "经典书籍", "Git", "VS Code", "DevOps"
         );
         AtomicInteger interestTagPriority = new AtomicInteger();
         List<UgcTagWrapper> interestTagWrappers = interestTags.stream().map(tag -> {

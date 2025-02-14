@@ -26,7 +26,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class OperationLogRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OperationLogRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(OperationLogRepository.class);
 
     private final OperationLogMapper operationLogMapper;
 
@@ -36,7 +36,7 @@ public class OperationLogRepository {
             int ret = operationLogMapper.insert(po);
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -46,7 +46,7 @@ public class OperationLogRepository {
             checkState(StringUtils.isNotBlank(operationType) && Objects.nonNull(operatorId));
             return operationLogMapper.queryByOperationTypeAndOperatorId(operationType, operatorId);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }

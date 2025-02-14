@@ -34,12 +34,15 @@ public class UserValidator {
         ParamCheckerChain.newCheckerChain()
             .put(ParamChecker.enumExistChecker(IdentityType.class, "登录类型不合法"), request.getIdentityType())
             .putIf(
-                () -> IdentityType.EMAIL_CAPTCHA.name().equals(request.getIdentityType()) || IdentityType.EMAIL_PASSWORD.name().equals(request.getIdentityType()),
+                () -> {
+                    IdentityType identityType = IdentityType.of(request.getIdentityType());
+                    return identityType == IdentityType.EMAIL_CAPTCHA || identityType == IdentityType.EMAIL_PASSWORD;
+                },
                 emailChecker(),
                 request.getIdentifier()
             )
             .putIf(
-                () -> IdentityType.EMAIL_CAPTCHA.name().equals(request.getIdentityType()),
+                () -> IdentityType.EMAIL_CAPTCHA == IdentityType.of(request.getIdentityType()),
                 captchaChecker(),
                 request.getCredential()
             )
@@ -66,7 +69,7 @@ public class UserValidator {
     public static void checkUserEditInfoRequest(UserEditInfoRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(snowflakeIdChecker("用户ID不能为空"), request.getUserId())
-            .put(notBlankChecker("昵称不能为空"), request.getNickName())
+            .put(notBlankChecker("昵称不能为空"), request.getNickname())
             .put(notBlankChecker("工作开始时间不能为空"), request.getWorkStartTime())
             .put(enumCodeExistChecker(WorkDirectionType.class, "工作方向不合法"), request.getWorkDirection())
             .put(notBlankChecker("简介不能为空"), request.getBio())
@@ -78,7 +81,7 @@ public class UserValidator {
     public static void checkUserFollowRequest(UserFollowRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(snowflakeIdChecker("关注用户ID不能为空"), request.getFollowingUserId())
-            .put(snowflakeIdChecker("用户ID不能为空"), request.getReqId())
+            .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();
     }
 

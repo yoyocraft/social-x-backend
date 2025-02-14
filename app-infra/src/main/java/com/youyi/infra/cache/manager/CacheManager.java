@@ -25,7 +25,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class CacheManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CacheManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(CacheManager.class);
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -34,7 +34,7 @@ public class CacheManager {
         try {
             redisTemplate.opsForValue().set(key, value);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -43,7 +43,7 @@ public class CacheManager {
         try {
             redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -52,7 +52,7 @@ public class CacheManager {
         try {
             redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -61,7 +61,7 @@ public class CacheManager {
         try {
             redisTemplate.opsForValue().set(key, value, timeout);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -70,7 +70,7 @@ public class CacheManager {
         try {
             return redisTemplate.opsForValue().get(key);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -79,7 +79,7 @@ public class CacheManager {
         try {
             return (String) redisTemplate.opsForValue().get(key);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -98,7 +98,7 @@ public class CacheManager {
         try {
             redisTemplate.opsForSet().add(key, value);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -107,7 +107,7 @@ public class CacheManager {
         try {
             redisTemplate.opsForSet().add(key, values);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -116,7 +116,7 @@ public class CacheManager {
         try {
             redisTemplate.opsForSet().remove(key, value);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -125,7 +125,7 @@ public class CacheManager {
         try {
             return redisTemplate.opsForSet().members(key);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -134,7 +134,7 @@ public class CacheManager {
         try {
             return Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(key, value));
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -143,7 +143,7 @@ public class CacheManager {
         try {
             redisTemplate.delete(key);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }
@@ -155,7 +155,7 @@ public class CacheManager {
             script.setResultType(returnType);
             return redisTemplate.execute(script, Collections.singletonList(key), args);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
         }
     }

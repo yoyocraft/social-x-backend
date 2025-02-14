@@ -19,7 +19,7 @@ import lombok.Getter;
 public class UserLoginStateInfo {
 
     private String userId;
-    private String nickName;
+    private String nickname;
     private String desensitizedMobile;
     private String desensitizedEmail;
     private String avatar;

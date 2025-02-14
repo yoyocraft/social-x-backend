@@ -16,11 +16,11 @@ import static com.youyi.runner.media.util.MediaResourceConverter.MEDIA_RESOURCE_
  */
 public class MediaResourceResponseUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MediaResourceResponseUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(MediaResourceResponseUtil.class);
 
     public static Result<ImageUploadResponse> uploadImageSuccess(MediaResourceDO mediaResourceDO, ImageUploadRequest request) {
         Result<ImageUploadResponse> response = Result.success(MEDIA_RESOURCE_CONVERTER.toImageUploadResponse(mediaResourceDO));
-        LOGGER.info("upload image, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("upload image, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

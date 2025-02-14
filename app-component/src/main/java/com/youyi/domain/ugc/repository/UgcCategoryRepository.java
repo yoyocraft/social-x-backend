@@ -25,7 +25,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class UgcCategoryRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcCategoryRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcCategoryRepository.class);
 
     private final UgcCategoryMapper ugcCategoryMapper;
 
@@ -35,7 +35,7 @@ public class UgcCategoryRepository {
             int ret = ugcCategoryMapper.insert(po);
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -46,7 +46,7 @@ public class UgcCategoryRepository {
             int ret = ugcCategoryMapper.insertBatch(poList);
             checkState(ret == poList.size());
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
@@ -55,7 +55,7 @@ public class UgcCategoryRepository {
         try {
             return ugcCategoryMapper.queryAll();
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }

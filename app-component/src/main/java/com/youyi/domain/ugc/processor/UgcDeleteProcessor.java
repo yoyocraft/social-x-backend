@@ -30,7 +30,7 @@ import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 @RequiredArgsConstructor
 public class UgcDeleteProcessor implements TaskProcessor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcDeleteProcessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcDeleteProcessor.class);
 
     private final SysTaskService sysTaskService;
     private final CommentaryService commentaryService;
@@ -39,25 +39,25 @@ public class UgcDeleteProcessor implements TaskProcessor {
     @Override
     public void process(String taskId, SysTaskExtraData extraData) {
         if (Objects.isNull(extraData)) {
-            LOGGER.warn("extraData is null, taskId: {}", taskId);
+            logger.warn("extraData is null, taskId: {}", taskId);
             return;
         }
         String ugcId = extraData.getTargetId();
-        LOGGER.info("[TaskProcessor]delete ugc, taskId: {}, extraData: {}", taskId, GsonUtil.toJson(extraData));
+        logger.info("[TaskProcessor]delete ugc, taskId: {}, extraData: {}", taskId, GsonUtil.toJson(extraData));
 
         // 删除对应的点赞关系
         ugcRelationshipRepository.deleteAllLikeRelationships(ugcId);
         // 删除对应的收藏关系
         ugcRelationshipRepository.deleteAllCollectRelationships(ugcId);
         // 删除 UGC 节点
-        LOGGER.info("delete ugc node, ugcId: {}", ugcId);
+        logger.info("delete ugc node, ugcId: {}", ugcId);
         ugcRelationshipRepository.deleteUgcNode(ugcId);
         // 删除对应的评论，写入删除事件，后续依赖 TaskTrigger 处理
         deleteRelatedCommentary(ugcId);
     }
 
     private void deleteRelatedCommentary(String ugcId) {
-        LOGGER.info("delete related commentary, ugcId: {}", ugcId);
+        logger.info("delete related commentary, ugcId: {}", ugcId);
         // 删除评论
         CommentaryDO commentaryDO = new CommentaryDO();
         commentaryDO.setCursor(RepositoryConstant.INIT_QUERY_CURSOR);
@@ -75,7 +75,7 @@ public class UgcDeleteProcessor implements TaskProcessor {
             String nextCursor = commentaryDocuments.get(commentaryDocuments.size() - 1).getCommentaryId();
             commentaryDO.setCursor(nextCursor);
         }
-        LOGGER.info("delete related commentary, ugcId: {}, allToDeleteCommentaryIds: {}", ugcId, allToDeleteCommentaryIds);
+        logger.info("delete related commentary, ugcId: {}, allToDeleteCommentaryIds: {}", ugcId, allToDeleteCommentaryIds);
         sysTaskService.saveCommonSysTask(allToDeleteCommentaryIds, TaskType.COMMENTARY_DELETE_EVENT);
     }
 }

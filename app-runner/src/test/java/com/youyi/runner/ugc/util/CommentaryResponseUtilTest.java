@@ -38,12 +38,12 @@ class CommentaryResponseUtilTest {
     List<CommentaryDO> buildCommentaryDOList() {
         UserDO commentator1 = new UserDO();
         commentator1.setUserId(IdSeqUtil.genUserId());
-        commentator1.setNickName("commentator1");
+        commentator1.setNickname("commentator1");
         commentator1.setAvatar("avatar1");
 
         UserDO commentator2 = new UserDO();
         commentator2.setUserId(IdSeqUtil.genUserId());
-        commentator2.setNickName("commentator2");
+        commentator2.setNickname("commentator2");
         commentator2.setAvatar("avatar2");
 
         CommentaryDO parentCommentary1 = buildCommentaryDO(RepositoryConstant.TOP_COMMENTARY_ID, IdSeqUtil.genCommentaryId(), commentator1);

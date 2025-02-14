@@ -29,11 +29,11 @@ import static com.youyi.runner.ugc.util.CommentaryConverter.COMMENTARY_CONVERTER
  */
 public class CommentaryResponseUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommentaryResponseUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommentaryResponseUtil.class);
 
     public static Result<Boolean> publishSuccess(CommentaryPublishRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("publish comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("publish comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
@@ -44,25 +44,25 @@ public class CommentaryResponseUtil {
         // 按照 parentId 分组
         List<CommentaryResponse> commentaryResponses = groupCommentariesByParentId(commentaryInfoList);
         Result<PageCursorResult<String, CommentaryResponse>> response = Result.success(PageCursorResult.of(commentaryResponses, cursor));
-        LOGGER.info("query ugc comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query ugc comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> deleteSuccess(CommentaryDeleteRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("delete comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("delete comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> likeSuccess(UgcInteractionRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("like comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("like comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> adoptSuccess(UgcInteractionRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("adopt comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("adopt comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 

@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 class NotificationRepositoryTest extends BaseIntegrationTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationRepositoryTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(NotificationRepositoryTest.class);
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -33,7 +33,7 @@ class NotificationRepositoryTest extends BaseIntegrationTest {
     void testQueryUnreadCountByType() {
         String receiverId = "1883827647466573824";
         List<NotificationUnreadInfo> unreadInfoList = notificationRepository.queryUnreadCountGroupByType(receiverId);
-        LOGGER.info("unreadInfoList: {}", GsonUtil.toJson(unreadInfoList));
+        logger.info("unreadInfoList: {}", GsonUtil.toJson(unreadInfoList));
     }
 
     NotificationPO buildPO() {

@@ -17,8 +17,8 @@ public class UserBasicInfoResponse extends BaseResponse {
     @SerializedName("userId")
     private String userId;
 
-    @SerializedName("nickName")
-    private String nickName;
+    @SerializedName("nickname")
+    private String nickname;
 
     @SerializedName("avatar")
     private String avatar;

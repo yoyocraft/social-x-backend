@@ -29,7 +29,7 @@ import static com.youyi.infra.conf.core.Conf.getStringConfig;
 @RequiredArgsConstructor
 public class EmailSender {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmailSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(EmailSender.class);
 
     private final JavaMailSender mailSender;
 
@@ -38,7 +38,7 @@ public class EmailSender {
     public void sendCaptchaEmail(String emailTo, String captcha) {
         boolean canSend = getBooleanConfig(SEND_EMAIL_AB_SWITCH);
         if (!canSend) {
-            LOGGER.info("[EmailSender] send captcha:{} to email:{}", captcha, emailTo);
+            logger.info("[EmailSender] send captcha:{} to email:{}", captcha, emailTo);
             return;
         }
         doSendCaptchaEmail(emailTo, captcha);

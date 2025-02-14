@@ -3,8 +3,8 @@ package com.youyi.runner.auth.configuration;
 import cn.dev33.satoken.stp.StpInterface;
 import com.google.common.collect.Lists;
 import com.youyi.common.type.user.PermissionType;
+import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.helper.PermissionHelper;
-import com.youyi.domain.user.helper.UserHelper;
 import com.youyi.domain.user.model.PermissionDO;
 import com.youyi.domain.user.model.UserDO;
 import java.util.List;
@@ -22,11 +22,11 @@ import org.springframework.context.annotation.Configuration;
 public class PermissionCheckConfiguration implements StpInterface {
 
     private final PermissionHelper permissionHelper;
-    private final UserHelper userHelper;
+    private final UserService userService;
 
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        UserDO currentUser = userHelper.getCurrentUser();
+        UserDO currentUser = userService.getCurrentUserInfo();
         PermissionDO permissionDO = permissionHelper.queryPermissionByRole(currentUser.getRole());
         if (Objects.isNull(permissionDO)) {
             return Lists.newArrayList();

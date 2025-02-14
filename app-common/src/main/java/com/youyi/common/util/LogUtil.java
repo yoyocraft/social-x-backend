@@ -17,7 +17,7 @@ import static com.youyi.common.constant.LogFormatterConstant.SERVER_EXP_LOG_FORM
  */
 public class LogUtil {
 
-    private static final Logger UTIL_LOGGER = LoggerFactory.getLogger(LogUtil.class);
+    private static final Logger utilLogger = LoggerFactory.getLogger(LogUtil.class);
 
     private LogUtil() {
     }
@@ -49,7 +49,7 @@ public class LogUtil {
 
             logger.error(INFRA_LOG_FORMATTER, infraType, infraCode.getCode(), message, throwable);
         } catch (Exception e) {
-            UTIL_LOGGER.error("[LogUtil] infraLog exp", e);
+            utilLogger.error("[LogUtil] infraLog exp", e);
         }
     }
 
@@ -65,7 +65,7 @@ public class LogUtil {
 
             logger.error(SERVER_EXP_LOG_FORMATTER, "Exception", serverType, method, request, throwable.getMessage());
         } catch (Exception e) {
-            UTIL_LOGGER.error("[LogUtil] serverExpLog exp", e);
+            utilLogger.error("[LogUtil] serverExpLog exp", e);
         }
     }
 }

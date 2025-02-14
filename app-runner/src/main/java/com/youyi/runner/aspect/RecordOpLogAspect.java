@@ -2,14 +2,13 @@ package com.youyi.runner.aspect;
 
 import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.constant.SymbolConstant;
-import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.aspect.AspectOrdered;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.audit.helper.OperationLogHelper;
 import com.youyi.domain.audit.model.OperationLogDO;
 import com.youyi.domain.audit.model.OperationLogExtraData;
-import com.youyi.domain.user.helper.UserHelper;
+import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -53,7 +52,7 @@ import static com.youyi.infra.conf.core.Conf.getCacheValue;
 @RequiredArgsConstructor
 public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEvent>, Ordered {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RecordOpLogAspect.class);
+    private static final Logger logger = LoggerFactory.getLogger(RecordOpLogAspect.class);
     private static final ExpressionParser expressionParser = new SpelExpressionParser();
     private static final UserDO SYSTEM_USER = new UserDO();
 
@@ -62,11 +61,11 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
     private static ThreadPoolExecutor asyncRecordOpLogExecutor;
 
     private final OperationLogHelper operationLogHelper;
-    private final UserHelper userHelper;
+    private final UserService userService;
 
     static {
         SYSTEM_USER.setUserId(SYSTEM_OPERATOR_ID);
-        SYSTEM_USER.setNickName(SYSTEM_OPERATOR_NAME);
+        SYSTEM_USER.setNickname(SYSTEM_OPERATOR_NAME);
     }
 
     @Override
@@ -109,7 +108,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
     private void processOperationLog(JoinPoint joinPoint, Object result, Throwable exception) {
         if (asyncRecordOpLogExecutor == null) {
-            LOGGER.error("Async executor for recording operation logs is not initialized.");
+            logger.error("Async executor for recording operation logs is not initialized.");
             return;
         }
 
@@ -120,7 +119,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
                 doRecordOpLog(operationLogDO);
             });
         } catch (Exception e) {
-            LOGGER.error("Failed to submit async task to record operation log: {}", e.getMessage(), e);
+            logger.error("Failed to submit async task to record operation log: {}", e.getMessage(), e);
         } finally {
             opLogThreadLocal.remove();
         }
@@ -199,7 +198,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
             }
             return expressionParser.parseExpression(spelExpression).getValue(context);
         } catch (Exception e) {
-            LOGGER.warn("Failed to evaluate SpEL expression '{}': {}", spelExpression, e.getMessage());
+            logger.warn("Failed to evaluate SpEL expression '{}': {}", spelExpression, e.getMessage());
             return null;
         }
     }
@@ -235,13 +234,13 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
             operator = getCurrentUserSafely();
         }
         operationLogDO.setOperatorId(operator.getUserId());
-        operationLogDO.setOperatorName(operator.getNickName());
+        operationLogDO.setOperatorName(operator.getNickname());
     }
 
     private UserDO getCurrentUserSafely() {
         try {
-            return userHelper.getCurrentUser();
-        } catch (AppBizException e) {
+            return userService.getCurrentUserInfo();
+        } catch (Exception e) {
             return SYSTEM_USER;
         }
     }
@@ -250,7 +249,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         try {
             operationLogHelper.recordOperationLog(operationLogDO);
         } catch (Exception e) {
-            LOGGER.error("Error occurred while recording operation log: {}", e.getMessage(), e);
+            logger.error("Error occurred while recording operation log: {}", e.getMessage(), e);
         }
     }
 
@@ -262,7 +261,7 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
             recordOpLogExecutorConfig.getKeepAliveTime(),
             recordOpLogExecutorConfig.getTimeUnit(),
             recordOpLogExecutorConfig.getQueue(),
-            recordOpLogExecutorConfig.getThreadFactory(LOGGER),
+            recordOpLogExecutorConfig.getThreadFactory(logger),
             recordOpLogExecutorConfig.getRejectedHandler()
         );
     }

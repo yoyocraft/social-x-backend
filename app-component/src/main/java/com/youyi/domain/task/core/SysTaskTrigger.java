@@ -27,7 +27,7 @@ import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 @RequiredArgsConstructor
 public class SysTaskTrigger {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SysTaskTrigger.class);
+    private static final Logger logger = LoggerFactory.getLogger(SysTaskTrigger.class);
 
     private static final long INIT_TASK_DELAY_INTERVAL = 10 * 60 * 1000L;
 
@@ -104,7 +104,7 @@ public class SysTaskTrigger {
                 taskProcessor.process(task.getTaskId(), GsonUtil.fromJson(task.getExtraData(), SysTaskExtraData.class));
                 successTaskIds.add(task.getTaskId());
             } catch (Exception e) {
-                LOGGER.error("process task error, taskId: {}", task.getTaskId(), e);
+                logger.error("process task error, taskId: {}", task.getTaskId(), e);
                 failTaskIds.add(task.getTaskId());
             }
         }

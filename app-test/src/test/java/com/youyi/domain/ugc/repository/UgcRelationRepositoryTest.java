@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 class UgcRelationRepositoryTest extends BaseIntegrationTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcRelationRepositoryTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcRelationRepositoryTest.class);
 
     @Autowired
     UgcRelationshipRepository ugcRelationshipRepository;
@@ -23,7 +23,7 @@ class UgcRelationRepositoryTest extends BaseIntegrationTest {
     void testSave() {
         String ugcId = "1884419546954997760";
         UgcNode ugcNode = ugcRelationshipRepository.save(ugcId);
-        LOGGER.info("save ugcNode:{}", GsonUtil.toJson(ugcNode));
+        logger.info("save ugcNode:{}", GsonUtil.toJson(ugcNode));
     }
 
     @Test

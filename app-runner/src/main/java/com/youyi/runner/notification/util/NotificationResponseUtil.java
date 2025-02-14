@@ -25,26 +25,26 @@ import static com.youyi.runner.notification.util.NotificationConverter.NOTIFICAT
  */
 public class NotificationResponseUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationResponseUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(NotificationResponseUtil.class);
 
     public static Result<PageCursorResult<String, NotificationResponse>> queryNotificationSuccess(List<NotificationDO> notificationDOList,
         NotificationQueryRequest request) {
         String cursor = Optional.ofNullable(notificationDOList.isEmpty() ? null : notificationDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
         List<NotificationResponse> notificationResponseList = notificationDOList.stream().map(NOTIFICATION_CONVERTER::toResponse).toList();
         Result<PageCursorResult<String, NotificationResponse>> response = Result.success(PageCursorResult.of(notificationResponseList, cursor));
-        LOGGER.info("query notification, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query notification, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> readSingleNotificationSuccess(NotificationReadRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("read single notification, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("read single notification, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
     public static Result<Boolean> readAllNotificationByTypeSuccess(NotificationReadRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
-        LOGGER.info("read single notification, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("read single notification, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
@@ -52,7 +52,7 @@ public class NotificationResponseUtil {
         NotificationUnreadQueryRequest request) {
         List<NotificationUnreadInfo> unreadInfos = notificationDOList.stream().map(NOTIFICATION_CONVERTER::toInfo).collect(Collectors.toList());
         Result<NotificationUnreadResponse> response = Result.success(NotificationUnreadResponse.of(unreadInfos));
-        LOGGER.info("query unread count group by type, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        logger.info("query unread count group by type, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

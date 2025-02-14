@@ -39,7 +39,7 @@ import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
 @RequiredArgsConstructor
 public class CommentaryHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CommentaryHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommentaryHelper.class);
 
     private final UgcTpeContainer ugcTpeContainer;
     private final SysTaskService sysTaskService;
@@ -104,7 +104,7 @@ public class CommentaryHelper {
         // 幂等处理
         Boolean adopted = extraData.getAdopted();
         if (Boolean.TRUE.equals(adopted)) {
-            LOGGER.info("commentary already adopted, commentatorId: {}, commentId: {}", commentaryDocument.getCommentatorId(), commentaryDocument.getCommentaryId());
+            logger.info("commentary already adopted, commentatorId: {}, commentId: {}", commentaryDocument.getCommentatorId(), commentaryDocument.getCommentaryId());
             return;
         }
 
@@ -161,7 +161,7 @@ public class CommentaryHelper {
         boolean isSensitive = SensitiveWordHelper.contains(commentaryDO.getCommentary());
         extraData.setSensitive(isSensitive);
         if (isSensitive) {
-            LOGGER.warn("user:{} publish sensitive commentary:{}", commentaryDO.getCommentator().getUserId(), commentaryDO.getCommentaryId());
+            logger.warn("user:{} publish sensitive commentary:{}", commentaryDO.getCommentator().getUserId(), commentaryDO.getCommentaryId());
             // 替换敏感词
             String nonSensitiveCommentary = SensitiveWordHelper.replace(commentaryDO.getCommentary());
             commentaryDO.setCommentary(nonSensitiveCommentary);

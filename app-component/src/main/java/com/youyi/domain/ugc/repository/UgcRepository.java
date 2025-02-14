@@ -27,7 +27,7 @@ import static com.youyi.common.util.LogUtil.infraLog;
 @RequiredArgsConstructor
 public class UgcRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UgcRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcRepository.class);
 
     private final UgcDAO ugcDAO;
 
@@ -36,7 +36,7 @@ public class UgcRepository {
             checkNotNull(ugcDocument);
             ugcDAO.save(ugcDocument);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -46,7 +46,7 @@ public class UgcRepository {
             checkState(StringUtils.isNotBlank(ugcId));
             ugcDAO.updateStatusByUgcId(ugcId, UgcStatus.DELETED.name());
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -56,7 +56,7 @@ public class UgcRepository {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return ugcDAO.queryByKeywordAndStatusForSelfWithCursor(keyword, ugcStatus, authorId, lastCursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -66,7 +66,7 @@ public class UgcRepository {
             checkState(StringUtils.isNotBlank(ugcId));
             return ugcDAO.queryByUgcId(ugcId);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -76,7 +76,7 @@ public class UgcRepository {
             checkNotNull(ugcDocument);
             ugcDAO.updateByUgcId(ugcDocument);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -86,7 +86,7 @@ public class UgcRepository {
             checkState(StringUtils.isNotBlank(ugcId) && StringUtils.isNotBlank(ugcStatus));
             ugcDAO.updateStatusByUgcId(ugcId, ugcStatus);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -96,7 +96,7 @@ public class UgcRepository {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return ugcDAO.queryByStatusWithTimeCursor(ugcStatus, lastCursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -106,7 +106,7 @@ public class UgcRepository {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.emptyList(), lastCursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -117,7 +117,7 @@ public class UgcRepository {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0 && StringUtils.isNotBlank(authorId));
             return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.singletonList(authorId), lastCursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -128,7 +128,7 @@ public class UgcRepository {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, authorIds, lastCursor, size);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
@@ -138,7 +138,7 @@ public class UgcRepository {
             checkState(StringUtils.isNotBlank(ugcId));
             ugcDAO.updateUgcStatistics(ugcId, incrViewCount, incrLikeCount, incrCollectCount);
         } catch (Exception e) {
-            infraLog(LOGGER, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
