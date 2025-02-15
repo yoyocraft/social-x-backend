@@ -78,7 +78,7 @@ public class UserDO {
     /**
      * for follow user
      */
-    private String followingUserId;
+    private String followUserId;
     private Boolean followFlag;
 
     private String cursor;

@@ -146,14 +146,14 @@ public class UserHelper {
         Optional<UserRelationship> hasFollowOptional = Optional.ofNullable(
             userRelationRepository.queryFollowingUserRelations(
                 currentUser.getUserId(),
-                userDO.getFollowingUserId()
+                userDO.getFollowUserId()
             )
         );
         if (hasFollowOptional.isPresent()) {
             return;
         }
         // 2. 获取关注用户信息
-        UserDO toFollowUserInfo = userService.queryByUserId(userDO.getFollowingUserId());
+        UserDO toFollowUserInfo = userService.queryByUserId(userDO.getFollowUserId());
         // 3. 关注用户
         userService.followUser(currentUser, toFollowUserInfo);
         // 4. 更新缓存信息
@@ -167,14 +167,14 @@ public class UserHelper {
         Optional<UserRelationship> hasFollowOptional = Optional.ofNullable(
             userRelationRepository.queryFollowingUserRelations(
                 currentUser.getUserId(),
-                userDO.getFollowingUserId()
+                userDO.getFollowUserId()
             )
         );
         if (hasFollowOptional.isEmpty()) {
             return;
         }
         // 4. 获取取关用户信息
-        UserDO unfollowUserInfo = userService.queryByUserId(userDO.getFollowingUserId());
+        UserDO unfollowUserInfo = userService.queryByUserId(userDO.getFollowUserId());
         userService.unfollowUser(currentUser, unfollowUserInfo);
     }
 
