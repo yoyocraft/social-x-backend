@@ -4,7 +4,6 @@ import com.youyi.common.type.BizType;
 import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.user.IdentityType;
 import com.youyi.common.type.user.WorkDirectionType;
-import com.youyi.common.util.param.ParamChecker;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
@@ -32,7 +31,7 @@ public class UserValidator {
 
     public static void checkUserAuthenticateRequest(UserAuthenticateRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(ParamChecker.enumExistChecker(IdentityType.class, "登录类型不合法"), request.getIdentityType())
+            .put(enumExistChecker(IdentityType.class, "登录类型不合法"), request.getIdentityType())
             .putIf(
                 () -> {
                     IdentityType identityType = IdentityType.of(request.getIdentityType());
@@ -44,6 +43,11 @@ public class UserValidator {
             .putIf(
                 () -> IdentityType.EMAIL_CAPTCHA == IdentityType.of(request.getIdentityType()),
                 captchaChecker(),
+                request.getCredential()
+            )
+            .putIf(
+                () -> IdentityType.EMAIL_PASSWORD == IdentityType.of(request.getIdentityType()),
+                notBlankChecker("密码不能为空"),
                 request.getCredential()
             )
             .validateWithThrow();
@@ -68,7 +72,7 @@ public class UserValidator {
 
     public static void checkUserEditInfoRequest(UserEditInfoRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(snowflakeIdChecker("用户ID不能为空"), request.getUserId())
+            .put(snowflakeIdChecker("用户ID不合法"), request.getUserId())
             .put(notBlankChecker("昵称不能为空"), request.getNickname())
             .put(notBlankChecker("工作开始时间不能为空"), request.getWorkStartTime())
             .put(enumCodeExistChecker(WorkDirectionType.class, "工作方向不合法"), request.getWorkDirection())
@@ -80,14 +84,14 @@ public class UserValidator {
 
     public static void checkUserFollowRequest(UserFollowRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(snowflakeIdChecker("关注用户ID不能为空"), request.getFollowingUserId())
+            .put(snowflakeIdChecker("关注用户ID不合法"), request.getFollowUserId())
             .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();
     }
 
     public static void checkUserQueryRequest(UserQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(snowflakeIdChecker("用户ID不能为空"), request.getUserId())
+            .put(snowflakeIdChecker("用户ID不合法"), request.getUserId())
             .put(notBlankChecker("cursor不合法"), request.getCursor())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();

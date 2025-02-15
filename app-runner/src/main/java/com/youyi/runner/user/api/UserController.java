@@ -131,7 +131,7 @@ public class UserController {
         LocalLockUtil.runWithLockFailSafe(
             () -> userHelper.followUser(userDO),
             CommonOperationUtil::tooManyRequestError,
-            request.getFollowingUserId(), request.getReqId()
+            request.getFollowUserId(), request.getReqId()
         );
         return followUserSuccess(request);
     }

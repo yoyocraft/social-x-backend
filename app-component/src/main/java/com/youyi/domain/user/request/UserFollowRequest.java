@@ -13,8 +13,8 @@ import lombok.Setter;
 @Setter
 public class UserFollowRequest extends BaseRequest {
 
-    @SerializedName("followingUserId")
-    private String followingUserId;
+    @SerializedName("followUserId")
+    private String followUserId;
 
     /**
      * true => 关注
