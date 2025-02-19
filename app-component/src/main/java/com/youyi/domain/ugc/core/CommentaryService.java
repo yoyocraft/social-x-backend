@@ -2,7 +2,6 @@ package com.youyi.domain.ugc.core;
 
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.domain.notification.core.NotificationManager;
-import com.youyi.domain.ugc.cache.UgcStatisticCacheManager;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.repository.CommentaryRelationshipRepository;
 import com.youyi.domain.ugc.repository.CommentaryRepository;

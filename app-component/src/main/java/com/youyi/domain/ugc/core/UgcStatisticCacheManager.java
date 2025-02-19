@@ -1,7 +1,8 @@
-package com.youyi.domain.ugc.cache;
+package com.youyi.domain.ugc.core;
 
+import com.youyi.common.type.cache.CacheKey;
 import com.youyi.infra.cache.manager.CacheManager;
-import com.youyi.infra.cache.repo.StatisticCacheRepo;
+import com.youyi.infra.cache.repo.UgcCacheRepo;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +12,6 @@ import org.springframework.stereotype.Component;
 
 import static com.youyi.common.type.conf.ConfigKey.GET_AND_DEL_LUA_SCRIPT;
 import static com.youyi.common.type.conf.ConfigKey.INCR_WITH_EXPIRE_LUA_SCRIPT;
-import static com.youyi.infra.cache.repo.StatisticCacheRepo.COMMENTARY_LIKE_COUNT_TTL;
-import static com.youyi.infra.cache.repo.StatisticCacheRepo.UGC_COLLECT_COUNT_TTL;
-import static com.youyi.infra.cache.repo.StatisticCacheRepo.UGC_LIKE_COUNT_TTL;
-import static com.youyi.infra.cache.repo.StatisticCacheRepo.UGC_VIEW_COUNT_TTL;
 import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
 
@@ -38,18 +35,18 @@ public class UgcStatisticCacheManager implements ApplicationListener<Application
     }
 
     public void incrOrDecrUgcViewCount(String ugcId, boolean incr) {
-        String cacheKey = StatisticCacheRepo.ofUgcViewCountKey(ugcId);
+        String cacheKey = UgcCacheRepo.ofUgcViewCountKey(ugcId);
         cacheManager.execute(
             Long.class,
             getStringConfig(INCR_WITH_EXPIRE_LUA_SCRIPT),
             cacheKey,
-            UGC_VIEW_COUNT_TTL.getSeconds(),
+            CacheKey.UGC_VIEW_COUNT.getTtl().getSeconds(),
             incr ? INCR_OPT : DECR_OPT
         );
     }
 
     public Long getUgcViewCount(String ugcId) {
-        String cacheKey = StatisticCacheRepo.ofUgcViewCountKey(ugcId);
+        String cacheKey = UgcCacheRepo.ofUgcViewCountKey(ugcId);
         Object value = cacheManager.get(cacheKey);
         return Optional.ofNullable(value)
             .map(val -> Long.parseLong(val.toString()))
@@ -57,7 +54,7 @@ public class UgcStatisticCacheManager implements ApplicationListener<Application
     }
 
     public Long getAndDelUgcViewCount(String ugcId) {
-        String cacheKey = StatisticCacheRepo.ofUgcViewCountKey(ugcId);
+        String cacheKey = UgcCacheRepo.ofUgcViewCountKey(ugcId);
         return cacheManager.execute(
             Long.class,
             getStringConfig(GET_AND_DEL_LUA_SCRIPT),
@@ -66,18 +63,18 @@ public class UgcStatisticCacheManager implements ApplicationListener<Application
     }
 
     public void incrOrDecrUgcLikeCount(String ugcId, boolean incr) {
-        String cacheKey = StatisticCacheRepo.ofUgcLikeCountKey(ugcId);
+        String cacheKey = UgcCacheRepo.ofUgcLikeCountKey(ugcId);
         cacheManager.execute(
             Long.class,
             getStringConfig(INCR_WITH_EXPIRE_LUA_SCRIPT),
             cacheKey,
-            UGC_LIKE_COUNT_TTL.getSeconds(),
+            CacheKey.UGC_LIKE_COUNT.getTtl().getSeconds(),
             incr ? INCR_OPT : DECR_OPT
         );
     }
 
     public Long getUgcLikeCount(String ugcId) {
-        String cacheKey = StatisticCacheRepo.ofUgcLikeCountKey(ugcId);
+        String cacheKey = UgcCacheRepo.ofUgcLikeCountKey(ugcId);
         Object value = cacheManager.get(cacheKey);
         return Optional.ofNullable(value)
             .map(val -> Long.parseLong(val.toString()))
@@ -85,7 +82,7 @@ public class UgcStatisticCacheManager implements ApplicationListener<Application
     }
 
     public Long getAndDelUgcLikeCount(String ugcId) {
-        String cacheKey = StatisticCacheRepo.ofUgcLikeCountKey(ugcId);
+        String cacheKey = UgcCacheRepo.ofUgcLikeCountKey(ugcId);
         return cacheManager.execute(
             Long.class,
             getStringConfig(GET_AND_DEL_LUA_SCRIPT),
@@ -94,18 +91,18 @@ public class UgcStatisticCacheManager implements ApplicationListener<Application
     }
 
     public void incrOrDecrUgcCollectCount(String ugcId, boolean incr) {
-        String cacheKey = StatisticCacheRepo.ofUgcCollectCountKey(ugcId);
+        String cacheKey = UgcCacheRepo.ofUgcCollectCountKey(ugcId);
         cacheManager.execute(
             Long.class,
             getStringConfig(INCR_WITH_EXPIRE_LUA_SCRIPT),
             cacheKey,
-            UGC_COLLECT_COUNT_TTL.getSeconds(),
+            CacheKey.UGC_COLLECT_COUNT.getTtl().getSeconds(),
             incr ? INCR_OPT : DECR_OPT
         );
     }
 
     public Long getUgcCollectCount(String ugcId) {
-        String cacheKey = StatisticCacheRepo.ofUgcCollectCountKey(ugcId);
+        String cacheKey = UgcCacheRepo.ofUgcCollectCountKey(ugcId);
         Object value = cacheManager.get(cacheKey);
         return Optional.ofNullable(value)
             .map(val -> Long.parseLong(val.toString()))
@@ -113,7 +110,7 @@ public class UgcStatisticCacheManager implements ApplicationListener<Application
     }
 
     public Long getAndDelUgcCollectCount(String ugcId) {
-        String cacheKey = StatisticCacheRepo.ofUgcCollectCountKey(ugcId);
+        String cacheKey = UgcCacheRepo.ofUgcCollectCountKey(ugcId);
         return cacheManager.execute(
             Long.class,
             getStringConfig(GET_AND_DEL_LUA_SCRIPT),
@@ -122,18 +119,18 @@ public class UgcStatisticCacheManager implements ApplicationListener<Application
     }
 
     public void incrOrDecrCommentaryLikeCount(String commentaryId, boolean incr) {
-        String cacheKey = StatisticCacheRepo.ofCommentaryLikeCountKey(commentaryId);
+        String cacheKey = UgcCacheRepo.ofCommentaryLikeCountKey(commentaryId);
         cacheManager.execute(
             Long.class,
             getStringConfig(INCR_WITH_EXPIRE_LUA_SCRIPT),
             cacheKey,
-            COMMENTARY_LIKE_COUNT_TTL.getSeconds(),
+            CacheKey.COMMENTARY_LIKE_COUNT.getTtl().getSeconds(),
             incr ? INCR_OPT : DECR_OPT
         );
     }
 
     public Long getCommentaryLikeCount(String commentaryId) {
-        String cacheKey = StatisticCacheRepo.ofCommentaryLikeCountKey(commentaryId);
+        String cacheKey = UgcCacheRepo.ofCommentaryLikeCountKey(commentaryId);
         Object value = cacheManager.get(cacheKey);
         return Optional.ofNullable(value)
             .map(val -> Long.parseLong(val.toString()))
@@ -141,7 +138,7 @@ public class UgcStatisticCacheManager implements ApplicationListener<Application
     }
 
     public Long getAndDelCommentaryLikeCount(String commentaryId) {
-        String cacheKey = StatisticCacheRepo.ofCommentaryLikeCountKey(commentaryId);
+        String cacheKey = UgcCacheRepo.ofCommentaryLikeCountKey(commentaryId);
         return cacheManager.execute(
             Long.class,
             getStringConfig(GET_AND_DEL_LUA_SCRIPT),

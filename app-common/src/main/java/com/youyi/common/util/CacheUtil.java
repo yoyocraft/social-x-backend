@@ -1,6 +1,7 @@
-package com.youyi.infra.cache.util;
+package com.youyi.common.util;
 
 import com.youyi.common.constant.SymbolConstant;
+import com.youyi.common.type.cache.CacheKey;
 import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
@@ -15,8 +16,11 @@ public class CacheUtil {
         return StringUtils.join(keys, SymbolConstant.COLON);
     }
 
-    public static String buildKey(String template, Map<String, String> dataMap) {
-        StringSubstitutor substitutor = new StringSubstitutor(dataMap);
-        return substitutor.replace(template);
+    public static String buildKey(CacheKey cacheKey, Map<String, String> dataMap) {
+        if (cacheKey.isPattern()) {
+            StringSubstitutor substitutor = new StringSubstitutor(dataMap);
+            return substitutor.replace(cacheKey.getKey());
+        }
+        return cacheKey.getKey();
     }
 }

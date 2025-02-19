@@ -39,14 +39,12 @@ public class UgcResponseUtil {
     }
 
     public static Result<PageCursorResult<String, UgcResponse>> querySelfUgcSuccess(List<UgcDO> ugcPageInfo, UgcQueryRequest request) {
-        List<UgcResponse> data = ugcPageInfo.stream().map(UGC_CONVERTER::toResponse).toList();
-        String cursor = Optional.ofNullable(ugcPageInfo.isEmpty() ? null : ugcPageInfo.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
-        Result<PageCursorResult<String, UgcResponse>> response = Result.success(PageCursorResult.of(data, cursor));
+        Result<PageCursorResult<String, UgcResponse>> response = buildCursorResponse(ugcPageInfo);
         logger.info("query self ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
-    public static Result<UgcResponse> queryByUgcIdSuccess(UgcDO ugcDO, UgcQueryRequest request) {
+    public static Result<UgcResponse> queryUgcDetailSuccess(UgcDO ugcDO, UgcQueryRequest request) {
         Result<UgcResponse> response = Result.success(UGC_CONVERTER.toResponse(ugcDO));
         logger.info("query ugc by ugcId, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
@@ -58,19 +56,27 @@ public class UgcResponseUtil {
         return response;
     }
 
-    public static Result<PageCursorResult<String, UgcResponse>> queryByCursorForMainPageSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
-        List<UgcResponse> data = ugcDOList.stream().map(UGC_CONVERTER::toResponse).toList();
-        String cursor = Optional.ofNullable(ugcDOList.isEmpty() ? null : ugcDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
-        Result<PageCursorResult<String, UgcResponse>> response = Result.success(PageCursorResult.of(data, cursor));
-        logger.info("query ugc article by cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+    public static Result<PageCursorResult<String, UgcResponse>> queryMainPageUgcSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
+        Result<PageCursorResult<String, UgcResponse>> response = buildCursorResponse(ugcDOList);
+        logger.info("query main page ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
-    public static Result<PageCursorResult<String, UgcResponse>> queryByCursorForFollowPageSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
-        List<UgcResponse> data = ugcDOList.stream().map(UGC_CONVERTER::toResponse).toList();
-        String cursor = Optional.ofNullable(ugcDOList.isEmpty() ? null : ugcDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
-        Result<PageCursorResult<String, UgcResponse>> response = Result.success(PageCursorResult.of(data, cursor));
-        logger.info("query ugc article by cursor, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+    public static Result<PageCursorResult<String, UgcResponse>> queryUserPageUgcSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
+        Result<PageCursorResult<String, UgcResponse>> response = buildCursorResponse(ugcDOList);
+        logger.info("query user page ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<PageCursorResult<String, UgcResponse>> queryFollowPageUgcSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
+        Result<PageCursorResult<String, UgcResponse>> response = buildCursorResponse(ugcDOList);
+        logger.info("query follow page ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<PageCursorResult<String, UgcResponse>> queryRecommendPageUgcSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
+        Result<PageCursorResult<String, UgcResponse>> response = buildCursorResponse(ugcDOList);
+        logger.info("query recommend page ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
@@ -78,6 +84,12 @@ public class UgcResponseUtil {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         logger.info("interact ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
+    }
+
+    private static Result<PageCursorResult<String, UgcResponse>> buildCursorResponse(List<UgcDO> ugcDOList) {
+        List<UgcResponse> data = ugcDOList.stream().map(UGC_CONVERTER::toResponse).toList();
+        String cursor = Optional.ofNullable(ugcDOList.isEmpty() ? null : ugcDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
+        return Result.success(PageCursorResult.of(data, cursor));
     }
 
 }

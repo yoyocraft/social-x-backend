@@ -3,7 +3,6 @@ package com.youyi.domain.ugc.core;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.ugc.UgcStatus;
-import com.youyi.domain.ugc.cache.UgcStatisticCacheManager;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;

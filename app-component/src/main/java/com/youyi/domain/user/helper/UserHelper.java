@@ -3,6 +3,7 @@ package com.youyi.domain.user.helper;
 import cn.dev33.satoken.stp.StpUtil;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.ReturnCode;
+import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.user.core.UserService;
@@ -28,7 +29,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.ReturnCode.PERMISSION_DENIED;
 import static com.youyi.common.util.IdSeqUtil.genUserVerifyCaptchaToken;
-import static com.youyi.infra.cache.repo.UserCacheRepo.USER_VERIFY_TOKEN_TTL;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserVerifyTokenKey;
 import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
 
@@ -197,7 +197,7 @@ public class UserHelper {
         userDO.setVerifyCaptchaToken(verifyToken);
         String verifyTokenCacheKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
         // 缓存 token
-        cacheManager.set(verifyTokenCacheKey, verifyToken, USER_VERIFY_TOKEN_TTL);
+        cacheManager.set(verifyTokenCacheKey, verifyToken, CacheKey.USER_VERIFY_TOKEN.getTtl());
         // 清理验证码
         cacheManager.delete(ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType()));
     }

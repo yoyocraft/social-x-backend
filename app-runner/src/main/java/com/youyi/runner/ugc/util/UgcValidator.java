@@ -114,4 +114,12 @@ public class UgcValidator {
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
     }
+
+    public static void checkUgcQueryRequestForRecommendPage(UgcQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(trueChecker("recommendFeed不能为空"), request.getRecommendFeed())
+            .put(notBlankChecker("cursor不合法"), request.getCursor())
+            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
+            .validateWithThrow();
+    }
 }

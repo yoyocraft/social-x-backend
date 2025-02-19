@@ -2,7 +2,6 @@ package com.youyi.domain.ugc.core;
 
 import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.UgcStatus;
-import com.youyi.domain.ugc.cache.UgcStatisticCacheManager;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;

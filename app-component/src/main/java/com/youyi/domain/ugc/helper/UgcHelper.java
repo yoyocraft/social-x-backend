@@ -140,7 +140,7 @@ public class UgcHelper {
         }
     }
 
-    public List<UgcDO> queryByCursorForFollowPage(UgcDO ugcDO) {
+    public List<UgcDO> queryFollowPageUgc(UgcDO ugcDO) {
         // 1. 查询关注用户ID
         UserDO currentUserInfo = userService.getCurrentUserInfo();
         Set<String> followUserIds = userService.queryFollowingUserIdsFromCache(currentUserInfo);
@@ -156,6 +156,21 @@ public class UgcHelper {
         // 6. 过滤不必要的信息
         filterNoNeedInfoForListPage(ugcDOList);
         return ugcDOList;
+    }
+
+    public List<UgcDO> queryRecommendPageUgc(UgcDO ugcDO) {
+        // 1. 查询当前用户感兴趣的标签信息
+        UserDO currentUserInfo = userService.getCurrentUserInfo();
+        // 2. 游标查询UGC信息
+
+        // 3. 批量查询作者信息
+
+        // 4. 封装信息
+
+        // 5. 填充 Statistic 信息
+
+        // 6. 过滤不必要的信息
+        return null;
     }
 
     private void handleLikeUgcInteraction(UgcDO ugcDO, UserDO currentUser) {

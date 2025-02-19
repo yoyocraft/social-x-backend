@@ -1,7 +1,6 @@
 package com.youyi.domain.ugc.core;
 
 import com.youyi.BaseIntegrationTest;
-import com.youyi.domain.ugc.cache.UgcStatisticCacheManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

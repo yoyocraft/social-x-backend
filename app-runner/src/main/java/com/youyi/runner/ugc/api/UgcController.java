@@ -27,10 +27,12 @@ import static com.youyi.domain.ugc.assembler.UgcAssembler.UGC_ASSEMBLER;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.deleteSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.interactSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.queryByCursorForFollowPageSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.queryByCursorForMainPageSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.queryByUgcIdSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryFollowPageUgcSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryMainPageUgcSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUgcDetailSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryRecommendPageUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.querySelfUgcSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUserPageUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.setStatusSuccess;
 
 /**
@@ -83,17 +85,17 @@ public class UgcController {
 
     @SaCheckLogin
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
-    public Result<UgcResponse> queryByUgcId(UgcQueryRequest request) {
+    public Result<UgcResponse> queryUgcDetail(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForQueryByUgcId(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         ugcHelper.queryByUgcId(ugcDO);
-        return queryByUgcIdSuccess(ugcDO, request);
+        return queryUgcDetailSuccess(ugcDO, request);
     }
 
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.UGC_SET_STATUS)
     @RequestMapping(value = "/set_status", method = RequestMethod.POST)
-    public Result<Boolean> setStatus(@RequestBody UgcSetStatusRequest request) {
+    public Result<Boolean> setUgcStatus(@RequestBody UgcSetStatusRequest request) {
         UgcValidator.checkUgcSetStatusRequest(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
@@ -106,29 +108,38 @@ public class UgcController {
 
     @SaCheckLogin
     @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> queryByCursorForMainPage(UgcQueryRequest request) {
+    public Result<PageCursorResult<String, UgcResponse>> queryMainPageUgc(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForMainPage(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.queryByCursorForMainPage(ugcDO);
-        return queryByCursorForMainPageSuccess(ugcDOList, request);
+        return queryMainPageUgcSuccess(ugcDOList, request);
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/cursor", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> queryByCursorForUserPage(UgcQueryRequest request) {
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public Result<PageCursorResult<String, UgcResponse>> queryUserPageUgc(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForUserPage(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.queryByCursorForUserPage(ugcDO);
-        return queryByCursorForMainPageSuccess(ugcDOList, request);
+        return queryUserPageUgcSuccess(ugcDOList, request);
     }
 
     @SaCheckLogin
     @RequestMapping(value = "/follow_feed", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> queryByCursorForFollowPage(UgcQueryRequest request) {
+    public Result<PageCursorResult<String, UgcResponse>> queryFollowPageUgc(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForFollowPage(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        List<UgcDO> ugcDOList = ugcHelper.queryByCursorForFollowPage(ugcDO);
-        return queryByCursorForFollowPageSuccess(ugcDOList, request);
+        List<UgcDO> ugcDOList = ugcHelper.queryFollowPageUgc(ugcDO);
+        return queryFollowPageUgcSuccess(ugcDOList, request);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "recommend_feed", method = RequestMethod.GET)
+    public Result<PageCursorResult<String, UgcResponse>> queryRecommendPageUgc(UgcQueryRequest request) {
+        UgcValidator.checkUgcQueryRequestForRecommendPage(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        List<UgcDO> ugcDOList = ugcHelper.queryRecommendPageUgc(ugcDO);
+        return queryRecommendPageUgcSuccess(ugcDOList, request);
     }
 
     @SaCheckLogin
