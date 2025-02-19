@@ -8,6 +8,7 @@ import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.notification.model.NotificationUnreadInfo;
 import com.youyi.domain.notification.repository.po.NotificationPO;
 import java.util.List;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ class NotificationRepositoryTest extends BaseIntegrationTest {
 
     @Test
     void testInsert() {
-        notificationRepository.insert(buildPO());
+        Assertions.assertDoesNotThrow(() -> notificationRepository.insert(buildPO()));
     }
 
     @Test

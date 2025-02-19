@@ -2,13 +2,17 @@ package com.youyi.runner.ugc.util;
 
 import com.google.gson.reflect.TypeToken;
 import com.youyi.common.util.GsonUtil;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -18,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/02/09
  */
-public class TagRecommendationTest {
+class TagRecommendationTest {
 
     private static final Logger logger = LoggerFactory.getLogger(TagRecommendationTest.class);
 
@@ -85,7 +89,6 @@ public class TagRecommendationTest {
         }
         """;
 
-    // 标签之间的关联性（TagRelation）
     private static final Map<String, Set<String>> tagRelations;
 
     static {
@@ -96,9 +99,9 @@ public class TagRecommendationTest {
     @Test
     void testRecommend() {
         // 用户兴趣标签
-        Set<String> userInterestTags = new HashSet<>(Arrays.asList("Java", "Spring", "数据库", "微服务"));
+        Set<String> userInterestTags = Set.of("Java", "Spring", "数据库", "微服务");
 
-        // 获取Top 10 推荐标签
+        // 获取 Top 10 推荐标签
         List<String> recommendedTags = getTop10RecommendedTags(userInterestTags);
 
         logger.info("推荐的标签：{}", GsonUtil.toJson(recommendedTags));
@@ -110,8 +113,7 @@ public class TagRecommendationTest {
         logger.info("推荐的文章：{}", GsonUtil.toJson(recommendedArticles));
     }
 
-    // 模拟文章数据
-    public static List<Map<String, Set<String>>> getArticleData() {
+    private List<Map<String, Set<String>>> getArticleData() {
         List<Map<String, Set<String>>> articles = new ArrayList<>();
         articles.add(createArticle("文章1", new HashSet<>(Arrays.asList("Java", "Spring", "微服务"))));
         articles.add(createArticle("文章2", new HashSet<>(Arrays.asList("React", "前端架构", "TypeScript"))));
@@ -120,48 +122,57 @@ public class TagRecommendationTest {
         return articles;
     }
 
-    // 根据文章标题和标签创建文章数据
-    public static Map<String, Set<String>> createArticle(String title, Set<String> tags) {
+    private Map<String, Set<String>> createArticle(String title, Set<String> tags) {
         Map<String, Set<String>> article = new HashMap<>();
-        article.put("title", new HashSet<>(Collections.singletonList(title)));
+        article.put("title", Set.of(title));
         article.put("tags", tags);
         return article;
     }
 
-    // 获取Top 10 推荐标签
-    public static List<String> getTop10RecommendedTags(Set<String> userInterestTags) {
+    private List<String> getTop10RecommendedTags(Set<String> userInterestTags) {
         Map<String, Double> tagScores = new HashMap<>();
 
         // 扩展用户兴趣标签
         Set<String> extendedUserTags = new HashSet<>(userInterestTags);
         for (String tag : userInterestTags) {
             if (tagRelations.containsKey(tag)) {
-                extendedUserTags.addAll(tagRelations.get(tag)); // 添加相关标签
+                // 添加相关标签
+                extendedUserTags.addAll(tagRelations.get(tag));
             }
         }
+
+        // 创建一个最小堆（优先队列），容量为 10
+        Queue<Map.Entry<String, Double>> topTags = new PriorityQueue<>(
+            Comparator.comparingDouble(Map.Entry::getValue)
+        );
 
         // 计算每个标签与用户兴趣标签的余弦相似度
         for (String tag : allTags) {
             double similarity = calculateCosineSimilarity(extendedUserTags, Collections.singleton(tag));
             if (similarity > 0) {
-                tagScores.put(tag, similarity);
+                // 向堆中插入元素
+                topTags.offer(new AbstractMap.SimpleEntry<>(tag, similarity));
+                // 保持堆大小为10
+                if (topTags.size() > 10) {
+                    topTags.poll();  // 移除堆中最小的元素
+                }
             }
         }
 
-        // 按照相似度排序并选取Top 10
-        List<Map.Entry<String, Double>> sortedTags = new ArrayList<>(tagScores.entrySet());
-        sortedTags.sort((a, b) -> Double.compare(b.getValue(), a.getValue()));
-
+        // 提取 Top 10 标签
         List<String> top10Tags = new ArrayList<>();
-        for (int i = 0; i < Math.min(10, sortedTags.size()); i++) {
-            top10Tags.add(sortedTags.get(i).getKey());
+        while (!topTags.isEmpty()) {
+            top10Tags.add(topTags.poll().getKey());
         }
+
+        // 由于我们是从小到大堆顶移除的，所以需要反转列表顺序
+        Collections.reverse(top10Tags);
 
         return top10Tags;
     }
 
     // 计算余弦相似度
-    public static double calculateCosineSimilarity(Set<String> userInterestTags, Set<String> articleTags) {
+    private double calculateCosineSimilarity(Set<String> userInterestTags, Set<String> articleTags) {
         Set<String> intersection = new HashSet<>(userInterestTags);
         intersection.retainAll(articleTags);
         double dotProduct = intersection.size();
@@ -172,7 +183,7 @@ public class TagRecommendationTest {
     }
 
     // 根据推荐标签筛选相关的文章
-    public static List<Map<String, Set<String>>> getArticlesByTags(List<String> recommendedTags, List<Map<String, Set<String>>> articles) {
+    private List<Map<String, Set<String>>> getArticlesByTags(List<String> recommendedTags, List<Map<String, Set<String>>> articles) {
         List<Map<String, Set<String>>> recommendedArticles = new ArrayList<>();
 
         for (Map<String, Set<String>> article : articles) {
