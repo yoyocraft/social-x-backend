@@ -48,6 +48,12 @@ public class CommentaryResponseUtil {
         return response;
     }
 
+    public static Result<Long> queryCommentaryCountSuccess(Long allCount, CommentaryQueryRequest request) {
+        Result<Long> response = Result.success(allCount);
+        logger.info("query ugc commentary count, request:{}, response: {}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
     public static Result<Boolean> deleteSuccess(CommentaryDeleteRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         logger.info("delete comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));

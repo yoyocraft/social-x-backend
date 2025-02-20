@@ -75,6 +75,10 @@ public class CommentaryHelper {
         return commentaryDOList;
     }
 
+    public Long queryUgcCommentaryCount(CommentaryDO commentaryDO) {
+        return commentaryRepository.queryCountByUgcId(commentaryDO.getUgcId());
+    }
+
     public void deleteCommentary(CommentaryDO commentaryDO) {
         fillCurrUserAsCommentator(commentaryDO);
         CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryDO.getCommentaryId());

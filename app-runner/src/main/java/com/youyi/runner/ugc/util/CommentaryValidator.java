@@ -32,6 +32,12 @@ public class CommentaryValidator {
             .validateWithThrow();
     }
 
+    public static void checkCommentaryQueryRequestForCount(CommentaryQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(snowflakeIdChecker("UGC ID不合法"), request.getUgcId())
+            .validateWithThrow();
+    }
+
     public static void checkCommentaryDeleteRequest(CommentaryDeleteRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(snowflakeIdChecker("评论ID不合法"), request.getCommentaryId())
