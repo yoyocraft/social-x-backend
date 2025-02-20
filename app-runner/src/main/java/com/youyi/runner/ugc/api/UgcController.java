@@ -134,7 +134,7 @@ public class UgcController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "recommend_feed", method = RequestMethod.GET)
+    @RequestMapping(value = "/recommend_feed", method = RequestMethod.GET)
     public Result<PageCursorResult<String, UgcResponse>> queryRecommendPageUgc(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForRecommendPage(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);

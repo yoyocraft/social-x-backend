@@ -1,6 +1,5 @@
 package com.youyi.domain.ugc.helper;
 
-import com.google.common.collect.ImmutableMap;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.task.TaskType;
 import com.youyi.common.type.ugc.UgcInteractionType;
@@ -67,11 +66,11 @@ public class UgcHelper {
         List<UgcDocument> ugcDocuments = ugcService.querySelfUgcWithCursor(ugcDO);
         // 3. 封装作者信息和游标信息
         UserDO author = ugcDO.getAuthor();
-        List<UgcDO> ugcInfoList = ugcService.fillAuthorAndCursorInfo(ugcDocuments, ImmutableMap.of(author.getUserId(), author));
+        List<UgcDO> ugcInfoList = ugcService.fillAuthorAndCursorInfo(ugcDocuments, Map.of(author.getUserId(), author));
         // 4. 填充 statistic 数据
         ugcService.fillUgcStatistic(ugcInfoList);
         // 5. 过滤不必要的信息
-        filterNoNeedInfoForListPage(ugcInfoList);
+        ugcService.filterNoNeedInfoForListPage(ugcInfoList);
         return ugcInfoList;
     }
 
@@ -108,7 +107,7 @@ public class UgcHelper {
         // 4. 填充 Statistic 数据
         ugcService.fillUgcStatistic(ugcDOList);
         // 5. 过滤不必要的信息
-        filterNoNeedInfoForListPage(ugcDOList);
+        ugcService.filterNoNeedInfoForListPage(ugcDOList);
         return ugcDOList;
     }
 
@@ -119,11 +118,11 @@ public class UgcHelper {
         String authorId = ugcDO.getAuthorId();
         UserDO userDO = userService.queryByUserId(authorId);
         // 3. 封装信息
-        List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, ImmutableMap.of(authorId, userDO));
+        List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, Map.of(authorId, userDO));
         // 4. 填充 Statistic 数据
         ugcService.fillUgcStatistic(ugcDOList);
         // 5. 过滤不必要的信息
-        filterNoNeedInfoForListPage(ugcDOList);
+        ugcService.filterNoNeedInfoForListPage(ugcDOList);
         return ugcDOList;
     }
 
@@ -154,23 +153,26 @@ public class UgcHelper {
         // 5. 填充 Statistic 数据
         ugcService.fillUgcStatistic(ugcDOList);
         // 6. 过滤不必要的信息
-        filterNoNeedInfoForListPage(ugcDOList);
+        ugcService.filterNoNeedInfoForListPage(ugcDOList);
         return ugcDOList;
     }
 
     public List<UgcDO> queryRecommendPageUgc(UgcDO ugcDO) {
         // 1. 查询当前用户感兴趣的标签信息
         UserDO currentUserInfo = userService.getCurrentUserInfo();
+        List<String> recommendTags = ugcService.getRecommendTags(currentUserInfo);
         // 2. 游标查询UGC信息
-
+        List<UgcDocument> ugcDocumentList = ugcService.queryByTagWithCursor(ugcDO, recommendTags);
         // 3. 批量查询作者信息
-
+        Set<String> authorIds = ugcDocumentList.stream().map(UgcDocument::getAuthorId).collect(Collectors.toSet());
+        Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);
         // 4. 封装信息
-
+        List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
         // 5. 填充 Statistic 信息
-
+        ugcService.fillUgcStatistic(ugcDOList);
         // 6. 过滤不必要的信息
-        return null;
+        ugcService.filterNoNeedInfoForListPage(ugcDOList);
+        return ugcDOList;
     }
 
     private void handleLikeUgcInteraction(UgcDO ugcDO, UserDO currentUser) {
@@ -264,12 +266,5 @@ public class UgcHelper {
         if (updateStatus == UgcStatus.PUBLISHED && !UgcStatus.PRIVATE.name().equals(statusFromDB)) {
             throw AppBizException.of(OPERATION_DENIED, "非私密稿件无法设置为公开！");
         }
-    }
-
-    private void filterNoNeedInfoForListPage(List<UgcDO> ugcDOList) {
-        ugcDOList.forEach(ugcDO -> {
-            // 列表页无需返回 content
-            ugcDO.setContent(null);
-        });
     }
 }

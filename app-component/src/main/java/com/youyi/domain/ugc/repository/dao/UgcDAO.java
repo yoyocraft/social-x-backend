@@ -130,6 +130,15 @@ public class UgcDAO {
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
+    public List<UgcDocument> queryByTagWithTimeCursor(Collection<String> tags, long lastCursor, int size) {
+        Query query = new Query();
+        if (CollectionUtils.isNotEmpty(tags)) {
+            query.addCriteria(Criteria.where(UGC_TAGS).in(tags));
+        }
+        buildTimeCursorQueryCondition(query, lastCursor, size);
+        return mongoTemplate.find(query, UgcDocument.class);
+    }
+
     private void buildUgcStatusQueryCondition(Query query, String ugcStatus) {
         if (UgcStatus.ALL != UgcStatus.of(ugcStatus)) {
             // 查询指定状态的 UGC
