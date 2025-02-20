@@ -46,6 +46,12 @@ public class CommentaryDAO {
         return mongoTemplate.find(query, CommentaryDocument.class);
     }
 
+    public long queryCountByUgcId(String ugcId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(COMMENTARY_UGC_ID).is(ugcId));
+        return mongoTemplate.count(query, CommentaryDocument.class);
+    }
+
     public List<CommentaryDocument> queryRootCommentaryByUgcIdWithTimeCursor(String ugcId, long lastCursor, int size) {
         Query query = new Query();
         query.addCriteria(Criteria.where(COMMENTARY_UGC_ID).is(ugcId));

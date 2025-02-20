@@ -61,6 +61,16 @@ public class CommentaryRepository {
         }
     }
 
+    public long queryCountByUgcId(String ugcId) {
+        try {
+            checkState(StringUtils.isNotBlank(ugcId));
+            return commentaryDAO.queryCountByUgcId(ugcId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
     public List<CommentaryDocument> queryRootCommentaryByUgcIdWithTimeCursor(String ugcId, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
