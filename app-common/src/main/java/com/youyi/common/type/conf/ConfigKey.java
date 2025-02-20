@@ -48,6 +48,7 @@ public enum ConfigKey {
     INNER_UGC_TAGS,
     UGC_MAX_TAG_COUNT,
     UGC_TAG_RELATIONSHIP,
+    DEFAULT_RECOMMEND_TAG,
 
     // ================ Redis ==================
     INCR_WITH_EXPIRE_LUA_SCRIPT,

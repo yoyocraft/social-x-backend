@@ -40,4 +40,11 @@ public class UgcCacheRepo {
         return buildKey(CacheKey.COMMENTARY_LIKE_COUNT, dataMap);
     }
 
+    public static String ofUgcUserRecommendTagKey(String userId) {
+        Map<String, String> dataMap = ImmutableMap.of(
+            "userId", userId
+        );
+        return buildKey(CacheKey.UGC_USER_RECOMMEND_TAG, dataMap);
+    }
+
 }

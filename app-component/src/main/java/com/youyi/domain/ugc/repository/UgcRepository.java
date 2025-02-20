@@ -133,6 +133,16 @@ public class UgcRepository {
         }
     }
 
+    public List<UgcDocument> queryByTagWithTimeCursor(Collection<String> tags, long lastCursor, int size) {
+        try {
+            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+            return ugcDAO.queryByTagWithTimeCursor(tags, lastCursor, size);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
     public void incrUgcStatisticCount(String ugcId, long incrViewCount, long incrLikeCount, long incrCollectCount) {
         try {
             checkState(StringUtils.isNotBlank(ugcId));

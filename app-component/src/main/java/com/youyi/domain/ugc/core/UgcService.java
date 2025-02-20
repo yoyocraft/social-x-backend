@@ -1,26 +1,40 @@
 package com.youyi.domain.ugc.core;
 
+import com.google.gson.reflect.TypeToken;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.common.type.ugc.UgcTagType;
+import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
+import com.youyi.domain.ugc.repository.UgcTagRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.domain.ugc.repository.po.UgcTagPO;
 import com.youyi.domain.ugc.repository.relation.UgcNode;
+import com.youyi.domain.ugc.util.RecommendUtil;
 import com.youyi.domain.user.model.UserDO;
+import com.youyi.infra.cache.manager.CacheManager;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.RepositoryConstant.INIT_QUERY_CURSOR;
 import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
+import static com.youyi.common.type.conf.ConfigKey.DEFAULT_RECOMMEND_TAG;
+import static com.youyi.common.type.conf.ConfigKey.UGC_TAG_RELATIONSHIP;
+import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcUserRecommendTagKey;
+import static com.youyi.infra.conf.core.Conf.getListConfig;
+import static com.youyi.infra.conf.core.Conf.getStringConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -34,6 +48,8 @@ public class UgcService {
     private final UgcRelationshipRepository ugcRelationshipRepository;
 
     private final UgcStatisticCacheManager ugcStatisticCacheManager;
+    private final CacheManager cacheManager;
+    private final UgcTagRepository ugcTagRepository;
 
     public void publishUgc(UgcDO ugcDO) {
         if (ugcDO.isNew()) {
@@ -104,6 +120,19 @@ public class UgcService {
             SymbolConstant.EMPTY,
             UgcStatus.PUBLISHED.name(),
             authorIds,
+            cursor,
+            ugcDO.getSize()
+        );
+    }
+
+    public List<UgcDocument> queryByTagWithCursor(UgcDO ugcDO, Collection<String> tags) {
+        if (CollectionUtils.isEmpty(tags)) {
+            return Collections.emptyList();
+        }
+
+        long cursor = getTimeCursor(ugcDO);
+        return ugcRepository.queryByTagWithTimeCursor(
+            tags,
             cursor,
             ugcDO.getSize()
         );
@@ -196,6 +225,13 @@ public class UgcService {
         });
     }
 
+    public void filterNoNeedInfoForListPage(List<UgcDO> ugcDOList) {
+        ugcDOList.forEach(ugcDO -> {
+            // 列表页无需返回 content
+            ugcDO.setContent(null);
+        });
+    }
+
     private void checkStatusValidationBeforeUpdate(UgcDocument ugcDocument) {
         // 私密的稿件禁止修改
         if (UgcStatus.PRIVATE.name().equals(ugcDocument.getStatus())) {
@@ -224,4 +260,29 @@ public class UgcService {
         // 非作者查看可以增加浏览量
         return !ugcDO.getAuthor().getUserId().equals(currentUser.getUserId());
     }
+
+    public List<String> getRecommendTags(UserDO currentUser) {
+        // 0. 先读取缓存数据
+        String recommendTagKey = ofUgcUserRecommendTagKey(currentUser.getUserId());
+        String recommendTagJson = cacheManager.getString(recommendTagKey);
+        if (StringUtils.isNotBlank(recommendTagJson)) {
+            return GsonUtil.fromJson(recommendTagJson, List.class, String.class);
+        }
+        // 1. 判断用户是否有感兴趣的标签
+        List<String> personalizedTags = currentUser.getPersonalizedTags();
+        if (CollectionUtils.isEmpty(personalizedTags)) {
+            return getListConfig(DEFAULT_RECOMMEND_TAG, String.class);
+        }
+        // 2. 计算 tag
+        List<UgcTagPO> ugcTagPOList = ugcTagRepository.queryByType(UgcTagType.FOR_ARTICLE.getType());
+        List<String> allTags = ugcTagPOList.stream().map(UgcTagPO::getTagName).toList();
+        Map<String, Set<String>> tagRelations = GsonUtil.fromJson(getStringConfig(UGC_TAG_RELATIONSHIP), new TypeToken<>() {
+        });
+        List<String> recommendedTags = RecommendUtil.getTop10RecommendedTags(allTags, personalizedTags, tagRelations);
+        // 3. 保存缓存
+        recommendTagJson = GsonUtil.toJson(recommendedTags);
+        cacheManager.set(recommendTagKey, recommendTagJson);
+        return recommendedTags;
+    }
+
 }
