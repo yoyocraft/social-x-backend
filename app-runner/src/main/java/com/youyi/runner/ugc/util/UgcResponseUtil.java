@@ -80,6 +80,12 @@ public class UgcResponseUtil {
         return response;
     }
 
+    public static Result<List<UgcResponse>> queryHotUgcSuccess(List<UgcDO> ugcDOList) {
+        Result<List<UgcResponse>> response = Result.success(ugcDOList.stream().map(UGC_CONVERTER::toResponse).toList());
+        logger.info("query hot ugc, response:{}", GsonUtil.toJson(response));
+        return response;
+    }
+
     public static Result<Boolean> interactSuccess(UgcInteractionRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         logger.info("interact ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));

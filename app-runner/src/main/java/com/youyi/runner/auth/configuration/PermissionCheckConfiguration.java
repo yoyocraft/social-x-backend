@@ -1,12 +1,12 @@
 package com.youyi.runner.auth.configuration;
 
 import cn.dev33.satoken.stp.StpInterface;
-import com.google.common.collect.Lists;
 import com.youyi.common.type.user.PermissionType;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.helper.PermissionHelper;
 import com.youyi.domain.user.model.PermissionDO;
 import com.youyi.domain.user.model.UserDO;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -29,7 +29,7 @@ public class PermissionCheckConfiguration implements StpInterface {
         UserDO currentUser = userService.getCurrentUserInfo();
         PermissionDO permissionDO = permissionHelper.queryPermissionByRole(currentUser.getRole());
         if (Objects.isNull(permissionDO)) {
-            return Lists.newArrayList();
+            return Collections.emptyList();
         }
         return permissionDO.getPermissions()
             .stream()

@@ -143,6 +143,16 @@ public class UgcController {
     }
 
     @SaCheckLogin
+    @RequestMapping(value = "/hot", method = RequestMethod.GET)
+    public Result<List<UgcResponse>> queryHotUgc() {
+        // core logic:
+        // score calculation: view_cnt(40%), like_cnt(30%), collect_cnt(20%), commentary_cnt(10%)
+        // top 10
+        // T+1, get from cache
+        return null;
+    }
+
+    @SaCheckLogin
     @RecordOpLog(opType = OperationType.UGC_INTERACT)
     @RequestMapping(value = "/interact", method = RequestMethod.POST)
     public Result<Boolean> interact(@RequestBody UgcInteractionRequest request) {
