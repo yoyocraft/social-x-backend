@@ -182,3 +182,17 @@ CREATE TABLE `notification` (
     UNIQUE KEY `uk_notification_id` (`notification_id`),
     KEY `idx_receiver_id_status` (`receiver_id`, `notification_status`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'notification';
+
+DROP TABLE IF EXISTS `user_check_in`;
+
+CREATE TABLE `user_check_in` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
+    `extra_data` JSON COMMENT 'extra data',
+    `user_id` VARCHAR(64) NOT NULL COMMENT 'user id',
+    `check_in_date` DATE NOT NULL COMMENT 'sign in date, e.g. 2021-01-01',
+    `check_in_time` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'sign in time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_id_check_in_date` (`user_id`, `check_in_date`)
+) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'user check in';
