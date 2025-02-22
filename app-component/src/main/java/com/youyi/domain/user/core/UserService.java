@@ -2,6 +2,7 @@ package com.youyi.domain.user.core;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.google.common.collect.Lists;
+import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.model.UserLoginStateInfo;
@@ -15,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -162,7 +164,7 @@ public class UserService {
         String followCacheKey = ofUserFollowIdsKey(currentUser.getUserId());
         // 如果是关注，则添加到缓存中，否则从缓存中移除
         if (follow) {
-            cacheManager.addToSet(followCacheKey, followUserInfo.getUserId());
+            cacheManager.addToSet(followCacheKey, followUserInfo.getUserId(), CacheKey.USER_FOLLOW_IDS.getTtl());
             return;
         }
         cacheManager.removeFromSet(followCacheKey, followUserInfo.getUserId());
@@ -172,13 +174,23 @@ public class UserService {
         String followCacheKey = ofUserFollowIdsKey(userDO.getUserId());
         Set<Object> cachedFollowIds = cacheManager.getSetMembers(followCacheKey);
 
-        // 如果缓存为空，直接返回空集合
-        if (cachedFollowIds == null || cachedFollowIds.isEmpty()) {
-            return Collections.emptySet();
+        if (CollectionUtils.isNotEmpty(cachedFollowIds)) {
+            return cachedFollowIds.stream()
+                .map(String.class::cast)
+                .collect(Collectors.toUnmodifiableSet());
         }
 
-        return cachedFollowIds.stream()
-            .map(String.class::cast)
-            .collect(Collectors.toUnmodifiableSet());
+        // 从 neo4j 获取
+        List<UserRelationship> allFollowingUsers = userRelationRepository.getAllFollowingUsers(userDO.getUserId());
+        if (CollectionUtils.isEmpty(allFollowingUsers)) {
+            return Collections.emptySet();
+        }
+        Set<String> followUserIds = allFollowingUsers.stream()
+            .map(UserRelationship::getTarget)
+            .filter(Objects::nonNull)
+            .map(UserNode::getUserId)
+            .collect(Collectors.toSet());
+        cacheManager.addToSet(followCacheKey, CacheKey.USER_FOLLOW_IDS.getTtl(), followUserIds);
+        return followUserIds;
     }
 }
