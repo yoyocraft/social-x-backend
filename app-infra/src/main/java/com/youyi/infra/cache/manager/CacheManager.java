@@ -103,9 +103,29 @@ public class CacheManager {
         }
     }
 
+    public void addToSet(String key, Object value, Duration timeout) {
+        try {
+            redisTemplate.opsForSet().add(key, value);
+            redisTemplate.expire(key, timeout);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
     public void addToSet(String key, Object... values) {
         try {
             redisTemplate.opsForSet().add(key, values);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
+    public void addToSet(String key, Duration timeout, Object... values) {
+        try {
+            redisTemplate.opsForSet().add(key, values);
+            redisTemplate.expire(key, timeout);
         } catch (Exception e) {
             infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);

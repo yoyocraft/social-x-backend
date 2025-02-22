@@ -62,7 +62,7 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
             MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)
             WHERE f.userId > $lastUserId
             RETURN f AS target, r.since AS since
-            ORDER BY f.since DESC, f.userId DESC
+            ORDER BY r.since DESC, f.userId DESC
             LIMIT $pageSize
         """)
     List<UserRelationship> getFollowingUsers(
@@ -75,7 +75,7 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
             MATCH (u:user)-[r:FOLLOWING]->(f:user {userId: $userId})
             WHERE u.userId > $lastUserId
             RETURN u AS target, r.since AS since
-            ORDER BY u.since DESC, u.userId DESC
+            ORDER BY r.since DESC, u.userId DESC
             LIMIT $pageSize
         """)
     List<UserRelationship> getFollowers(
@@ -83,4 +83,11 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
         @Param("lastUserId") String lastUserId,
         @Param("pageSize") int pageSize
     );
+
+    @Query("""
+            MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)
+            RETURN f AS target, r.since AS since
+        """
+    )
+    List<UserRelationship> getAllFollowingUsers(@Param("userId") String userId);
 }

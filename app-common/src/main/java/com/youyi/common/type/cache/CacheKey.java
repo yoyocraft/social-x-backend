@@ -15,12 +15,12 @@ public enum CacheKey {
     UGC_VIEW_COUNT(ofKey("ugc", "${ugcId}", "sv"), Duration.ofHours(24)),
     UGC_LIKE_COUNT(ofKey("ugc", "${ugcId}", "sl"), Duration.ofHours(24)),
     UGC_COLLECT_COUNT(ofKey("ugc", "${ugcId}", "sc"), Duration.ofHours(24)),
-    UGC_USER_RECOMMEND_TAG(ofKey("ugc", "u", "${userId}", "rec_tag")),
+    UGC_USER_RECOMMEND_TAG(ofKey("ugc", "u", "${userId}", "rec_tag"), Duration.ofHours(24)),
 
     COMMENTARY_LIKE_COUNT(ofKey("cmt", "${commentaryId}", "cl"), Duration.ofHours(24)),
 
     USER_VERIFY_TOKEN(ofKey("u", "vrf", "cap", "${email}", "${bizType}"), Duration.ofMinutes(10)),
-    USER_FOLLOW_IDS(ofKey("u", "fl", "${userId}")),
+    USER_FOLLOW_IDS(ofKey("u", "fl", "${userId}"), Duration.ofHours(24)),
 
     EMAIL_CAPTCHA(ofKey("em", "cap", "${email}", "${bizType}"), Duration.ofMillis(10)),
     ;

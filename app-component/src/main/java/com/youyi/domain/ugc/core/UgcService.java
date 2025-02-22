@@ -3,6 +3,7 @@ package com.youyi.domain.ugc.core;
 import com.google.gson.reflect.TypeToken;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
+import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcTagType;
 import com.youyi.common.util.GsonUtil;
@@ -281,7 +282,7 @@ public class UgcService {
         List<String> recommendedTags = RecommendUtil.getTop10RecommendedTags(allTags, personalizedTags, tagRelations);
         // 3. 保存缓存
         recommendTagJson = GsonUtil.toJson(recommendedTags);
-        cacheManager.set(recommendTagKey, recommendTagJson);
+        cacheManager.set(recommendTagKey, recommendTagJson, CacheKey.UGC_USER_RECOMMEND_TAG.getTtl());
         return recommendedTags;
     }
 
