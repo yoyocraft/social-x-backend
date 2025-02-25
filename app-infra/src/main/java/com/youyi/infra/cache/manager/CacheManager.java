@@ -168,6 +168,15 @@ public class CacheManager {
         }
     }
 
+    public boolean exists(String key) {
+        try {
+            return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+        } catch (Exception e) {
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
     public <T> T execute(Class<T> returnType, String luaScript, String key, Object... args) {
         try {
             DefaultRedisScript<T> script = new DefaultRedisScript<>();

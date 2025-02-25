@@ -62,6 +62,9 @@ public class UgcDO {
     private UgcInteractionType interactionType;
     private Boolean interactFlag;
 
+    // for hot
+    private Double hotScore;
+
     public void create() {
         this.ugcId = IdSeqUtil.genUgcId();
         this.viewCount = 0L;

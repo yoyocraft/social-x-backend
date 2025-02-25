@@ -8,6 +8,7 @@ import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.ugc.core.UgcService;
 import com.youyi.domain.ugc.core.UgcTpeContainer;
+import com.youyi.domain.ugc.model.HotUgcCacheInfo;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
@@ -173,6 +174,13 @@ public class UgcHelper {
         // 6. 过滤不必要的信息
         ugcService.filterNoNeedInfoForListPage(ugcDOList);
         return ugcDOList;
+    }
+
+    public List<UgcDO> queryHotUgc() {
+        // 1. 查询热门UGC信息
+        List<HotUgcCacheInfo> cacheInfos = ugcService.queryHotUgcFromCache();
+        // 2. 填充信息
+        return ugcService.fillHotUgc(cacheInfos);
     }
 
     private void handleLikeUgcInteraction(UgcDO ugcDO, UserDO currentUser) {
