@@ -28,6 +28,7 @@ import static com.youyi.runner.ugc.util.UgcResponseUtil.deleteSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.interactSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryFollowPageUgcSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryHotUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryMainPageUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUgcDetailSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryRecommendPageUgcSuccess;
@@ -145,11 +146,8 @@ public class UgcController {
     @SaCheckLogin
     @RequestMapping(value = "/hot", method = RequestMethod.GET)
     public Result<List<UgcResponse>> queryHotUgc() {
-        // core logic:
-        // score calculation: view_cnt(40%), like_cnt(30%), collect_cnt(20%), commentary_cnt(10%)
-        // top 10
-        // T+1, get from cache
-        return null;
+        List<UgcDO> ugcDOList = ugcHelper.queryHotUgc();
+        return queryHotUgcSuccess(ugcDOList);
     }
 
     @SaCheckLogin

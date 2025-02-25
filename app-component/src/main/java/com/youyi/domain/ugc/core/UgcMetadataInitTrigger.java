@@ -29,9 +29,9 @@ import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
  */
 @Component
 @RequiredArgsConstructor
-public class UgcInitJob implements ApplicationListener<ApplicationReadyEvent> {
+public class UgcMetadataInitTrigger implements ApplicationListener<ApplicationReadyEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(UgcInitJob.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcMetadataInitTrigger.class);
 
     private final UgcCategoryRepository ugcCategoryRepository;
     private final UgcTagRepository ugcTagRepository;

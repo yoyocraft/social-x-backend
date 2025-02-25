@@ -7,6 +7,7 @@ import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcTagType;
 import com.youyi.common.util.GsonUtil;
+import com.youyi.domain.ugc.model.HotUgcCacheInfo;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
@@ -33,6 +34,7 @@ import static com.youyi.common.constant.RepositoryConstant.INIT_QUERY_CURSOR;
 import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
 import static com.youyi.common.type.conf.ConfigKey.DEFAULT_RECOMMEND_TAG;
 import static com.youyi.common.type.conf.ConfigKey.UGC_TAG_RELATIONSHIP;
+import static com.youyi.infra.cache.repo.UgcCacheRepo.ofHotUgcListKey;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcUserRecommendTagKey;
 import static com.youyi.infra.conf.core.Conf.getListConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
@@ -231,6 +233,32 @@ public class UgcService {
             // 列表页无需返回 content
             ugcDO.setContent(null);
         });
+    }
+
+    public List<HotUgcCacheInfo> queryHotUgcFromCache() {
+        String cacheKey = ofHotUgcListKey();
+        if (!cacheManager.exists(cacheKey)) {
+            // TODO youyi 2025/2/25 待处理
+            return Collections.emptyList();
+        }
+
+        String cacheInfoJson = cacheManager.getString(cacheKey);
+        return GsonUtil.fromJson(cacheInfoJson, List.class, HotUgcCacheInfo.class);
+    }
+
+    public List<UgcDO> fillHotUgc(List<HotUgcCacheInfo> hotUgcCacheInfos) {
+        if (CollectionUtils.isEmpty(hotUgcCacheInfos)) {
+            return Collections.emptyList();
+        }
+
+        return hotUgcCacheInfos.stream()
+            .map(hotUgcCacheInfo -> {
+                UgcDO ugcDO = new UgcDO();
+                ugcDO.setUgcId(hotUgcCacheInfo.getUgcId());
+                ugcDO.setTitle(hotUgcCacheInfo.getTitle());
+                ugcDO.setHotScore(hotUgcCacheInfo.getHotScore());
+                return ugcDO;
+            }).toList();
     }
 
     private void checkStatusValidationBeforeUpdate(UgcDocument ugcDocument) {
