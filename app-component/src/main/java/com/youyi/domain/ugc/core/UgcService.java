@@ -88,7 +88,7 @@ public class UgcService {
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
         // 2. 查询
-        return ugcRepository.queryMainPageInfoWithIdCursor(
+        return ugcRepository.queryMainPageInfoWithTimeCursor(
             ugcDO.getCategoryId(),
             ugcDO.getUgcType().name(),
             UgcStatus.PUBLISHED.name(),
@@ -101,7 +101,7 @@ public class UgcService {
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
         // 2. 查询
-        return ugcRepository.queryUserPageInfoWithIdCursor(
+        return ugcRepository.queryUserPageInfoWithTimeCursor(
             ugcDO.getCategoryId(),
             ugcDO.getUgcType().name(),
             UgcStatus.PUBLISHED.name(),
@@ -118,7 +118,7 @@ public class UgcService {
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
         // 2. 查询
-        return ugcRepository.queryFollowPageInfoWithIdCursor(
+        return ugcRepository.queryFollowPageInfoWithTimeCursor(
             SymbolConstant.EMPTY,
             SymbolConstant.EMPTY,
             UgcStatus.PUBLISHED.name(),
