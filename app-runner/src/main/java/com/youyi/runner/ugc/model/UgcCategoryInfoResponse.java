@@ -21,4 +21,7 @@ public class UgcCategoryInfoResponse extends BaseResponse {
 
     @SerializedName("priority")
     private Integer priority;
+
+    @SerializedName("icon")
+    private String icon;
 }

@@ -19,4 +19,6 @@ public class UgcCategoryPO extends BasePO {
     private String creatorId;
 
     private Integer priority;
+
+    private String icon;
 }
