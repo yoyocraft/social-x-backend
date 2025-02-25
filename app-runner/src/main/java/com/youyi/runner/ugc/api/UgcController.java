@@ -77,10 +77,10 @@ public class UgcController {
 
     @SaCheckLogin
     @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> querySelfUgc(UgcQueryRequest request) {
+    public Result<PageCursorResult<String, UgcResponse>> listSelfUgc(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForQuerySelfUgc(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        List<UgcDO> ugcPageInfo = ugcHelper.querySelfUgc(ugcDO);
+        List<UgcDO> ugcPageInfo = ugcHelper.listSelfUgc(ugcDO);
         return querySelfUgcSuccess(ugcPageInfo, request);
     }
 
@@ -108,15 +108,6 @@ public class UgcController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/main", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> queryMainPageUgc(UgcQueryRequest request) {
-        UgcValidator.checkUgcQueryRequestForMainPage(request);
-        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        List<UgcDO> ugcDOList = ugcHelper.queryByCursorForMainPage(ugcDO);
-        return queryMainPageUgcSuccess(ugcDOList, request);
-    }
-
-    @SaCheckLogin
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public Result<PageCursorResult<String, UgcResponse>> queryUserPageUgc(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForUserPage(request);
@@ -126,26 +117,35 @@ public class UgcController {
     }
 
     @SaCheckLogin
+    @RequestMapping(value = "/time_feed", method = RequestMethod.GET)
+    public Result<PageCursorResult<String, UgcResponse>> listTimelineUgcFeed(UgcQueryRequest request) {
+        UgcValidator.checkUgcQueryRequestForMainPage(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        List<UgcDO> ugcDOList = ugcHelper.listTimelineUgcFeed(ugcDO);
+        return queryMainPageUgcSuccess(ugcDOList, request);
+    }
+
+    @SaCheckLogin
     @RequestMapping(value = "/follow_feed", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> queryFollowPageUgc(UgcQueryRequest request) {
+    public Result<PageCursorResult<String, UgcResponse>> listFollowUgcFeed(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForFollowPage(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        List<UgcDO> ugcDOList = ugcHelper.queryFollowPageUgc(ugcDO);
+        List<UgcDO> ugcDOList = ugcHelper.listFollowUgcFeed(ugcDO);
         return queryFollowPageUgcSuccess(ugcDOList, request);
     }
 
     @SaCheckLogin
     @RequestMapping(value = "/recommend_feed", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> queryRecommendPageUgc(UgcQueryRequest request) {
+    public Result<PageCursorResult<String, UgcResponse>> listRecommendUgcFeed(UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForRecommendPage(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        List<UgcDO> ugcDOList = ugcHelper.queryRecommendPageUgc(ugcDO);
+        List<UgcDO> ugcDOList = ugcHelper.listRecommendUgcFeed(ugcDO);
         return queryRecommendPageUgcSuccess(ugcDOList, request);
     }
 
     @SaCheckLogin
     @RequestMapping(value = "/hot", method = RequestMethod.GET)
-    public Result<List<UgcResponse>> queryHotUgc() {
+    public Result<List<UgcResponse>> listHotUgc() {
         List<UgcDO> ugcDOList = ugcHelper.queryHotUgc();
         return queryHotUgcSuccess(ugcDOList);
     }
@@ -153,7 +153,7 @@ public class UgcController {
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.UGC_INTERACT)
     @RequestMapping(value = "/interact", method = RequestMethod.POST)
-    public Result<Boolean> interact(@RequestBody UgcInteractionRequest request) {
+    public Result<Boolean> interactUgc(@RequestBody UgcInteractionRequest request) {
         UgcValidator.checkUgcInteractionRequest(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(

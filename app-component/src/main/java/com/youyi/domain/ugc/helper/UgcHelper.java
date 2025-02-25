@@ -47,12 +47,12 @@ public class UgcHelper {
     private final UgcRelationshipRepository ugcRelationshipRepository;
 
     public void publishUgc(UgcDO ugcDO) {
-        fillCurrUserAsAuthorInfo(ugcDO);
+        fillCurrUserAsAuthor(ugcDO);
         ugcService.publishUgc(ugcDO);
     }
 
     public void deleteUgc(UgcDO ugcDO) {
-        fillCurrUserAsAuthorInfo(ugcDO);
+        fillCurrUserAsAuthor(ugcDO);
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
         checkSelfAuthor(ugcDO, ugcDocument);
         ugcRepository.deleteUgc(ugcDO.getUgcId());
@@ -60,9 +60,9 @@ public class UgcHelper {
         ugcTpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(ugcDO.getUgcId(), TaskType.UGC_DELETE_EVENT));
     }
 
-    public List<UgcDO> querySelfUgc(UgcDO ugcDO) {
+    public List<UgcDO> listSelfUgc(UgcDO ugcDO) {
         // 1. 查询作者信息
-        fillCurrUserAsAuthorInfo(ugcDO);
+        fillCurrUserAsAuthor(ugcDO);
         // 2. 查询
         List<UgcDocument> ugcDocuments = ugcService.querySelfUgcWithCursor(ugcDO);
         // 3. 封装作者信息和游标信息
@@ -89,7 +89,7 @@ public class UgcHelper {
     }
 
     public void updateUgcStatus(UgcDO ugcDO) {
-        fillCurrUserAsAuthorInfo(ugcDO);
+        fillCurrUserAsAuthor(ugcDO);
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
         checkNotNull(ugcDocument);
         checkSelfAuthor(ugcDO, ugcDocument);
@@ -97,7 +97,7 @@ public class UgcHelper {
         ugcRepository.updateUgcStatus(ugcDO.getUgcId(), ugcDO.getStatus().name());
     }
 
-    public List<UgcDO> queryByCursorForMainPage(UgcDO ugcDO) {
+    public List<UgcDO> listTimelineUgcFeed(UgcDO ugcDO) {
         // 1. 游标查询
         List<UgcDocument> ugcDocumentList = ugcService.queryWithUgcIdCursor(ugcDO);
         // 2. 批量查询作者信息
@@ -140,7 +140,7 @@ public class UgcHelper {
         }
     }
 
-    public List<UgcDO> queryFollowPageUgc(UgcDO ugcDO) {
+    public List<UgcDO> listFollowUgcFeed(UgcDO ugcDO) {
         // 1. 查询关注用户ID
         UserDO currentUserInfo = userService.getCurrentUserInfo();
         Set<String> followUserIds = userService.queryFollowingUserIdsFromCache(currentUserInfo);
@@ -158,7 +158,7 @@ public class UgcHelper {
         return ugcDOList;
     }
 
-    public List<UgcDO> queryRecommendPageUgc(UgcDO ugcDO) {
+    public List<UgcDO> listRecommendUgcFeed(UgcDO ugcDO) {
         // 1. 查询当前用户感兴趣的标签信息
         UserDO currentUserInfo = userService.getCurrentUserInfo();
         List<String> recommendTags = ugcService.getRecommendTags(currentUserInfo);
@@ -247,7 +247,7 @@ public class UgcHelper {
         ugcService.cancelCollectUgc(ugcDO, currentUser);
     }
 
-    private void fillCurrUserAsAuthorInfo(UgcDO ugcDO) {
+    private void fillCurrUserAsAuthor(UgcDO ugcDO) {
         UserDO author = userService.getCurrentUserInfo();
         ugcDO.setAuthor(author);
         ugcDO.setAuthorId(author.getUserId());

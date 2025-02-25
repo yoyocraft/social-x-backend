@@ -101,7 +101,7 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryMainPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
+    public List<UgcDocument> queryMainPageInfoWithTimeCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.emptyList(), lastCursor, size);
@@ -111,7 +111,7 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryUserPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, String authorId,
+    public List<UgcDocument> queryUserPageInfoWithTimeCursor(String categoryId, String type, String ugcStatus, String authorId,
         long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0 && StringUtils.isNotBlank(authorId));
@@ -122,7 +122,7 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryFollowPageInfoWithIdCursor(String categoryId, String type, String ugcStatus, Collection<String> authorIds,
+    public List<UgcDocument> queryFollowPageInfoWithTimeCursor(String categoryId, String type, String ugcStatus, Collection<String> authorIds,
         long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
