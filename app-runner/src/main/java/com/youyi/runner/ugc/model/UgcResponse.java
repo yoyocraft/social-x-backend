@@ -2,6 +2,7 @@ package com.youyi.runner.ugc.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.youyi.common.base.BaseResponse;
+import com.youyi.runner.user.model.UserBasicInfoResponse;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,14 +36,8 @@ public class UgcResponse extends BaseResponse {
     @SerializedName("attachmentUrls")
     private List<String> attachmentUrls;
 
-    @SerializedName("authorId")
-    private String authorId;
-
-    @SerializedName("authorName")
-    private String authorName;
-
-    @SerializedName("authorAvatar")
-    private String authorAvatar;
+    @SerializedName("author")
+    private UserBasicInfoResponse author;
 
     @SerializedName("viewCount")
     private Long viewCount;

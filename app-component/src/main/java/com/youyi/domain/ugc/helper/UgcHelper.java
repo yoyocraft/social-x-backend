@@ -81,6 +81,7 @@ public class UgcHelper {
         ugcDO.fillWithUgcDocument(ugcDocument);
         // 填充作者信息
         UserDO author = userService.queryByUserId(ugcDocument.getAuthorId());
+        userService.fillUserInteractInfo(author);
         ugcDO.setAuthor(author);
         // 填充 Statistic 数据
         ugcService.fillUgcStatistic(Collections.singletonList(ugcDO));
