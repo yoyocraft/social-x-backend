@@ -132,6 +132,16 @@ public class UserService {
         userDO.setFollowerCount(followerCount);
     }
 
+    public void fillUserInteractInfo(UserDO userDO) {
+        UserDO currentUser = getCurrentUserInfo();
+        // 当前用户是否关注了该用户
+        userDO.setHasFollowed(
+            Optional
+                .ofNullable(userRelationRepository.queryFollowingUserRelations(currentUser.getUserId(), userDO.getUserId()))
+                .isPresent()
+        );
+    }
+
     public List<UserDO> queryFollowingUsers(UserDO userDO) {
         List<UserRelationship> followingUserRelations = userRelationRepository.getFollowingUsers(
             userDO.getUserId(),
