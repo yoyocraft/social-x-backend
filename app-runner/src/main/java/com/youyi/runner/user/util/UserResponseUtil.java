@@ -17,6 +17,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.youyi.infra.conf.util.CommonConfUtil.checkHasMore;
 import static com.youyi.runner.user.util.UserConverter.USER_CONVERTER;
 
 /**
@@ -76,7 +77,7 @@ public class UserResponseUtil {
         List<UserBasicInfoResponse> data = userDOList.stream().map(USER_CONVERTER::toResponse).toList();
         String cursor = Optional.ofNullable(userDOList.isEmpty() ? null : userDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
 
-        Result<PageCursorResult<String, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor));
+        Result<PageCursorResult<String, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor, checkHasMore(data)));
         logger.info("query following users, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
@@ -84,7 +85,7 @@ public class UserResponseUtil {
     public static Result<PageCursorResult<String, UserBasicInfoResponse>> queryFollowersSuccess(List<UserDO> userDOList, UserQueryRequest request) {
         List<UserBasicInfoResponse> data = userDOList.stream().map(USER_CONVERTER::toResponse).toList();
         String cursor = Optional.ofNullable(userDOList.isEmpty() ? null : userDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
-        Result<PageCursorResult<String, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor));
+        Result<PageCursorResult<String, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor, checkHasMore(data)));
         logger.info("query followers, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }

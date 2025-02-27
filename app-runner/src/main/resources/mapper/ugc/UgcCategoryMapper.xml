@@ -36,5 +36,12 @@
         FROM ugc_category
         WHERE deleted_at = 0
     </select>
+    <select id="queryByCategoryId" resultType="com.youyi.domain.ugc.repository.po.UgcCategoryPO">
+        SELECT
+        <include refid="result_cols"/>
+        FROM ugc_category
+        WHERE deleted_at = 0
+        AND category_id = #{categoryId}
+    </select>
 
 </mapper>

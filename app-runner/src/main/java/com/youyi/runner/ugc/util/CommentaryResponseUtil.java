@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.youyi.common.constant.RepositoryConstant.TOP_COMMENTARY_ID;
+import static com.youyi.infra.conf.util.CommonConfUtil.checkHasMore;
 import static com.youyi.runner.ugc.util.CommentaryConverter.COMMENTARY_CONVERTER;
 
 /**
@@ -43,7 +44,7 @@ public class CommentaryResponseUtil {
         List<CommentaryInfo> commentaryInfoList = commentaryDOList.stream().map(COMMENTARY_CONVERTER::toCommentaryInfo).toList();
         // 按照 parentId 分组
         List<CommentaryResponse> commentaryResponses = groupCommentariesByParentId(commentaryInfoList);
-        Result<PageCursorResult<String, CommentaryResponse>> response = Result.success(PageCursorResult.of(commentaryResponses, cursor));
+        Result<PageCursorResult<String, CommentaryResponse>> response = Result.success(PageCursorResult.of(commentaryResponses, cursor, checkHasMore(commentaryResponses)));
         logger.info("query ugc comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }

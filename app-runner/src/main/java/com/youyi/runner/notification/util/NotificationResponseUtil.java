@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.youyi.infra.conf.util.CommonConfUtil.checkHasMore;
 import static com.youyi.runner.notification.util.NotificationConverter.NOTIFICATION_CONVERTER;
 
 /**
@@ -31,7 +32,7 @@ public class NotificationResponseUtil {
         NotificationQueryRequest request) {
         String cursor = Optional.ofNullable(notificationDOList.isEmpty() ? null : notificationDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
         List<NotificationResponse> notificationResponseList = notificationDOList.stream().map(NOTIFICATION_CONVERTER::toResponse).toList();
-        Result<PageCursorResult<String, NotificationResponse>> response = Result.success(PageCursorResult.of(notificationResponseList, cursor));
+        Result<PageCursorResult<String, NotificationResponse>> response = Result.success(PageCursorResult.of(notificationResponseList, cursor, checkHasMore(notificationResponseList)));
         logger.info("query notification, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }

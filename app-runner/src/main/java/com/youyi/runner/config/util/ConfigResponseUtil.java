@@ -14,6 +14,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.youyi.infra.conf.util.CommonConfUtil.checkHasMore;
 import static com.youyi.runner.config.util.ConfigConverter.CONFIG_CONVERTER;
 
 /**
@@ -40,7 +41,7 @@ public class ConfigResponseUtil {
         ConfigQueryRequest request) {
         Long cursor = Optional.ofNullable(configDOList.isEmpty() ? null : configDOList.get(0).getCursor()).orElse(Long.MAX_VALUE);
         List<ConfigInfoResponse> configInfoResponseList = configDOList.stream().map(CONFIG_CONVERTER::toResponse).toList();
-        Result<PageCursorResult<Long, ConfigInfoResponse>> response = Result.success(PageCursorResult.of(configInfoResponseList, cursor));
+        Result<PageCursorResult<Long, ConfigInfoResponse>> response = Result.success(PageCursorResult.of(configInfoResponseList, cursor, checkHasMore(configInfoResponseList)));
         logger.info("query config for main page, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }

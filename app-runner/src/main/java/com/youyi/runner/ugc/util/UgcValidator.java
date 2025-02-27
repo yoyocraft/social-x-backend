@@ -10,7 +10,6 @@ import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
-import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
@@ -36,7 +35,7 @@ public class UgcValidator {
                 request.getTitle()
             )
             .putIf(
-                () -> UgcType.ARTICLE == UgcType.of(request.getUgcType()),
+                () -> !Boolean.TRUE.equals(request.getDrafting()) && UgcType.ARTICLE == UgcType.of(request.getUgcType()),
                 notBlankChecker("摘要不能为空"),
                 request.getSummary()
             )
@@ -45,10 +44,10 @@ public class UgcValidator {
                 lessThanOrEqualChecker(getIntegerConfig(ConfigKey.UGC_MAX_TAG_COUNT), "标签数量过多"),
                 request.getTags().size()
             )
-            .putBatchIf(
+            .putIf(
                 () -> Boolean.TRUE.equals(request.getDrafting()),
                 notBlankChecker("类别不能为空"),
-                List.of(request.getCategoryId(), request.getCategoryName())
+                request.getCategoryId()
             )
             .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();
