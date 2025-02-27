@@ -2,7 +2,9 @@ package com.youyi.infra.conf.util;
 
 import com.youyi.common.base.BasePageRequest;
 import com.youyi.common.type.conf.ConfigKey;
+import java.util.Collection;
 import java.util.Objects;
+import org.apache.commons.collections4.CollectionUtils;
 
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
@@ -17,5 +19,9 @@ public class CommonConfUtil {
             return getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
         }
         return Math.min(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), request.getSize());
+    }
+
+    public static boolean checkHasMore(Collection<?> data) {
+        return CollectionUtils.isNotEmpty(data) && data.size() >= getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
     }
 }

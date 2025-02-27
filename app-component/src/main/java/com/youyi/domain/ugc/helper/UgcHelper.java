@@ -10,9 +10,11 @@ import com.youyi.domain.ugc.core.UgcService;
 import com.youyi.domain.ugc.core.UgcTpeContainer;
 import com.youyi.domain.ugc.model.HotUgcCacheInfo;
 import com.youyi.domain.ugc.model.UgcDO;
+import com.youyi.domain.ugc.repository.UgcCategoryRepository;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.domain.ugc.repository.po.UgcCategoryPO;
 import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
@@ -23,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -44,10 +47,12 @@ public class UgcHelper {
     private final UgcService ugcService;
 
     private final UgcRepository ugcRepository;
+    private final UgcCategoryRepository ugcCategoryRepository;
     private final UgcRelationshipRepository ugcRelationshipRepository;
 
     public void publishUgc(UgcDO ugcDO) {
         fillCurrUserAsAuthor(ugcDO);
+        fillUgcInfo(ugcDO);
         ugcService.publishUgc(ugcDO);
     }
 
@@ -252,6 +257,14 @@ public class UgcHelper {
         UserDO author = userService.getCurrentUserInfo();
         ugcDO.setAuthor(author);
         ugcDO.setAuthorId(author.getUserId());
+    }
+
+    private void fillUgcInfo(UgcDO ugcDO) {
+        String categoryId = ugcDO.getCategoryId();
+        if (StringUtils.isNotBlank(categoryId)) {
+            UgcCategoryPO ugcCategoryPO = ugcCategoryRepository.queryByCategoryId(categoryId);
+            ugcDO.setCategoryName(ugcCategoryPO.getCategoryName());
+        }
     }
 
     private void checkSelfAuthor(UgcDO ugcDO, UgcDocument ugcDocument) {

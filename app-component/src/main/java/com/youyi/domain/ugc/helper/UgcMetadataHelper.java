@@ -64,21 +64,16 @@ public class UgcMetadataHelper {
         return UgcMetadataDO.of(List.of(), tagInfoList);
     }
 
-    public void queryUgcArticleTagWithCursor(UgcMetadataDO ugcMetadataDO) {
-        List<UgcTagPO> ugcTagPOList = ugcTagRepository.queryByCursor(ugcMetadataDO.getCursor(), ugcMetadataDO.getSize());
-        List<UgcTagInfo> tagInfoList = ugcTagPOList.stream()
+    public UgcMetadataDO queryUgcArticleTag() {
+        List<UgcTagPO> articleTags = ugcTagRepository.queryByType(UgcTagType.FOR_ARTICLE.getType());
+        List<UgcTagInfo> tagInfoList = articleTags.stream()
             .map(po -> {
                 UgcTagInfo info = new UgcTagInfo();
                 info.fillWithUgcTagPO(po);
                 return info;
             })
             .toList();
-        // 回填数据
-        ugcMetadataDO.setUgcTagList(tagInfoList);
-        // 回填 cursor
-        if (CollectionUtils.isNotEmpty(ugcTagPOList)) {
-            ugcMetadataDO.setCursor(ugcTagPOList.get(ugcTagPOList.size() - 1).getTagId());
-        }
+        return UgcMetadataDO.of(List.of(), tagInfoList);
     }
 
 }

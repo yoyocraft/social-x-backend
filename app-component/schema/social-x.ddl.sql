@@ -128,6 +128,7 @@ CREATE TABLE `ugc_category` (
     `category_name` VARCHAR(64) NOT NULL COMMENT 'category name',
     `creator_id` VARCHAR(64) NOT NULL COMMENT 'creator id',
     `priority` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'priority, 0 is highest, 255 is lowest',
+    `type` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'type, 0 is for article, 1 is for post',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_category_id` (`category_id`),
     UNIQUE KEY `uk_category_name_priority` (`category_name`, `priority`)

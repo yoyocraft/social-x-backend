@@ -50,7 +50,7 @@ public class UgcController {
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.UGC_PUBLISH)
     @RequestMapping(value = "/publish", method = RequestMethod.POST)
-    public Result<Boolean> publish(@RequestBody UgcPublishRequest request) {
+    public Result<Boolean> publishUgc(@RequestBody UgcPublishRequest request) {
         UgcValidator.checkUgcPublishRequest(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(

@@ -44,7 +44,7 @@ public class CommentaryController {
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.COMMENTARY_PUBLISH)
     @RequestMapping(value = "/publish", method = RequestMethod.POST)
-    public Result<Boolean> publish(@RequestBody CommentaryPublishRequest request) {
+    public Result<Boolean> publishCommentary(@RequestBody CommentaryPublishRequest request) {
         CommentaryValidator.checkCommentaryPublishRequest(request);
         CommentaryDO commentaryDO = COMMENTARY_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(

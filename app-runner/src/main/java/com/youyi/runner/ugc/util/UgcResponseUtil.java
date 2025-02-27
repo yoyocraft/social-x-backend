@@ -16,6 +16,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.youyi.infra.conf.util.CommonConfUtil.checkHasMore;
 import static com.youyi.runner.ugc.util.UgcConverter.UGC_CONVERTER;
 
 /**
@@ -95,7 +96,7 @@ public class UgcResponseUtil {
     private static Result<PageCursorResult<String, UgcResponse>> buildCursorResponse(List<UgcDO> ugcDOList) {
         List<UgcResponse> data = ugcDOList.stream().map(UGC_CONVERTER::toResponse).toList();
         String cursor = Optional.ofNullable(ugcDOList.isEmpty() ? null : ugcDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
-        return Result.success(PageCursorResult.of(data, cursor));
+        return Result.success(PageCursorResult.of(data, cursor, checkHasMore(data)));
     }
 
 }

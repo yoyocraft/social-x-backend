@@ -17,4 +17,6 @@ public interface UgcCategoryMapper {
     int insertBatch(@Param("categories") List<UgcCategoryPO> poList);
 
     List<UgcCategoryPO> queryAll();
+
+    UgcCategoryPO queryByCategoryId(@Param("categoryId") String categoryId);
 }
