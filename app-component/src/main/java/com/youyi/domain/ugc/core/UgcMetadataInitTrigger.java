@@ -60,6 +60,8 @@ public class UgcMetadataInitTrigger implements ApplicationListener<ApplicationRe
                 po.setCategoryName(wrapper.getCategoryName());
                 po.setCreatorId(SYSTEM_OPERATOR_ID);
                 po.setPriority(wrapper.getPriority());
+                po.setIcon(wrapper.getIcon());
+                po.setType(wrapper.getType());
                 return po;
             }).toList();
 

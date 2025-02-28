@@ -1,6 +1,7 @@
 package com.youyi.domain.ugc.helper;
 
 import com.google.common.collect.Sets;
+import com.youyi.common.type.ugc.UgcCategoryType;
 import com.youyi.common.type.ugc.UgcTagType;
 import com.youyi.domain.ugc.model.UgcCategoryInfo;
 import com.youyi.domain.ugc.model.UgcMetadataDO;
@@ -31,8 +32,8 @@ public class UgcMetadataHelper {
     private final UserService userService;
 
     public UgcMetadataDO queryUgcCategory() {
-        List<UgcCategoryPO> allCategories = ugcCategoryRepository.queryAll();
-        List<UgcCategoryInfo> ugcCategoryInfoList = allCategories.stream()
+        List<UgcCategoryPO> ugcCategories = ugcCategoryRepository.queryByType(UgcCategoryType.ARTICLE_CATEGORY.getType());
+        List<UgcCategoryInfo> ugcCategoryInfoList = ugcCategories.stream()
             .map(po -> {
                 UgcCategoryInfo info = new UgcCategoryInfo();
                 info.fillWithUgcCategoryPO(po);
@@ -40,6 +41,18 @@ public class UgcMetadataHelper {
             })
             .toList();
         return UgcMetadataDO.of(ugcCategoryInfoList, List.of());
+    }
+
+    public UgcMetadataDO queryUgcTopic() {
+        List<UgcCategoryPO> ugcTopics = ugcCategoryRepository.queryByType(UgcCategoryType.POST_TOPIC.getType());
+        List<UgcCategoryInfo> ugcTopicInfos = ugcTopics.stream()
+            .map(po -> {
+                UgcCategoryInfo info = new UgcCategoryInfo();
+                info.fillWithUgcCategoryPO(po);
+                return info;
+            })
+            .toList();
+        return UgcMetadataDO.of(ugcTopicInfos, List.of());
     }
 
     public UgcMetadataDO queryUgcInterestTag() {

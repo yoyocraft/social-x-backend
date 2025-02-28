@@ -1,6 +1,7 @@
 package com.youyi.runner.ugc.model;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,6 +46,12 @@ public class CommentaryInfo {
     @SerializedName("status")
     private String status;
 
+    @SerializedName("attachmentUrls")
+    private List<String> attachmentUrls;
+
     @SerializedName("adopted")
     private Boolean adopted;
+
+    @SerializedName("liked")
+    private Boolean liked;
 }

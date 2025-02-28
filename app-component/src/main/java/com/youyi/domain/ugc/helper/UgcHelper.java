@@ -4,6 +4,7 @@ import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.task.TaskType;
 import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.common.type.ugc.UgcType;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.ugc.core.UgcService;
@@ -76,7 +77,9 @@ public class UgcHelper {
         // 4. 填充 statistic 数据
         ugcService.fillUgcStatistic(ugcInfoList);
         // 5. 过滤不必要的信息
-        ugcService.filterNoNeedInfoForListPage(ugcInfoList);
+        if (UgcType.ARTICLE == ugcDO.getUgcType()) {
+            ugcService.filterNoNeedInfoForListPage(ugcInfoList);
+        }
         return ugcInfoList;
     }
 
@@ -87,6 +90,7 @@ public class UgcHelper {
         // 填充作者信息
         UserDO author = userService.queryByUserId(ugcDocument.getAuthorId());
         userService.fillUserInteractInfo(author);
+        userService.fillRelationshipInfo(author);
         ugcDO.setAuthor(author);
         // 填充 Statistic 数据
         ugcService.fillUgcStatistic(Collections.singletonList(ugcDO));
@@ -106,16 +110,8 @@ public class UgcHelper {
     public List<UgcDO> listTimelineUgcFeed(UgcDO ugcDO) {
         // 1. 游标查询
         List<UgcDocument> ugcDocumentList = ugcService.queryWithUgcIdCursor(ugcDO);
-        // 2. 批量查询作者信息
-        Set<String> authorIds = ugcDocumentList.stream().map(UgcDocument::getAuthorId).collect(Collectors.toSet());
-        Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);
-        // 3. 封装信息
-        List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
-        // 4. 填充 Statistic 数据
-        ugcService.fillUgcStatistic(ugcDOList);
-        // 5. 过滤不必要的信息
-        ugcService.filterNoNeedInfoForListPage(ugcDOList);
-        return ugcDOList;
+        // 2. 封装信息
+        return polishUgcInfos(ugcDO, ugcDocumentList);
     }
 
     public List<UgcDO> queryByCursorForUserPage(UgcDO ugcDO) {
@@ -128,8 +124,10 @@ public class UgcHelper {
         List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, Map.of(authorId, userDO));
         // 4. 填充 Statistic 数据
         ugcService.fillUgcStatistic(ugcDOList);
-        // 5. 过滤不必要的信息
-        ugcService.filterNoNeedInfoForListPage(ugcDOList);
+        // 5. 文章搜索过滤不必要的信息
+        if (UgcType.ARTICLE == ugcDO.getUgcType()) {
+            ugcService.filterNoNeedInfoForListPage(ugcDOList);
+        }
         return ugcDOList;
     }
 
@@ -152,16 +150,7 @@ public class UgcHelper {
         Set<String> followUserIds = userService.queryFollowingUserIdsFromCache(currentUserInfo);
         // 2. 游标查询UGC信息
         List<UgcDocument> ugcDocumentList = ugcService.queryByAuthorIdsWithCursor(ugcDO, followUserIds);
-        // 3. 批量查询作者信息
-        Set<String> authorIds = ugcDocumentList.stream().map(UgcDocument::getAuthorId).collect(Collectors.toSet());
-        Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);
-        // 4. 封装信息
-        List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
-        // 5. 填充 Statistic 数据
-        ugcService.fillUgcStatistic(ugcDOList);
-        // 6. 过滤不必要的信息
-        ugcService.filterNoNeedInfoForListPage(ugcDOList);
-        return ugcDOList;
+        return polishUgcInfos(ugcDO, ugcDocumentList);
     }
 
     public List<UgcDO> listRecommendUgcFeed(UgcDO ugcDO) {
@@ -170,16 +159,8 @@ public class UgcHelper {
         List<String> recommendTags = ugcService.getRecommendTags(currentUserInfo);
         // 2. 游标查询UGC信息
         List<UgcDocument> ugcDocumentList = ugcService.queryByTagWithCursor(ugcDO, recommendTags);
-        // 3. 批量查询作者信息
-        Set<String> authorIds = ugcDocumentList.stream().map(UgcDocument::getAuthorId).collect(Collectors.toSet());
-        Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);
-        // 4. 封装信息
-        List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
-        // 5. 填充 Statistic 信息
-        ugcService.fillUgcStatistic(ugcDOList);
-        // 6. 过滤不必要的信息
-        ugcService.filterNoNeedInfoForListPage(ugcDOList);
-        return ugcDOList;
+        // 3. 封装信息
+        return polishUgcInfos(ugcDO, ugcDocumentList);
     }
 
     public List<UgcDO> queryHotUgc() {
@@ -197,6 +178,23 @@ public class UgcHelper {
         }
         // 取消喜欢
         doCancelLikeUgc(ugcDO, currentUser);
+    }
+
+    private List<UgcDO> polishUgcInfos(UgcDO ugcDO, List<UgcDocument> ugcDocumentList) {
+        // 3. 批量查询作者信息
+        Set<String> authorIds = ugcDocumentList.stream().map(UgcDocument::getAuthorId).collect(Collectors.toSet());
+        Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);
+        // 4. 封装信息
+        List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
+        // 5. 填充 Statistic 数据
+        ugcService.fillUgcStatistic(ugcDOList);
+        // 6. 文章搜索过滤不必要的信息
+        if (UgcType.ARTICLE == ugcDO.getUgcType()) {
+            ugcService.filterNoNeedInfoForListPage(ugcDOList);
+        }
+        // 7. 填充交互信息
+        ugcService.fillUgcInteractInfo(ugcDOList, userService.getCurrentUserInfo());
+        return ugcDOList;
     }
 
     private void handleCollectUgcInteraction(UgcDO ugcDO, UserDO currentUser) {

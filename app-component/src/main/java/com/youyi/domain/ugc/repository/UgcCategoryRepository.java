@@ -48,6 +48,16 @@ public class UgcCategoryRepository {
         }
     }
 
+    public List<UgcCategoryPO> queryByType(Integer type) {
+        try {
+            checkState(type != null);
+            return ugcCategoryMapper.queryByType(type);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
+
     public UgcCategoryPO queryByCategoryId(String categoryId) {
         try {
             checkState(StringUtils.isNotBlank(categoryId));

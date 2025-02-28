@@ -33,6 +33,7 @@ public class UgcDO {
     private Long viewCount;
     private Long likeCount;
     private Long collectCount;
+    private Long commentaryCount;
 
     private UgcStatus status;
 
@@ -61,6 +62,8 @@ public class UgcDO {
     // for like and collect
     private UgcInteractionType interactionType;
     private Boolean interactFlag;
+    private Boolean liked;
+    private Boolean collected;
 
     // for hot
     private Double hotScore;
@@ -70,6 +73,7 @@ public class UgcDO {
         this.viewCount = 0L;
         this.likeCount = 0L;
         this.collectCount = 0L;
+        this.commentaryCount = 0L;
     }
 
     public UgcDocument buildToSaveUgcDocument() {
@@ -86,6 +90,7 @@ public class UgcDO {
         ugcDocument.setViewCount(viewCount);
         ugcDocument.setLikeCount(likeCount);
         ugcDocument.setCollectCount(collectCount);
+        ugcDocument.setCommentaryCount(commentaryCount);
         ugcDocument.setStatus(status.name());
         ugcDocument.setCover(cover);
         ugcDocument.setAttachmentUrls(attachmentUrls);
@@ -132,6 +137,7 @@ public class UgcDO {
         this.viewCount = ugcDocument.getViewCount();
         this.likeCount = ugcDocument.getLikeCount();
         this.collectCount = ugcDocument.getCollectCount();
+        this.commentaryCount = ugcDocument.getCommentaryCount();
         this.status = UgcStatus.of(ugcDocument.getStatus());
         this.cover = ugcDocument.getCover();
         this.attachmentUrls = ugcDocument.getAttachmentUrls();
@@ -159,5 +165,12 @@ public class UgcDO {
             return;
         }
         this.collectCount = this.collectCount + toAddCount;
+    }
+
+    public void calCommentaryCount(Long toAddCount) {
+        if (Objects.isNull(toAddCount) || toAddCount <= 0) {
+            return;
+        }
+        this.commentaryCount = this.commentaryCount + toAddCount;
     }
 }

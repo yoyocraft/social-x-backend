@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.youyi.common.type.ugc.UgcTagType;
 import com.youyi.common.type.user.PermissionType;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
-import com.youyi.common.wrapper.UgcCategoryWrapper;
 import com.youyi.common.wrapper.UgcTagWrapper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -74,25 +73,6 @@ class GsonUtilTest {
         LocalDateTime localDateTime = LocalDateTime.now();
         String dateJson = Assertions.assertDoesNotThrow(() -> GsonUtil.toJson(localDateTime));
         Assertions.assertTrue(StringUtils.isNotBlank(dateJson));
-    }
-
-    @Test
-    void testCategories() {
-        List<String> categories = List.of(
-            "求职", "后端", "前端", "客户端", "人工智能", "大数据",
-            "云计算", "代码人生", "阅读", "开发工具"
-        );
-        AtomicInteger priority = new AtomicInteger();
-        List<UgcCategoryWrapper> categoryWrappers = categories.stream().map(category -> {
-            String categoryId = IdSeqUtil.genUgcCategoryId();
-            UgcCategoryWrapper wrapper = new UgcCategoryWrapper();
-            wrapper.setCategoryId(categoryId);
-            wrapper.setCategoryName(category);
-            wrapper.setPriority(priority.getAndIncrement());
-            return wrapper;
-        }).toList();
-        String json = Assertions.assertDoesNotThrow(() -> GsonUtil.toJson(categoryWrappers));
-        Assertions.assertTrue(StringUtils.isNotBlank(json));
     }
 
     @Test

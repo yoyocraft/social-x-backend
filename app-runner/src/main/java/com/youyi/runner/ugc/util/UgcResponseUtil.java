@@ -57,7 +57,7 @@ public class UgcResponseUtil {
         return response;
     }
 
-    public static Result<PageCursorResult<String, UgcResponse>> queryMainPageUgcSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
+    public static Result<PageCursorResult<String, UgcResponse>> listTimelineUgcFeedSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
         Result<PageCursorResult<String, UgcResponse>> response = buildCursorResponse(ugcDOList);
         logger.info("query main page ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
@@ -69,13 +69,13 @@ public class UgcResponseUtil {
         return response;
     }
 
-    public static Result<PageCursorResult<String, UgcResponse>> queryFollowPageUgcSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
+    public static Result<PageCursorResult<String, UgcResponse>> listFollowUgcFeedSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
         Result<PageCursorResult<String, UgcResponse>> response = buildCursorResponse(ugcDOList);
         logger.info("query follow page ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
-    public static Result<PageCursorResult<String, UgcResponse>> queryRecommendPageUgcSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
+    public static Result<PageCursorResult<String, UgcResponse>> listRecommendUgcFeedSuccess(List<UgcDO> ugcDOList, UgcQueryRequest request) {
         Result<PageCursorResult<String, UgcResponse>> response = buildCursorResponse(ugcDOList);
         logger.info("query recommend page ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;

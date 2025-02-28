@@ -101,7 +101,7 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryMainPageInfoWithTimeCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
+    public List<UgcDocument> queryWithTimeCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.emptyList(), lastCursor, size);
@@ -143,10 +143,10 @@ public class UgcRepository {
         }
     }
 
-    public void incrUgcStatisticCount(String ugcId, long incrViewCount, long incrLikeCount, long incrCollectCount) {
+    public void incrUgcStatisticCount(String ugcId, long incrViewCount, long incrLikeCount, long incrCollectCount, long incrCommentaryCount) {
         try {
             checkState(StringUtils.isNotBlank(ugcId));
-            ugcDAO.updateUgcStatistics(ugcId, incrViewCount, incrLikeCount, incrCollectCount);
+            ugcDAO.updateUgcStatistics(ugcId, incrViewCount, incrLikeCount, incrCollectCount, incrCommentaryCount);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

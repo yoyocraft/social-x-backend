@@ -137,4 +137,14 @@ public class CommentaryService {
         // 发送UGC_COMMENT_REPLY通知
         notificationManager.sendUgcCommentReplyNotification(commentaryDO.getCommentator(), commentaryDO.getParentId(), commentaryDO.getCommentary());
     }
+
+    public void fillInteractInfo(List<CommentaryDO> commentaryDOList, UserDO currentUserInfo) {
+        commentaryDOList.forEach(commentaryDO -> {
+            commentaryDO.setLiked(
+                Optional
+                    .ofNullable(commentaryRelationshipRepository.queryLikeRelationship(commentaryDO.getCommentaryId(), currentUserInfo.getUserId()))
+                    .isPresent()
+            );
+        });
+    }
 }

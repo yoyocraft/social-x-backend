@@ -2,6 +2,7 @@ package com.youyi.domain.ugc.request;
 
 import com.google.gson.annotations.SerializedName;
 import com.youyi.common.base.BaseRequest;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +22,7 @@ public class CommentaryPublishRequest extends BaseRequest {
 
     @SerializedName("commentary")
     private String commentary;
+
+    @SerializedName("attachmentUrls")
+    private List<String> attachmentUrls;
 }

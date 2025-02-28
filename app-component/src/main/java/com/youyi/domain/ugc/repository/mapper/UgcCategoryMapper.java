@@ -18,5 +18,7 @@ public interface UgcCategoryMapper {
 
     List<UgcCategoryPO> queryAll();
 
+    List<UgcCategoryPO> queryByType(@Param("type") Integer type);
+
     UgcCategoryPO queryByCategoryId(@Param("categoryId") String categoryId);
 }

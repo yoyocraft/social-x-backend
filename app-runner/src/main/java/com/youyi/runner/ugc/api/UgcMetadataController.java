@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.youyi.runner.ugc.util.UgcMetadataResponseUtil.queryUgcArticleTagSuccess;
 import static com.youyi.runner.ugc.util.UgcMetadataResponseUtil.queryUgcCategorySuccess;
 import static com.youyi.runner.ugc.util.UgcMetadataResponseUtil.queryUgcInterestTagSuccess;
+import static com.youyi.runner.ugc.util.UgcMetadataResponseUtil.queryUgcTopicSuccess;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -30,6 +31,13 @@ public class UgcMetadataController {
     public Result<UgcMetadataResponse> queryUgcCategory() {
         UgcMetadataDO ugcMetadataDO = ugcMetadataHelper.queryUgcCategory();
         return queryUgcCategorySuccess(ugcMetadataDO);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "/metadata/topic", method = RequestMethod.GET)
+    public Result<UgcMetadataResponse> queryUgcTopic() {
+        UgcMetadataDO ugcMetadataDO = ugcMetadataHelper.queryUgcTopic();
+        return queryUgcTopicSuccess(ugcMetadataDO);
     }
 
     @SaCheckLogin

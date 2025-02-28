@@ -4,10 +4,17 @@ import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.Strictness;
 import com.google.gson.reflect.TypeToken;
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
@@ -28,10 +35,13 @@ public class GsonUtil {
 
     static {
         GSON = Converters.registerAll(new GsonBuilder())
+            .registerTypeAdapter(File.class, new FileAdapter())
             .setStrictness(Strictness.LENIENT)
             .create();
 
-        PRETTY_GSON = Converters.registerAll(new GsonBuilder()).setPrettyPrinting().create();
+        PRETTY_GSON = Converters.registerAll(new GsonBuilder())
+            .registerTypeAdapter(File.class, new FileAdapter())
+            .setPrettyPrinting().create();
     }
 
     private GsonUtil() {
@@ -123,6 +133,19 @@ public class GsonUtil {
     public static JsonObject toJsonObject(Object obj) {
         JsonElement jsonElement = GSON.toJsonTree(obj);
         return jsonElement.getAsJsonObject();
+    }
+
+    static class FileAdapter implements JsonSerializer<File>, JsonDeserializer<File> {
+
+        @Override
+        public JsonElement serialize(File src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.getPath());
+        }
+
+        @Override
+        public File deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            return new File(json.getAsString());
+        }
     }
 
 }

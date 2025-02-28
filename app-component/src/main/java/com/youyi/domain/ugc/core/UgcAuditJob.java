@@ -10,6 +10,7 @@ import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -77,11 +78,13 @@ public class UgcAuditJob {
         isAuditReject |= checkSensitiveContent("摘要", ugcDocument.getSummary(), auditRetBuilder);
 
         // 检查标签中的敏感词
-        isAuditReject |= ugcDocument.getTags().stream()
-            .filter(SensitiveWordHelper::contains)
-            .peek(tag -> auditRetBuilder.append("标签包含敏感词：").append(tag).append(SymbolConstant.NEW_LINE))
-            .findAny()
-            .isPresent();
+        if (CollectionUtils.isNotEmpty(ugcDocument.getTags())) {
+            isAuditReject |= ugcDocument.getTags().stream()
+                .filter(SensitiveWordHelper::contains)
+                .peek(tag -> auditRetBuilder.append("标签包含敏感词：").append(tag).append(SymbolConstant.NEW_LINE))
+                .findAny()
+                .isPresent();
+        }
 
         // 根据检测结果设置状态
         if (isAuditReject) {

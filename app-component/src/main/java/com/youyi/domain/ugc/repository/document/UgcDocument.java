@@ -49,6 +49,8 @@ public class UgcDocument extends BaseDocument {
 
     private Long collectCount;
 
+    private Long commentaryCount;
+
     /**
      * @see UgcStatus
      */

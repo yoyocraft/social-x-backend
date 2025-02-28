@@ -16,11 +16,13 @@ public class UgcCategoryInfo {
     private String categoryName;
     private Integer priority;
     private String icon;
+    private Integer type;
 
     public void fillWithUgcCategoryPO(UgcCategoryPO po) {
         this.categoryId = po.getCategoryId();
         this.categoryName = po.getCategoryName();
         this.priority = po.getPriority();
         this.icon = po.getIcon();
+        this.type = po.getType();
     }
 }

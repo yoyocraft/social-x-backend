@@ -22,6 +22,7 @@ import static com.youyi.common.constant.UgcConstant.UGC_ATTACHMENT_URLS;
 import static com.youyi.common.constant.UgcConstant.UGC_AUTHOR_ID;
 import static com.youyi.common.constant.UgcConstant.UGC_CATEGORY_ID;
 import static com.youyi.common.constant.UgcConstant.UGC_COLLECT_COUNT;
+import static com.youyi.common.constant.UgcConstant.UGC_COMMENTARY_COUNT;
 import static com.youyi.common.constant.UgcConstant.UGC_CONTENT;
 import static com.youyi.common.constant.UgcConstant.UGC_COVER;
 import static com.youyi.common.constant.UgcConstant.UGC_EXTRA_DATA;
@@ -75,7 +76,7 @@ public class UgcDAO {
         return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
     }
 
-    public UpdateResult updateUgcStatistics(String ugcId, long incrViewCount, long incrLikeCount, long incrCollectCount) {
+    public UpdateResult updateUgcStatistics(String ugcId, long incrViewCount, long incrLikeCount, long incrCollectCount, long incrCommentaryCount) {
         Query query = new Query(Criteria.where(UGC_ID).is(ugcId));
         Update updateDef = new Update();
         if (incrViewCount > 0) {
@@ -86,6 +87,9 @@ public class UgcDAO {
         }
         if (incrCollectCount > 0) {
             updateDef.inc(UGC_COLLECT_COUNT, incrCollectCount);
+        }
+        if (incrCommentaryCount > 0) {
+            updateDef.inc(UGC_COMMENTARY_COUNT, incrCommentaryCount);
         }
         updateDef.set(UGC_GMT_MODIFIED, System.currentTimeMillis());
         return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
@@ -112,10 +116,15 @@ public class UgcDAO {
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryInfoWithIdCursor(String categoryId, String type, String ugcStatus, Collection<String> authorIds, long lastCursor,
-        int size) {
+    public List<UgcDocument> queryInfoWithIdCursor(
+        String categoryId,
+        String type,
+        String ugcStatus,
+        Collection<String> authorIds,
+        long lastCursor,
+        int size
+    ) {
         Query query = new Query();
-        buildUgcStatusQueryCondition(query, ugcStatus);
         if (StringUtils.isNotBlank(type)) {
             query.addCriteria(Criteria.where(UGC_TYPE).is(type));
         }
@@ -125,6 +134,7 @@ public class UgcDAO {
         if (CollectionUtils.isNotEmpty(authorIds)) {
             query.addCriteria(Criteria.where(UGC_AUTHOR_ID).in(authorIds));
         }
+        buildUgcStatusQueryCondition(query, ugcStatus);
         buildTimeCursorQueryCondition(query, lastCursor, size);
 
         return mongoTemplate.find(query, UgcDocument.class);

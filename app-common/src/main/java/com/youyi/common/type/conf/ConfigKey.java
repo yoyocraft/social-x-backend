@@ -50,10 +50,7 @@ public enum ConfigKey {
     UGC_TAG_RELATIONSHIP,
     DEFAULT_RECOMMEND_TAG,
     HOT_LIST_TOP_N,
-
-    // ================ Redis ==================
-    INCR_WITH_EXPIRE_LUA_SCRIPT,
-    GET_AND_DEL_LUA_SCRIPT,
+    ATTACHMENT_MAX_COUNT,
 
     // ================ Notification ==================
     NOTIFICATION_SUMMARY_TEMPLATE,

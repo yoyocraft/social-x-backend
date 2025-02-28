@@ -14,20 +14,21 @@
         <result property="creatorId" column="creator_id"/>
         <result property="priority" column="priority"/>
         <result property="icon" column="icon"/>
+        <result property="type" column="type"/>
     </resultMap>
 
     <sql id="result_cols">
-        id, gmt_create, gmt_modified, deleted_at, category_id, category_name, creator_id, priority, icon
+        id, gmt_create, gmt_modified, deleted_at, category_id, category_name, creator_id, priority, icon, type
     </sql>
     <insert id="insert">
-        INSERT INTO ugc_category (category_id, category_name, creator_id, priority, icon)
-        VALUES (#{categoryId}, #{categoryName}, #{creatorId}, #{priority}, #{icon})
+        INSERT INTO ugc_category (category_id, category_name, creator_id, priority, icon, type)
+        VALUES (#{categoryId}, #{categoryName}, #{creatorId}, #{priority}, #{icon}, #{type})
     </insert>
     <insert id="insertBatch">
-        INSERT INTO ugc_category (category_id, category_name, creator_id, priority, icon)
+        INSERT INTO ugc_category (category_id, category_name, creator_id, priority, icon, type)
         VALUES
         <foreach collection="categories" item="item" index="index" separator=",">
-            (#{item.categoryId}, #{item.categoryName}, #{item.creatorId}, #{item.priority}, #{item.icon})
+            (#{item.categoryId}, #{item.categoryName}, #{item.creatorId}, #{item.priority}, #{item.icon}, #{item.type})
         </foreach>
     </insert>
     <select id="queryAll" resultType="com.youyi.domain.ugc.repository.po.UgcCategoryPO">
@@ -42,6 +43,13 @@
         FROM ugc_category
         WHERE deleted_at = 0
         AND category_id = #{categoryId}
+    </select>
+    <select id="queryByType" resultType="com.youyi.domain.ugc.repository.po.UgcCategoryPO">
+        SELECT
+        <include refid="result_cols"/>
+        FROM ugc_category
+        WHERE deleted_at = 0
+        AND type = #{type}
     </select>
 
 </mapper>
