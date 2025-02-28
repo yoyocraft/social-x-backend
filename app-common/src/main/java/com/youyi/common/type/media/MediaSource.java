@@ -13,6 +13,7 @@ public enum MediaSource {
     UNKNOWN,
     AVATAR,
     ARTICLE,
+    POST,
     REPLY,
     SYSTEM,
     ;

@@ -36,13 +36,4 @@ public class UgcQueryRequest extends BasePageRequest {
 
     @SerializedName("authorId")
     private String authorId;
-
-    /**
-     * 查询关注用户的ugc
-     */
-    @SerializedName("followFeed")
-    private Boolean followFeed;
-
-    @SerializedName("recommendFeed")
-    private Boolean recommendFeed;
 }

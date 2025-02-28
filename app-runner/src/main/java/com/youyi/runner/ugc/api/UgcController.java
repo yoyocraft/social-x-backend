@@ -27,11 +27,11 @@ import static com.youyi.domain.ugc.assembler.UgcAssembler.UGC_ASSEMBLER;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.deleteSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.interactSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.queryFollowPageUgcSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.listFollowUgcFeedSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryHotUgcSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.queryMainPageUgcSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.listTimelineUgcFeedSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUgcDetailSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.queryRecommendPageUgcSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.listRecommendUgcFeedSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.querySelfUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUserPageUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.setStatusSuccess;
@@ -64,7 +64,7 @@ public class UgcController {
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.UGC_DELETE)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public Result<Boolean> delete(@RequestBody UgcDeleteRequest request) {
+    public Result<Boolean> deleteUgc(@RequestBody UgcDeleteRequest request) {
         UgcValidator.checkUgcDeleteRequest(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
@@ -119,28 +119,28 @@ public class UgcController {
     @SaCheckLogin
     @RequestMapping(value = "/time_feed", method = RequestMethod.GET)
     public Result<PageCursorResult<String, UgcResponse>> listTimelineUgcFeed(UgcQueryRequest request) {
-        UgcValidator.checkUgcQueryRequestForMainPage(request);
+        UgcValidator.checkUgcQueryRequestForTimelineFeed(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.listTimelineUgcFeed(ugcDO);
-        return queryMainPageUgcSuccess(ugcDOList, request);
+        return listTimelineUgcFeedSuccess(ugcDOList, request);
     }
 
     @SaCheckLogin
     @RequestMapping(value = "/follow_feed", method = RequestMethod.GET)
     public Result<PageCursorResult<String, UgcResponse>> listFollowUgcFeed(UgcQueryRequest request) {
-        UgcValidator.checkUgcQueryRequestForFollowPage(request);
+        UgcValidator.checkUgcQueryRequestForFollowFeed(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.listFollowUgcFeed(ugcDO);
-        return queryFollowPageUgcSuccess(ugcDOList, request);
+        return listFollowUgcFeedSuccess(ugcDOList, request);
     }
 
     @SaCheckLogin
     @RequestMapping(value = "/recommend_feed", method = RequestMethod.GET)
     public Result<PageCursorResult<String, UgcResponse>> listRecommendUgcFeed(UgcQueryRequest request) {
-        UgcValidator.checkUgcQueryRequestForRecommendPage(request);
+        UgcValidator.checkUgcQueryRequestForRecommendFeed(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.listRecommendUgcFeed(ugcDO);
-        return queryRecommendPageUgcSuccess(ugcDOList, request);
+        return listRecommendUgcFeedSuccess(ugcDOList, request);
     }
 
     @SaCheckLogin

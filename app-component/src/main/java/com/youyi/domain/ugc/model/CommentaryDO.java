@@ -5,6 +5,7 @@ import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.user.model.UserDO;
+import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,8 +32,12 @@ public class CommentaryDO {
 
     private CommentaryExtraData extraData;
 
+    private List<String> attachmentUrls;
+
     private Long gmtCreate;
     private Long gmtModified;
+
+    private Boolean liked;
 
     /**
      * for query
@@ -62,6 +67,7 @@ public class CommentaryDO {
         commentaryDocument.setCommentary(commentary);
         commentaryDocument.setLikeCount(likeCount);
         commentaryDocument.setStatus(status.name());
+        commentaryDocument.setAttachmentUrls(attachmentUrls);
         commentaryDocument.setExtraData(extraData);
         commentaryDocument.setGmtCreate(System.currentTimeMillis());
         commentaryDocument.setGmtModified(System.currentTimeMillis());
@@ -75,6 +81,7 @@ public class CommentaryDO {
         this.commentary = document.getCommentary();
         this.likeCount = document.getLikeCount();
         this.status = CommentaryStatus.of(document.getStatus());
+        this.attachmentUrls = document.getAttachmentUrls();
         this.extraData = document.getExtraData();
     }
 

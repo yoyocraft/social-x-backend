@@ -26,6 +26,7 @@ public class UgcConstant {
     public static final String UGC_VIEW_COUNT = "viewCount";
     public static final String UGC_LIKE_COUNT = "likeCount";
     public static final String UGC_COLLECT_COUNT = "collectCount";
+    public static final String UGC_COMMENTARY_COUNT = "commentaryCount";
 
     public static List<String> includeUgcStatus = List.of(
         UgcStatus.PUBLISHED.name(),
@@ -37,8 +38,6 @@ public class UgcConstant {
     public static final String COMMENTARY_ID = "commentaryId";
     public static final String COMMENTARY_PARENT_ID = "parentId";
     public static final String COMMENTARY_UGC_ID = "ugcId";
-    public static final String COMMENTARY_COMMENTATOR_ID = "commentatorId";
-    public static final String COMMENTARY_COMMENTARY = "commentary";
     public static final String COMMENTARY_LIKE_COUNT = "likeCount";
     public static final String COMMENTARY_STATUS = "status";
     public static final String COMMENTARY_EXTRA_DATA = "extraData";

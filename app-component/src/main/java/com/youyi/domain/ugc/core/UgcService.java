@@ -88,7 +88,7 @@ public class UgcService {
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
         // 2. 查询
-        return ugcRepository.queryMainPageInfoWithTimeCursor(
+        return ugcRepository.queryWithTimeCursor(
             ugcDO.getCategoryId(),
             ugcDO.getUgcType().name(),
             UgcStatus.PUBLISHED.name(),
@@ -225,6 +225,10 @@ public class UgcService {
             // collect
             Long collectCount = ugcStatisticCacheManager.getUgcCollectCount(ugcDO.getUgcId());
             ugcDO.calCollectCount(collectCount);
+
+            // commentary
+            Long commentaryCount = ugcStatisticCacheManager.getUgcCommentaryCount(ugcDO.getUgcId());
+            ugcDO.calCommentaryCount(commentaryCount);
         });
     }
 
@@ -314,4 +318,19 @@ public class UgcService {
         return recommendedTags;
     }
 
+    public void fillUgcInteractInfo(List<UgcDO> ugcDOList, UserDO currentUser) {
+        ugcDOList.forEach(ugcDO -> {
+            ugcDO.setLiked(
+                Optional
+                    .ofNullable(ugcRelationshipRepository.queryLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId()))
+                    .isPresent()
+            );
+
+            ugcDO.setCollected(
+                Optional
+                    .ofNullable(ugcRelationshipRepository.queryCollectRelationship(ugcDO.getUgcId(), currentUser.getUserId()))
+                    .isPresent()
+            );
+        });
+    }
 }

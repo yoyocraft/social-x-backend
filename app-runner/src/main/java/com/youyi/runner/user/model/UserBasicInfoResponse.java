@@ -54,10 +54,10 @@ public class UserBasicInfoResponse extends BaseResponse {
     public Long joinTime;
 
     @SerializedName("followerCount")
-    public Long followerCount;
+    public Integer followerCount;
 
     @SerializedName("followingCount")
-    public Long followingCount;
+    public Integer followingCount;
 
     @SerializedName("hasFollowed")
     private Boolean hasFollowed;

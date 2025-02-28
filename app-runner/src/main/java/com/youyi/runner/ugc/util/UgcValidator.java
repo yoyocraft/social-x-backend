@@ -10,13 +10,15 @@ import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
+import java.util.List;
+import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
 
+import static com.youyi.common.type.conf.ConfigKey.ATTACHMENT_MAX_COUNT;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
 import static com.youyi.common.util.param.ParamChecker.snowflakeIdChecker;
-import static com.youyi.common.util.param.ParamChecker.trueChecker;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
@@ -42,12 +44,17 @@ public class UgcValidator {
             .putIf(
                 () -> CollectionUtils.isNotEmpty(request.getTags()),
                 lessThanOrEqualChecker(getIntegerConfig(ConfigKey.UGC_MAX_TAG_COUNT), "标签数量过多"),
-                request.getTags().size()
+                Optional.ofNullable(request.getTags()).orElseGet(List::of).size()
             )
             .putIf(
                 () -> Boolean.TRUE.equals(request.getDrafting()),
                 notBlankChecker("类别不能为空"),
                 request.getCategoryId()
+            )
+            .putIf(
+                () -> CollectionUtils.isNotEmpty(request.getAttachmentUrls()),
+                lessThanOrEqualChecker(getIntegerConfig(ATTACHMENT_MAX_COUNT), "附件数量过多"),
+                Optional.ofNullable(request.getAttachmentUrls()).orElseGet(List::of).size()
             )
             .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();
@@ -81,7 +88,7 @@ public class UgcValidator {
             .validateWithThrow();
     }
 
-    public static void checkUgcQueryRequestForMainPage(UgcQueryRequest request) {
+    public static void checkUgcQueryRequestForTimelineFeed(UgcQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("cursor不合法"), request.getCursor())
             .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
@@ -106,17 +113,15 @@ public class UgcValidator {
             .validateWithThrow();
     }
 
-    public static void checkUgcQueryRequestForFollowPage(UgcQueryRequest request) {
+    public static void checkUgcQueryRequestForFollowFeed(UgcQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(trueChecker("followFeed不能为空"), request.getFollowFeed())
             .put(notBlankChecker("cursor不合法"), request.getCursor())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
     }
 
-    public static void checkUgcQueryRequestForRecommendPage(UgcQueryRequest request) {
+    public static void checkUgcQueryRequestForRecommendFeed(UgcQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(trueChecker("recommendFeed不能为空"), request.getRecommendFeed())
             .put(notBlankChecker("cursor不合法"), request.getCursor())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();

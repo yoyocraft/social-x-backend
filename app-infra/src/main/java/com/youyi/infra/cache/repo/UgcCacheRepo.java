@@ -33,6 +33,13 @@ public class UgcCacheRepo {
         return buildKey(CacheKey.UGC_COLLECT_COUNT, dataMap);
     }
 
+    public static String ofUgcCommentaryCountKey(String ugcId) {
+        Map<String, String> dataMap = ImmutableMap.of(
+            "ugcId", ugcId
+        );
+        return buildKey(CacheKey.UGC_COMMENTARY_COUNT, dataMap);
+    }
+
     public static String ofCommentaryLikeCountKey(String commentaryId) {
         Map<String, String> dataMap = ImmutableMap.of(
             "commentaryId", commentaryId

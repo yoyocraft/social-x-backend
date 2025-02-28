@@ -32,6 +32,17 @@ public class UgcMetadataResponseUtil {
         return response;
     }
 
+    public static Result<UgcMetadataResponse> queryUgcTopicSuccess(UgcMetadataDO ugcMetadataDO) {
+        List<UgcCategoryInfoResponse> ugcTopicInfoResponseList = ugcMetadataDO.getUgcCategoryList()
+            .stream()
+            .map(UGC_METADATA_CONVERTER::toCategoryInfoResponse)
+            .sorted(Comparator.comparingInt(UgcCategoryInfoResponse::getPriority))
+            .toList();
+        Result<UgcMetadataResponse> response = Result.success(UgcMetadataResponse.of(ugcTopicInfoResponseList, List.of()));
+        logger.info("query ugc topic, response:{}", GsonUtil.toJson(response));
+        return response;
+    }
+
     public static Result<UgcMetadataResponse> queryUgcInterestTagSuccess(UgcMetadataDO ugcMetadataDO) {
         List<UgcTagInfoResponse> ugcTagInfoResponseList = ugcMetadataDO.getUgcTagList()
             .stream()

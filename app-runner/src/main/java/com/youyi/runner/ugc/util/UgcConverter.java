@@ -33,7 +33,9 @@ public interface UgcConverter {
         @Mapping(target = "author", expression = "java(toAuthorResponse(ugcDO.getAuthor()))"),
         @Mapping(target = "type", expression = "java(Optional.ofNullable(ugcDO.getUgcType()).orElse(UgcType.ARTICLE).name())"),
         @Mapping(target = "status", expression = "java(Optional.ofNullable(ugcDO.getStatus()).orElse(UgcStatus.PUBLISHED).name())"),
-        @Mapping(target = "hasSolved", expression = "java(Objects.nonNull(ugcDO.getExtraData()) && Boolean.TRUE.equals(ugcDO.getExtraData().getHasSolved()))")
+        @Mapping(target = "hasSolved", expression = "java(Objects.nonNull(ugcDO.getExtraData()) && Boolean.TRUE.equals(ugcDO.getExtraData().getHasSolved()))"),
+        @Mapping(target = "liked", source = "liked"),
+        @Mapping(target = "collected", source = "collected")
     })
     UgcResponse toResponse(UgcDO ugcDO);
 
@@ -47,6 +49,8 @@ public interface UgcConverter {
         author.setAvatar(userDO.getAvatar());
         author.setBio(userDO.getBio());
         author.setHasFollowed(userDO.getHasFollowed());
+        author.setFollowerCount(userDO.getFollowerCount());
+        author.setFollowingCount(userDO.getFollowingCount());
         return author;
     }
 }

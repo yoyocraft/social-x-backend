@@ -48,6 +48,9 @@ public class UgcResponse extends BaseResponse {
     @SerializedName("collectCount")
     private Long collectCount;
 
+    @SerializedName("commentaryCount")
+    private Long commentaryCount;
+
     @SerializedName("status")
     private String status;
 
@@ -68,4 +71,10 @@ public class UgcResponse extends BaseResponse {
 
     @SerializedName("gmtModified")
     private Long gmtModified;
+
+    @SerializedName("liked")
+    private Boolean liked;
+
+    @SerializedName("collected")
+    private Boolean collected;
 }

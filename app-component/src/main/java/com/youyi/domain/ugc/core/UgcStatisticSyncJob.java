@@ -74,7 +74,8 @@ public class UgcStatisticSyncJob {
         Long toAddViewCount = Optional.ofNullable(ugcStatisticCacheManager.getAndDelUgcViewCount(ugcId)).orElse(0L);
         Long toAddLikeCount = Optional.ofNullable(ugcStatisticCacheManager.getAndDelUgcLikeCount(ugcId)).orElse(0L);
         Long toAddCollectCount = Optional.ofNullable(ugcStatisticCacheManager.getAndDelUgcCollectCount(ugcId)).orElse(0L);
-        ugcRepository.incrUgcStatisticCount(ugcId, toAddViewCount, toAddLikeCount, toAddCollectCount);
+        Long toAddCommentaryCount = Optional.ofNullable(ugcStatisticCacheManager.getAndDelUgcCommentaryCount(ugcId)).orElse(0L);
+        ugcRepository.incrUgcStatisticCount(ugcId, toAddViewCount, toAddLikeCount, toAddCollectCount, toAddCommentaryCount);
     }
 
     private void doSyncCommentaryStatistic(CommentaryDocument commentaryDocument) {

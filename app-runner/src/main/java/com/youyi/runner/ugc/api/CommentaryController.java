@@ -64,6 +64,7 @@ public class CommentaryController {
         return queryUgcCommentarySuccess(commentaryDOList, request);
     }
 
+    @Deprecated
     @SaCheckLogin
     @RequestMapping(value = "/count", method = RequestMethod.GET)
     public Result<Long> queryCommentaryCount(CommentaryQueryRequest request) {
@@ -76,7 +77,7 @@ public class CommentaryController {
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.COMMENTARY_DELETE)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public Result<Boolean> delete(@RequestBody CommentaryDeleteRequest request) {
+    public Result<Boolean> deleteCommentary(@RequestBody CommentaryDeleteRequest request) {
         CommentaryValidator.checkCommentaryDeleteRequest(request);
         CommentaryDO commentaryDO = COMMENTARY_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
@@ -90,7 +91,7 @@ public class CommentaryController {
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.UGC_INTERACT)
     @RequestMapping(value = "/like", method = RequestMethod.POST)
-    public Result<Boolean> like(@RequestBody UgcInteractionRequest request) {
+    public Result<Boolean> likeCommentary(@RequestBody UgcInteractionRequest request) {
         CommentaryValidator.checkUgcInteractionRequest(request);
         CommentaryDO commentaryDO = COMMENTARY_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(
@@ -104,7 +105,7 @@ public class CommentaryController {
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.UGC_ADOPT)
     @RequestMapping(value = "/adopt", method = RequestMethod.POST)
-    public Result<Boolean> adopt(@RequestBody UgcInteractionRequest request) {
+    public Result<Boolean> adoptCommentary(@RequestBody UgcInteractionRequest request) {
         CommentaryValidator.checkUgcInteractionRequest(request);
         CommentaryDO commentaryDO = COMMENTARY_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(

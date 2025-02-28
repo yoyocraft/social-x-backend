@@ -7,6 +7,7 @@ import com.youyi.common.type.ugc.CommentaryStatus;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.ugc.core.CommentaryService;
+import com.youyi.domain.ugc.core.UgcStatisticCacheManager;
 import com.youyi.domain.ugc.core.UgcTpeContainer;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
@@ -50,6 +51,7 @@ public class CommentaryHelper {
     private final CommentaryRelationshipRepository commentaryRelationshipRepository;
     private final UgcRepository ugcRepository;
 
+    private final UgcStatisticCacheManager ugcStatisticCacheManager;
     private final NotificationManager notificationManager;
 
     public void publish(CommentaryDO commentaryDO) {
@@ -63,6 +65,8 @@ public class CommentaryHelper {
         commentaryRepository.saveCommentary(commentaryDO.buildToSaveCommentaryDocument());
         // 4. 发送通知
         commentaryService.sendNotification(commentaryDO);
+        // 5. 增加缓存计数器
+        ugcStatisticCacheManager.incrOrDecrUgcCommentaryCount(commentaryDO.getUgcId(), true);
     }
 
     public List<CommentaryDO> queryUgcCommentary(CommentaryDO commentaryDO) {
@@ -72,6 +76,8 @@ public class CommentaryHelper {
         List<CommentaryDO> commentaryDOList = commentaryService.fillCommentatorAndCursorInfo(commentaryDocumentList, id2CommentatorMap);
         // 填充 Statistic 数据
         commentaryService.fillCommentaryStatistic(commentaryDOList);
+        // 填充交互数据
+        commentaryService.fillInteractInfo(commentaryDOList, userService.getCurrentUserInfo());
         return commentaryDOList;
     }
 
@@ -86,6 +92,8 @@ public class CommentaryHelper {
         commentaryService.deleteCommentary(commentaryDO);
         // 异步写入本地消息
         ugcTpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(commentaryDO.getCommentaryId(), TaskType.COMMENTARY_DELETE_EVENT));
+        // 减少缓存计数器
+        ugcStatisticCacheManager.incrOrDecrUgcCommentaryCount(commentaryDocument.getUgcId(), false);
     }
 
     public void like(CommentaryDO commentaryDO) {
