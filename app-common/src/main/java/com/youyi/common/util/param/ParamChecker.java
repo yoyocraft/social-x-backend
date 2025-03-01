@@ -3,6 +3,7 @@ package com.youyi.common.util.param;
 import com.youyi.common.type.HasCode;
 import com.youyi.common.util.GsonUtil;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
@@ -46,6 +47,12 @@ public interface ParamChecker<T> {
         return param -> StringUtils.isBlank(param) || param.length() > maxLength
             ? CheckResult.of(INVALID_PARAM, errorMsg + "，长度不能超过" + maxLength)
             : CheckResult.success();
+    }
+
+    static ParamChecker<Object> notNullChecker(String errorMsg) {
+        return param -> Objects.nonNull(param)
+            ? CheckResult.success()
+            : CheckResult.of(INVALID_PARAM, errorMsg);
     }
 
     static ParamChecker<String> notBlankAndLengthChecker(int maxLength) {

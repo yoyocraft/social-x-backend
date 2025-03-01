@@ -9,6 +9,7 @@ import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -101,10 +102,10 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryWithTimeCursor(String categoryId, String type, String ugcStatus, long lastCursor, int size) {
+    public List<UgcDocument> queryWithTimeCursor(String categoryId, String type, String ugcStatus, List<String> tags, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.emptyList(), lastCursor, size);
+            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.emptyList(), tags, lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
@@ -115,7 +116,7 @@ public class UgcRepository {
         long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0 && StringUtils.isNotBlank(authorId));
-            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.singletonList(authorId), lastCursor, size);
+            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.singletonList(authorId), Collections.emptyList(), lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
@@ -126,7 +127,7 @@ public class UgcRepository {
         long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, authorIds, lastCursor, size);
+            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, authorIds, Collections.emptyList(), lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
@@ -147,6 +148,17 @@ public class UgcRepository {
         try {
             checkState(StringUtils.isNotBlank(ugcId));
             ugcDAO.updateUgcStatistics(ugcId, incrViewCount, incrLikeCount, incrCollectCount, incrCommentaryCount);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public List<UgcDocument> queryInfoWithIdCursorAndExtraData(String categoryId, String type, String ugcStatus,
+        Boolean hasSolved, long lastCursor, int size) {
+        try {
+            checkState(Objects.nonNull(hasSolved) && System.currentTimeMillis() >= lastCursor && size > 0);
+            return ugcDAO.queryInfoWithIdCursorAndExtraData(categoryId, type, ugcStatus, hasSolved, lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

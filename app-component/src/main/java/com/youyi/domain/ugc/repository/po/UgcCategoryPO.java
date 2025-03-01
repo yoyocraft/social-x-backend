@@ -20,7 +20,5 @@ public class UgcCategoryPO extends BasePO {
 
     private Integer priority;
 
-    private String icon;
-
     private Integer type;
 }

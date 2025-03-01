@@ -44,7 +44,8 @@ public interface UgcAssembler {
     @Mappings({
         @Mapping(target = "ugcType", expression = "java(UgcType.of(request.getUgcType()))"),
         @Mapping(target = "status", expression = "java(UgcStatus.of(request.getUgcStatus()))"),
-        @Mapping(target = "size", expression = "java(CommonConfUtil.calSize(request))")
+        @Mapping(target = "size", expression = "java(CommonConfUtil.calSize(request))"),
+        @Mapping(target = "qaStatus", source = "qaStatus")
     })
     UgcDO toDO(UgcQueryRequest request);
 

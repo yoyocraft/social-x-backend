@@ -55,6 +55,18 @@ public class UgcMetadataHelper {
         return UgcMetadataDO.of(ugcTopicInfos, List.of());
     }
 
+    public UgcMetadataDO queryUgcQuestionCategory() {
+        List<UgcCategoryPO> questionCategories = ugcCategoryRepository.queryByType(UgcCategoryType.QUESTION_CATEGORY.getType());
+        List<UgcCategoryInfo> ugcTopicInfos = questionCategories.stream()
+            .map(po -> {
+                UgcCategoryInfo info = new UgcCategoryInfo();
+                info.fillWithUgcCategoryPO(po);
+                return info;
+            })
+            .toList();
+        return UgcMetadataDO.of(ugcTopicInfos, List.of());
+    }
+
     public UgcMetadataDO queryUgcInterestTag() {
         // 1. 查询所有兴趣标签
         List<UgcTagPO> interestTags = ugcTagRepository.queryByType(UgcTagType.FOR_USER_INTEREST.getType());

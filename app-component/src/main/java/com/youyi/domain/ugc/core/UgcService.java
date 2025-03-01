@@ -6,6 +6,7 @@ import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcTagType;
+import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.HotUgcCacheInfo;
 import com.youyi.domain.ugc.model.UgcDO;
@@ -92,6 +93,21 @@ public class UgcService {
             ugcDO.getCategoryId(),
             ugcDO.getUgcType().name(),
             UgcStatus.PUBLISHED.name(),
+            ugcDO.getTags(),
+            cursor,
+            ugcDO.getSize()
+        );
+    }
+
+    public List<UgcDocument> queryWithUgcIdCursorAndExtraData(UgcDO ugcDO) {
+        // 1. 根据 cursor 查询 gmt_modified 作为查询游标
+        long cursor = getTimeCursor(ugcDO);
+        // 2. 查询
+        return ugcRepository.queryInfoWithIdCursorAndExtraData(
+            ugcDO.getCategoryId(),
+            ugcDO.getUgcType().name(),
+            UgcStatus.PUBLISHED.name(),
+            ugcDO.getQaStatus(),
             cursor,
             ugcDO.getSize()
         );
@@ -235,7 +251,9 @@ public class UgcService {
     public void filterNoNeedInfoForListPage(List<UgcDO> ugcDOList) {
         ugcDOList.forEach(ugcDO -> {
             // 列表页无需返回 content
-            ugcDO.setContent(null);
+            if (UgcType.POST != ugcDO.getUgcType()) {
+                ugcDO.setContent(null);
+            }
         });
     }
 

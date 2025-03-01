@@ -25,15 +25,15 @@ class UgcCategoryRepositoryTest extends BaseIntegrationTest {
     @Test
     void testInsertBatch() {
         AtomicInteger priority = new AtomicInteger(0);
-        List<String> topics = List.of("闲聊", "学习打卡", "学习指南", "项目", "求职", "面试", "职场", "资源", "学习总结", "知识碎片");
-        List<UgcCategoryPO> pos = topics.stream()
-            .map(topic -> {
+        List<String> categories = List.of("学习指南", "求职指南", "Offer选择", "职场指南", "Bug解决", "技术知识", "求资源", "其他");
+        List<UgcCategoryPO> pos = categories.stream()
+            .map(category -> {
                 UgcCategoryPO po = new UgcCategoryPO();
                 po.setCategoryId(IdSeqUtil.genUgcCategoryId());
-                po.setCategoryName(topic);
+                po.setCategoryName(category);
                 po.setCreatorId("-1");
                 po.setPriority(priority.getAndIncrement());
-                po.setType(UgcCategoryType.POST_TOPIC.getType());
+                po.setType(UgcCategoryType.QUESTION_CATEGORY.getType());
                 return po;
             })
             .toList();
@@ -49,8 +49,8 @@ class UgcCategoryRepositoryTest extends BaseIntegrationTest {
                 wrapper.setCategoryId(po.getCategoryId());
                 wrapper.setCategoryName(po.getCategoryName());
                 wrapper.setPriority(po.getPriority());
-                wrapper.setIcon(po.getIcon());
                 wrapper.setType(po.getType());
+                wrapper.setExtraData(po.getExtraData());
                 return wrapper;
             })
             .toList();

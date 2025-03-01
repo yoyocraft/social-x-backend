@@ -2,6 +2,7 @@ package com.youyi.domain.ugc.request;
 
 import com.google.gson.annotations.SerializedName;
 import com.youyi.common.base.BasePageRequest;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,4 +37,10 @@ public class UgcQueryRequest extends BasePageRequest {
 
     @SerializedName("authorId")
     private String authorId;
+
+    @SerializedName("qaStatus")
+    private Boolean qaStatus;
+
+    @SerializedName("tags")
+    private List<String> tags;
 }

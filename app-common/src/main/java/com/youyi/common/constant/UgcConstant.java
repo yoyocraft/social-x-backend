@@ -27,6 +27,7 @@ public class UgcConstant {
     public static final String UGC_LIKE_COUNT = "likeCount";
     public static final String UGC_COLLECT_COUNT = "collectCount";
     public static final String UGC_COMMENTARY_COUNT = "commentaryCount";
+    public static final String UGC_QUESTION_HAS_SOLVED = "extraData.hasSolved";
 
     public static List<String> includeUgcStatus = List.of(
         UgcStatus.PUBLISHED.name(),

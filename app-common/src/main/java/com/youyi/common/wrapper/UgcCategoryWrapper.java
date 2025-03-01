@@ -14,6 +14,6 @@ public class UgcCategoryWrapper {
     private String categoryId;
     private String categoryName;
     private Integer priority;
-    private String icon;
     private Integer type;
+    private String extraData;
 }
