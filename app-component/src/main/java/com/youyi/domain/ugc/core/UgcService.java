@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.cache.CacheKey;
+import com.youyi.common.type.ugc.UgcStatisticType;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcTagType;
 import com.youyi.common.type.ugc.UgcType;
@@ -21,6 +22,8 @@ import com.youyi.domain.user.model.UserDO;
 import com.youyi.infra.cache.manager.CacheManager;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -229,22 +232,25 @@ public class UgcService {
     }
 
     public void fillUgcStatistic(List<UgcDO> ugcInfoList) {
+        if (CollectionUtils.isEmpty(ugcInfoList)) {
+            return;
+        }
+
+        List<String> ugcIds = ugcInfoList.stream().map(UgcDO::getUgcId).toList();
+        List<UgcStatisticType> statisticTypes = List.of(
+            UgcStatisticType.VIEW, UgcStatisticType.LIKE,
+            UgcStatisticType.COLLECT, UgcStatisticType.COMMENTARY
+        );
+
+        // 一次性查询 Redis
+        EnumMap<UgcStatisticType, Map<String, Long>> statisticsMap = ugcStatisticCacheManager.getBatchUgcStatistic(ugcIds, statisticTypes);
+
         ugcInfoList.forEach(ugcDO -> {
-            // view
-            Long viewCount = ugcStatisticCacheManager.getUgcViewCount(ugcDO.getUgcId());
-            ugcDO.calViewCount(viewCount);
-
-            // like
-            Long likeCount = ugcStatisticCacheManager.getUgcLikeCount(ugcDO.getUgcId());
-            ugcDO.calLikeCount(likeCount);
-
-            // collect
-            Long collectCount = ugcStatisticCacheManager.getUgcCollectCount(ugcDO.getUgcId());
-            ugcDO.calCollectCount(collectCount);
-
-            // commentary
-            Long commentaryCount = ugcStatisticCacheManager.getUgcCommentaryCount(ugcDO.getUgcId());
-            ugcDO.calCommentaryCount(commentaryCount);
+            String ugcId = ugcDO.getUgcId();
+            ugcDO.calViewCount(statisticsMap.getOrDefault(UgcStatisticType.VIEW, Map.of()).getOrDefault(ugcId, 0L));
+            ugcDO.calLikeCount(statisticsMap.getOrDefault(UgcStatisticType.LIKE, Map.of()).getOrDefault(ugcId, 0L));
+            ugcDO.calCollectCount(statisticsMap.getOrDefault(UgcStatisticType.COLLECT, Map.of()).getOrDefault(ugcId, 0L));
+            ugcDO.calCommentaryCount(statisticsMap.getOrDefault(UgcStatisticType.COMMENTARY, Map.of()).getOrDefault(ugcId, 0L));
         });
     }
 
@@ -337,18 +343,20 @@ public class UgcService {
     }
 
     public void fillUgcInteractInfo(List<UgcDO> ugcDOList, UserDO currentUser) {
-        ugcDOList.forEach(ugcDO -> {
-            ugcDO.setLiked(
-                Optional
-                    .ofNullable(ugcRelationshipRepository.queryLikeRelationship(ugcDO.getUgcId(), currentUser.getUserId()))
-                    .isPresent()
-            );
+        if (CollectionUtils.isEmpty(ugcDOList)) {
+            return;
+        }
 
-            ugcDO.setCollected(
-                Optional
-                    .ofNullable(ugcRelationshipRepository.queryCollectRelationship(ugcDO.getUgcId(), currentUser.getUserId()))
-                    .isPresent()
-            );
+        List<String> ugcIds = ugcDOList.stream().map(UgcDO::getUgcId).toList();
+
+        // 批量查询 LIKE 和 COLLECT 关系
+        Set<String> likedUgcIds = new HashSet<>(ugcRelationshipRepository.queryLikeRelationships(ugcIds, currentUser.getUserId()));
+        Set<String> collectedUgcIds = new HashSet<>(ugcRelationshipRepository.queryCollectRelationships(ugcIds, currentUser.getUserId()));
+
+        // 遍历 UGC 结果集，填充数据
+        ugcDOList.forEach(ugcDO -> {
+            ugcDO.setLiked(likedUgcIds.contains(ugcDO.getUgcId()));
+            ugcDO.setCollected(collectedUgcIds.contains(ugcDO.getUgcId()));
         });
     }
 }
