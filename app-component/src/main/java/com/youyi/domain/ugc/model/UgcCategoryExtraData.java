@@ -5,16 +5,15 @@ import lombok.Setter;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
- * @date 2025/01/23
+ * @date 2025/02/28
  */
 @Getter
 @Setter
-public class UgcExtraData {
+public class UgcCategoryExtraData {
 
-    private String auditRet;
+    private String qaTemplate;
 
-    /**
-     * 是否已解决
-     */
-    private Boolean hasSolved = Boolean.FALSE;
+    private String qaSuggestion;
+
+    private String icon;
 }

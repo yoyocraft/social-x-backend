@@ -6,6 +6,7 @@ import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,7 @@ import static com.youyi.common.constant.UgcConstant.UGC_EXTRA_DATA;
 import static com.youyi.common.constant.UgcConstant.UGC_GMT_MODIFIED;
 import static com.youyi.common.constant.UgcConstant.UGC_ID;
 import static com.youyi.common.constant.UgcConstant.UGC_LIKE_COUNT;
+import static com.youyi.common.constant.UgcConstant.UGC_QUESTION_HAS_SOLVED;
 import static com.youyi.common.constant.UgcConstant.UGC_STATUS;
 import static com.youyi.common.constant.UgcConstant.UGC_SUMMARY;
 import static com.youyi.common.constant.UgcConstant.UGC_TAGS;
@@ -121,6 +123,7 @@ public class UgcDAO {
         String type,
         String ugcStatus,
         Collection<String> authorIds,
+        List<String> tags,
         long lastCursor,
         int size
     ) {
@@ -134,6 +137,34 @@ public class UgcDAO {
         if (CollectionUtils.isNotEmpty(authorIds)) {
             query.addCriteria(Criteria.where(UGC_AUTHOR_ID).in(authorIds));
         }
+        if (CollectionUtils.isNotEmpty(tags)) {
+            query.addCriteria(Criteria.where(UGC_TAGS).in(tags));
+        }
+        buildUgcStatusQueryCondition(query, ugcStatus);
+        buildTimeCursorQueryCondition(query, lastCursor, size);
+
+        return mongoTemplate.find(query, UgcDocument.class);
+    }
+
+    public List<UgcDocument> queryInfoWithIdCursorAndExtraData(
+        String categoryId,
+        String type,
+        String ugcStatus,
+        Boolean hasSolved,
+        long lastCursor,
+        int size
+    ) {
+        Query query = new Query();
+        if (StringUtils.isNotBlank(type)) {
+            query.addCriteria(Criteria.where(UGC_TYPE).is(type));
+        }
+        if (StringUtils.isNotBlank(categoryId)) {
+            query.addCriteria(Criteria.where(UGC_CATEGORY_ID).is(categoryId));
+        }
+        if (Objects.nonNull(hasSolved)) {
+            query.addCriteria(Criteria.where(UGC_QUESTION_HAS_SOLVED).is(hasSolved));
+        }
+
         buildUgcStatusQueryCondition(query, ugcStatus);
         buildTimeCursorQueryCondition(query, lastCursor, size);
 

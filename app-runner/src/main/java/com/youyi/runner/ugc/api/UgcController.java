@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.youyi.domain.ugc.assembler.UgcAssembler.UGC_ASSEMBLER;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.deleteSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.interactSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.listQuestionsSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.listFollowUgcFeedSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryHotUgcSuccess;
@@ -116,31 +117,49 @@ public class UgcController {
         return queryUserPageUgcSuccess(ugcDOList, request);
     }
 
+    /**
+     * TODO 优化 RT
+     */
     @SaCheckLogin
-    @RequestMapping(value = "/time_feed", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> listTimelineUgcFeed(UgcQueryRequest request) {
+    @RequestMapping(value = "/time_feed", method = RequestMethod.POST)
+    public Result<PageCursorResult<String, UgcResponse>> listTimelineUgcFeed(@RequestBody UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForTimelineFeed(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.listTimelineUgcFeed(ugcDO);
         return listTimelineUgcFeedSuccess(ugcDOList, request);
     }
 
+    /**
+     * TODO 优化 RT
+     */
     @SaCheckLogin
-    @RequestMapping(value = "/follow_feed", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> listFollowUgcFeed(UgcQueryRequest request) {
+    @RequestMapping(value = "/follow_feed", method = RequestMethod.POST)
+    public Result<PageCursorResult<String, UgcResponse>> listFollowUgcFeed(@RequestBody UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForFollowFeed(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.listFollowUgcFeed(ugcDO);
         return listFollowUgcFeedSuccess(ugcDOList, request);
     }
 
+    /**
+     * TODO 优化 RT
+     */
     @SaCheckLogin
-    @RequestMapping(value = "/recommend_feed", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> listRecommendUgcFeed(UgcQueryRequest request) {
+    @RequestMapping(value = "/recommend_feed", method = RequestMethod.POST)
+    public Result<PageCursorResult<String, UgcResponse>> listRecommendUgcFeed(@RequestBody UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForRecommendFeed(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.listRecommendUgcFeed(ugcDO);
         return listRecommendUgcFeedSuccess(ugcDOList, request);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "/qa", method = RequestMethod.POST)
+    public Result<PageCursorResult<String, UgcResponse>> listQuestions(@RequestBody UgcQueryRequest request) {
+        UgcValidator.checkUgcQueryRequestForListQuestion(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        List<UgcDO> ugcDOList = ugcHelper.listQuestions(ugcDO);
+        return listQuestionsSuccess(ugcDOList, request);
     }
 
     @SaCheckLogin

@@ -18,6 +18,7 @@ import static com.youyi.common.type.conf.ConfigKey.ATTACHMENT_MAX_COUNT;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
+import static com.youyi.common.util.param.ParamChecker.notNullChecker;
 import static com.youyi.common.util.param.ParamChecker.snowflakeIdChecker;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
@@ -47,7 +48,7 @@ public class UgcValidator {
                 Optional.ofNullable(request.getTags()).orElseGet(List::of).size()
             )
             .putIf(
-                () -> Boolean.TRUE.equals(request.getDrafting()),
+                () -> UgcType.ARTICLE == UgcType.of(request.getUgcType()) || UgcType.QUESTION == UgcType.of(request.getUgcType()),
                 notBlankChecker("类别不能为空"),
                 request.getCategoryId()
             )
@@ -124,6 +125,15 @@ public class UgcValidator {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("cursor不合法"), request.getCursor())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
+            .validateWithThrow();
+    }
+
+    public static void checkUgcQueryRequestForListQuestion(UgcQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("cursor不合法"), request.getCursor())
+            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
+            .put(notNullChecker("问题状态不能为空"), request.getQaStatus())
+            .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
             .validateWithThrow();
     }
 }

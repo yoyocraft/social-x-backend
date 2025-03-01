@@ -24,4 +24,10 @@ public class UgcCategoryInfoResponse extends BaseResponse {
 
     @SerializedName("icon")
     private String icon;
+
+    @SerializedName("qaTemplate")
+    private String qaTemplate;
+
+    @SerializedName("qaSuggestion")
+    private String qaSuggestion;
 }

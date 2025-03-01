@@ -58,6 +58,7 @@ public class UgcDO {
     private String keyword;
     private String cursor;
     private String authorId;
+    private Boolean qaStatus;
 
     // for like and collect
     private UgcInteractionType interactionType;
@@ -74,6 +75,7 @@ public class UgcDO {
         this.likeCount = 0L;
         this.collectCount = 0L;
         this.commentaryCount = 0L;
+        this.extraData = new UgcExtraData();
     }
 
     public UgcDocument buildToSaveUgcDocument() {

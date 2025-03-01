@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.youyi.runner.ugc.util.UgcMetadataResponseUtil.queryUgcArticleTagSuccess;
 import static com.youyi.runner.ugc.util.UgcMetadataResponseUtil.queryUgcCategorySuccess;
 import static com.youyi.runner.ugc.util.UgcMetadataResponseUtil.queryUgcInterestTagSuccess;
+import static com.youyi.runner.ugc.util.UgcMetadataResponseUtil.queryUgcQuestionCategorySuccess;
 import static com.youyi.runner.ugc.util.UgcMetadataResponseUtil.queryUgcTopicSuccess;
 
 /**
@@ -38,6 +39,13 @@ public class UgcMetadataController {
     public Result<UgcMetadataResponse> queryUgcTopic() {
         UgcMetadataDO ugcMetadataDO = ugcMetadataHelper.queryUgcTopic();
         return queryUgcTopicSuccess(ugcMetadataDO);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "/metadata/qa_category", method = RequestMethod.GET)
+    public Result<UgcMetadataResponse> queryUgcQuestionCategory() {
+        UgcMetadataDO ugcMetadataDO = ugcMetadataHelper.queryUgcQuestionCategory();
+        return queryUgcQuestionCategorySuccess(ugcMetadataDO);
     }
 
     @SaCheckLogin

@@ -4,10 +4,15 @@ import com.google.common.collect.Lists;
 import com.youyi.BaseIntegrationTest;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
+import com.youyi.common.util.GsonUtil;
 import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -15,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @date 2025/01/23
  */
 class UgcRepositoryTest extends BaseIntegrationTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(UgcRepositoryTest.class);
 
     @Autowired
     UgcRepository ugcRepository;
@@ -30,6 +37,28 @@ class UgcRepositoryTest extends BaseIntegrationTest {
     void testIncrUgcStatisticCount() {
         String ugcId = "1884571668249976832";
         ugcRepository.incrUgcStatisticCount(ugcId, 0L, 0L, 0L, 0L);
+    }
+
+    @Test
+    void testQueryInfoWithIdCursorAndExtraData() {
+        List<UgcDocument> ugcDocuments = Assertions.assertDoesNotThrow(() -> ugcRepository.queryInfoWithIdCursorAndExtraData(
+            "",
+            "QUESTION",
+            "PUBLISHED",
+            Boolean.FALSE,
+            System.currentTimeMillis(),
+            15
+        ));
+
+        Assertions.assertNotNull(ugcDocuments);
+        logger.info("ugcDocuments: {}", GsonUtil.toJson(ugcDocuments));
+    }
+
+    @Test
+    void testUpdateDocument() {
+        UgcDocument ugcDocument = Assertions.assertDoesNotThrow(() -> ugcRepository.queryByUgcId("1895473020530466816"));
+        ugcDocument.setExtraData(new UgcExtraData());
+        Assertions.assertDoesNotThrow(() -> ugcRepository.updateUgc(ugcDocument));
     }
 
     UgcDocument buildUgcDocument(int base) {
@@ -86,7 +115,6 @@ class UgcRepositoryTest extends BaseIntegrationTest {
         ugcDocument.setGmtModified(System.currentTimeMillis());
         UgcExtraData extraData = new UgcExtraData();
         extraData.setAuditRet("审核通过");
-        extraData.setHasSolved(true);
         ugcDocument.setExtraData(extraData);
         return ugcDocument;
     }

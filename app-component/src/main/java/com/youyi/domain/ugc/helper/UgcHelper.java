@@ -5,6 +5,7 @@ import com.youyi.common.type.task.TaskType;
 import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
+import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.ugc.core.UgcService;
@@ -170,6 +171,13 @@ public class UgcHelper {
         return ugcService.fillHotUgc(cacheInfos);
     }
 
+    public List<UgcDO> listQuestions(UgcDO ugcDO) {
+        // 1. 游标查询UGC信息
+        List<UgcDocument> ugcDocumentList = ugcService.queryWithUgcIdCursorAndExtraData(ugcDO);
+        // 2. 封装信息
+        return polishUgcInfos(ugcDO, ugcDocumentList);
+    }
+
     private void handleLikeUgcInteraction(UgcDO ugcDO, UserDO currentUser) {
         // 喜欢
         if (Boolean.TRUE.equals(ugcDO.getInteractFlag())) {
@@ -188,10 +196,8 @@ public class UgcHelper {
         List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
         // 5. 填充 Statistic 数据
         ugcService.fillUgcStatistic(ugcDOList);
-        // 6. 文章搜索过滤不必要的信息
-        if (UgcType.ARTICLE == ugcDO.getUgcType()) {
-            ugcService.filterNoNeedInfoForListPage(ugcDOList);
-        }
+        // 6. 过滤不必要的信息
+        ugcService.filterNoNeedInfoForListPage(ugcDOList);
         // 7. 填充交互信息
         ugcService.fillUgcInteractInfo(ugcDOList, userService.getCurrentUserInfo());
         return ugcDOList;
@@ -262,6 +268,11 @@ public class UgcHelper {
         if (StringUtils.isNotBlank(categoryId)) {
             UgcCategoryPO ugcCategoryPO = ugcCategoryRepository.queryByCategoryId(categoryId);
             ugcDO.setCategoryName(ugcCategoryPO.getCategoryName());
+        }
+        if (UgcType.QUESTION == ugcDO.getUgcType()) {
+            // 生成摘要
+            String plainContent = CommonOperationUtil.markdownToPlainText(ugcDO.getContent());
+            ugcDO.setSummary(plainContent);
         }
     }
 

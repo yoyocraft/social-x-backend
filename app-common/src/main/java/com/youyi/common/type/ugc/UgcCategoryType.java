@@ -14,6 +14,7 @@ public enum UgcCategoryType {
 
     ARTICLE_CATEGORY(0),
     POST_TOPIC(1),
+    QUESTION_CATEGORY(2),
     ;
 
     private final int type;
