@@ -2,6 +2,7 @@ package com.youyi.domain.ugc.repository;
 
 import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
 import com.youyi.domain.ugc.repository.relation.UgcNode;
+import java.util.List;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
@@ -58,8 +59,14 @@ public interface UgcRelationshipRepository extends Neo4jRepository<UgcNode, Long
     @Query("MATCH (u:user {userId: $userId})-[r:LIKE]->(t:ugc {ugcId: $ugcId}) RETURN u AS target, r.since AS since")
     UgcInteractRelationship queryLikeRelationship(@Param("ugcId") String ugcId, @Param("userId") String userId);
 
+    @Query("MATCH (u:user {userId: $userId})-[r:LIKE]->(t:ugc) WHERE t.ugcId IN $ugcIds RETURN t.ugcId")
+    List<String> queryLikeRelationships(@Param("ugcIds") List<String> ugcIds, @Param("userId") String userId);
+
     @Query("MATCH (u:user {userId: $userId})-[r:COLLECT]->(t:ugc {ugcId: $ugcId}) RETURN u AS target, r.since AS since")
     UgcInteractRelationship queryCollectRelationship(@Param("ugcId") String ugcId, @Param("userId") String userId);
+
+    @Query("MATCH (u:user {userId: $userId})-[r:COLLECT]->(t:ugc) WHERE t.ugcId IN $ugcIds RETURN t.ugcId")
+    List<String> queryCollectRelationships(@Param("ugcIds") List<String> ugcIds, @Param("userId") String userId);
 
     @Query("MATCH (u:ugc {ugcId: $ugcId}) RETURN u")
     UgcNode findByUgcId(@Param("ugcId") String ugcId);

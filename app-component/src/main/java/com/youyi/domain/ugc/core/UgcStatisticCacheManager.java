@@ -1,10 +1,17 @@
 package com.youyi.domain.ugc.core;
 
 import com.youyi.common.type.cache.CacheKey;
+import com.youyi.common.type.ugc.UgcStatisticType;
 import com.youyi.infra.cache.manager.CacheManager;
 import com.youyi.infra.cache.repo.UgcCacheRepo;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,6 +21,15 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UgcStatisticCacheManager {
+
+    private static final EnumMap<UgcStatisticType, Function<String, String>> statisticFunc = new EnumMap<>(UgcStatisticType.class);
+
+    static {
+        statisticFunc.put(UgcStatisticType.VIEW, UgcCacheRepo::ofUgcViewCountKey);
+        statisticFunc.put(UgcStatisticType.LIKE, UgcCacheRepo::ofUgcLikeCountKey);
+        statisticFunc.put(UgcStatisticType.COLLECT, UgcCacheRepo::ofUgcCollectCountKey);
+        statisticFunc.put(UgcStatisticType.COMMENTARY, UgcCacheRepo::ofUgcCommentaryCountKey);
+    }
 
     private static final String INCR_OPT = "incr";
     private static final String DECR_OPT = "decr";
@@ -62,14 +78,6 @@ public class UgcStatisticCacheManager {
         );
     }
 
-    public Long getUgcViewCount(String ugcId) {
-        String cacheKey = UgcCacheRepo.ofUgcViewCountKey(ugcId);
-        Object value = cacheManager.get(cacheKey);
-        return Optional.ofNullable(value)
-            .map(val -> Long.parseLong(val.toString()))
-            .orElse(0L);
-    }
-
     public Long getAndDelUgcViewCount(String ugcId) {
         String cacheKey = UgcCacheRepo.ofUgcViewCountKey(ugcId);
         return cacheManager.execute(Long.class, GET_AND_DEL_LUA_SCRIPT, cacheKey);
@@ -84,14 +92,6 @@ public class UgcStatisticCacheManager {
             CacheKey.UGC_LIKE_COUNT.getTtl().getSeconds(),
             incr ? INCR_OPT : DECR_OPT
         );
-    }
-
-    public Long getUgcLikeCount(String ugcId) {
-        String cacheKey = UgcCacheRepo.ofUgcLikeCountKey(ugcId);
-        Object value = cacheManager.get(cacheKey);
-        return Optional.ofNullable(value)
-            .map(val -> Long.parseLong(val.toString()))
-            .orElse(0L);
     }
 
     public Long getAndDelUgcLikeCount(String ugcId) {
@@ -110,14 +110,6 @@ public class UgcStatisticCacheManager {
         );
     }
 
-    public Long getUgcCollectCount(String ugcId) {
-        String cacheKey = UgcCacheRepo.ofUgcCollectCountKey(ugcId);
-        Object value = cacheManager.get(cacheKey);
-        return Optional.ofNullable(value)
-            .map(val -> Long.parseLong(val.toString()))
-            .orElse(0L);
-    }
-
     public Long getAndDelUgcCollectCount(String ugcId) {
         String cacheKey = UgcCacheRepo.ofUgcCollectCountKey(ugcId);
         return cacheManager.execute(Long.class, GET_AND_DEL_LUA_SCRIPT, cacheKey);
@@ -132,14 +124,6 @@ public class UgcStatisticCacheManager {
             CacheKey.UGC_COLLECT_COUNT.getTtl().getSeconds(),
             incr ? INCR_OPT : DECR_OPT
         );
-    }
-
-    public Long getUgcCommentaryCount(String ugcId) {
-        String cacheKey = UgcCacheRepo.ofUgcCommentaryCountKey(ugcId);
-        Object value = cacheManager.get(cacheKey);
-        return Optional.ofNullable(value)
-            .map(val -> Long.parseLong(val.toString()))
-            .orElse(0L);
     }
 
     public Long getAndDelUgcCommentaryCount(String ugcId) {
@@ -169,5 +153,36 @@ public class UgcStatisticCacheManager {
     public Long getAndDelCommentaryLikeCount(String commentaryId) {
         String cacheKey = UgcCacheRepo.ofCommentaryLikeCountKey(commentaryId);
         return cacheManager.execute(Long.class, GET_AND_DEL_LUA_SCRIPT, cacheKey);
+    }
+
+    public EnumMap<UgcStatisticType, Map<String, Long>> getBatchUgcStatistic(List<String> ugcIds, List<UgcStatisticType> types) {
+        if (CollectionUtils.isEmpty(ugcIds) || CollectionUtils.isEmpty(types)) {
+            return new EnumMap<>(UgcStatisticType.class);
+        }
+
+        EnumMap<UgcStatisticType, List<String>> keysMap = new EnumMap<>(UgcStatisticType.class);
+        for (UgcStatisticType type : types) {
+            List<String> keys = ugcIds.stream().map(statisticFunc.get(type)).toList();
+            keysMap.put(type, keys);
+        }
+
+        // 一次性查询
+        List<String> allKeys = keysMap.values().stream().flatMap(List::stream).toList();
+        List<Object> results = cacheManager.getPipelineResult(allKeys);
+
+        // 解析结果
+        EnumMap<UgcStatisticType, Map<String, Long>> statisticsMap = new EnumMap<>(UgcStatisticType.class);
+        int index = 0;
+        for (UgcStatisticType type : types) {
+            Map<String, Long> typeStatisticMap = new HashMap<>();
+            List<String> keys = keysMap.get(type);
+            for (String key : keys) {
+                Object value = results.get(index++);
+                typeStatisticMap.put(key, value == null ? 0L : Long.parseLong(value.toString()));
+            }
+            statisticsMap.put(type, typeStatisticMap);
+        }
+
+        return statisticsMap;
     }
 }

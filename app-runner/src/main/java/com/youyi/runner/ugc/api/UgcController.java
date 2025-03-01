@@ -117,9 +117,6 @@ public class UgcController {
         return queryUserPageUgcSuccess(ugcDOList, request);
     }
 
-    /**
-     * TODO 优化 RT
-     */
     @SaCheckLogin
     @RequestMapping(value = "/time_feed", method = RequestMethod.POST)
     public Result<PageCursorResult<String, UgcResponse>> listTimelineUgcFeed(@RequestBody UgcQueryRequest request) {
@@ -129,9 +126,6 @@ public class UgcController {
         return listTimelineUgcFeedSuccess(ugcDOList, request);
     }
 
-    /**
-     * TODO 优化 RT
-     */
     @SaCheckLogin
     @RequestMapping(value = "/follow_feed", method = RequestMethod.POST)
     public Result<PageCursorResult<String, UgcResponse>> listFollowUgcFeed(@RequestBody UgcQueryRequest request) {
@@ -141,9 +135,6 @@ public class UgcController {
         return listFollowUgcFeedSuccess(ugcDOList, request);
     }
 
-    /**
-     * TODO 优化 RT
-     */
     @SaCheckLogin
     @RequestMapping(value = "/recommend_feed", method = RequestMethod.POST)
     public Result<PageCursorResult<String, UgcResponse>> listRecommendUgcFeed(@RequestBody UgcQueryRequest request) {

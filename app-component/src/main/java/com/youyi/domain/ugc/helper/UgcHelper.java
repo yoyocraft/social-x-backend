@@ -112,7 +112,7 @@ public class UgcHelper {
         // 1. 游标查询
         List<UgcDocument> ugcDocumentList = ugcService.queryWithUgcIdCursor(ugcDO);
         // 2. 封装信息
-        return polishUgcInfos(ugcDO, ugcDocumentList);
+        return polishUgcInfos(ugcDocumentList);
     }
 
     public List<UgcDO> queryByCursorForUserPage(UgcDO ugcDO) {
@@ -151,7 +151,7 @@ public class UgcHelper {
         Set<String> followUserIds = userService.queryFollowingUserIdsFromCache(currentUserInfo);
         // 2. 游标查询UGC信息
         List<UgcDocument> ugcDocumentList = ugcService.queryByAuthorIdsWithCursor(ugcDO, followUserIds);
-        return polishUgcInfos(ugcDO, ugcDocumentList);
+        return polishUgcInfos(ugcDocumentList);
     }
 
     public List<UgcDO> listRecommendUgcFeed(UgcDO ugcDO) {
@@ -161,7 +161,7 @@ public class UgcHelper {
         // 2. 游标查询UGC信息
         List<UgcDocument> ugcDocumentList = ugcService.queryByTagWithCursor(ugcDO, recommendTags);
         // 3. 封装信息
-        return polishUgcInfos(ugcDO, ugcDocumentList);
+        return polishUgcInfos(ugcDocumentList);
     }
 
     public List<UgcDO> queryHotUgc() {
@@ -175,7 +175,7 @@ public class UgcHelper {
         // 1. 游标查询UGC信息
         List<UgcDocument> ugcDocumentList = ugcService.queryWithUgcIdCursorAndExtraData(ugcDO);
         // 2. 封装信息
-        return polishUgcInfos(ugcDO, ugcDocumentList);
+        return polishUgcInfos(ugcDocumentList);
     }
 
     private void handleLikeUgcInteraction(UgcDO ugcDO, UserDO currentUser) {
@@ -188,7 +188,7 @@ public class UgcHelper {
         doCancelLikeUgc(ugcDO, currentUser);
     }
 
-    private List<UgcDO> polishUgcInfos(UgcDO ugcDO, List<UgcDocument> ugcDocumentList) {
+    private List<UgcDO> polishUgcInfos(List<UgcDocument> ugcDocumentList) {
         // 3. 批量查询作者信息
         Set<String> authorIds = ugcDocumentList.stream().map(UgcDocument::getAuthorId).collect(Collectors.toSet());
         Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);

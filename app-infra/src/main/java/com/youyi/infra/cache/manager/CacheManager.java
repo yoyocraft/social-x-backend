@@ -5,12 +5,14 @@ import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
@@ -159,6 +161,8 @@ public class CacheManager {
         }
     }
 
+    // ============================= DELETE OPS =================================
+
     public void delete(String key) {
         try {
             redisTemplate.delete(key);
@@ -168,6 +172,7 @@ public class CacheManager {
         }
     }
 
+    // ============================= EXISTS OPS =================================
     public boolean exists(String key) {
         try {
             return Boolean.TRUE.equals(redisTemplate.hasKey(key));
@@ -177,12 +182,29 @@ public class CacheManager {
         }
     }
 
+    // ============================= LUA SCRIPT OPS =================================
     public <T> T execute(Class<T> returnType, String luaScript, String key, Object... args) {
         try {
             DefaultRedisScript<T> script = new DefaultRedisScript<>();
             script.setScriptText(luaScript);
             script.setResultType(returnType);
             return redisTemplate.execute(script, Collections.singletonList(key), args);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
+    // ============================= Pipeline OPS =================================
+
+    public List<Object> getPipelineResult(List<String> keys) {
+        try {
+            return redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+                for (String key : keys) {
+                    connection.get(key.getBytes());
+                }
+                return null;
+            });
         } catch (Exception e) {
             infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
             throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
