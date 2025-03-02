@@ -92,7 +92,6 @@ public class UserValidator {
     public static void checkUserQueryRequest(UserQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(snowflakeIdChecker("用户ID不合法"), request.getUserId())
-            .put(notBlankChecker("cursor不合法"), request.getCursor())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
     }

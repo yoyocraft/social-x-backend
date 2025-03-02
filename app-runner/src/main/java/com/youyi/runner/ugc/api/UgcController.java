@@ -27,6 +27,7 @@ import static com.youyi.domain.ugc.assembler.UgcAssembler.UGC_ASSEMBLER;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.deleteSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.interactSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.listQuestionsSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.listSelfCollectedUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.listFollowUgcFeedSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryHotUgcSuccess;
@@ -77,8 +78,8 @@ public class UgcController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/me", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> listSelfUgc(UgcQueryRequest request) {
+    @RequestMapping(value = "/me", method = RequestMethod.POST)
+    public Result<PageCursorResult<String, UgcResponse>> listSelfUgc(@RequestBody UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForQuerySelfUgc(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcPageInfo = ugcHelper.listSelfUgc(ugcDO);
@@ -86,8 +87,17 @@ public class UgcController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/detail", method = RequestMethod.GET)
-    public Result<UgcResponse> queryUgcDetail(UgcQueryRequest request) {
+    @RequestMapping(value = "/me/collected", method = RequestMethod.POST)
+    public Result<PageCursorResult<Long, UgcResponse>> listSelfCollectedUgc(@RequestBody UgcQueryRequest request) {
+        UgcValidator.checkUgcQueryRequestForQuerySelfCollectionUgc(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        List<UgcDO> ugcPageInfo = ugcHelper.listSelfCollectedUgc(ugcDO);
+        return listSelfCollectedUgcSuccess(ugcPageInfo, request);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "/detail", method = RequestMethod.POST)
+    public Result<UgcResponse> queryUgcDetail(@RequestBody UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForQueryByUgcId(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         ugcHelper.queryByUgcId(ugcDO);
@@ -109,8 +119,8 @@ public class UgcController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/user", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UgcResponse>> queryUserPageUgc(UgcQueryRequest request) {
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    public Result<PageCursorResult<String, UgcResponse>> queryUserPageUgc(@RequestBody UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForUserPage(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         List<UgcDO> ugcDOList = ugcHelper.queryByCursorForUserPage(ugcDO);

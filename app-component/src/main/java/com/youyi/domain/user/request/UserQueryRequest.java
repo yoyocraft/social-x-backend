@@ -14,7 +14,7 @@ import lombok.Setter;
 public class UserQueryRequest extends BasePageRequest {
 
     @SerializedName("cursor")
-    private String cursor;
+    private Long cursor;
 
     @SerializedName("userId")
     private String userId;

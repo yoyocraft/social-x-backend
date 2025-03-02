@@ -102,9 +102,18 @@ public class UgcDAO {
         return mongoTemplate.findOne(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryByKeywordAndStatusForSelfWithCursor(String keyword, String ugcStatus, String authorId, long lastCursor, int size) {
+    public List<UgcDocument> queryByUgcIds(List<String> ugcIds) {
+        Query query = new Query(Criteria.where(UGC_ID).in(ugcIds));
+        return mongoTemplate.find(query, UgcDocument.class);
+    }
+
+    public List<UgcDocument> queryByKeywordForSelfWithCursor(String keyword, String ugcType, String ugcStatus, String authorId, long lastCursor,
+        int size) {
         Query query = new Query();
         query.addCriteria(Criteria.where(UGC_AUTHOR_ID).is(authorId));
+        if (StringUtils.isNotBlank(ugcType)) {
+            query.addCriteria(Criteria.where(UGC_TYPE).is(ugcType));
+        }
         buildUgcStatusQueryCondition(query, ugcStatus);
         buildKeywordQueryCondition(query, keyword);
         buildTimeCursorQueryCondition(query, lastCursor, size);

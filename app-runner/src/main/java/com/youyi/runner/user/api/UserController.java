@@ -30,8 +30,8 @@ import static com.youyi.domain.user.assembler.UserAssembler.USER_ASSEMBLER;
 import static com.youyi.runner.user.util.UserResponseUtil.editUserInfoSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.followUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.getCurrentUserSuccess;
-import static com.youyi.runner.user.util.UserResponseUtil.queryFollowersSuccess;
-import static com.youyi.runner.user.util.UserResponseUtil.queryFollowingUsersSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.querySelfFollowersSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.querySelfFollowingUsersSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.logoutSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.setPwdSuccess;
@@ -137,20 +137,20 @@ public class UserController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/following", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UserBasicInfoResponse>> queryFollowingUsers(UserQueryRequest request) {
+    @RequestMapping(value = "/me/following", method = RequestMethod.GET)
+    public Result<PageCursorResult<Long, UserBasicInfoResponse>> querySelfFollowingUsers(UserQueryRequest request) {
         UserValidator.checkUserQueryRequest(request);
         UserDO userDO = USER_ASSEMBLER.toDO(request);
-        List<UserDO> followingUsers = userHelper.queryFollowingUsers(userDO);
-        return queryFollowingUsersSuccess(followingUsers, request);
+        List<UserDO> followingUsers = userHelper.querySelfFollowingUsers(userDO);
+        return querySelfFollowingUsersSuccess(followingUsers, request);
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/follower", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, UserBasicInfoResponse>> queryFollowers(UserQueryRequest request) {
+    @RequestMapping(value = "/me/follower", method = RequestMethod.GET)
+    public Result<PageCursorResult<Long, UserBasicInfoResponse>> querySelfFollowers(UserQueryRequest request) {
         UserValidator.checkUserQueryRequest(request);
         UserDO userDO = USER_ASSEMBLER.toDO(request);
         List<UserDO> followingUsers = userHelper.queryFollowers(userDO);
-        return queryFollowersSuccess(followingUsers, request);
+        return querySelfFollowersSuccess(followingUsers, request);
     }
 }

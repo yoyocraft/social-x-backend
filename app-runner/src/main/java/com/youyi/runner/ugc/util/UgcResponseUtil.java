@@ -45,6 +45,12 @@ public class UgcResponseUtil {
         return response;
     }
 
+    public static Result<PageCursorResult<Long, UgcResponse>> listSelfCollectedUgcSuccess(List<UgcDO> ugcPageInfo, UgcQueryRequest request) {
+        Result<PageCursorResult<Long, UgcResponse>> response = buildTimeCursorResponse(ugcPageInfo);
+        logger.info("query self collected ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
     public static Result<UgcResponse> queryUgcDetailSuccess(UgcDO ugcDO, UgcQueryRequest request) {
         Result<UgcResponse> response = Result.success(UGC_CONVERTER.toResponse(ugcDO));
         logger.info("query ugc by ugcId, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
@@ -102,6 +108,12 @@ public class UgcResponseUtil {
     private static Result<PageCursorResult<String, UgcResponse>> buildCursorResponse(List<UgcDO> ugcDOList) {
         List<UgcResponse> data = ugcDOList.stream().map(UGC_CONVERTER::toResponse).toList();
         String cursor = Optional.ofNullable(ugcDOList.isEmpty() ? null : ugcDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
+        return Result.success(PageCursorResult.of(data, cursor, checkHasMore(data)));
+    }
+
+    private static Result<PageCursorResult<Long, UgcResponse>> buildTimeCursorResponse(List<UgcDO> ugcDOList) {
+        List<UgcResponse> data = ugcDOList.stream().map(UGC_CONVERTER::toResponse).toList();
+        Long cursor = Optional.ofNullable(ugcDOList.isEmpty() ? null : ugcDOList.get(0).getTimeCursor()).orElse(Long.MAX_VALUE);
         return Result.success(PageCursorResult.of(data, cursor, checkHasMore(data)));
     }
 
