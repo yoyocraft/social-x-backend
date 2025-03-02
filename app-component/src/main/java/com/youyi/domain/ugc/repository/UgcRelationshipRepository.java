@@ -1,5 +1,6 @@
 package com.youyi.domain.ugc.repository;
 
+import com.youyi.domain.ugc.repository.relation.UgcInteractInfo;
 import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
 import com.youyi.domain.ugc.repository.relation.UgcNode;
 import java.util.List;
@@ -67,6 +68,13 @@ public interface UgcRelationshipRepository extends Neo4jRepository<UgcNode, Long
 
     @Query("MATCH (u:user {userId: $userId})-[r:COLLECT]->(t:ugc) WHERE t.ugcId IN $ugcIds RETURN t.ugcId")
     List<String> queryCollectRelationships(@Param("ugcIds") List<String> ugcIds, @Param("userId") String userId);
+
+    @Query("""
+        MATCH (u:user {userId: $userId})-[r:COLLECT]->(t:ugc)
+                WHERE ($cursor IS NULL OR r.since < $cursor)
+                RETURN t.ugcId AS ugcId, r.since AS since ORDER BY r.since DESC LIMIT $limit
+        """)
+    List<UgcInteractInfo> queryCollectedUgcIdsWithCursor(@Param("userId") String userId, @Param("cursor") Long cursor, @Param("limit") int limit);
 
     @Query("MATCH (u:ugc {ugcId: $ugcId}) RETURN u")
     UgcNode findByUgcId(@Param("ugcId") String ugcId);

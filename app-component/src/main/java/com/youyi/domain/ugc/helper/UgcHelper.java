@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -178,6 +179,13 @@ public class UgcHelper {
         return polishUgcInfos(ugcDocumentList);
     }
 
+    public List<UgcDO> listSelfCollectedUgc(UgcDO ugcDO) {
+        UserDO currentUserInfo = userService.getCurrentUserInfo();
+        // 查询，内部设置了下一次查询的 cursor 信息
+        List<UgcDocument> ugcDocumentList = ugcService.listSelfCollectedUgc(ugcDO, currentUserInfo);
+        return polishUgcInfos(ugcDocumentList, ugcDO);
+    }
+
     private void handleLikeUgcInteraction(UgcDO ugcDO, UserDO currentUser) {
         // 喜欢
         if (Boolean.TRUE.equals(ugcDO.getInteractFlag())) {
@@ -189,11 +197,32 @@ public class UgcHelper {
     }
 
     private List<UgcDO> polishUgcInfos(List<UgcDocument> ugcDocumentList) {
+        if (CollectionUtils.isEmpty(ugcDocumentList)) {
+            return Collections.emptyList();
+        }
         // 3. 批量查询作者信息
         Set<String> authorIds = ugcDocumentList.stream().map(UgcDocument::getAuthorId).collect(Collectors.toSet());
         Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);
         // 4. 封装信息
         List<UgcDO> ugcDOList = ugcService.fillAuthorAndCursorInfo(ugcDocumentList, id2UserInfoMap);
+        // 5. 填充 Statistic 数据
+        ugcService.fillUgcStatistic(ugcDOList);
+        // 6. 过滤不必要的信息
+        ugcService.filterNoNeedInfoForListPage(ugcDOList);
+        // 7. 填充交互信息
+        ugcService.fillUgcInteractInfo(ugcDOList, userService.getCurrentUserInfo());
+        return ugcDOList;
+    }
+
+    public List<UgcDO> polishUgcInfos(List<UgcDocument> ugcDocumentList, UgcDO timeCursorCtx) {
+        if (CollectionUtils.isEmpty(ugcDocumentList)) {
+            return Collections.emptyList();
+        }
+        // 3. 批量查询作者信息
+        Set<String> authorIds = ugcDocumentList.stream().map(UgcDocument::getAuthorId).collect(Collectors.toSet());
+        Map<String, UserDO> id2UserInfoMap = userService.queryBatchByUserId(authorIds);
+        // 4. 封装信息
+        List<UgcDO> ugcDOList = ugcService.fillAuthorAndTimeCursor(ugcDocumentList, id2UserInfoMap, timeCursorCtx.getTimeCursor());
         // 5. 填充 Statistic 数据
         ugcService.fillUgcStatistic(ugcDOList);
         // 6. 过滤不必要的信息

@@ -16,6 +16,7 @@ import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.UgcTagRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.repository.po.UgcTagPO;
+import com.youyi.domain.ugc.repository.relation.UgcInteractInfo;
 import com.youyi.domain.ugc.repository.relation.UgcNode;
 import com.youyi.domain.ugc.util.RecommendUtil;
 import com.youyi.domain.user.model.UserDO;
@@ -81,6 +82,7 @@ public class UgcService {
 
         return ugcRepository.queryByKeywordAndStatusForSelfWithCursor(
             ugcDO.getKeyword(),
+            ugcDO.getUgcType().name(),
             ugcDO.getStatus().name(),
             author.getUserId(),
             cursor,
@@ -174,6 +176,18 @@ public class UgcService {
                 ugcDO.fillWithUgcDocument(ugcDocument);
                 ugcDO.setAuthor(author);
                 ugcDO.setCursor(nextCursor);
+                return ugcDO;
+            }).toList();
+    }
+
+    public List<UgcDO> fillAuthorAndTimeCursor(List<UgcDocument> ugcDocumentList, Map<String, UserDO> id2UserInfoMap, Long nextCursor) {
+        return ugcDocumentList.stream()
+            .map(ugcDocument -> {
+                UserDO author = id2UserInfoMap.get(ugcDocument.getAuthorId());
+                UgcDO ugcDO = new UgcDO();
+                ugcDO.fillWithUgcDocument(ugcDocument);
+                ugcDO.setAuthor(author);
+                ugcDO.setTimeCursor(nextCursor);
                 return ugcDO;
             }).toList();
     }
@@ -287,6 +301,19 @@ public class UgcService {
                 ugcDO.setHotScore(hotUgcCacheInfo.getHotScore());
                 return ugcDO;
             }).toList();
+    }
+
+    public List<UgcDocument> listSelfCollectedUgc(UgcDO ugcDO, UserDO currentUserInfo) {
+        List<UgcInteractInfo> ugcInteractInfos = ugcRelationshipRepository.queryCollectedUgcIdsWithCursor(currentUserInfo.getUserId(), ugcDO.getTimeCursor(), ugcDO.getSize());
+        if (CollectionUtils.isEmpty(ugcInteractInfos)) {
+            return Collections.emptyList();
+        }
+        // 下一次查询的 cursor
+        Long nextCursor = ugcInteractInfos.get(ugcInteractInfos.size() - 1).getSince();
+        ugcDO.setTimeCursor(nextCursor);
+        // 查询 ugc
+        List<String> ugcIds = ugcInteractInfos.stream().map(UgcInteractInfo::getUgcId).toList();
+        return ugcRepository.queryByUgcIds(ugcIds);
     }
 
     private void checkStatusValidationBeforeUpdate(UgcDocument ugcDocument) {

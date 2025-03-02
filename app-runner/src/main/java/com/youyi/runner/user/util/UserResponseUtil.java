@@ -2,7 +2,6 @@ package com.youyi.runner.user.util;
 
 import com.youyi.common.base.PageCursorResult;
 import com.youyi.common.base.Result;
-import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
@@ -72,21 +71,21 @@ public class UserResponseUtil {
         return response;
     }
 
-    public static Result<PageCursorResult<String, UserBasicInfoResponse>> queryFollowingUsersSuccess(List<UserDO> userDOList,
+    public static Result<PageCursorResult<Long, UserBasicInfoResponse>> querySelfFollowingUsersSuccess(List<UserDO> userDOList,
         UserQueryRequest request) {
         List<UserBasicInfoResponse> data = userDOList.stream().map(USER_CONVERTER::toResponse).toList();
-        String cursor = Optional.ofNullable(userDOList.isEmpty() ? null : userDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
+        Long cursor = Optional.ofNullable(userDOList.isEmpty() ? null : userDOList.get(0).getCursor()).orElse(Long.MAX_VALUE);
 
-        Result<PageCursorResult<String, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor, checkHasMore(data)));
-        logger.info("query following users, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        Result<PageCursorResult<Long, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor, checkHasMore(data)));
+        logger.info("query self following users, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 
-    public static Result<PageCursorResult<String, UserBasicInfoResponse>> queryFollowersSuccess(List<UserDO> userDOList, UserQueryRequest request) {
+    public static Result<PageCursorResult<Long, UserBasicInfoResponse>> querySelfFollowersSuccess(List<UserDO> userDOList, UserQueryRequest request) {
         List<UserBasicInfoResponse> data = userDOList.stream().map(USER_CONVERTER::toResponse).toList();
-        String cursor = Optional.ofNullable(userDOList.isEmpty() ? null : userDOList.get(0).getCursor()).orElse(SymbolConstant.EMPTY);
-        Result<PageCursorResult<String, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor, checkHasMore(data)));
-        logger.info("query followers, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        Long cursor = Optional.ofNullable(userDOList.isEmpty() ? null : userDOList.get(0).getCursor()).orElse(Long.MAX_VALUE);
+        Result<PageCursorResult<Long, UserBasicInfoResponse>> response = Result.success(PageCursorResult.of(data, cursor, checkHasMore(data)));
+        logger.info("query self followers, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 }

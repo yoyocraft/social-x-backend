@@ -148,6 +148,12 @@ public class UserService {
             userDO.getCursor(),
             userDO.getSize()
         );
+        if (CollectionUtils.isEmpty(followingUserRelations)) {
+            return Collections.emptyList();
+        }
+
+        final Long nextCursor = followingUserRelations.get(followingUserRelations.size() - 1).getSince();
+        userDO.setCursor(nextCursor);
         List<String> followingUserIds = followingUserRelations.stream()
             .map(UserRelationship::getTarget)
             .map(UserNode::getUserId)
@@ -162,6 +168,11 @@ public class UserService {
             userDO.getCursor(),
             userDO.getSize()
         );
+        if (CollectionUtils.isEmpty(followerRelations)) {
+            return Collections.emptyList();
+        }
+        final Long nextCursor = followerRelations.get(followerRelations.size() - 1).getSince();
+        userDO.setCursor(nextCursor);
         List<String> followerUserIds = followerRelations.stream()
             .map(UserRelationship::getTarget)
             .map(UserNode::getUserId)

@@ -17,9 +17,12 @@ import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.domain.user.repository.relation.UserRelationship;
 import com.youyi.infra.cache.manager.CacheManager;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,29 +112,31 @@ public class UserHelper {
         doUnfollowUser(currentUser, userDO);
     }
 
-    public List<UserDO> queryFollowingUsers(UserDO userDO) {
+    public List<UserDO> querySelfFollowingUsers(UserDO userDO) {
+        UserDO currentUserInfo = userService.getCurrentUserInfo();
+        userDO.setUserId(currentUserInfo.getUserId());
         List<UserDO> followingUsers = userService.queryFollowingUsers(userDO);
-        UserDO currentUser = userService.getCurrentUserInfo();
-        followingUsers.forEach(followingUser ->
-            followingUser.setHasFollowed(
-                Optional
-                    .ofNullable(userRelationRepository.queryFollowingUserRelations(currentUser.getUserId(), followingUser.getUserId()))
-                    .isPresent()
-            )
-        );
+        followingUsers.forEach(followingUser -> {
+            followingUser.setHasFollowed(Boolean.TRUE);
+            // 设置下一次查询的 cursor
+            followingUser.setCursor(userDO.getCursor());
+        });
         return followingUsers;
     }
 
     public List<UserDO> queryFollowers(UserDO userDO) {
         List<UserDO> followers = userService.queryFollowers(userDO);
+        if (CollectionUtils.isEmpty(followers)) {
+            return Collections.emptyList();
+        }
+        List<String> creatorIds = followers.stream().map(UserDO::getUserId).toList();
         UserDO currentUser = userService.getCurrentUserInfo();
-        followers.forEach(follower ->
-            follower.setHasFollowed(
-                Optional
-                    .ofNullable(userRelationRepository.queryFollowingUserRelations(currentUser.getUserId(), follower.getUserId()))
-                    .isPresent()
-            )
-        );
+        List<String> followerIds = userRelationRepository.queryFollowingUserRelationsBatch(currentUser.getUserId(), creatorIds);
+        Set<String> followerIdSet = Set.copyOf(followerIds);
+        followers.forEach(follower -> {
+            follower.setHasFollowed(followerIdSet.contains(follower.getUserId()));
+            follower.setCursor(userDO.getCursor());
+        });
         return followers;
     }
 

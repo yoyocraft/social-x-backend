@@ -43,4 +43,7 @@ public class UgcQueryRequest extends BasePageRequest {
 
     @SerializedName("tags")
     private List<String> tags;
+
+    @SerializedName("timeCursor")
+    private Long timeCursor;
 }

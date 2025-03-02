@@ -81,7 +81,7 @@ public class UserDO {
     private String followUserId;
     private Boolean followFlag;
 
-    private String cursor;
+    private Long cursor;
     private Integer size;
 
     private Boolean hasFollowed;

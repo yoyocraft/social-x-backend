@@ -27,6 +27,13 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
     @Query("MATCH (u:user {userId: $subscriberId})-[r:FOLLOWING]->(f:user {userId: $creatorId}) RETURN f AS target, r.since AS since")
     UserRelationship queryFollowingUserRelations(@Param("subscriberId") String subscriberId, @Param("creatorId") String creatorId);
 
+    @Query("""
+            MATCH (u:user {userId: $subscriberId})-[r:FOLLOWING]->(f:user)
+            WHERE f.userId IN $creatorIds
+            RETURN f.userId AS creatorId
+        """)
+    List<String> queryFollowingUserRelationsBatch(@Param("subscriberId") String subscriberId, @Param("creatorIds") List<String> creatorIds);
+
     @Query("MATCH (u:user {userId: $subscriberId})-[r:FOLLOWING]->(f:user) WHERE f.userId IN $creatorIds RETURN f.userId AS creatorId")
     List<String> queryFollowingUserRelations(@Param("subscriberId") String subscriberId, @Param("creatorIds") List<String> creatorIds);
 
@@ -63,29 +70,19 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
 
     @Query("""
             MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)
-            WHERE f.userId > $lastUserId
+            WHERE ($cursor IS NULL OR r.since < $cursor)
             RETURN f AS target, r.since AS since
-            ORDER BY r.since DESC, f.userId DESC
-            LIMIT $pageSize
+            ORDER BY r.since DESC LIMIT $limit
         """)
-    List<UserRelationship> getFollowingUsers(
-        @Param("userId") String userId,
-        @Param("lastUserId") String lastUserId,
-        @Param("pageSize") int pageSize
-    );
+    List<UserRelationship> getFollowingUsers(@Param("userId") String userId, @Param("cursor") Long cursor, @Param("limit") int limit);
 
     @Query("""
             MATCH (u:user)-[r:FOLLOWING]->(f:user {userId: $userId})
-            WHERE u.userId > $lastUserId
-            RETURN u AS target, r.since AS since
-            ORDER BY r.since DESC, u.userId DESC
-            LIMIT $pageSize
+            WHERE ($cursor IS NULL OR r.since < $cursor)
+            RETURN f AS target, r.since AS since
+            ORDER BY r.since DESC LIMIT $limit
         """)
-    List<UserRelationship> getFollowers(
-        @Param("userId") String userId,
-        @Param("lastUserId") String lastUserId,
-        @Param("pageSize") int pageSize
-    );
+    List<UserRelationship> getFollowers(@Param("userId") String userId, @Param("cursor") Long cursor, @Param("limit") int limit);
 
     @Query("""
             MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)

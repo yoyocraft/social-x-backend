@@ -59,6 +59,7 @@ public class UgcDO {
     private String cursor;
     private String authorId;
     private Boolean qaStatus;
+    private Long timeCursor;
 
     // for like and collect
     private UgcInteractionType interactionType;

@@ -33,7 +33,7 @@ public class UgcValidator {
             .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
             .put(notBlankChecker("内容不能为空"), request.getContent())
             .putIf(
-                () -> UgcType.ARTICLE == UgcType.of(request.getUgcType()),
+                () -> UgcType.ARTICLE == UgcType.of(request.getUgcType()) || UgcType.QUESTION == UgcType.of(request.getUgcType()),
                 notBlankChecker("标题不能为空"),
                 request.getTitle()
             )
@@ -73,6 +73,13 @@ public class UgcValidator {
             .putIfNotBlank(enumExistChecker(UgcStatus.class, "UGC状态不合法"), request.getUgcStatus())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .put(notBlankChecker("cursor不合法"), request.getCursor())
+            .validateWithThrow();
+    }
+
+    public static void checkUgcQueryRequestForQuerySelfCollectionUgc(UgcQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .putIfNotBlank(enumExistChecker(UgcStatus.class, "UGC状态不合法"), request.getUgcStatus())
+            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
     }
 

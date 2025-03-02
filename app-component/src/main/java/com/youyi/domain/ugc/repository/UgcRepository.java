@@ -52,10 +52,11 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryByKeywordAndStatusForSelfWithCursor(String keyword, String ugcStatus, String authorId, long lastCursor, int size) {
+    public List<UgcDocument> queryByKeywordAndStatusForSelfWithCursor(String keyword, String ugcType, String ugcStatus, String authorId,
+        long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryByKeywordAndStatusForSelfWithCursor(keyword, ugcStatus, authorId, lastCursor, size);
+            return ugcDAO.queryByKeywordForSelfWithCursor(keyword, ugcType, ugcStatus, authorId, lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
@@ -66,6 +67,16 @@ public class UgcRepository {
         try {
             checkState(StringUtils.isNotBlank(ugcId));
             return ugcDAO.queryByUgcId(ugcId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public List<UgcDocument> queryByUgcIds(List<String> ugcIds) {
+        try {
+            checkState(Objects.nonNull(ugcIds) && !ugcIds.isEmpty());
+            return ugcDAO.queryByUgcIds(ugcIds);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

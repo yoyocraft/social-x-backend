@@ -18,6 +18,8 @@ public enum UgcType {
      */
     ALL(SymbolConstant.EMPTY),
 
+    DRAFT("草稿"),
+
     /**
      * 文章
      */
