@@ -1,5 +1,6 @@
 package com.youyi.domain.notification.hepler;
 
+import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.notification.core.NotificationService;
 import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.domain.notification.model.NotificationUnreadInfo;
@@ -26,6 +27,7 @@ public class NotificationHelper {
 
     private final UserService userService;
     private final NotificationService notificationService;
+    private final NotificationManager notificationManager;
 
     public List<NotificationDO> queryUnreadCount(NotificationDO notificationDO) {
         // 0. 填充当前用户为接收者
@@ -67,7 +69,9 @@ public class NotificationHelper {
 
         // 3. 填充数据并返回
         UserDO receiver = notificationDO.getReceiver();
-        return notificationService.fillUserAndCursorInfo(poList, senderId2InfoMap, receiver);
+        List<NotificationDO> notificationDOList = notificationService.fillUserAndCursorInfo(poList, senderId2InfoMap, receiver);
+        notificationService.fillUserFollowedInfo(notificationDOList, receiver);
+        return notificationDOList;
     }
 
     public void readSingleNotification(NotificationDO notificationDO) {
@@ -88,5 +92,10 @@ public class NotificationHelper {
     private void fillCurrUserAsReceiver(NotificationDO notificationDO) {
         UserDO currentUserInfo = userService.getCurrentUserInfo();
         notificationDO.setReceiver(currentUserInfo);
+    }
+
+    public void publish(NotificationDO notificationDO) {
+        UserDO sender = userService.getCurrentUserInfo();
+        notificationManager.sendSystemNotification(sender, notificationDO.getTitle(), notificationDO.getContent());
     }
 }

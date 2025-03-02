@@ -40,7 +40,7 @@ class NotificationRepositoryTest extends BaseIntegrationTest {
     NotificationPO buildPO() {
         NotificationPO po = new NotificationPO();
         po.setNotificationId(IdSeqUtil.genNotificationId());
-        po.setNotificationType(NotificationType.UGC_LIKE.name());
+        po.setNotificationType(NotificationType.INTERACT.name());
         po.setNotificationStatus(NotificationStatus.UNREAD.getCode());
         po.setReceiverId("1883827647466573824");
         po.setSenderId("1883829503093772288");

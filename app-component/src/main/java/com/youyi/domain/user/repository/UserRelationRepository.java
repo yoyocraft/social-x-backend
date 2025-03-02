@@ -27,6 +27,9 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
     @Query("MATCH (u:user {userId: $subscriberId})-[r:FOLLOWING]->(f:user {userId: $creatorId}) RETURN f AS target, r.since AS since")
     UserRelationship queryFollowingUserRelations(@Param("subscriberId") String subscriberId, @Param("creatorId") String creatorId);
 
+    @Query("MATCH (u:user {userId: $subscriberId})-[r:FOLLOWING]->(f:user) WHERE f.userId IN $creatorIds RETURN f.userId AS creatorId")
+    List<String> queryFollowingUserRelations(@Param("subscriberId") String subscriberId, @Param("creatorIds") List<String> creatorIds);
+
     @Query(
         """ 
             MATCH (f:user {userId: $subscriberId})

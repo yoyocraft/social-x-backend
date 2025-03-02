@@ -22,21 +22,30 @@ public class NotificationResponse extends BaseResponse {
     @SerializedName("content")
     private String content;
 
+    @SerializedName("summary")
+    private String summary;
+
+    @SerializedName("targetId")
+    private String targetId;
+
+    @SerializedName("targetType")
+    private String targetType;
+
     @SerializedName("senderId")
     private String senderId;
 
     @SerializedName("senderName")
     private String senderName;
 
-    @SerializedName("receiverId")
-    private String receiverId;
-
-    @SerializedName("receiverName")
-    private String receiverName;
+    @SerializedName("senderAvatar")
+    private String senderAvatar;
 
     @SerializedName("read")
     private Boolean read;
 
-    @SerializedName("notificationGroup")
-    private String notificationGroup;
+    @SerializedName("gmtCreate")
+    private Long gmtCreate;
+
+    @SerializedName("followed")
+    private Boolean followed;
 }

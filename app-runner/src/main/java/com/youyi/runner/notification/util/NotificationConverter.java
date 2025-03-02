@@ -2,20 +2,16 @@ package com.youyi.runner.notification.util;
 
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.notification.NotificationStatus;
+import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.domain.notification.model.NotificationExtraData;
 import com.youyi.runner.notification.model.NotificationResponse;
 import com.youyi.runner.notification.model.NotificationUnreadInfo;
-import java.util.Map;
 import java.util.Optional;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-
-import static com.youyi.common.constant.SystemConstant.DEFAULT_KEY;
-import static com.youyi.common.type.conf.ConfigKey.NOTIFICATION_GROUP_CONFIG;
-import static com.youyi.infra.conf.core.Conf.getMapConfig;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -23,7 +19,8 @@ import static com.youyi.infra.conf.core.Conf.getMapConfig;
  */
 @Mapper(
     imports = {
-        NotificationStatus.class
+        NotificationStatus.class,
+        CommonOperationUtil.class
     }
 )
 public interface NotificationConverter {
@@ -35,11 +32,14 @@ public interface NotificationConverter {
         @Mapping(target = "notificationType", expression = "java(notificationDO.getNotificationType().name())"),
         @Mapping(target = "senderId", source = "sender.userId"),
         @Mapping(target = "senderName", source = "sender.nickname"),
-        @Mapping(target = "receiverId", source = "receiver.userId"),
-        @Mapping(target = "receiverName", source = "receiver.nickname"),
+        @Mapping(target = "senderAvatar", source = "sender.avatar"),
         @Mapping(target = "read", expression = "java(NotificationStatus.READ == notificationDO.getNotificationStatus())"),
         @Mapping(target = "content", expression = "java(getContent(notificationDO))"),
-        @Mapping(target = "notificationGroup", expression = "java(getGroup(notificationDO))"),
+        @Mapping(target = "summary", expression = "java(getSummary(notificationDO))"),
+        @Mapping(target = "targetId", expression = "java(getTargetId(notificationDO))"),
+        @Mapping(target = "targetType", expression = "java(getTargetType(notificationDO))"),
+        @Mapping(target = "gmtCreate", expression = "java(CommonOperationUtil.date2Timestamp(notificationDO.getGmtCreate()))"),
+        @Mapping(target = "followed", source = "followed")
     })
     NotificationResponse toResponse(NotificationDO notificationDO);
 
@@ -57,8 +57,27 @@ public interface NotificationConverter {
         return extraDataOpt.get().getContent();
     }
 
-    default String getGroup(NotificationDO notificationDO) {
-        Map<String, String> groupConfig = getMapConfig(NOTIFICATION_GROUP_CONFIG, String.class, String.class);
-        return groupConfig.getOrDefault(notificationDO.getNotificationType().name(), groupConfig.get(DEFAULT_KEY));
+    default String getSummary(NotificationDO notificationDO) {
+        Optional<NotificationExtraData> extraDataOpt = Optional.ofNullable(notificationDO.getExtraData());
+        if (extraDataOpt.isEmpty()) {
+            return SymbolConstant.EMPTY;
+        }
+        return extraDataOpt.get().getSummary();
+    }
+
+    default String getTargetId(NotificationDO notificationDO) {
+        Optional<NotificationExtraData> extraDataOpt = Optional.ofNullable(notificationDO.getExtraData());
+        if (extraDataOpt.isEmpty()) {
+            return SymbolConstant.EMPTY;
+        }
+        return extraDataOpt.get().getTargetId();
+    }
+
+    default String getTargetType(NotificationDO notificationDO) {
+        Optional<NotificationExtraData> extraDataOpt = Optional.ofNullable(notificationDO.getExtraData());
+        if (extraDataOpt.isEmpty()) {
+            return SymbolConstant.EMPTY;
+        }
+        return extraDataOpt.get().getTargetType();
     }
 }

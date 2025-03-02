@@ -1,7 +1,9 @@
 package com.youyi.domain.notification.core;
 
 import com.youyi.common.constant.SymbolConstant;
+import com.youyi.common.constant.UgcConstant;
 import com.youyi.common.type.conf.ConfigKey;
+import com.youyi.common.type.notification.NotificationTemplateKey;
 import com.youyi.common.type.notification.NotificationType;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
@@ -27,12 +29,11 @@ import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.SystemConstant.DEFAULT_KEY;
 import static com.youyi.common.type.conf.ConfigKey.NOTIFICATION_SUMMARY_TEMPLATE;
-import static com.youyi.common.type.notification.NotificationType.UGC_ADOPT;
-import static com.youyi.common.type.notification.NotificationType.UGC_COLLECT;
-import static com.youyi.common.type.notification.NotificationType.UGC_COMMENT;
-import static com.youyi.common.type.notification.NotificationType.UGC_COMMENT_REPLY;
-import static com.youyi.common.type.notification.NotificationType.UGC_LIKE;
-import static com.youyi.common.type.notification.NotificationType.USER_FOLLOW;
+import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_ADOPT;
+import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COLLECT;
+import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COMMENT;
+import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COMMENT_REPLY;
+import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_LIKE;
 import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getCacheValue;
 import static com.youyi.infra.conf.core.Conf.getMapConfig;
@@ -75,12 +76,12 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
      * 发送关注通知
      */
     public void sendUserFollowNotification(UserDO sender, UserDO receiver) {
-        sendNotificationAsync(
+        sendNotification(
             sender,
             receiver.getUserId(),
-            USER_FOLLOW,
+            NotificationType.FOLLOW,
             receiver.getUserId(),
-            generateSummary(USER_FOLLOW, sender.getNickname()),
+            generateSummary(NotificationTemplateKey.USER_FOLLOW, sender.getNickname()),
             SymbolConstant.EMPTY
         );
     }
@@ -91,12 +92,13 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
     public void sendUgcLikeNotification(UserDO sender, String ugcId) {
         notificationExecutor.execute(() -> {
             UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
-            sendNotificationAsync(
+            sendNotification(
                 sender,
                 ugcDocument.getAuthorId(),
-                UGC_LIKE,
+                NotificationType.INTERACT,
                 ugcId,
-                generateSummary(UGC_LIKE, sender.getNickname(), UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
+                ugcDocument.getType(),
+                generateSummary(UGC_LIKE, UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
                 SymbolConstant.EMPTY
             );
         });
@@ -108,12 +110,13 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
     public void sendUgcCollectNotification(UserDO sender, String ugcId) {
         notificationExecutor.execute(() -> {
             UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
-            sendNotificationAsync(
+            sendNotification(
                 sender,
                 ugcDocument.getAuthorId(),
-                UGC_COLLECT,
+                NotificationType.INTERACT,
                 ugcId,
-                generateSummary(UGC_COLLECT, sender.getNickname(), UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
+                ugcDocument.getType(),
+                generateSummary(UGC_COLLECT, UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
                 SymbolConstant.EMPTY
             );
         });
@@ -122,15 +125,18 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
     /**
      * 发送 UGC 采纳通知
      */
-    public void sendUgcAdoptNotification(UserDO sender, String commentaryId) {
+    public void sendUgcAdoptNotification(UserDO sender, String commentaryId, UgcDocument ugcDocument) {
         notificationExecutor.execute(() -> {
             CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryId);
-            sendNotificationAsync(
+            sendNotification(
                 sender,
                 commentaryDocument.getCommentatorId(),
-                UGC_ADOPT,
+                NotificationType.INTERACT,
+                ugcDocument.getUgcId(),
+                ugcDocument.getUgcId(),
                 commentaryId,
-                generateSummary(UGC_ADOPT, sender.getNickname()),
+                UgcConstant.COMMENTARY_ID,
+                generateSummary(UGC_ADOPT),
                 commentaryDocument.getCommentary()
             );
         });
@@ -139,15 +145,18 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
     /**
      * 发送 UGC 评论通知
      */
-    public void sendUgcCommentNotification(UserDO sender, String ugcId, String content) {
+    public void sendUgcCommentNotification(UserDO sender, String commentaryId, String content, String ugcId) {
         notificationExecutor.execute(() -> {
             UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
-            sendNotificationAsync(
+            sendNotification(
                 sender,
                 ugcDocument.getAuthorId(),
-                UGC_COMMENT,
+                NotificationType.COMMENT,
                 ugcId,
-                generateSummary(UGC_COMMENT, sender.getNickname(), UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
+                ugcDocument.getType(),
+                commentaryId,
+                UgcConstant.COMMENTARY_ID,
+                generateSummary(UGC_COMMENT, UgcType.of(ugcDocument.getType()).getDesc(), ugcDocument.getTitle()),
                 content
             );
         });
@@ -156,22 +165,72 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
     /**
      * 发送 UGC 评论回复通知
      */
-    public void sendUgcCommentReplyNotification(UserDO sender, String commentaryId, String content) {
+    public void sendUgcCommentReplyNotification(UserDO sender, String commentaryId, String content, String ugcId) {
         notificationExecutor.execute(() -> {
             CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryId);
-            sendNotificationAsync(
+            UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
+            sendNotification(
                 sender,
                 commentaryDocument.getCommentatorId(),
-                UGC_COMMENT_REPLY,
-                commentaryId,
+                NotificationType.COMMENT,
+                ugcId,
+                ugcDocument.getType(),
                 generateSummary(UGC_COMMENT_REPLY, sender.getNickname()),
                 content
             );
         });
     }
 
-    private void sendNotificationAsync(UserDO sender, String receiverId, NotificationType type, String targetId, String summary, String content) {
+    public void sendSystemNotification(UserDO sender, String title, String content) {
+        notificationExecutor.execute(() -> sendNotification(
+            sender,
+            SymbolConstant.EMPTY,
+            NotificationType.SYSTEM,
+            SymbolConstant.EMPTY,
+            title,
+            content
+        ));
+    }
+
+    public void sendNotification(UserDO sender, String receiverId, NotificationType type, String targetId, String summary, String content) {
+        sendNotification(sender, receiverId, type, targetId, SymbolConstant.EMPTY, summary, content);
+    }
+
+    public void sendNotification(
+        UserDO sender,
+        String receiverId,
+        NotificationType type,
+        String targetId,
+        String targetType,
+        String summary,
+        String content
+    ) {
+        sendNotification(
+            sender,
+            receiverId,
+            type,
+            targetId,
+            targetType,
+            SymbolConstant.EMPTY,
+            SymbolConstant.EMPTY,
+            summary,
+            content
+        );
+    }
+
+    public void sendNotification(
+        UserDO sender,
+        String receiverId,
+        NotificationType type,
+        String targetId,
+        String targetType,
+        String relatedId,
+        String relatedType,
+        String summary,
+        String content
+    ) {
         if (!needNotify(sender.getUserId(), receiverId)) {
+            logger.info("{} do not need to receive notification of type {}", receiverId, type);
             return;
         }
 
@@ -180,6 +239,9 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
             extraData.setTargetId(targetId);
             extraData.setContent(content);
             extraData.setSummary(summary);
+            extraData.setTargetType(targetType);
+            extraData.setRelatedId(relatedId);
+            extraData.setRelatedType(relatedType);
 
             NotificationDO notification = new NotificationDO();
             notification.setSender(sender);
@@ -195,10 +257,10 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
     }
 
     private boolean needNotify(String senderId, String receiverId) {
-        return StringUtils.isNoneBlank(senderId, receiverId) && !senderId.equals(receiverId);
+        return StringUtils.isNotBlank(senderId) && !senderId.equals(receiverId);
     }
 
-    private String generateSummary(NotificationType type, Object... args) {
+    private String generateSummary(NotificationTemplateKey type, Object... args) {
         Map<String, String> templateMapping = getMapConfig(NOTIFICATION_SUMMARY_TEMPLATE, String.class, String.class);
         String template = templateMapping.getOrDefault(type.name(), templateMapping.get(DEFAULT_KEY));
         return MessageFormat.format(template, args);

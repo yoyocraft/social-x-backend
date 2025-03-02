@@ -1,0 +1,22 @@
+package com.youyi.common.type.notification;
+
+/**
+ * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
+ * @date 2025/02/05
+ */
+public enum NotificationTemplateKey {
+
+    UNKNOWN,
+    /**
+     * for sum count
+     */
+    ALL,
+    USER_FOLLOW,
+
+    UGC_LIKE,
+    UGC_COLLECT,
+    UGC_ADOPT,
+    UGC_COMMENT,
+    UGC_COMMENT_REPLY,
+    ;
+}

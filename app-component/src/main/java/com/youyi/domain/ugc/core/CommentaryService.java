@@ -8,9 +8,12 @@ import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.relation.CommentaryNode;
 import com.youyi.domain.user.model.UserDO;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -130,21 +133,27 @@ public class CommentaryService {
     public void sendNotification(CommentaryDO commentaryDO) {
         if (commentaryDO.isTopCommentary()) {
             // 发送UGC_COMMENT通知
-            notificationManager.sendUgcCommentNotification(commentaryDO.getCommentator(), commentaryDO.getUgcId(), commentaryDO.getCommentary());
+            notificationManager.sendUgcCommentNotification(commentaryDO.getCommentator(), commentaryDO.getCommentaryId(), commentaryDO.getCommentary(), commentaryDO.getUgcId());
             return;
         }
 
         // 发送UGC_COMMENT_REPLY通知
-        notificationManager.sendUgcCommentReplyNotification(commentaryDO.getCommentator(), commentaryDO.getParentId(), commentaryDO.getCommentary());
+        notificationManager.sendUgcCommentReplyNotification(commentaryDO.getCommentator(), commentaryDO.getParentId(), commentaryDO.getCommentary(), commentaryDO.getUgcId());
     }
 
     public void fillInteractInfo(List<CommentaryDO> commentaryDOList, UserDO currentUserInfo) {
+        List<String> commentaryIds = commentaryDOList.stream()
+            .map(CommentaryDO::getCommentaryId)
+            .collect(Collectors.toList());
+
+        // 批量查询用户对多个评论的点赞关系，返回已点赞的评论ID列表
+        List<String> likedCommentaryIds = commentaryRelationshipRepository.queryLikeRelationships(commentaryIds, currentUserInfo.getUserId());
+
+        Set<String> likedCommentaryIdSet = new HashSet<>(likedCommentaryIds);
+
+        // 设置每个评论的点赞状态
         commentaryDOList.forEach(commentaryDO -> {
-            commentaryDO.setLiked(
-                Optional
-                    .ofNullable(commentaryRelationshipRepository.queryLikeRelationship(commentaryDO.getCommentaryId(), currentUserInfo.getUserId()))
-                    .isPresent()
-            );
+            commentaryDO.setLiked(likedCommentaryIdSet.contains(commentaryDO.getCommentaryId()));
         });
     }
 }

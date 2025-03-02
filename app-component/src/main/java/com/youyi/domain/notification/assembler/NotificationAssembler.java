@@ -1,7 +1,9 @@
 package com.youyi.domain.notification.assembler;
 
+import com.youyi.common.constant.RepositoryConstant;
 import com.youyi.common.type.notification.NotificationType;
 import com.youyi.domain.notification.model.NotificationDO;
+import com.youyi.domain.notification.request.NotificationPublishRequest;
 import com.youyi.domain.notification.request.NotificationQueryRequest;
 import com.youyi.domain.notification.request.NotificationReadRequest;
 import com.youyi.domain.notification.request.NotificationUnreadQueryRequest;
@@ -29,7 +31,8 @@ public interface NotificationAssembler {
 
     @Mappings({
         @Mapping(target = "notificationType", expression = "java(NotificationType.of(request.getNotificationType()))"),
-        @Mapping(target = "size", expression = "java(CommonConfUtil.calSize(request))")
+        @Mapping(target = "size", expression = "java(CommonConfUtil.calSize(request))"),
+        @Mapping(target = "cursor", expression = "java(calCursor(request))")
     })
     NotificationDO toDO(NotificationQueryRequest request);
 
@@ -42,4 +45,13 @@ public interface NotificationAssembler {
         @Mapping(target = "queryAll", source = "queryAll")
     })
     NotificationDO toDO(NotificationUnreadQueryRequest request);
+
+    NotificationDO toDO(NotificationPublishRequest request);
+
+    default String calCursor(NotificationQueryRequest request) {
+        if (RepositoryConstant.INIT_QUERY_CURSOR.equals(request.getCursor())) {
+            return null;
+        }
+        return request.getCursor();
+    }
 }
