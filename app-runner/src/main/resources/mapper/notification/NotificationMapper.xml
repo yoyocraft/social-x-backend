@@ -51,12 +51,13 @@
             <include refid="result_cols"/>
         FROM notification
         WHERE notification_type = #{type}
-        AND receiver_id = #{receiverId}
-        AND read_at = 0
+        <if test="type != 'SYSTEM'">
+            AND receiver_id = #{receiverId}
+        </if>
         <if test="cursor != null">
             AND notification_id <![CDATA[ < ]]> #{cursor}
         </if>
-        ORDER BY notification_id DESC
+        ORDER BY read_at ASC, notification_id DESC
         LIMIT #{size}
     </select>
     <select id="queryUnreadCountGroupByType" resultType="com.youyi.domain.notification.model.NotificationUnreadInfo">

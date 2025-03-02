@@ -16,6 +16,12 @@ public class NotificationExtraData {
      */
     private String targetId;
 
+    private String targetType;
+
+    private String relatedId;
+
+    private String relatedType;
+
     private String summary;
 
     private String content;

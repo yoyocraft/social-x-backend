@@ -1,25 +1,21 @@
 package com.youyi.common.type.notification;
 
+import lombok.Getter;
 import org.apache.commons.lang3.EnumUtils;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
- * @date 2025/02/05
+ * @date 2025/03/01
  */
+@Getter
 public enum NotificationType {
 
     UNKNOWN,
-    /**
-     * for sum count
-     */
     ALL,
-    USER_FOLLOW,
-
-    UGC_LIKE,
-    UGC_COLLECT,
-    UGC_ADOPT,
-    UGC_COMMENT,
-    UGC_COMMENT_REPLY,
+    COMMENT,
+    INTERACT,
+    FOLLOW,
+    SYSTEM,
     ;
 
     public static NotificationType of(String type) {

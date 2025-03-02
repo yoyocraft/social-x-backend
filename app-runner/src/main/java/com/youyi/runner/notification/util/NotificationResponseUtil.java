@@ -5,6 +5,7 @@ import com.youyi.common.base.Result;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.notification.model.NotificationDO;
+import com.youyi.domain.notification.request.NotificationPublishRequest;
 import com.youyi.domain.notification.request.NotificationQueryRequest;
 import com.youyi.domain.notification.request.NotificationReadRequest;
 import com.youyi.domain.notification.request.NotificationUnreadQueryRequest;
@@ -46,6 +47,12 @@ public class NotificationResponseUtil {
     public static Result<Boolean> readAllNotificationByTypeSuccess(NotificationReadRequest request) {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         logger.info("read single notification, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
+    public static Result<Boolean> publishNotificationSuccess(NotificationPublishRequest request) {
+        Result<Boolean> response = Result.success(Boolean.TRUE);
+        logger.info("publish notification, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 

@@ -3,6 +3,7 @@ package com.youyi.runner.notification.util;
 import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.notification.NotificationType;
 import com.youyi.common.util.param.ParamCheckerChain;
+import com.youyi.domain.notification.request.NotificationPublishRequest;
 import com.youyi.domain.notification.request.NotificationQueryRequest;
 import com.youyi.domain.notification.request.NotificationReadRequest;
 
@@ -18,8 +19,18 @@ import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
  */
 public class NotificationValidator {
 
+    public static void checkNotificationPublishRequest(NotificationPublishRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(enumExistChecker(NotificationType.class, "通知类型不合法"), request.getNotificationType())
+            .put(notBlankChecker("通知内容不能为空"), request.getContent())
+            .put(notBlankChecker("通知标题不能为空"), request.getTitle())
+            .put(notBlankChecker("请求ID不能为空"), request.getReqId())
+            .validateWithThrow();
+    }
+
     public static void checkNotificationQueryRequest(NotificationQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("cursor 不能为空"), request.getCursor())
             .put(enumExistChecker(NotificationType.class, "通知类型不合法"), request.getNotificationType())
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
@@ -27,7 +38,7 @@ public class NotificationValidator {
 
     public static void checkNotificationReadRequestForSingleRead(NotificationReadRequest request) {
         ParamCheckerChain.newCheckerChain()
-            .put(snowflakeIdChecker(), request.getNotificationId())
+            .put(snowflakeIdChecker("通知ID不合法"), request.getNotificationId())
             .validateWithThrow();
     }
 

@@ -6,6 +6,7 @@ import com.youyi.common.util.GsonUtil;
 import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.notification.repository.po.NotificationPO;
 import com.youyi.domain.user.model.UserDO;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +34,12 @@ public class NotificationDO {
     private Long unreadCount;
     private Boolean queryAll;
 
+    private LocalDateTime gmtCreate;
+    private Boolean followed;
+
+    private String content;
+    private String title;
+
     public void create() {
         this.notificationId = IdSeqUtil.genNotificationId();
         this.notificationStatus = NotificationStatus.UNREAD;
@@ -55,5 +62,6 @@ public class NotificationDO {
         this.notificationStatus = NotificationStatus.of(notificationPO.getNotificationStatus());
         this.readAt = notificationPO.getReadAt();
         this.extraData = GsonUtil.fromJson(notificationPO.getExtraData(), NotificationExtraData.class);
+        this.gmtCreate = notificationPO.getGmtCreate();
     }
 }

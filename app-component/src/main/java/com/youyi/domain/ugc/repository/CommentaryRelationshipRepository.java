@@ -40,6 +40,9 @@ public interface CommentaryRelationshipRepository extends Neo4jRepository<Commen
     @Query("MATCH (u:user {userId: $userId})-[r:LIKE]->(t:commentary {commentaryId: $commentaryId}) RETURN u AS target, r.since AS since")
     UgcInteractRelationship queryLikeRelationship(@Param("commentaryId") String commentaryId, @Param("userId") String userId);
 
+    @Query("MATCH (u:user {userId: $userId})-[r:LIKE]->(t:commentary) WHERE t.commentaryId IN $commentaryIds RETURN t.commentaryId AS commentaryId")
+    List<String> queryLikeRelationships(@Param("commentaryIds") List<String> commentaryIds, @Param("userId") String userId);
+
     @Query("MATCH (c:commentary {commentaryId: $commentaryId}) RETURN c")
     CommentaryNode findByCommentaryId(@Param("commentaryId") String commentaryId);
 

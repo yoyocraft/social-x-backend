@@ -137,7 +137,7 @@ public class CommentaryHelper {
         ugcTpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(ugcDocument.getUgcId(), TaskType.UGC_ADOPT_EVENT));
 
         // 发送通知
-        notificationManager.sendUgcAdoptNotification(currentUser, commentaryDO.getCommentaryId());
+        notificationManager.sendUgcAdoptNotification(currentUser, commentaryDO.getCommentaryId(), ugcDocument);
     }
 
     private void doLike(CommentaryDO commentaryDO, UserDO currentUser) {

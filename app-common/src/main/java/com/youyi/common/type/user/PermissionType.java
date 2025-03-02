@@ -26,6 +26,8 @@ public enum PermissionType {
     ADD_PERMISSION,
     AUTHORIZE_PERMISSION,
     REVOKE_PERMISSION,
+
+    NOTIFICATION_MANAGER,
     ;
 
     public static PermissionType of(String permission) {
