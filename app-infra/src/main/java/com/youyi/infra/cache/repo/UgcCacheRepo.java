@@ -54,8 +54,11 @@ public class UgcCacheRepo {
         return buildKey(CacheKey.UGC_USER_RECOMMEND_TAG, dataMap);
     }
 
-    public static String ofHotUgcListKey() {
-        return buildKey(CacheKey.HOT_UGC_LIST, null);
+    public static String ofHotUgcListKey(String ugcType) {
+        Map<String, String> dataMap = ImmutableMap.of(
+            "ugcType", ugcType
+        );
+        return buildKey(CacheKey.HOT_UGC_LIST, dataMap);
     }
 
 }

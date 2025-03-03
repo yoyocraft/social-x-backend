@@ -168,9 +168,9 @@ public class UgcHelper {
         return polishUgcInfos(ugcDocumentList);
     }
 
-    public List<UgcDO> queryHotUgc() {
+    public List<UgcDO> queryHotUgc(UgcDO ugcDO) {
         // 1. 查询热门UGC信息
-        List<HotUgcCacheInfo> cacheInfos = ugcService.queryHotUgcFromCache();
+        List<HotUgcCacheInfo> cacheInfos = ugcService.queryHotUgcFromCache(ugcDO);
         // 2. 填充信息
         return ugcService.fillHotUgc(cacheInfos);
     }

@@ -1,8 +1,10 @@
 package com.youyi.domain.ugc.core;
 
+import com.youyi.common.constant.UgcConstant;
 import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.HotUgcCacheInfo;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
@@ -56,6 +58,12 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
     }
 
     private void calculateAndCacheHotList() {
+        for (UgcType type : UgcConstant.hotUgcTypeList) {
+            calculateAndCacheHotList(type);
+        }
+    }
+
+    private void calculateAndCacheHotList(UgcType ugcType) {
         final int topN = getIntegerConfig(ConfigKey.HOT_LIST_TOP_N, 10);
         final PriorityQueue<HotUgcCacheInfo> minHeap = new PriorityQueue<>(
             Comparator.comparingDouble(HotUgcCacheInfo::getHotScore)
@@ -65,7 +73,7 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
         int processedCount = 0;
 
         while (true) {
-            List<UgcDocument> batch = loadUgcList(cursor);
+            List<UgcDocument> batch = loadUgcList(ugcType, cursor);
             if (batch.isEmpty()) {
                 break;
             }
@@ -78,7 +86,7 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
         }
 
         List<HotUgcCacheInfo> topList = extractTopList(minHeap);
-        cacheHotList(topList);
+        cacheHotList(ugcType, topList);
     }
 
     private void executeHotJob() {
@@ -95,8 +103,9 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
         }
     }
 
-    private List<UgcDocument> loadUgcList(long cursor) {
+    private List<UgcDocument> loadUgcList(UgcType ugcType, long cursor) {
         return ugcRepository.queryByStatusWithTimeCursor(
+            ugcType.name(),
             UgcStatus.PUBLISHED.name(),
             cursor,
             getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE)
@@ -138,7 +147,11 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
                 + ugc.getCollectCount() * 0.2
                 + commentaryCount * 0.1;
 
-            return new HotUgcCacheInfo(ugc.getUgcId(), ugc.getTitle(), score);
+            if (UgcType.POST == UgcType.of(ugc.getType())) {
+                return new HotUgcCacheInfo(ugc.getUgcId(), ugc.getContent(), score, ugc.getViewCount());
+            }
+
+            return new HotUgcCacheInfo(ugc.getUgcId(), ugc.getTitle(), score, ugc.getViewCount());
         }).collect(Collectors.toList());
     }
 
@@ -148,8 +161,8 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
             .collect(Collectors.toList());
     }
 
-    private void cacheHotList(List<HotUgcCacheInfo> hotList) {
-        String cacheKey = ofHotUgcListKey();
+    private void cacheHotList(UgcType ugcType, List<HotUgcCacheInfo> hotList) {
+        String cacheKey = ofHotUgcListKey(ugcType.name());
         cacheManager.set(cacheKey, GsonUtil.toJson(hotList), CacheKey.HOT_UGC_LIST.getTtl());
     }
 }

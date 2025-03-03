@@ -103,10 +103,10 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcStatus, long lastCursor, int size) {
+    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcType, String ugcStatus, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryByStatusWithTimeCursor(ugcStatus, lastCursor, size);
+            return ugcDAO.queryByStatusWithTimeCursor(ugcType, ugcStatus, lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

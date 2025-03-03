@@ -4,6 +4,7 @@ import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.common.type.ugc.UgcType;
 import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
@@ -58,6 +59,7 @@ public class UgcAuditJob {
 
     private List<UgcDocument> loadAuditingUgc(long cursor) {
         return ugcRepository.queryByStatusWithTimeCursor(
+            UgcType.ALL.name(),
             UgcStatus.AUDITING.name(),
             cursor,
             getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE)

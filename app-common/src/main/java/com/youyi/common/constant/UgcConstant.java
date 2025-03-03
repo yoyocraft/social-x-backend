@@ -2,6 +2,8 @@ package com.youyi.common.constant;
 
 import com.youyi.common.type.ugc.CommentaryStatus;
 import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.common.type.ugc.UgcType;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -34,6 +36,13 @@ public class UgcConstant {
         UgcStatus.PUBLISHED.name(),
         UgcStatus.AUDITING.name(),
         UgcStatus.PRIVATE.name()
+    );
+
+    public static EnumSet<UgcType> hotUgcTypeList = EnumSet.of(
+        UgcType.ARTICLE,
+        UgcType.POST,
+        UgcType.QUESTION,
+        UgcType.ALL
     );
 
     // ======================= Commentary =======================
