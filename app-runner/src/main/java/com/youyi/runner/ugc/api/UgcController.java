@@ -168,9 +168,11 @@ public class UgcController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/hot", method = RequestMethod.GET)
-    public Result<List<UgcResponse>> listHotUgc() {
-        List<UgcDO> ugcDOList = ugcHelper.queryHotUgc();
+    @RequestMapping(value = "/hot", method = RequestMethod.POST)
+    public Result<List<UgcResponse>> listHotUgc(@RequestBody UgcQueryRequest request) {
+        UgcValidator.checkUgcQueryRequestForHotUgcList(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        List<UgcDO> ugcDOList = ugcHelper.queryHotUgc(ugcDO);
         return queryHotUgcSuccess(ugcDOList);
     }
 

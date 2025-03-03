@@ -148,4 +148,10 @@ public class UgcValidator {
             .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
             .validateWithThrow();
     }
+
+    public static void checkUgcQueryRequestForHotUgcList(UgcQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
+            .validateWithThrow();
+    }
 }

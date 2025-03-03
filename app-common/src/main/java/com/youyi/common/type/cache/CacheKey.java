@@ -20,14 +20,14 @@ public enum CacheKey {
     /**
      * 多设置一个小时，避免计算延迟
      */
-    HOT_UGC_LIST(ofKey("ugc", "hot"), Duration.ofHours(25), false),
+    HOT_UGC_LIST(ofKey("ugc", "hot", "${ugcType}"), Duration.ofHours(25)),
 
     COMMENTARY_LIKE_COUNT(ofKey("cmt", "${commentaryId}", "cl"), Duration.ofHours(24)),
 
     USER_VERIFY_TOKEN(ofKey("u", "vrf", "cap", "${email}", "${bizType}"), Duration.ofMinutes(10)),
     USER_FOLLOW_IDS(ofKey("u", "fl", "${userId}"), Duration.ofHours(24)),
 
-    EMAIL_CAPTCHA(ofKey("em", "cap", "${email}", "${bizType}"), Duration.ofMillis(10)),
+    EMAIL_CAPTCHA(ofKey("em", "cap", "${email}", "${bizType}"), Duration.ofMinutes(10)),
     ;
 
     private final boolean pattern;

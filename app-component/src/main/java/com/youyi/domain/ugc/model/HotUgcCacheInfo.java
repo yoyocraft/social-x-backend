@@ -18,4 +18,6 @@ public class HotUgcCacheInfo {
     private String title;
 
     private Double hotScore;
+
+    private Long viewCount;
 }

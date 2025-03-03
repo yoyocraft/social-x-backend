@@ -277,8 +277,8 @@ public class UgcService {
         });
     }
 
-    public List<HotUgcCacheInfo> queryHotUgcFromCache() {
-        String cacheKey = ofHotUgcListKey();
+    public List<HotUgcCacheInfo> queryHotUgcFromCache(UgcDO ugcDO) {
+        String cacheKey = ofHotUgcListKey(ugcDO.getUgcType().name());
         if (!cacheManager.exists(cacheKey)) {
             // TODO youyi 2025/2/25 待处理
             return Collections.emptyList();
@@ -299,6 +299,7 @@ public class UgcService {
                 ugcDO.setUgcId(hotUgcCacheInfo.getUgcId());
                 ugcDO.setTitle(hotUgcCacheInfo.getTitle());
                 ugcDO.setHotScore(hotUgcCacheInfo.getHotScore());
+                ugcDO.setViewCount(hotUgcCacheInfo.getViewCount());
                 return ugcDO;
             }).toList();
     }

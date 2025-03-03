@@ -123,8 +123,9 @@ public class UgcDAO {
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcStatus, long lastCursor, int size) {
+    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcType, String ugcStatus, long lastCursor, int size) {
         Query query = new Query();
+        buildUgcTypeQueryCondition(query, ugcType);
         buildUgcStatusQueryCondition(query, ugcStatus);
         buildTimeCursorQueryCondition(query, lastCursor, size);
         return mongoTemplate.find(query, UgcDocument.class);
