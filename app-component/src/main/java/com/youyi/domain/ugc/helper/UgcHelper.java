@@ -159,8 +159,9 @@ public class UgcHelper {
         // 1. 查询当前用户感兴趣的标签信息
         UserDO currentUserInfo = userService.getCurrentUserInfo();
         List<String> recommendTags = ugcService.getRecommendTags(currentUserInfo);
+        ugcDO.setTags(recommendTags);
         // 2. 游标查询UGC信息
-        List<UgcDocument> ugcDocumentList = ugcService.queryByTagWithCursor(ugcDO, recommendTags);
+        List<UgcDocument> ugcDocumentList = ugcService.queryByTagWithCursor(ugcDO);
         // 3. 封装信息
         return polishUgcInfos(ugcDocumentList);
     }
