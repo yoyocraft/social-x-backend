@@ -37,11 +37,9 @@ import org.springframework.stereotype.Component;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.RepositoryConstant.INIT_QUERY_CURSOR;
 import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
-import static com.youyi.common.type.conf.ConfigKey.DEFAULT_RECOMMEND_TAG;
 import static com.youyi.common.type.conf.ConfigKey.UGC_TAG_RELATIONSHIP;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofHotUgcListKey;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcUserRecommendTagKey;
-import static com.youyi.infra.conf.core.Conf.getListConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
 
 /**
@@ -149,17 +147,14 @@ public class UgcService {
         );
     }
 
-    public List<UgcDocument> queryByTagWithCursor(UgcDO ugcDO, Collection<String> tags) {
+    public List<UgcDocument> queryByTagWithCursor(UgcDO ugcDO) {
+        List<String> tags = ugcDO.getTags();
         if (CollectionUtils.isEmpty(tags)) {
             return Collections.emptyList();
         }
 
         long cursor = getTimeCursor(ugcDO);
-        return ugcRepository.queryByTagWithTimeCursor(
-            tags,
-            cursor,
-            ugcDO.getSize()
-        );
+        return ugcRepository.queryByTagWithTimeCursor(tags, cursor, ugcDO.getSize());
     }
 
     public List<UgcDO> fillAuthorAndCursorInfo(List<UgcDocument> ugcDocumentList, Map<String, UserDO> id2UserInfoMap) {
@@ -346,23 +341,29 @@ public class UgcService {
     }
 
     public List<String> getRecommendTags(UserDO currentUser) {
+        List<String> recommendedTags;
         // 0. 先读取缓存数据
         String recommendTagKey = ofUgcUserRecommendTagKey(currentUser.getUserId());
         String recommendTagJson = cacheManager.getString(recommendTagKey);
         if (StringUtils.isNotBlank(recommendTagJson)) {
-            return GsonUtil.fromJson(recommendTagJson, List.class, String.class);
+            recommendedTags = GsonUtil.fromJson(recommendTagJson, List.class, String.class);
+            if (!CollectionUtils.isEmpty(recommendedTags)) {
+                return recommendedTags;
+            }
         }
         // 1. 判断用户是否有感兴趣的标签
         List<String> personalizedTags = currentUser.getPersonalizedTags();
         if (CollectionUtils.isEmpty(personalizedTags)) {
-            return getListConfig(DEFAULT_RECOMMEND_TAG, String.class);
+            // 返回空的 Tags, 默认不加入任何的 tag 查询条件
+            return Collections.emptyList();
         }
+        // TODO youyi 2025/3/3 计算过程加锁
         // 2. 计算 tag
         List<UgcTagPO> ugcTagPOList = ugcTagRepository.queryByType(UgcTagType.FOR_ARTICLE.getType());
         List<String> allTags = ugcTagPOList.stream().map(UgcTagPO::getTagName).toList();
         Map<String, Set<String>> tagRelations = GsonUtil.fromJson(getStringConfig(UGC_TAG_RELATIONSHIP), new TypeToken<>() {
         });
-        List<String> recommendedTags = RecommendUtil.getTop10RecommendedTags(allTags, personalizedTags, tagRelations);
+        recommendedTags = RecommendUtil.getTop10RecommendedTags(allTags, personalizedTags, tagRelations);
         // 3. 保存缓存
         recommendTagJson = GsonUtil.toJson(recommendedTags);
         cacheManager.set(recommendTagKey, recommendTagJson, CacheKey.UGC_USER_RECOMMEND_TAG.getTtl());
