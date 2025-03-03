@@ -52,7 +52,7 @@ public class CommentaryDAO {
         return mongoTemplate.count(query, CommentaryDocument.class);
     }
 
-    public List<CommentaryDocument> queryRootCommentaryByUgcIdWithTimeCursor(String ugcId, long lastCursor, int size) {
+    public List<CommentaryDocument> queryRootCommentaryWithTimeCursor(String ugcId, long lastCursor, int size) {
         Query query = new Query();
         query.addCriteria(Criteria.where(COMMENTARY_UGC_ID).is(ugcId));
         query.addCriteria(Criteria.where(COMMENTARY_PARENT_ID).is(TOP_COMMENTARY_ID));

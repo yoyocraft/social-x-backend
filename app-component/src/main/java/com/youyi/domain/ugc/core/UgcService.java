@@ -78,21 +78,14 @@ public class UgcService {
         ugcRepository.updateUgc(ugcDO.buildToUpdateUgcDocumentWhenPublish());
     }
 
-    public List<UgcDocument> querySelfUgcWithCursor(UgcDO ugcDO) {
+    public List<UgcDocument> querySelfUgc(UgcDO ugcDO) {
         UserDO author = ugcDO.getAuthor();
-        // 1. 根据 cursor 查询 gmt_modified 作为查询游标
+        // 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
-
-        return ugcRepository.queryByStatusForSelfWithCursor(
-            ugcDO.getUgcType().name(),
-            ugcDO.getStatus().name(),
-            author.getUserId(),
-            cursor,
-            ugcDO.getSize()
-        );
+        return ugcRepository.querySelfUgc(ugcDO.getUgcType().name(), ugcDO.getStatus().name(), author.getUserId(), cursor, ugcDO.getSize());
     }
 
-    public List<UgcDocument> queryWithUgcIdCursor(UgcDO ugcDO) {
+    public List<UgcDocument> listTimelineUgcFeed(UgcDO ugcDO) {
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
         // 2. 查询
@@ -107,11 +100,11 @@ public class UgcService {
         );
     }
 
-    public List<UgcDocument> queryWithUgcIdCursorAndExtraData(UgcDO ugcDO) {
+    public List<UgcDocument> listQuestions(UgcDO ugcDO) {
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
         // 2. 查询
-        return ugcRepository.queryInfoWithIdCursorAndExtraData(
+        return ugcRepository.queryByExtraDataWithTimeCursor(
             ugcDO.getCategoryId(),
             ugcDO.getUgcType().name(),
             UgcStatus.PUBLISHED.name(),
@@ -121,11 +114,11 @@ public class UgcService {
         );
     }
 
-    public List<UgcDocument> queryWithUgcIdAndAuthorIdCursor(UgcDO ugcDO) {
+    public List<UgcDocument> queryUserUgc(UgcDO ugcDO) {
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
         // 2. 查询
-        return ugcRepository.queryUserPageInfoWithTimeCursor(
+        return ugcRepository.queryByAuthorWithTimeCursor(
             ugcDO.getCategoryId(),
             ugcDO.getUgcType().name(),
             UgcStatus.PUBLISHED.name(),
@@ -135,14 +128,14 @@ public class UgcService {
         );
     }
 
-    public List<UgcDocument> queryByAuthorIdsWithCursor(UgcDO ugcDO, Collection<String> authorIds) {
+    public List<UgcDocument> listFollowUgcFeed(UgcDO ugcDO, Collection<String> authorIds) {
         if (CollectionUtils.isEmpty(authorIds)) {
             return Collections.emptyList();
         }
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
         // 2. 查询
-        return ugcRepository.queryFollowPageInfoWithTimeCursor(
+        return ugcRepository.queryByAuthorWithTimeCursor(
             SymbolConstant.EMPTY,
             SymbolConstant.EMPTY,
             UgcStatus.PUBLISHED.name(),
@@ -152,7 +145,7 @@ public class UgcService {
         );
     }
 
-    public List<UgcDocument> queryByTagWithCursor(UgcDO ugcDO) {
+    public List<UgcDocument> listRecommendUgcFeed(UgcDO ugcDO) {
         List<String> tags = ugcDO.getTags();
         if (CollectionUtils.isEmpty(tags)) {
             return Collections.emptyList();
@@ -314,7 +307,7 @@ public class UgcService {
         ugcDO.setTimeCursor(nextCursor);
         // 查询 ugc
         List<String> ugcIds = ugcInteractInfos.stream().map(UgcInteractInfo::getUgcId).toList();
-        return ugcRepository.queryByUgcIds(ugcIds);
+        return ugcRepository.queryBatchByUgcId(ugcIds);
     }
 
     private void checkStatusValidationBeforeUpdate(UgcDocument ugcDocument) {

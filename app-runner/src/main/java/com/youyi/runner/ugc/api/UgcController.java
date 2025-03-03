@@ -124,7 +124,7 @@ public class UgcController {
     public Result<PageCursorResult<String, UgcResponse>> queryUserPageUgc(@RequestBody UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForUserPage(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        List<UgcDO> ugcDOList = ugcHelper.queryByCursorForUserPage(ugcDO);
+        List<UgcDO> ugcDOList = ugcHelper.queryUserUgc(ugcDO);
         return queryUserPageUgcSuccess(ugcDOList, request);
     }
 

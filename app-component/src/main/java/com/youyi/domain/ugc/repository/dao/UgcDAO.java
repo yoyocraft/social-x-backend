@@ -83,7 +83,8 @@ public class UgcDAO {
     }
 
     public UpdateResult updateUgcStatistics(String ugcId, long incrViewCount, long incrLikeCount, long incrCollectCount, long incrCommentaryCount) {
-        Query query = new Query(Criteria.where(UGC_ID).is(ugcId));
+        Query query = new Query();
+        query.addCriteria(Criteria.where(UGC_ID).is(ugcId));
         Update updateDef = new Update();
         if (incrViewCount > 0) {
             updateDef.inc(UGC_VIEW_COUNT, incrViewCount);
@@ -102,95 +103,79 @@ public class UgcDAO {
     }
 
     public UgcDocument queryByUgcId(String ugcId) {
-        Query query = new Query(Criteria.where(UGC_ID).is(ugcId));
+        Query query = new Query();
+        query.addCriteria(Criteria.where(UGC_ID).is(ugcId));
         return mongoTemplate.findOne(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryByUgcIds(List<String> ugcIds) {
-        Query query = new Query(Criteria.where(UGC_ID).in(ugcIds));
+    public List<UgcDocument> queryBatchByUgcId(List<String> ugcIds) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(UGC_ID).in(ugcIds));
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryByStatusForSelfWithCursor(String ugcType, String ugcStatus, String authorId, long lastCursor,
-        int size) {
+    public List<UgcDocument> queryWithTimeCursor(
+        String keyword,
+        String ugcType,
+        String categoryId,
+        String ugcStatus,
+        String authorId,
+        Collection<String> tags,
+        Boolean hasSolved,
+        long cursor,
+        int size
+    ) {
         Query query = new Query();
-        query.addCriteria(Criteria.where(UGC_AUTHOR_ID).is(authorId));
-        if (StringUtils.isNotBlank(ugcType)) {
-            query.addCriteria(Criteria.where(UGC_TYPE).is(ugcType));
-        }
-        buildUgcStatusQueryCondition(query, ugcStatus);
-        buildTimeCursorQueryCondition(query, lastCursor, size);
-        return mongoTemplate.find(query, UgcDocument.class);
-    }
-
-    public List<UgcDocument> queryByStatusWithTimeCursor(String ugcType, String ugcStatus, long lastCursor, int size) {
-        Query query = new Query();
+        buildUgcCategoryQueryCondition(query, categoryId);
+        buildUgcAuthorQueryCondition(query, authorId);
+        buildUgcTagQueryCondition(query, tags);
         buildUgcTypeQueryCondition(query, ugcType);
         buildUgcStatusQueryCondition(query, ugcStatus);
-        buildTimeCursorQueryCondition(query, lastCursor, size);
+        buildKeywordQueryCondition(query, keyword);
+        buildUgcQuestionHasSolvedQueryCondition(query, hasSolved);
+        buildTimeCursorQueryCondition(query, cursor, size);
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryInfoWithIdCursor(
+    public List<UgcDocument> queryWithTimeCursor(
         String keyword,
+        String ugcType,
         String categoryId,
-        String type,
+        String ugcStatus,
+        String authorId,
+        Collection<String> tags,
+        long cursor,
+        int size
+    ) {
+        Query query = new Query();
+        buildUgcCategoryQueryCondition(query, categoryId);
+        buildUgcAuthorQueryCondition(query, authorId);
+        buildUgcTagQueryCondition(query, tags);
+        buildUgcTypeQueryCondition(query, ugcType);
+        buildUgcStatusQueryCondition(query, ugcStatus);
+        buildKeywordQueryCondition(query, keyword);
+        buildTimeCursorQueryCondition(query, cursor, size);
+        return mongoTemplate.find(query, UgcDocument.class);
+    }
+
+    public List<UgcDocument> queryWithTimeCursor(
+        String keyword,
+        String ugcType,
+        String categoryId,
         String ugcStatus,
         Collection<String> authorIds,
-        List<String> tags,
-        long lastCursor,
+        Collection<String> tags,
+        long cursor,
         int size
     ) {
         Query query = new Query();
-        if (StringUtils.isNotBlank(categoryId)) {
-            query.addCriteria(Criteria.where(UGC_CATEGORY_ID).is(categoryId));
-        }
-        if (CollectionUtils.isNotEmpty(authorIds)) {
-            query.addCriteria(Criteria.where(UGC_AUTHOR_ID).in(authorIds));
-        }
-        if (CollectionUtils.isNotEmpty(tags)) {
-            query.addCriteria(Criteria.where(UGC_TAGS).in(tags));
-        }
-        buildUgcTypeQueryCondition(query, type);
+        buildUgcCategoryQueryCondition(query, categoryId);
+        buildUgcAuthorQueryCondition(query, authorIds);
+        buildUgcTagQueryCondition(query, tags);
+        buildUgcTypeQueryCondition(query, ugcType);
+        buildUgcStatusQueryCondition(query, ugcStatus);
         buildKeywordQueryCondition(query, keyword);
-        buildUgcStatusQueryCondition(query, ugcStatus);
-        buildTimeCursorQueryCondition(query, lastCursor, size);
-
-        return mongoTemplate.find(query, UgcDocument.class);
-    }
-
-    public List<UgcDocument> queryInfoWithIdCursorAndExtraData(
-        String categoryId,
-        String type,
-        String ugcStatus,
-        Boolean hasSolved,
-        long lastCursor,
-        int size
-    ) {
-        Query query = new Query();
-        if (StringUtils.isNotBlank(type)) {
-            query.addCriteria(Criteria.where(UGC_TYPE).is(type));
-        }
-        if (StringUtils.isNotBlank(categoryId)) {
-            query.addCriteria(Criteria.where(UGC_CATEGORY_ID).is(categoryId));
-        }
-        if (Objects.nonNull(hasSolved)) {
-            query.addCriteria(Criteria.where(UGC_QUESTION_HAS_SOLVED).is(hasSolved));
-        }
-
-        buildUgcStatusQueryCondition(query, ugcStatus);
-        buildTimeCursorQueryCondition(query, lastCursor, size);
-
-        return mongoTemplate.find(query, UgcDocument.class);
-    }
-
-    public List<UgcDocument> queryByTagWithTimeCursor(Collection<String> tags, String ugcStatus, long lastCursor, int size) {
-        Query query = new Query();
-        if (CollectionUtils.isNotEmpty(tags)) {
-            query.addCriteria(Criteria.where(UGC_TAGS).in(tags));
-        }
-        buildTimeCursorQueryCondition(query, lastCursor, size);
-        buildUgcStatusQueryCondition(query, ugcStatus);
+        buildTimeCursorQueryCondition(query, cursor, size);
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
@@ -201,6 +186,30 @@ public class UgcDAO {
         } else {
             // 查询除 DRAFT, DELETED 的 UGC
             query.addCriteria(Criteria.where(UGC_STATUS).in(includeUgcStatus));
+        }
+    }
+
+    private void buildUgcCategoryQueryCondition(Query query, String categoryId) {
+        if (StringUtils.isNotBlank(categoryId)) {
+            query.addCriteria(Criteria.where(UGC_CATEGORY_ID).is(categoryId));
+        }
+    }
+
+    private void buildUgcAuthorQueryCondition(Query query, String authorId) {
+        if (StringUtils.isNotBlank(authorId)) {
+            query.addCriteria(Criteria.where(UGC_AUTHOR_ID).is(authorId));
+        }
+    }
+
+    private void buildUgcAuthorQueryCondition(Query query, Collection<String> authorIds) {
+        if (CollectionUtils.isNotEmpty(authorIds)) {
+            query.addCriteria(Criteria.where(UGC_AUTHOR_ID).in(authorIds));
+        }
+    }
+
+    private void buildUgcTagQueryCondition(Query query, Collection<String> tags) {
+        if (CollectionUtils.isNotEmpty(tags)) {
+            query.addCriteria(Criteria.where(UGC_TAGS).in(tags));
         }
     }
 
@@ -222,7 +231,12 @@ public class UgcDAO {
             Criteria.where(UGC_TAGS).regex(ofFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION)
         );
         query.addCriteria(regexCriteria);
+    }
 
+    private void buildUgcQuestionHasSolvedQueryCondition(Query query, Boolean hasSolved) {
+        if (Objects.nonNull(hasSolved)) {
+            query.addCriteria(Criteria.where(UGC_QUESTION_HAS_SOLVED).is(hasSolved));
+        }
     }
 
     private void buildTimeCursorQueryCondition(Query query, long lastCursor, int size) {
