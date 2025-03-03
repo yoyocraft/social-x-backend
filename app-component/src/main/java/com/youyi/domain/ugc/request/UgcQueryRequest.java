@@ -46,4 +46,7 @@ public class UgcQueryRequest extends BasePageRequest {
 
     @SerializedName("timeCursor")
     private Long timeCursor;
+
+    @SerializedName("editing")
+    private Boolean editing;
 }

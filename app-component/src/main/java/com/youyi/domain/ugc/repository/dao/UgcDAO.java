@@ -2,6 +2,7 @@ package com.youyi.domain.ugc.repository.dao;
 
 import com.mongodb.client.result.UpdateResult;
 import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.common.type.ugc.UgcType;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -22,6 +23,7 @@ import static com.youyi.common.constant.RepositoryConstant.ofFuzzyQuery;
 import static com.youyi.common.constant.UgcConstant.UGC_ATTACHMENT_URLS;
 import static com.youyi.common.constant.UgcConstant.UGC_AUTHOR_ID;
 import static com.youyi.common.constant.UgcConstant.UGC_CATEGORY_ID;
+import static com.youyi.common.constant.UgcConstant.UGC_CATEGORY_NAME;
 import static com.youyi.common.constant.UgcConstant.UGC_COLLECT_COUNT;
 import static com.youyi.common.constant.UgcConstant.UGC_COMMENTARY_COUNT;
 import static com.youyi.common.constant.UgcConstant.UGC_CONTENT;
@@ -59,6 +61,8 @@ public class UgcDAO {
 
         Update updateDef = new Update()
             .set(UGC_TITLE, ugcDocument.getTitle())
+            .set(UGC_CATEGORY_ID, ugcDocument.getCategoryId())
+            .set(UGC_CATEGORY_NAME, ugcDocument.getCategoryName())
             .set(UGC_CONTENT, ugcDocument.getContent())
             .set(UGC_SUMMARY, ugcDocument.getSummary())
             .set(UGC_COVER, ugcDocument.getCover())
@@ -107,7 +111,7 @@ public class UgcDAO {
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryByKeywordForSelfWithCursor(String keyword, String ugcType, String ugcStatus, String authorId, long lastCursor,
+    public List<UgcDocument> queryByStatusForSelfWithCursor(String ugcType, String ugcStatus, String authorId, long lastCursor,
         int size) {
         Query query = new Query();
         query.addCriteria(Criteria.where(UGC_AUTHOR_ID).is(authorId));
@@ -115,7 +119,6 @@ public class UgcDAO {
             query.addCriteria(Criteria.where(UGC_TYPE).is(ugcType));
         }
         buildUgcStatusQueryCondition(query, ugcStatus);
-        buildKeywordQueryCondition(query, keyword);
         buildTimeCursorQueryCondition(query, lastCursor, size);
         return mongoTemplate.find(query, UgcDocument.class);
     }
@@ -128,6 +131,7 @@ public class UgcDAO {
     }
 
     public List<UgcDocument> queryInfoWithIdCursor(
+        String keyword,
         String categoryId,
         String type,
         String ugcStatus,
@@ -137,9 +141,6 @@ public class UgcDAO {
         int size
     ) {
         Query query = new Query();
-        if (StringUtils.isNotBlank(type)) {
-            query.addCriteria(Criteria.where(UGC_TYPE).is(type));
-        }
         if (StringUtils.isNotBlank(categoryId)) {
             query.addCriteria(Criteria.where(UGC_CATEGORY_ID).is(categoryId));
         }
@@ -149,6 +150,8 @@ public class UgcDAO {
         if (CollectionUtils.isNotEmpty(tags)) {
             query.addCriteria(Criteria.where(UGC_TAGS).in(tags));
         }
+        buildUgcTypeQueryCondition(query, type);
+        buildKeywordQueryCondition(query, keyword);
         buildUgcStatusQueryCondition(query, ugcStatus);
         buildTimeCursorQueryCondition(query, lastCursor, size);
 
@@ -180,12 +183,13 @@ public class UgcDAO {
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
-    public List<UgcDocument> queryByTagWithTimeCursor(Collection<String> tags, long lastCursor, int size) {
+    public List<UgcDocument> queryByTagWithTimeCursor(Collection<String> tags, String ugcStatus, long lastCursor, int size) {
         Query query = new Query();
         if (CollectionUtils.isNotEmpty(tags)) {
             query.addCriteria(Criteria.where(UGC_TAGS).in(tags));
         }
         buildTimeCursorQueryCondition(query, lastCursor, size);
+        buildUgcStatusQueryCondition(query, ugcStatus);
         return mongoTemplate.find(query, UgcDocument.class);
     }
 
@@ -199,13 +203,22 @@ public class UgcDAO {
         }
     }
 
+    private void buildUgcTypeQueryCondition(Query query, String ugcType) {
+        if (UgcType.ALL != UgcType.of(ugcType)) {
+            // 查询指定状态的 UGC
+            query.addCriteria(Criteria.where(UGC_TYPE).is(ugcType));
+        }
+    }
+
     private void buildKeywordQueryCondition(Query query, String keyword) {
         if (StringUtils.isBlank(keyword)) {
             return;
         }
         Criteria regexCriteria = new Criteria().orOperator(
             Criteria.where(UGC_TITLE).regex(ofFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION),
-            Criteria.where(UGC_SUMMARY).regex(ofFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION)
+            Criteria.where(UGC_SUMMARY).regex(ofFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION),
+            Criteria.where(UGC_CONTENT).regex(ofFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION),
+            Criteria.where(UGC_TAGS).regex(ofFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION)
         );
         query.addCriteria(regexCriteria);
 

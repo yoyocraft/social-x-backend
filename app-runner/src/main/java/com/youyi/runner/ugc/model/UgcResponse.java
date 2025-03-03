@@ -77,4 +77,7 @@ public class UgcResponse extends BaseResponse {
 
     @SerializedName("collected")
     private Boolean collected;
+
+    @SerializedName("auditRet")
+    public String auditRet;
 }

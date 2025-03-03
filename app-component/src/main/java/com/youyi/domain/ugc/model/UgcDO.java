@@ -70,6 +70,9 @@ public class UgcDO {
     // for hot
     private Double hotScore;
 
+    // for edit
+    private Boolean editing;
+
     public void create() {
         this.ugcId = IdSeqUtil.genUgcId();
         this.viewCount = 0L;
