@@ -64,6 +64,12 @@ public class UserHelper {
         return currentUserInfo;
     }
 
+    public UserDO getUserInfo(UserDO userDO) {
+        UserDO userInfo = userService.queryByUserId(userDO.getUserId());
+        userService.fillRelationshipInfo(userInfo);
+        return userInfo;
+    }
+
     public void logout() {
         logoutAndClearUserLoginState();
     }
@@ -273,4 +279,5 @@ public class UserHelper {
             throw AppBizException.of(PERMISSION_DENIED, "不可以关注自己哦～");
         }
     }
+
 }

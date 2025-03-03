@@ -30,6 +30,7 @@ import static com.youyi.domain.user.assembler.UserAssembler.USER_ASSEMBLER;
 import static com.youyi.runner.user.util.UserResponseUtil.editUserInfoSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.followUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.getCurrentUserSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.getUserInfoSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.querySelfFollowersSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.querySelfFollowingUsersSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
@@ -70,6 +71,15 @@ public class UserController {
     public Result<UserBasicInfoResponse> getCurrentUser() {
         UserDO userDO = userHelper.getCurrentUser();
         return getCurrentUserSuccess(userDO);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    public Result<UserBasicInfoResponse> getUserInfo(UserQueryRequest request) {
+        UserValidator.checkUserQueryRequestForQueryUserInfo(request);
+        UserDO userDO = USER_ASSEMBLER.toDO(request);
+        UserDO userInfo = userHelper.getUserInfo(userDO);
+        return getUserInfoSuccess(userInfo);
     }
 
     @SaCheckLogin

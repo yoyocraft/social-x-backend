@@ -41,6 +41,12 @@ public class UserResponseUtil {
         return response;
     }
 
+    public static Result<UserBasicInfoResponse> getUserInfoSuccess(UserDO userDO) {
+        Result<UserBasicInfoResponse> response = Result.success(USER_CONVERTER.toResponse(userDO));
+        logger.info("get current user, response:{}", GsonUtil.toJson(response));
+        return response;
+    }
+
     public static Result<Boolean> logoutSuccess() {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         logger.info("user logout, response:{}", GsonUtil.toJson(response));
