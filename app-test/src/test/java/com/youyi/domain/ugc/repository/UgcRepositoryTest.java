@@ -41,7 +41,7 @@ class UgcRepositoryTest extends BaseIntegrationTest {
 
     @Test
     void testQueryInfoWithIdCursorAndExtraData() {
-        List<UgcDocument> ugcDocuments = Assertions.assertDoesNotThrow(() -> ugcRepository.queryInfoWithIdCursorAndExtraData(
+        List<UgcDocument> ugcDocuments = Assertions.assertDoesNotThrow(() -> ugcRepository.queryByExtraDataWithTimeCursor(
             "",
             "QUESTION",
             "PUBLISHED",

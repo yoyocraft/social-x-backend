@@ -72,7 +72,7 @@ public class UgcHelper {
         // 1. 查询作者信息
         fillCurrUserAsAuthor(ugcDO);
         // 2. 查询
-        List<UgcDocument> ugcDocuments = ugcService.querySelfUgcWithCursor(ugcDO);
+        List<UgcDocument> ugcDocuments = ugcService.querySelfUgc(ugcDO);
         // 3. 封装作者信息和游标信息
         UserDO author = ugcDO.getAuthor();
         List<UgcDO> ugcInfoList = ugcService.fillAuthorAndCursorInfo(ugcDocuments, Map.of(author.getUserId(), author));
@@ -113,14 +113,14 @@ public class UgcHelper {
 
     public List<UgcDO> listTimelineUgcFeed(UgcDO ugcDO) {
         // 1. 游标查询
-        List<UgcDocument> ugcDocumentList = ugcService.queryWithUgcIdCursor(ugcDO);
+        List<UgcDocument> ugcDocumentList = ugcService.listTimelineUgcFeed(ugcDO);
         // 2. 封装信息
         return polishUgcInfos(ugcDocumentList);
     }
 
-    public List<UgcDO> queryByCursorForUserPage(UgcDO ugcDO) {
+    public List<UgcDO> queryUserUgc(UgcDO ugcDO) {
         // 1. 游标查询UGC信息
-        List<UgcDocument> ugcDocumentList = ugcService.queryWithUgcIdAndAuthorIdCursor(ugcDO);
+        List<UgcDocument> ugcDocumentList = ugcService.queryUserUgc(ugcDO);
         // 2. 查询作者信息
         String authorId = ugcDO.getAuthorId();
         UserDO userDO = userService.queryByUserId(authorId);
@@ -153,7 +153,7 @@ public class UgcHelper {
         UserDO currentUserInfo = userService.getCurrentUserInfo();
         Set<String> followUserIds = userService.queryFollowingUserIdsFromCache(currentUserInfo);
         // 2. 游标查询UGC信息
-        List<UgcDocument> ugcDocumentList = ugcService.queryByAuthorIdsWithCursor(ugcDO, followUserIds);
+        List<UgcDocument> ugcDocumentList = ugcService.listFollowUgcFeed(ugcDO, followUserIds);
         return polishUgcInfos(ugcDocumentList);
     }
 
@@ -163,7 +163,7 @@ public class UgcHelper {
         List<String> recommendTags = ugcService.getRecommendTags(currentUserInfo);
         ugcDO.setTags(recommendTags);
         // 2. 游标查询UGC信息
-        List<UgcDocument> ugcDocumentList = ugcService.queryByTagWithCursor(ugcDO);
+        List<UgcDocument> ugcDocumentList = ugcService.listRecommendUgcFeed(ugcDO);
         // 3. 封装信息
         return polishUgcInfos(ugcDocumentList);
     }
@@ -177,7 +177,7 @@ public class UgcHelper {
 
     public List<UgcDO> listQuestions(UgcDO ugcDO) {
         // 1. 游标查询UGC信息
-        List<UgcDocument> ugcDocumentList = ugcService.queryWithUgcIdCursorAndExtraData(ugcDO);
+        List<UgcDocument> ugcDocumentList = ugcService.listQuestions(ugcDO);
         // 2. 封装信息
         return polishUgcInfos(ugcDocumentList);
     }
