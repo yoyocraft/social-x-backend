@@ -1,5 +1,6 @@
 package com.youyi.domain.ugc.repository;
 
+import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
@@ -52,11 +53,10 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryByKeywordAndStatusForSelfWithCursor(String keyword, String ugcType, String ugcStatus, String authorId,
-        long lastCursor, int size) {
+    public List<UgcDocument> queryByStatusForSelfWithCursor(String ugcType, String ugcStatus, String authorId, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryByKeywordForSelfWithCursor(keyword, ugcType, ugcStatus, authorId, lastCursor, size);
+            return ugcDAO.queryByStatusForSelfWithCursor(ugcType, ugcStatus, authorId, lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
@@ -113,10 +113,11 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryWithTimeCursor(String categoryId, String type, String ugcStatus, List<String> tags, long lastCursor, int size) {
+    public List<UgcDocument> queryWithTimeCursor(String keyword, String categoryId, String type, String ugcStatus, List<String> tags, long lastCursor,
+        int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.emptyList(), tags, lastCursor, size);
+            return ugcDAO.queryInfoWithIdCursor(keyword, categoryId, type, ugcStatus, Collections.emptyList(), tags, lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
@@ -127,7 +128,7 @@ public class UgcRepository {
         long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0 && StringUtils.isNotBlank(authorId));
-            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, Collections.singletonList(authorId), Collections.emptyList(), lastCursor, size);
+            return ugcDAO.queryInfoWithIdCursor(SymbolConstant.EMPTY, categoryId, type, ugcStatus, Collections.singletonList(authorId), Collections.emptyList(), lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
@@ -138,17 +139,17 @@ public class UgcRepository {
         long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryInfoWithIdCursor(categoryId, type, ugcStatus, authorIds, Collections.emptyList(), lastCursor, size);
+            return ugcDAO.queryInfoWithIdCursor(SymbolConstant.EMPTY, categoryId, type, ugcStatus, authorIds, Collections.emptyList(), lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
         }
     }
 
-    public List<UgcDocument> queryByTagWithTimeCursor(Collection<String> tags, long lastCursor, int size) {
+    public List<UgcDocument> queryByTagWithTimeCursor(Collection<String> tags, String ugcStatus, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryByTagWithTimeCursor(tags, lastCursor, size);
+            return ugcDAO.queryByTagWithTimeCursor(tags, ugcStatus, lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

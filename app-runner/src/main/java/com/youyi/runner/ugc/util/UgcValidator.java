@@ -13,6 +13,7 @@ import com.youyi.domain.ugc.request.UgcSetStatusRequest;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.youyi.common.type.conf.ConfigKey.ATTACHMENT_MAX_COUNT;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
@@ -48,7 +49,7 @@ public class UgcValidator {
                 Optional.ofNullable(request.getTags()).orElseGet(List::of).size()
             )
             .putIf(
-                () -> UgcType.ARTICLE == UgcType.of(request.getUgcType()) || UgcType.QUESTION == UgcType.of(request.getUgcType()),
+                () -> !Boolean.TRUE.equals(request.getDrafting()) && UgcType.ARTICLE == UgcType.of(request.getUgcType()) || UgcType.QUESTION == UgcType.of(request.getUgcType()),
                 notBlankChecker("类别不能为空"),
                 request.getCategoryId()
             )
@@ -99,7 +100,11 @@ public class UgcValidator {
     public static void checkUgcQueryRequestForTimelineFeed(UgcQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("cursor不合法"), request.getCursor())
-            .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
+            .putIf(
+                () -> StringUtils.isNotBlank(request.getUgcType()),
+                enumExistChecker(UgcType.class, "UGC类型不合法"),
+                request.getUgcType()
+            )
             .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
     }

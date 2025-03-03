@@ -39,7 +39,11 @@ import static com.youyi.common.constant.RepositoryConstant.INIT_QUERY_CURSOR;
 import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
 import static com.youyi.common.type.conf.ConfigKey.UGC_TAG_RELATIONSHIP;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofHotUgcListKey;
+import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCollectCountKey;
+import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCommentaryCountKey;
+import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcLikeCountKey;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcUserRecommendTagKey;
+import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcViewCountKey;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
 
 /**
@@ -69,6 +73,7 @@ public class UgcService {
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
         checkNotNull(ugcDocument);
         checkStatusValidationBeforeUpdate(ugcDocument);
+        checkAuthorization(ugcDO, ugcDocument);
         ugcDO.fillBeforeUpdateWhenPublish(ugcDocument);
         ugcRepository.updateUgc(ugcDO.buildToUpdateUgcDocumentWhenPublish());
     }
@@ -78,8 +83,7 @@ public class UgcService {
         // 1. 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
 
-        return ugcRepository.queryByKeywordAndStatusForSelfWithCursor(
-            ugcDO.getKeyword(),
+        return ugcRepository.queryByStatusForSelfWithCursor(
             ugcDO.getUgcType().name(),
             ugcDO.getStatus().name(),
             author.getUserId(),
@@ -93,6 +97,7 @@ public class UgcService {
         long cursor = getTimeCursor(ugcDO);
         // 2. 查询
         return ugcRepository.queryWithTimeCursor(
+            ugcDO.getKeyword(),
             ugcDO.getCategoryId(),
             ugcDO.getUgcType().name(),
             UgcStatus.PUBLISHED.name(),
@@ -154,7 +159,7 @@ public class UgcService {
         }
 
         long cursor = getTimeCursor(ugcDO);
-        return ugcRepository.queryByTagWithTimeCursor(tags, cursor, ugcDO.getSize());
+        return ugcRepository.queryByTagWithTimeCursor(tags, ugcDO.getStatus().name(), cursor, ugcDO.getSize());
     }
 
     public List<UgcDO> fillAuthorAndCursorInfo(List<UgcDocument> ugcDocumentList, Map<String, UserDO> id2UserInfoMap) {
@@ -256,10 +261,10 @@ public class UgcService {
 
         ugcInfoList.forEach(ugcDO -> {
             String ugcId = ugcDO.getUgcId();
-            ugcDO.calViewCount(statisticsMap.getOrDefault(UgcStatisticType.VIEW, Map.of()).getOrDefault(ugcId, 0L));
-            ugcDO.calLikeCount(statisticsMap.getOrDefault(UgcStatisticType.LIKE, Map.of()).getOrDefault(ugcId, 0L));
-            ugcDO.calCollectCount(statisticsMap.getOrDefault(UgcStatisticType.COLLECT, Map.of()).getOrDefault(ugcId, 0L));
-            ugcDO.calCommentaryCount(statisticsMap.getOrDefault(UgcStatisticType.COMMENTARY, Map.of()).getOrDefault(ugcId, 0L));
+            ugcDO.calViewCount(statisticsMap.getOrDefault(UgcStatisticType.VIEW, Map.of()).getOrDefault(ofUgcViewCountKey(ugcId), 0L));
+            ugcDO.calLikeCount(statisticsMap.getOrDefault(UgcStatisticType.LIKE, Map.of()).getOrDefault(ofUgcLikeCountKey(ugcId), 0L));
+            ugcDO.calCollectCount(statisticsMap.getOrDefault(UgcStatisticType.COLLECT, Map.of()).getOrDefault(ofUgcCollectCountKey(ugcId), 0L));
+            ugcDO.calCommentaryCount(statisticsMap.getOrDefault(UgcStatisticType.COMMENTARY, Map.of()).getOrDefault(ofUgcCommentaryCountKey(ugcId), 0L));
         });
     }
 
@@ -315,6 +320,15 @@ public class UgcService {
         // 私密的稿件禁止修改
         if (UgcStatus.PRIVATE.name().equals(ugcDocument.getStatus())) {
             throw AppBizException.of(OPERATION_DENIED, "私密稿件禁止修改！");
+        }
+    }
+
+    private void checkAuthorization(UgcDO ugcDO, UgcDocument ugcDocument) {
+        String currentUserId = ugcDO.getAuthor().getUserId();
+        String actualAuthorId = ugcDocument.getAuthorId();
+
+        if (!currentUserId.equals(actualAuthorId)) {
+            throw AppBizException.of(OPERATION_DENIED, "无权修改！");
         }
     }
 

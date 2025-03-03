@@ -3,6 +3,7 @@ package com.youyi.runner.ugc.util;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.domain.ugc.model.UgcDO;
+import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.runner.ugc.model.UgcResponse;
 import com.youyi.runner.user.model.UserBasicInfoResponse;
@@ -22,7 +23,8 @@ import org.mapstruct.factory.Mappers;
         Objects.class,
         UgcType.class,
         Optional.class,
-        UgcStatus.class
+        UgcStatus.class,
+        UgcExtraData.class
     }
 )
 public interface UgcConverter {
@@ -35,7 +37,8 @@ public interface UgcConverter {
         @Mapping(target = "status", expression = "java(Optional.ofNullable(ugcDO.getStatus()).orElse(UgcStatus.PUBLISHED).name())"),
         @Mapping(target = "hasSolved", expression = "java(Objects.nonNull(ugcDO.getExtraData()) && Boolean.TRUE.equals(ugcDO.getExtraData().getHasSolved()))"),
         @Mapping(target = "liked", source = "liked"),
-        @Mapping(target = "collected", source = "collected")
+        @Mapping(target = "collected", source = "collected"),
+        @Mapping(target = "auditRet", expression = "java(Optional.ofNullable(ugcDO.getExtraData()).orElseGet(UgcExtraData::new).getAuditRet())"),
     })
     UgcResponse toResponse(UgcDO ugcDO);
 

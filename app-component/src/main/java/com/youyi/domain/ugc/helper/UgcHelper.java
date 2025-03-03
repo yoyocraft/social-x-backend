@@ -88,6 +88,7 @@ public class UgcHelper {
     public void queryByUgcId(UgcDO ugcDO) {
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
         checkNotNull(ugcDocument);
+        checkEditingOperation(ugcDO, ugcDocument);
         ugcDO.fillWithUgcDocument(ugcDocument);
         // 填充作者信息
         UserDO author = userService.queryByUserId(ugcDocument.getAuthorId());
@@ -96,6 +97,7 @@ public class UgcHelper {
         ugcDO.setAuthor(author);
         // 填充 Statistic 数据
         ugcService.fillUgcStatistic(Collections.singletonList(ugcDO));
+        ugcService.fillUgcInteractInfo(Collections.singletonList(ugcDO), userService.getCurrentUserInfo());
         // 视情况增加 viewCount
         ugcService.incrUgcViewCount(ugcDO, userService.getCurrentUserInfo());
     }
@@ -326,6 +328,13 @@ public class UgcHelper {
         // 设置 PUBLISHED 必须是 PRIVATE
         if (updateStatus == UgcStatus.PUBLISHED && !UgcStatus.PRIVATE.name().equals(statusFromDB)) {
             throw AppBizException.of(OPERATION_DENIED, "非私密稿件无法设置为公开！");
+        }
+    }
+
+    private void checkEditingOperation(UgcDO ugcDO, UgcDocument ugcDocument) {
+        if (Boolean.TRUE.equals(ugcDO.getEditing())) {
+            fillCurrUserAsAuthor(ugcDO);
+            checkSelfAuthor(ugcDO, ugcDocument);
         }
     }
 }

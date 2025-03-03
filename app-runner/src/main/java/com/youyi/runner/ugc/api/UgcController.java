@@ -104,6 +104,7 @@ public class UgcController {
         return queryUgcDetailSuccess(ugcDO, request);
     }
 
+    @Deprecated
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.UGC_SET_STATUS)
     @RequestMapping(value = "/set_status", method = RequestMethod.POST)
@@ -127,6 +128,9 @@ public class UgcController {
         return queryUserPageUgcSuccess(ugcDOList, request);
     }
 
+    /**
+     * core query api
+     */
     @SaCheckLogin
     @RequestMapping(value = "/time_feed", method = RequestMethod.POST)
     public Result<PageCursorResult<String, UgcResponse>> listTimelineUgcFeed(@RequestBody UgcQueryRequest request) {
