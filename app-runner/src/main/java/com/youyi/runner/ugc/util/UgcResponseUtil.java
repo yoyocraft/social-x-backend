@@ -10,6 +10,8 @@ import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
+import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
+import com.youyi.infra.sse.SseEmitter;
 import com.youyi.runner.ugc.model.UgcResponse;
 import java.util.List;
 import java.util.Optional;
@@ -103,6 +105,11 @@ public class UgcResponseUtil {
         Result<Boolean> response = Result.success(Boolean.TRUE);
         logger.info("interact ugc, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
+    }
+
+    public static SseEmitter generateSummarySuccess(SseEmitter sseEmitter, UgcSummaryGenerateRequest request) {
+        logger.info("generate summary, request:{}", GsonUtil.toJson(request));
+        return sseEmitter;
     }
 
     private static Result<PageCursorResult<String, UgcResponse>> buildCursorResponse(List<UgcDO> ugcDOList) {

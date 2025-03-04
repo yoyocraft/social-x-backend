@@ -126,8 +126,7 @@ public class UgcDO {
         ugcDocument.setStatus(status.name());
         ugcDocument.setCover(cover);
         ugcDocument.setAttachmentUrls(attachmentUrls);
-        ugcDocument.setGmtCreate(gmtCreate);
-        ugcDocument.setGmtModified(System.currentTimeMillis());
+        ugcDocument.setExtraData(extraData);
         return ugcDocument;
     }
 

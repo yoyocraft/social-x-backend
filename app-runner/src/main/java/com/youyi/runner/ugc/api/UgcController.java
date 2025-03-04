@@ -13,11 +13,14 @@ import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
+import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
 import com.youyi.infra.lock.LocalLockUtil;
+import com.youyi.infra.sse.SseEmitter;
 import com.youyi.runner.ugc.model.UgcResponse;
 import com.youyi.runner.ugc.util.UgcValidator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,16 +28,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.youyi.domain.ugc.assembler.UgcAssembler.UGC_ASSEMBLER;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.deleteSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.generateSummarySuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.interactSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.listQuestionsSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.listSelfCollectedUgcSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.listFollowUgcFeedSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.queryHotUgcSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.listTimelineUgcFeedSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUgcDetailSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.listQuestionsSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.listRecommendUgcFeedSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.listSelfCollectedUgcSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.listTimelineUgcFeedSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryHotUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.querySelfUgcSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUgcDetailSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUserPageUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.setStatusSuccess;
 
@@ -45,6 +49,7 @@ import static com.youyi.runner.ugc.util.UgcResponseUtil.setStatusSuccess;
 @RestController
 @RequestMapping("/ugc")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:8000", "http://127.0.0.1:8000", "http://127.0.0.1:5500"}, allowCredentials = "true")
 public class UgcController {
 
     private final UgcHelper ugcHelper;
@@ -188,5 +193,13 @@ public class UgcController {
             request.getTargetId(), request.getInteractionType(), request.getReqId()
         );
         return interactSuccess(request);
+    }
+
+    @RequestMapping(value = "/summary", method = RequestMethod.GET)
+    public SseEmitter generateSummary(UgcSummaryGenerateRequest request) {
+        UgcValidator.checkUgcSummaryGenerateRequest(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        SseEmitter sseEmitter = ugcHelper.generateSummary(ugcDO);
+        return generateSummarySuccess(sseEmitter, request);
     }
 }
