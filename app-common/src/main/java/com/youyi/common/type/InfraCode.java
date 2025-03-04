@@ -14,6 +14,7 @@ public enum InfraCode implements ErrorCode {
     MYSQL_ERROR("MYSQL_ERROR", "mysql error"),
     REDIS_ERROR("REDIS_ERROR", "redis error"),
     MONGODB_ERROR("MONGODB_ERROR", "mongodb error"),
+    AI_ERROR("AI_ERROR", "ai error"),
     CONFIG_ERROR("CONFIG_ERROR", "config error"),
     SEND_EMAIL_ERROR("SEND_EMAIL_ERROR", "send email error"),
 

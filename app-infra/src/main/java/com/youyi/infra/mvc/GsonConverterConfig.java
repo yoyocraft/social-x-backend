@@ -1,4 +1,4 @@
-package com.youyi.infra.mvc.configuration;
+package com.youyi.infra.mvc;
 
 import com.fatboyindustrial.gsonjavatime.Converters;
 import com.google.gson.Gson;
@@ -7,6 +7,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.youyi.common.util.GsonUtil;
+import java.io.File;
 import java.lang.reflect.Type;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +25,7 @@ public class GsonConverterConfig {
 
     private final Gson gson = Converters.registerAll(new GsonBuilder())
         .registerTypeAdapter(Json.class, new SpringfoxJsonToGsonAdapter())
+        .registerTypeAdapter(File.class, new GsonUtil.FileAdapter())
         .create();
 
     @Bean(name = "gsonHttpMessageConverters")

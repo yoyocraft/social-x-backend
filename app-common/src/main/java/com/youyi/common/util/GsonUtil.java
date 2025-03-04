@@ -135,7 +135,7 @@ public class GsonUtil {
         return jsonElement.getAsJsonObject();
     }
 
-    static class FileAdapter implements JsonSerializer<File>, JsonDeserializer<File> {
+    public static class FileAdapter implements JsonSerializer<File>, JsonDeserializer<File> {
 
         @Override
         public JsonElement serialize(File src, Type typeOfSrc, JsonSerializationContext context) {
