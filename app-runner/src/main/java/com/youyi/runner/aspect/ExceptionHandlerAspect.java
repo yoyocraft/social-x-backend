@@ -1,10 +1,11 @@
 package com.youyi.runner.aspect;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import com.youyi.common.base.Result;
 import com.youyi.common.exception.AppBizException;
-import com.youyi.common.type.aspect.AspectOrdered;
 import com.youyi.common.type.RequestState;
 import com.youyi.common.type.ServerType;
+import com.youyi.common.type.aspect.AspectOrdered;
 import com.youyi.common.util.GsonUtil;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
+import static com.youyi.common.constant.ErrorCodeConstant.NOT_LOGIN;
 import static com.youyi.common.constant.ErrorCodeConstant.SYSTEM_ERROR_RETRY_LATER;
 import static com.youyi.common.constant.ErrorCodeConstant.SYSTEM_ERROR_RETRY_LATER_MESSAGE;
 import static com.youyi.common.constant.LogFormatterConstant.REQUEST_FAIL_LOG_FORMATTER;
@@ -47,6 +49,8 @@ public class ExceptionHandlerAspect implements Ordered {
             Result<?> response;
             if (e instanceof AppBizException biz) {
                 response = Result.fail(biz.getCode(), biz.getMessage());
+            } else if (e instanceof NotLoginException ex) {
+                response = Result.fail(NOT_LOGIN, ex.getMessage(), RequestState.FAILED);
             } else {
                 response = Result.fail(SYSTEM_ERROR_RETRY_LATER, SYSTEM_ERROR_RETRY_LATER_MESSAGE, RequestState.UNKNOWN);
                 serverExpLog(logger, ServerType.HTTP, methodName, GsonUtil.toJson(args), e);
