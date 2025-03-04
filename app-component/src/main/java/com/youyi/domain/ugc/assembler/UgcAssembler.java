@@ -9,6 +9,7 @@ import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
+import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
 import com.youyi.infra.conf.util.CommonConfUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -62,6 +63,7 @@ public interface UgcAssembler {
     })
     UgcDO toDO(UgcInteractionRequest request);
 
+    UgcDO toDO(UgcSummaryGenerateRequest request);
     default UgcStatus calStatusWhenPublish(UgcPublishRequest request) {
         if (Boolean.TRUE.equals(request.getDrafting())) {
             return UgcStatus.DRAFT;

@@ -1,25 +1,31 @@
 package com.youyi.domain.ugc.helper;
 
+import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.task.TaskType;
 import com.youyi.common.type.ugc.UgcInteractionType;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
-import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.ugc.core.UgcService;
 import com.youyi.domain.ugc.core.UgcTpeContainer;
 import com.youyi.domain.ugc.model.HotUgcCacheInfo;
 import com.youyi.domain.ugc.model.UgcDO;
+import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.UgcCategoryRepository;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.repository.po.UgcCategoryPO;
 import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
+import com.youyi.domain.ugc.util.UgcContentUtil;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
+import com.youyi.infra.sse.SseEmitter;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -189,6 +195,19 @@ public class UgcHelper {
         return polishUgcInfos(ugcDocumentList, ugcDO);
     }
 
+    public SseEmitter generateSummary(UgcDO ugcDO) {
+        SseEmitter sseEmitter = new SseEmitter(0L);
+        UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
+        UgcExtraData extraData = Optional.ofNullable(ugcDocument.getExtraData()).orElseGet(UgcExtraData::new);
+        if (StringUtils.isNotBlank(extraData.getUgcSummary())) {
+            sendSummaryDirectly(sseEmitter, extraData.getUgcSummary());
+            return sseEmitter;
+        }
+        ugcDO.fillWithUgcDocument(ugcDocument);
+        ugcService.aiGenerateSummary(ugcDO, sseEmitter);
+        return sseEmitter;
+    }
+
     private void handleLikeUgcInteraction(UgcDO ugcDO, UserDO currentUser) {
         // 喜欢
         if (Boolean.TRUE.equals(ugcDO.getInteractFlag())) {
@@ -303,7 +322,7 @@ public class UgcHelper {
         }
         if (UgcType.QUESTION == ugcDO.getUgcType()) {
             // 生成摘要
-            String plainContent = CommonOperationUtil.markdownToPlainText(ugcDO.getContent());
+            String plainContent = UgcContentUtil.markdownToPlainText(ugcDO.getContent());
             ugcDO.setSummary(plainContent);
         }
     }
@@ -336,5 +355,20 @@ public class UgcHelper {
             fillCurrUserAsAuthor(ugcDO);
             checkSelfAuthor(ugcDO, ugcDocument);
         }
+    }
+
+    private void sendSummaryDirectly(SseEmitter sseEmitter, String summary) {
+        // 将 summary 按行拆分
+        Flowable<String> lineFlowable = Flowable.fromIterable(Arrays.asList(summary.split(SymbolConstant.NEW_LINE)));
+
+        lineFlowable
+            .observeOn(Schedulers.io())
+            .doOnNext(line -> {
+                String formattedLine = line + SymbolConstant.NEW_LINE;
+                sseEmitter.send(formattedLine);
+            })
+            .doOnError(sseEmitter::completeWithError)
+            .doOnComplete(sseEmitter::complete)
+            .subscribe();
     }
 }

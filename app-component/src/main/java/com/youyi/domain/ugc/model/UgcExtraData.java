@@ -17,4 +17,9 @@ public class UgcExtraData {
      * 是否已解决
      */
     private Boolean hasSolved = Boolean.FALSE;
+
+    /**
+     * AI 生成的总结
+     */
+    private String ugcSummary;
 }

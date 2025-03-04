@@ -10,6 +10,7 @@ import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSetStatusRequest;
+import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
@@ -152,6 +153,13 @@ public class UgcValidator {
     public static void checkUgcQueryRequestForHotUgcList(UgcQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
+            .validateWithThrow();
+    }
+
+    public static void checkUgcSummaryGenerateRequest(UgcSummaryGenerateRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(snowflakeIdChecker("UGC ID不合法"), request.getUgcId())
+            .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();
     }
 }

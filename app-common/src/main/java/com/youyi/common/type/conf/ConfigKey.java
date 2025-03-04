@@ -48,13 +48,19 @@ public enum ConfigKey {
     INNER_UGC_TAGS,
     UGC_MAX_TAG_COUNT,
     UGC_TAG_RELATIONSHIP,
+    @Deprecated
     DEFAULT_RECOMMEND_TAG,
     HOT_LIST_TOP_N,
     ATTACHMENT_MAX_COUNT,
 
     // ================ Notification ==================
     NOTIFICATION_SUMMARY_TEMPLATE,
+    @Deprecated
     NOTIFICATION_GROUP_CONFIG,
+
+    // ================ AI ==================
+    AI_UGC_PUBLISH_SUMMARY_PROMPT,
+    AI_UGC_VIEW_SUMMARY_PROMPT,
     ;
 
 }

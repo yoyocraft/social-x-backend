@@ -34,6 +34,7 @@ public enum OperationType {
     UGC_DELETE,
     UGC_INTERACT,
     UGC_ADOPT,
+    UGC_AI_GENERATE_SUMMARY,
 
     COMMENTARY_PUBLISH,
     COMMENTARY_DELETE,

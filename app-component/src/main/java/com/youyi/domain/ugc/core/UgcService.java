@@ -11,6 +11,7 @@ import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.HotUgcCacheInfo;
 import com.youyi.domain.ugc.model.UgcDO;
+import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.UgcTagRepository;
@@ -19,8 +20,15 @@ import com.youyi.domain.ugc.repository.po.UgcTagPO;
 import com.youyi.domain.ugc.repository.relation.UgcInteractInfo;
 import com.youyi.domain.ugc.repository.relation.UgcNode;
 import com.youyi.domain.ugc.util.RecommendUtil;
+import com.youyi.domain.ugc.util.UgcContentUtil;
 import com.youyi.domain.user.model.UserDO;
+import com.youyi.infra.ai.AiClient;
 import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.sse.SseEmitter;
+import com.zhipu.oapi.service.v4.model.ModelData;
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -37,6 +45,7 @@ import org.springframework.stereotype.Component;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.RepositoryConstant.INIT_QUERY_CURSOR;
 import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
+import static com.youyi.common.type.conf.ConfigKey.AI_UGC_VIEW_SUMMARY_PROMPT;
 import static com.youyi.common.type.conf.ConfigKey.UGC_TAG_RELATIONSHIP;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofHotUgcListKey;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCollectCountKey;
@@ -57,9 +66,12 @@ public class UgcService {
     private final UgcRepository ugcRepository;
     private final UgcRelationshipRepository ugcRelationshipRepository;
 
+    private final UgcTpeContainer ugcTpeContainer;
     private final UgcStatisticCacheManager ugcStatisticCacheManager;
     private final CacheManager cacheManager;
     private final UgcTagRepository ugcTagRepository;
+
+    private final AiClient aiClient;
 
     public void publishUgc(UgcDO ugcDO) {
         if (ugcDO.isNew()) {
@@ -308,6 +320,51 @@ public class UgcService {
         // 查询 ugc
         List<String> ugcIds = ugcInteractInfos.stream().map(UgcInteractInfo::getUgcId).toList();
         return ugcRepository.queryBatchByUgcId(ugcIds);
+    }
+
+    public void aiGenerateSummary(UgcDO ugcDO, SseEmitter sseEmitter) {
+        String ugcPrompt = UgcContentUtil.polishGenUgcSummaryUserMessage(ugcDO.getTitle(), ugcDO.getContent());
+
+        StringBuilder summaryBuilder = new StringBuilder();
+        StringBuilder lineBuilder = new StringBuilder();
+
+        // 请求 AI 生成摘要
+        Flowable<ModelData> dataFlowable = aiClient.doStreamStableRequest(getStringConfig(AI_UGC_VIEW_SUMMARY_PROMPT), ugcPrompt);
+
+        dataFlowable
+            .observeOn(Schedulers.io())
+            .map(modelData -> modelData.getChoices().get(0).getDelta().getContent())
+            .filter(StringUtils::isNotBlank)
+            .flatMap(message -> {
+                List<Character> characters = new ArrayList<>();
+                for (char c : message.toCharArray()) {
+                    characters.add(c);
+                }
+                return Flowable.fromIterable(characters);
+            })
+            .doOnNext(c -> {
+                lineBuilder.append(c);
+                if (c == '\n') {
+                    String line = UgcContentUtil.polishSummaryLine(lineBuilder);
+
+                    if (!line.isEmpty()) {
+                        sseEmitter.send(line);
+                        summaryBuilder.append(line).append(SymbolConstant.NEW_LINE);
+                    }
+                    lineBuilder.setLength(0);
+                }
+            })
+            .doOnError(sseEmitter::completeWithError)
+            .doOnComplete(() -> {
+                UgcExtraData extraData = Optional.ofNullable(ugcDO.getExtraData()).orElseGet(UgcExtraData::new);
+                extraData.setUgcSummary(summaryBuilder.toString());
+                ugcDO.setExtraData(extraData);
+                ugcTpeContainer.getUgcSysTaskExecutor().execute(() ->
+                    ugcRepository.updateUgc(ugcDO.buildToUpdateUgcDocumentWhenPublish())
+                );
+                sseEmitter.complete();
+            })
+            .subscribe();
     }
 
     private void checkStatusValidationBeforeUpdate(UgcDocument ugcDocument) {
