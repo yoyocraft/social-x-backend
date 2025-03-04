@@ -76,5 +76,8 @@ knife4j:
     group:
       default:
         api-rule: package
-        api-rule-resources:
-          - com.youyi.runner
+        api-rule-resources: com.youyi.runner
+
+social-x:
+  ai:
+    api-key: ${CHAT_GLM_API_KEY}
