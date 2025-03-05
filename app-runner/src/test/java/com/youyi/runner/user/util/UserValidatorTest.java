@@ -129,7 +129,7 @@ class UserValidatorTest {
     private UserQueryRequest buildValidUserQueryRequest() {
         UserQueryRequest validRequest = new UserQueryRequest();
         validRequest.setUserId("1888241794295930880");
-        validRequest.setCursor("0");
+        validRequest.setCursor(0L);
         return validRequest;
     }
 }

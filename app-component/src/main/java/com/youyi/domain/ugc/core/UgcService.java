@@ -203,7 +203,7 @@ public class UgcService {
             return;
         }
         // 先保存于内存
-        ugcStatisticCacheManager.incrOrDecrUgcViewCount(ugcDO.getUgcId(), true);
+        ugcStatisticCacheManager.incrOrDecrUgcViewCount(ugcDO.getUgcId());
     }
 
     public void likeUgc(UgcDO ugcDO, UserDO currentUser) {

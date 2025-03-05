@@ -13,6 +13,6 @@ import lombok.Setter;
 @Setter
 public class ImageUploadResponse extends BaseResponse {
 
-    @SerializedName("url")
-    private String url;
+    @SerializedName("accessUrl")
+    private String accessUrl;
 }

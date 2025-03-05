@@ -65,16 +65,6 @@ public class CommentaryController {
         return queryUgcCommentarySuccess(commentaryDOList, request);
     }
 
-    @Deprecated
-    @SaCheckLogin
-    @RequestMapping(value = "/count", method = RequestMethod.GET)
-    public Result<Long> queryCommentaryCount(CommentaryQueryRequest request) {
-        CommentaryValidator.checkCommentaryQueryRequestForCount(request);
-        CommentaryDO commentaryDO = COMMENTARY_ASSEMBLER.toDO(request);
-        Long allCount = commentaryHelper.queryUgcCommentaryCount(commentaryDO);
-        return queryCommentaryCountSuccess(allCount, request);
-    }
-
     @SaCheckLogin
     @RecordOpLog(opType = OperationType.COMMENTARY_DELETE)
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
@@ -129,5 +119,17 @@ public class CommentaryController {
             commentaryDO.getCommentaryId(), request.getReqId()
         );
         return featuredSuccess(request);
+    }
+
+    // ============================ deprecated api ============================
+
+    @Deprecated
+    @SaCheckLogin
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    public Result<Long> queryCommentaryCount(CommentaryQueryRequest request) {
+        CommentaryValidator.checkCommentaryQueryRequestForCount(request);
+        CommentaryDO commentaryDO = COMMENTARY_ASSEMBLER.toDO(request);
+        Long allCount = commentaryHelper.queryUgcCommentaryCount(commentaryDO);
+        return queryCommentaryCountSuccess(allCount, request);
     }
 }

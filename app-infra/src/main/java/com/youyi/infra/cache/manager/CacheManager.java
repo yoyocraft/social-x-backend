@@ -172,6 +172,15 @@ public class CacheManager {
         }
     }
 
+    public void batchDelete(List<String> keys) {
+        try {
+            redisTemplate.delete(keys);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.REDIS, InfraCode.REDIS_ERROR, e);
+            throw AppSystemException.of(InfraCode.REDIS_ERROR, e);
+        }
+    }
+
     // ============================= EXISTS OPS =================================
     public boolean exists(String key) {
         try {

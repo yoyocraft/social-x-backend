@@ -37,7 +37,7 @@ public class ConfigResponseUtil {
         return response;
     }
 
-    public static Result<PageCursorResult<Long, ConfigInfoResponse>> queryConfigForMainPageSuccess(List<ConfigDO> configDOList,
+    public static Result<PageCursorResult<Long, ConfigInfoResponse>> listConfigSuccess(List<ConfigDO> configDOList,
         ConfigQueryRequest request) {
         Long cursor = Optional.ofNullable(configDOList.isEmpty() ? null : configDOList.get(0).getCursor()).orElse(Long.MAX_VALUE);
         List<ConfigInfoResponse> configInfoResponseList = configDOList.stream().map(CONFIG_CONVERTER::toResponse).toList();

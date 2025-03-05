@@ -38,6 +38,8 @@ public enum OperationType {
 
     COMMENTARY_PUBLISH,
     COMMENTARY_DELETE,
+
+    PUBLISH_NOTIFICATION,
     ;
 
     public static OperationType of(String type) {

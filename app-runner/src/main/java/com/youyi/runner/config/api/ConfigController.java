@@ -31,7 +31,7 @@ import static com.youyi.common.constant.PermissionConstant.UPDATE_CONFIG;
 import static com.youyi.domain.conf.assembler.ConfigAssembler.CONFIG_ASSEMBLER;
 import static com.youyi.runner.config.util.ConfigResponseUtil.createSuccess;
 import static com.youyi.runner.config.util.ConfigResponseUtil.deleteSuccess;
-import static com.youyi.runner.config.util.ConfigResponseUtil.queryConfigForMainPageSuccess;
+import static com.youyi.runner.config.util.ConfigResponseUtil.listConfigSuccess;
 import static com.youyi.runner.config.util.ConfigResponseUtil.querySuccess;
 import static com.youyi.runner.config.util.ConfigResponseUtil.updateSuccess;
 
@@ -71,11 +71,11 @@ public class ConfigController {
 
     @SaCheckPermission(value = {CONFIG_MANAGER, READ_CONFIG}, mode = SaMode.OR)
     @RequestMapping(value = "/cursor", method = RequestMethod.GET)
-    public Result<PageCursorResult<Long, ConfigInfoResponse>> queryConfigForMainPage(ConfigQueryRequest request) {
+    public Result<PageCursorResult<Long, ConfigInfoResponse>> listConfig(ConfigQueryRequest request) {
         ConfigValidator.checkConfigQueryRequestForMainPage(request);
         ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
-        List<ConfigDO> configDOList = configHelper.queryConfigByCursor(configDO);
-        return queryConfigForMainPageSuccess(configDOList, request);
+        List<ConfigDO> configDOList = configHelper.listConfig(configDO);
+        return listConfigSuccess(configDOList, request);
     }
 
     @SaCheckPermission(value = {CONFIG_MANAGER, UPDATE_CONFIG}, mode = SaMode.OR)
@@ -98,7 +98,11 @@ public class ConfigController {
     public Result<Boolean> deleteConfig(@RequestBody ConfigDeleteRequest request) {
         ConfigValidator.checkConfigDeleteRequest(request);
         ConfigDO configDO = CONFIG_ASSEMBLER.toDO(request);
-        configHelper.deleteConfig(configDO);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> configHelper.deleteConfig(configDO),
+            CommonOperationUtil::tooManyRequestError,
+            request.getConfigKey()
+        );
         return deleteSuccess(request);
     }
 }

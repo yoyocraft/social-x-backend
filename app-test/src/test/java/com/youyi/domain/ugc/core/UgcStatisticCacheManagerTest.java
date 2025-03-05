@@ -15,7 +15,7 @@ class UgcStatisticCacheManagerTest extends BaseIntegrationTest {
 
     @Test
     void incrOrDecrUgcViewCount() {
-        String ugcId = "1884572416102768640";
-        Assertions.assertDoesNotThrow(() -> ugcStatisticCacheManager.incrOrDecrUgcViewCount(ugcId, false));
+        String ugcId = "1895394388223074304";
+        Assertions.assertDoesNotThrow(() -> ugcStatisticCacheManager.incrOrDecrUgcViewCount(ugcId));
     }
 }
