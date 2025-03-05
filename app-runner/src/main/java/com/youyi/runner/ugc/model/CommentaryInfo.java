@@ -54,4 +54,10 @@ public class CommentaryInfo {
 
     @SerializedName("liked")
     private Boolean liked;
+
+    @SerializedName("featured")
+    private Boolean featured;
+
+    @SerializedName("sensitive")
+    private Boolean sensitive;
 }

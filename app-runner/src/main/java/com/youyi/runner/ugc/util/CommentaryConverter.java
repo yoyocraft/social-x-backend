@@ -1,5 +1,6 @@
 package com.youyi.runner.ugc.util;
 
+import com.youyi.common.type.ugc.CommentaryStatus;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.runner.ugc.model.CommentaryInfo;
 import java.util.Objects;
@@ -14,7 +15,8 @@ import org.mapstruct.factory.Mappers;
  */
 @Mapper(
     imports = {
-        Objects.class
+        Objects.class,
+        CommentaryStatus.class
     }
 )
 public interface CommentaryConverter {
@@ -26,7 +28,9 @@ public interface CommentaryConverter {
         @Mapping(target = "commentatorNickname", source = "commentator.nickname"),
         @Mapping(target = "commentatorAvatar", source = "commentator.avatar"),
         @Mapping(target = "status", expression = "java(commentDO.getStatus().name())"),
-        @Mapping(target = "adopted", expression = "java(Objects.nonNull(commentDO.getExtraData()) && Boolean.TRUE.equals(commentDO.getExtraData().getAdopted()))")
+        @Mapping(target = "adopted", expression = "java(Objects.nonNull(commentDO.getExtraData()) && Boolean.TRUE.equals(commentDO.getExtraData().getAdopted()))"),
+        @Mapping(target = "featured", expression = "java(Objects.nonNull(commentDO.getExtraData()) && Boolean.TRUE.equals(commentDO.getExtraData().getFeatured()))"),
+        @Mapping(target = "sensitive", expression = "java(CommentaryStatus.SENSITIVE == commentDO.getStatus())"),
     })
     CommentaryInfo toCommentaryInfo(CommentaryDO commentDO);
 }

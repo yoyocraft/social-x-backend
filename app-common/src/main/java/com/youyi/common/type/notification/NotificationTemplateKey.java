@@ -16,6 +16,7 @@ public enum NotificationTemplateKey {
     UGC_LIKE,
     UGC_COLLECT,
     UGC_ADOPT,
+    UGC_FEATURED,
     UGC_COMMENT,
     UGC_COMMENT_REPLY,
     ;

@@ -33,6 +33,7 @@ import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_ADO
 import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COLLECT;
 import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COMMENT;
 import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COMMENT_REPLY;
+import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_FEATURED;
 import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_LIKE;
 import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getCacheValue;
@@ -133,10 +134,30 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
                 commentaryDocument.getCommentatorId(),
                 NotificationType.INTERACT,
                 ugcDocument.getUgcId(),
-                ugcDocument.getUgcId(),
+                ugcDocument.getType(),
                 commentaryId,
                 UgcConstant.COMMENTARY_ID,
                 generateSummary(UGC_ADOPT),
+                commentaryDocument.getCommentary()
+            );
+        });
+    }
+
+    /**
+     * 发送 UGC 精选通知
+     */
+    public void sendUgcFeaturedNotification(UserDO sender, String commentaryId, UgcDocument ugcDocument) {
+        notificationExecutor.execute(() -> {
+            CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryId);
+            sendNotification(
+                sender,
+                commentaryDocument.getCommentatorId(),
+                NotificationType.INTERACT,
+                ugcDocument.getUgcId(),
+                ugcDocument.getType(),
+                commentaryId,
+                UgcConstant.COMMENTARY_ID,
+                generateSummary(UGC_FEATURED),
                 commentaryDocument.getCommentary()
             );
         });
