@@ -144,9 +144,9 @@ public class UgcValidator {
     public static void checkUgcQueryRequestForListQuestion(UgcQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(notBlankChecker("cursor不合法"), request.getCursor())
-            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
-            .put(notNullChecker("问题状态不能为空"), request.getQaStatus())
             .put(enumExistChecker(UgcType.class, "UGC类型不合法"), request.getUgcType())
+            .put(notNullChecker("问题状态不能为空"), request.getQaStatus())
+            .putIfNotNull(lessThanOrEqualChecker(getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE), "size过大"), request.getSize())
             .validateWithThrow();
     }
 

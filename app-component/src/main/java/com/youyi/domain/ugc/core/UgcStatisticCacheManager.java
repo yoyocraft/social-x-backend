@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,6 +24,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UgcStatisticCacheManager {
 
+    private static final Logger logger = LoggerFactory.getLogger(UgcStatisticCacheManager.class);
+
     private static final EnumMap<UgcStatisticType, Function<String, String>> statisticFunc = new EnumMap<>(UgcStatisticType.class);
 
     static {
@@ -31,24 +35,30 @@ public class UgcStatisticCacheManager {
         statisticFunc.put(UgcStatisticType.COMMENTARY, UgcCacheRepo::ofUgcCommentaryCountKey);
     }
 
-    private static final String INCR_OPT = "incr";
-    private static final String DECR_OPT = "decr";
+    private static final String INCR_OPT = "1";
+    private static final String DECR_OPT = "0";
 
     private static final String INCR_WITH_EXPIRE_LUA_SCRIPT = """
-        -- Lua 脚本: incr_or_decr_with_expire.lua
         local key = KEYS[1]
         local expire = tonumber(ARGV[1])
-        local operation = ARGV[2]  -- operation: "incr" 或 "decr"
                 
         if redis.call("EXISTS", key) == 0 then
             redis.call("SET", key, 1, "EX", expire)  -- key 不存在，初始化为 1，并设置过期时间
             return 1
         else
-            if operation == "incr" then
-                return redis.call("INCR", key)  -- 执行递减
-            else
-                return redis.call("DECR", key)  -- 执行递增
-            end
+            return redis.call("INCR", key)
+        end
+        """;
+
+    private static final String DECR_WITH_EXPIRE_LUA_SCRIPT = """
+        local key = KEYS[1]
+        local expire = tonumber(ARGV[1])
+                
+        if redis.call("EXISTS", key) == 0 then
+            redis.call("SET", key, 1, "EX", expire)  -- key 不存在，初始化为 1，并设置过期时间
+            return 1
+        else
+            return redis.call("DECR", key)
         end
         """;
 
@@ -67,14 +77,13 @@ public class UgcStatisticCacheManager {
 
     private final CacheManager cacheManager;
 
-    public void incrOrDecrUgcViewCount(String ugcId, boolean incr) {
+    public void incrOrDecrUgcViewCount(String ugcId) {
         String cacheKey = UgcCacheRepo.ofUgcViewCountKey(ugcId);
         cacheManager.execute(
             Long.class,
             INCR_WITH_EXPIRE_LUA_SCRIPT,
             cacheKey,
-            CacheKey.UGC_VIEW_COUNT.getTtl().getSeconds(),
-            incr ? INCR_OPT : DECR_OPT
+            CacheKey.UGC_VIEW_COUNT.getTtl().getSeconds()
         );
     }
 
@@ -85,12 +94,12 @@ public class UgcStatisticCacheManager {
 
     public void incrOrDecrUgcLikeCount(String ugcId, boolean incr) {
         String cacheKey = UgcCacheRepo.ofUgcLikeCountKey(ugcId);
+        String luaScript = incr ? INCR_WITH_EXPIRE_LUA_SCRIPT : DECR_WITH_EXPIRE_LUA_SCRIPT;
         cacheManager.execute(
             Long.class,
-            INCR_WITH_EXPIRE_LUA_SCRIPT,
+            luaScript,
             cacheKey,
-            CacheKey.UGC_LIKE_COUNT.getTtl().getSeconds(),
-            incr ? INCR_OPT : DECR_OPT
+            CacheKey.UGC_LIKE_COUNT.getTtl().getSeconds()
         );
     }
 
@@ -101,12 +110,12 @@ public class UgcStatisticCacheManager {
 
     public void incrOrDecrUgcCollectCount(String ugcId, boolean incr) {
         String cacheKey = UgcCacheRepo.ofUgcCollectCountKey(ugcId);
+        String luaScript = incr ? INCR_WITH_EXPIRE_LUA_SCRIPT : DECR_WITH_EXPIRE_LUA_SCRIPT;
         cacheManager.execute(
             Long.class,
-            INCR_WITH_EXPIRE_LUA_SCRIPT,
+            luaScript,
             cacheKey,
-            CacheKey.UGC_COLLECT_COUNT.getTtl().getSeconds(),
-            incr ? INCR_OPT : DECR_OPT
+            CacheKey.UGC_COLLECT_COUNT.getTtl().getSeconds()
         );
     }
 
@@ -117,12 +126,12 @@ public class UgcStatisticCacheManager {
 
     public void incrOrDecrUgcCommentaryCount(String ugcId, boolean incr) {
         String cacheKey = UgcCacheRepo.ofUgcCommentaryCountKey(ugcId);
+        String luaScript = incr ? INCR_WITH_EXPIRE_LUA_SCRIPT : DECR_WITH_EXPIRE_LUA_SCRIPT;
         cacheManager.execute(
             Long.class,
-            INCR_WITH_EXPIRE_LUA_SCRIPT,
+            luaScript,
             cacheKey,
-            CacheKey.UGC_COLLECT_COUNT.getTtl().getSeconds(),
-            incr ? INCR_OPT : DECR_OPT
+            CacheKey.UGC_COLLECT_COUNT.getTtl().getSeconds()
         );
     }
 
@@ -133,12 +142,12 @@ public class UgcStatisticCacheManager {
 
     public void incrOrDecrCommentaryLikeCount(String commentaryId, boolean incr) {
         String cacheKey = UgcCacheRepo.ofCommentaryLikeCountKey(commentaryId);
+        String luaScript = incr ? INCR_WITH_EXPIRE_LUA_SCRIPT : DECR_WITH_EXPIRE_LUA_SCRIPT;
         cacheManager.execute(
             Long.class,
-            INCR_WITH_EXPIRE_LUA_SCRIPT,
+            luaScript,
             cacheKey,
-            CacheKey.COMMENTARY_LIKE_COUNT.getTtl().getSeconds(),
-            incr ? INCR_OPT : DECR_OPT
+            CacheKey.COMMENTARY_LIKE_COUNT.getTtl().getSeconds()
         );
     }
 

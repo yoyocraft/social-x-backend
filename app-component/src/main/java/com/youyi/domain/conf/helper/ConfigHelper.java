@@ -29,7 +29,7 @@ public class ConfigHelper {
         configDO.fillWithConfigPO(configPO);
     }
 
-    public List<ConfigDO> queryConfigByCursor(ConfigDO configDO) {
+    public List<ConfigDO> listConfig(ConfigDO configDO) {
         List<ConfigPO> poList = configRepository.queryByCursor(configDO.getCursor(), configDO.getSize());
         final Long nextCursor = Optional.ofNullable(
             CollectionUtils.isEmpty(poList)

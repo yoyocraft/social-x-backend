@@ -61,7 +61,7 @@ public class UserController {
         LocalLockUtil.runWithLockFailSafe(
             () -> userHelper.login(userDO),
             CommonOperationUtil::tooManyRequestError,
-            request.getIdentityType(), request.getIdentifier() // key: identityType#identifier
+            request.getIdentityType(), request.getIdentifier()
         );
         return loginSuccess(request);
     }

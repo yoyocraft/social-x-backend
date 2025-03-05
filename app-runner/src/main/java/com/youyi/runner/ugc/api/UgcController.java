@@ -107,21 +107,6 @@ public class UgcController {
         return queryUgcDetailSuccess(ugcDO, request);
     }
 
-    @Deprecated
-    @SaCheckLogin
-    @RecordOpLog(opType = OperationType.UGC_SET_STATUS)
-    @RequestMapping(value = "/set_status", method = RequestMethod.POST)
-    public Result<Boolean> setUgcStatus(@RequestBody UgcSetStatusRequest request) {
-        UgcValidator.checkUgcSetStatusRequest(request);
-        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        LocalLockUtil.runWithLockFailSafe(
-            () -> ugcHelper.updateUgcStatus(ugcDO),
-            CommonOperationUtil::tooManyRequestError,
-            request.getUgcId(), request.getStatus()
-        );
-        return setStatusSuccess(request);
-    }
-
     @SaCheckLogin
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public Result<PageCursorResult<String, UgcResponse>> queryUserPageUgc(@RequestBody UgcQueryRequest request) {
@@ -199,5 +184,21 @@ public class UgcController {
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         SseEmitter sseEmitter = ugcHelper.generateSummary(ugcDO);
         return generateSummarySuccess(sseEmitter, request);
+    }
+
+    // ============================ deprecated api ============================
+    @Deprecated
+    @SaCheckLogin
+    @RecordOpLog(opType = OperationType.UGC_SET_STATUS)
+    @RequestMapping(value = "/set_status", method = RequestMethod.POST)
+    public Result<Boolean> setUgcStatus(@RequestBody UgcSetStatusRequest request) {
+        UgcValidator.checkUgcSetStatusRequest(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        LocalLockUtil.runWithLockFailSafe(
+            () -> ugcHelper.updateUgcStatus(ugcDO),
+            CommonOperationUtil::tooManyRequestError,
+            request.getUgcId(), request.getStatus()
+        );
+        return setStatusSuccess(request);
     }
 }

@@ -2,8 +2,10 @@ package com.youyi.runner.notification.api;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.base.PageCursorResult;
 import com.youyi.common.base.Result;
+import com.youyi.common.type.OperationType;
 import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.notification.hepler.NotificationHelper;
 import com.youyi.domain.notification.model.NotificationDO;
@@ -42,6 +44,7 @@ public class NotificationController {
     private final NotificationHelper notificationHelper;
 
     @SaCheckPermission(value = {NOTIFICATION_MANAGER})
+    @RecordOpLog(opType = OperationType.PUBLISH_NOTIFICATION)
     @RequestMapping(value = "/publish", method = RequestMethod.POST)
     public Result<Boolean> publishNotification(@RequestBody NotificationPublishRequest request) {
         NotificationValidator.checkNotificationPublishRequest(request);
@@ -55,8 +58,8 @@ public class NotificationController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Result<PageCursorResult<String, NotificationResponse>> queryNotification(NotificationQueryRequest request) {
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public Result<PageCursorResult<String, NotificationResponse>> listNotification(NotificationQueryRequest request) {
         NotificationValidator.checkNotificationQueryRequest(request);
         NotificationDO notificationDO = NOTIFICATION_ASSEMBLER.toDO(request);
         List<NotificationDO> notificationDOList = notificationHelper.queryByTypeWithCursor(notificationDO);
@@ -77,8 +80,8 @@ public class NotificationController {
     }
 
     @SaCheckLogin
-    @RequestMapping(value = "/read/all/type", method = RequestMethod.POST)
-    public Result<Boolean> readAllNotificationByType(@RequestBody NotificationReadRequest request) {
+    @RequestMapping(value = "/read/type", method = RequestMethod.POST)
+    public Result<Boolean> readNotificationByType(@RequestBody NotificationReadRequest request) {
         NotificationValidator.checkNotificationReadRequestForTypeRead(request);
         NotificationDO notificationDO = NOTIFICATION_ASSEMBLER.toDO(request);
         LocalLockUtil.runWithLockFailSafe(

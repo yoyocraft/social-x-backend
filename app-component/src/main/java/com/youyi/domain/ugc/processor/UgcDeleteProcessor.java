@@ -12,6 +12,7 @@ import com.youyi.domain.ugc.core.CommentaryService;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
+import com.youyi.infra.cache.manager.CacheManager;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCollectCountKey;
+import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCommentaryCountKey;
+import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcLikeCountKey;
+import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcViewCountKey;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
@@ -35,6 +40,7 @@ public class UgcDeleteProcessor implements TaskProcessor {
     private final SysTaskService sysTaskService;
     private final CommentaryService commentaryService;
     private final UgcRelationshipRepository ugcRelationshipRepository;
+    private final CacheManager cacheManager;
 
     @Override
     public void process(String taskId, SysTaskExtraData extraData) {
@@ -52,6 +58,8 @@ public class UgcDeleteProcessor implements TaskProcessor {
         // 删除 UGC 节点
         logger.info("delete ugc node, ugcId: {}", ugcId);
         ugcRelationshipRepository.deleteUgcNode(ugcId);
+        // 删除所有的缓存数据
+        deleteCacheData(ugcId);
         // 删除对应的评论，写入删除事件，后续依赖 TaskTrigger 处理
         deleteRelatedCommentary(ugcId);
     }
@@ -77,5 +85,15 @@ public class UgcDeleteProcessor implements TaskProcessor {
         }
         logger.info("delete related commentary, ugcId: {}, allToDeleteCommentaryIds: {}", ugcId, allToDeleteCommentaryIds);
         sysTaskService.saveCommonSysTask(allToDeleteCommentaryIds, TaskType.COMMENTARY_DELETE_EVENT);
+    }
+
+    private void deleteCacheData(String ugcId) {
+        List<String> deletedKeys = List.of(
+            ofUgcViewCountKey(ugcId),
+            ofUgcLikeCountKey(ugcId),
+            ofUgcCollectCountKey(ugcId),
+            ofUgcCommentaryCountKey(ugcId)
+        );
+        cacheManager.batchDelete(deletedKeys);
     }
 }

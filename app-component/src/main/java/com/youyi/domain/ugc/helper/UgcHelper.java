@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -369,6 +370,8 @@ public class UgcHelper {
             })
             .doOnError(sseEmitter::completeWithError)
             .doOnComplete(sseEmitter::complete)
+            .delay(200, TimeUnit.MILLISECONDS)
             .subscribe();
     }
+
 }

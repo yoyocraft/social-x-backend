@@ -47,12 +47,14 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
 
     private final ReentrantLock jobLock = new ReentrantLock();
 
+    private static final long HOT_UGC_JOB_INTERVAL = 3L * 60 * 60 * 1000;
+
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
         executeHotJob();
     }
 
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(initialDelay = HOT_UGC_JOB_INTERVAL, fixedDelay = HOT_UGC_JOB_INTERVAL)
     public void hotUgcJob() {
         executeHotJob();
     }
