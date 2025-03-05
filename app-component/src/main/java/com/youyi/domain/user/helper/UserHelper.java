@@ -20,7 +20,6 @@ import com.youyi.infra.cache.manager.CacheManager;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -135,15 +134,20 @@ public class UserHelper {
         if (CollectionUtils.isEmpty(followers)) {
             return Collections.emptyList();
         }
-        List<String> creatorIds = followers.stream().map(UserDO::getUserId).toList();
-        UserDO currentUser = userService.getCurrentUserInfo();
-        List<String> followerIds = userRelationRepository.queryFollowingUserRelationsBatch(currentUser.getUserId(), creatorIds);
-        Set<String> followerIdSet = Set.copyOf(followerIds);
+        final Long nextCursor = userDO.getCursor();
+        userService.fillUserInteractInfo(followers);
         followers.forEach(follower -> {
-            follower.setHasFollowed(followerIdSet.contains(follower.getUserId()));
-            follower.setCursor(userDO.getCursor());
+            follower.setCursor(nextCursor);
         });
         return followers;
+    }
+
+    public List<UserDO> querySuggestedUsers(UserDO userDO) {
+        UserDO currentUserInfo = userService.getCurrentUserInfo();
+        userDO.setUserId(currentUserInfo.getUserId());
+        List<UserDO> userDOList = userService.querySuggestedUsers(userDO);
+        userService.fillUserInteractInfo(userDOList);
+        return userDOList;
     }
 
     private void logoutAndClearUserLoginState() {

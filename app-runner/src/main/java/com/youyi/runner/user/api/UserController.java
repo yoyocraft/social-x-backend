@@ -35,6 +35,7 @@ import static com.youyi.runner.user.util.UserResponseUtil.querySelfFollowersSucc
 import static com.youyi.runner.user.util.UserResponseUtil.querySelfFollowingUsersSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.logoutSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.querySuggestedUsersSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.setPwdSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.verifyCaptchaSuccess;
 
@@ -162,5 +163,14 @@ public class UserController {
         UserDO userDO = USER_ASSEMBLER.toDO(request);
         List<UserDO> followingUsers = userHelper.queryFollowers(userDO);
         return querySelfFollowersSuccess(followingUsers, request);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "/suggested", method = RequestMethod.GET)
+    public Result<List<UserBasicInfoResponse>> querySuggestedUsers(UserQueryRequest request) {
+        UserValidator.checkUserQueryRequestForSuggestedUsers(request);
+        UserDO userDO = USER_ASSEMBLER.toDO(request);
+        List<UserDO> suggestedUsers = userHelper.querySuggestedUsers(userDO);
+        return querySuggestedUsersSuccess(suggestedUsers, request);
     }
 }

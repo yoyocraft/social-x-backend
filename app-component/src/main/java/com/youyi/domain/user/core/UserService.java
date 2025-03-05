@@ -9,9 +9,11 @@ import com.youyi.domain.user.model.UserLoginStateInfo;
 import com.youyi.domain.user.repository.UserRelationRepository;
 import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserInfoPO;
+import com.youyi.domain.user.repository.relation.SuggestedUserInfo;
 import com.youyi.domain.user.repository.relation.UserNode;
 import com.youyi.domain.user.repository.relation.UserRelationship;
 import com.youyi.infra.cache.manager.CacheManager;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -142,6 +144,16 @@ public class UserService {
         );
     }
 
+    public void fillUserInteractInfo(List<UserDO> users) {
+        List<String> creatorIds = users.stream().map(UserDO::getUserId).toList();
+        UserDO currentUser = getCurrentUserInfo();
+        List<String> followerIds = userRelationRepository.queryFollowingUserRelationsBatch(currentUser.getUserId(), creatorIds);
+        Set<String> followerIdSet = Set.copyOf(followerIds);
+        users.forEach(follower -> {
+            follower.setHasFollowed(followerIdSet.contains(follower.getUserId()));
+        });
+    }
+
     public List<UserDO> queryFollowingUsers(UserDO userDO) {
         List<UserRelationship> followingUserRelations = userRelationRepository.getFollowingUsers(
             userDO.getUserId(),
@@ -213,5 +225,16 @@ public class UserService {
             .collect(Collectors.toSet());
         cacheManager.addToSet(followCacheKey, CacheKey.USER_FOLLOW_IDS.getTtl(), followUserIds);
         return followUserIds;
+    }
+
+    public List<UserDO> querySuggestedUsers(UserDO userDO) {
+        List<SuggestedUserInfo> suggestedUserInfoList = userRelationRepository.getSuggestedUsers(userDO.getUserId(), userDO.getSize());
+        if (CollectionUtils.isEmpty(suggestedUserInfoList)) {
+            return Collections.emptyList();
+        }
+
+        Set<String> suggestedUserIds = suggestedUserInfoList.stream().map(SuggestedUserInfo::getSuggestedUserId).collect(Collectors.toSet());
+        Map<String, UserDO> userId2DOMap = queryBatchByUserId(suggestedUserIds);
+        return new ArrayList<>(userId2DOMap.values());
     }
 }

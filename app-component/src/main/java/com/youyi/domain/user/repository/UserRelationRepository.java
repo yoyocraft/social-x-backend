@@ -1,5 +1,6 @@
 package com.youyi.domain.user.repository;
 
+import com.youyi.domain.user.repository.relation.SuggestedUserInfo;
 import com.youyi.domain.user.repository.relation.UserNode;
 import com.youyi.domain.user.repository.relation.UserRelationship;
 import java.util.List;
@@ -44,16 +45,14 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
             MATCH (t:user {userId: $creatorId})
             MERGE (f)-[r:FOLLOWING]->(t)
             SET r.since = timestamp()
-            """
-    )
+            """)
     void addFollowingUserRelationship(@Param("subscriberId") String subscriberId, @Param("creatorId") String creatorId);
 
     @Query(
         """
             MATCH (f:user {userId: $subscriberId})-[r:FOLLOWING]->(t:user {userId: $creatorId})
             DELETE r
-            """
-    )
+            """)
     void deleteFollowingUserRelationship(@Param("subscriberId") String subscriberId, @Param("creatorId") String creatorId);
 
     @Query("""
@@ -87,7 +86,15 @@ public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> 
     @Query("""
             MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)
             RETURN f AS target, r.since AS since
-        """
-    )
+        """)
     List<UserRelationship> getAllFollowingUsers(@Param("userId") String userId);
+
+    @Query("""
+            MATCH (u:user {userId: $userId})-[:FOLLOWING*2..3]->(s:user)
+            WHERE NOT (u)-[:FOLLOWING]->(s) AND u <> s
+            RETURN s.userId AS suggestedUserId, COUNT(*) AS score
+            ORDER BY score DESC
+            LIMIT $limit
+        """)
+    List<SuggestedUserInfo> getSuggestedUsers(@Param("userId") String userId, @Param("limit") int limit);
 }
