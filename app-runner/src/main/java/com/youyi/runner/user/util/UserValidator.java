@@ -100,4 +100,10 @@ public class UserValidator {
             .put(snowflakeIdChecker("用户ID不合法"), request.getUserId())
             .validateWithThrow();
     }
+
+    public static void checkUserQueryRequestForSuggestedUsers(UserQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(notBlankChecker("请求ID不能为空"), request.getReqId())
+            .validateWithThrow();
+    }
 }
