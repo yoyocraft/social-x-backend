@@ -20,7 +20,6 @@ import com.youyi.runner.ugc.model.UgcResponse;
 import com.youyi.runner.ugc.util.UgcValidator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,7 +48,6 @@ import static com.youyi.runner.ugc.util.UgcResponseUtil.setStatusSuccess;
 @RestController
 @RequestMapping("/ugc")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:8000", "http://127.0.0.1:8000", "http://127.0.0.1:5500"}, allowCredentials = "true")
 public class UgcController {
 
     private final UgcHelper ugcHelper;

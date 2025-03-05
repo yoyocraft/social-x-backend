@@ -73,6 +73,12 @@ public class CommentaryResponseUtil {
         return response;
     }
 
+    public static Result<Boolean> featuredSuccess(UgcInteractionRequest request) {
+        Result<Boolean> response = Result.success(Boolean.TRUE);
+        logger.info("feature comment, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
+    }
+
     private static List<CommentaryResponse> groupCommentariesByParentId(List<CommentaryInfo> commentaryInfoList) {
         Map<String, List<CommentaryInfo>> groupedCommentaries = commentaryInfoList
             .stream()

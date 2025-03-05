@@ -5,6 +5,7 @@ import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.repository.CommentaryRelationshipRepository;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
+import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.relation.CommentaryNode;
 import com.youyi.domain.user.model.UserDO;
@@ -29,6 +30,7 @@ import static com.youyi.common.constant.RepositoryConstant.INIT_QUERY_CURSOR;
 @RequiredArgsConstructor
 public class CommentaryService {
 
+    private final UgcRepository ugcRepository;
     private final CommentaryRepository commentaryRepository;
     private final CommentaryRelationshipRepository commentaryRelationshipRepository;
 

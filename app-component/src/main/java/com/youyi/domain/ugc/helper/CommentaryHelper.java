@@ -116,7 +116,6 @@ public class CommentaryHelper {
         // 幂等处理
         Boolean adopted = extraData.getAdopted();
         if (Boolean.TRUE.equals(adopted)) {
-            logger.info("commentary already adopted, commentatorId: {}, commentId: {}", commentaryDocument.getCommentatorId(), commentaryDocument.getCommentaryId());
             return;
         }
 
@@ -138,6 +137,29 @@ public class CommentaryHelper {
 
         // 发送通知
         notificationManager.sendUgcAdoptNotification(currentUser, commentaryDO.getCommentaryId(), ugcDocument);
+    }
+
+    public void featured(CommentaryDO commentaryDO) {
+        UserDO currentUser = userService.getCurrentUserInfo();
+        CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryDO.getCommentaryId());
+        CommentaryExtraData extraData = Optional.ofNullable(commentaryDocument.getExtraData()).orElseGet(CommentaryExtraData::new);
+        // 幂等处理
+        Boolean featured = extraData.getFeatured();
+        if (Boolean.TRUE.equals(featured)) {
+            return;
+        }
+
+        // 检测ugc是否属于当前用户
+        String ugcId = commentaryDocument.getUgcId();
+        UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
+        checkSelfUgc(currentUser, ugcDocument);
+
+        // 设置 Commentary 状态为精选
+        extraData.setFeatured(true);
+        commentaryRepository.updateCommentaryExtraData(commentaryDocument.getCommentaryId(), extraData);
+
+        // 发送通知
+        notificationManager.sendUgcFeaturedNotification(currentUser, commentaryDO.getCommentaryId(), ugcDocument);
     }
 
     private void doLike(CommentaryDO commentaryDO, UserDO currentUser) {
@@ -179,6 +201,7 @@ public class CommentaryHelper {
             commentaryDO.setCommentary(nonSensitiveCommentary);
             // 设置状态为敏感
             commentaryDO.setStatus(CommentaryStatus.SENSITIVE);
+            commentaryDO.setExtraData(extraData);
         }
     }
 
@@ -204,6 +227,6 @@ public class CommentaryHelper {
         if (!commentatorId.equals(userDO.getUserId())) {
             return;
         }
-        throw AppBizException.of(OPERATION_DENIED, "不能采纳自己的评论");
+        throw AppBizException.of(OPERATION_DENIED, "不能jin自己的评论");
     }
 }

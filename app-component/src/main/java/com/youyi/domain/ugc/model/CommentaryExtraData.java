@@ -22,11 +22,6 @@ public class CommentaryExtraData {
     private Boolean featured;
 
     /**
-     * 是否置顶
-     */
-    private Boolean top;
-
-    /**
      * 是否敏感
      */
     private Boolean sensitive;

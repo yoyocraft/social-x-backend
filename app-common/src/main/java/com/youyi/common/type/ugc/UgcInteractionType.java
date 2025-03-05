@@ -13,7 +13,13 @@ public enum UgcInteractionType {
     /**
      * 采纳
      */
-    ADOPT;
+    ADOPT,
+
+    /**
+     * 精选
+     */
+    FEATURED,
+    ;
 
     public static UgcInteractionType of(String interactionType) {
         return EnumUtils.getEnum(UgcInteractionType.class, interactionType, UNKNOWN);
