@@ -86,6 +86,8 @@ public class UserDO {
 
     private Boolean hasFollowed;
 
+    private Double hotScore;
+
     public void initUserId() {
         this.userId = genUserId();
     }

@@ -6,6 +6,7 @@ import com.youyi.common.type.ReturnCode;
 import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.notification.core.NotificationManager;
+import com.youyi.domain.ugc.model.HotAuthorCacheInfo;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.helper.login.LoginStrategy;
 import com.youyi.domain.user.helper.login.LoginStrategyFactory;
@@ -19,6 +20,7 @@ import com.youyi.domain.user.repository.relation.UserRelationship;
 import com.youyi.infra.cache.manager.CacheManager;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -148,6 +150,21 @@ public class UserHelper {
         List<UserDO> userDOList = userService.querySuggestedUsers(userDO);
         userService.fillUserInteractInfo(userDOList);
         return userDOList;
+    }
+
+    public List<UserDO> listHotUser() {
+        List<HotAuthorCacheInfo> cacheInfos = userService.listHotUserCache();
+        List<String> hotUserIds = cacheInfos.stream().map(HotAuthorCacheInfo::getAuthorId).toList();
+        Map<String, UserDO> hotUserMap = userService.queryBatchByUserId(hotUserIds);
+        List<UserDO> users = cacheInfos.stream().map(
+            cacheInfo -> {
+                UserDO user = hotUserMap.get(cacheInfo.getAuthorId());
+                user.setHotScore(cacheInfo.getHotScore());
+                return user;
+            }
+        ).toList();
+        userService.fillUserInteractInfo(users);
+        return users;
     }
 
     private void logoutAndClearUserLoginState() {

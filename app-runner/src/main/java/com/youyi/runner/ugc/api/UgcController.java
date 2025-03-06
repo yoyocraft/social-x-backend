@@ -160,7 +160,7 @@ public class UgcController {
     public Result<List<UgcResponse>> listHotUgc(@RequestBody UgcQueryRequest request) {
         UgcValidator.checkUgcQueryRequestForHotUgcList(request);
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        List<UgcDO> ugcDOList = ugcHelper.queryHotUgc(ugcDO);
+        List<UgcDO> ugcDOList = ugcHelper.listHotUgc(ugcDO);
         return queryHotUgcSuccess(ugcDOList);
     }
 

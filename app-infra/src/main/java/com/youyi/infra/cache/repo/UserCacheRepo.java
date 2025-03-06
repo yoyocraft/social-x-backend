@@ -27,4 +27,9 @@ public class UserCacheRepo {
         );
         return buildKey(CacheKey.USER_FOLLOW_IDS, dataMap);
     }
+
+    public static String ofHotAuthorListKey() {
+        return buildKey(CacheKey.HOT_AUTHOR_LIST, null);
+    }
+
 }
