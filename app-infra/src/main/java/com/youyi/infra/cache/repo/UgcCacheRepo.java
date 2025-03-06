@@ -60,5 +60,4 @@ public class UgcCacheRepo {
         );
         return buildKey(CacheKey.HOT_UGC_LIST, dataMap);
     }
-
 }

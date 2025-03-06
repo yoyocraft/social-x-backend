@@ -101,4 +101,11 @@ public class UserResponseUtil {
         logger.info("query suggested users, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
+
+    public static Result<List<UserBasicInfoResponse>> listHotUserSuccess(List<UserDO> users) {
+        List<UserBasicInfoResponse> data = users.stream().map(USER_CONVERTER::toResponse).toList();
+        Result<List<UserBasicInfoResponse>> response = Result.success(data);
+        logger.info("list hot users, response:{}", GsonUtil.toJson(response));
+        return response;
+    }
 }

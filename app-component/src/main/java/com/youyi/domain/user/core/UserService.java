@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.google.common.collect.Lists;
 import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.util.GsonUtil;
+import com.youyi.domain.ugc.model.HotAuthorCacheInfo;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.model.UserLoginStateInfo;
 import com.youyi.domain.user.repository.UserRelationRepository;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Component;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.conf.ConfigKey.QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH;
+import static com.youyi.infra.cache.repo.UserCacheRepo.ofHotAuthorListKey;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserFollowIdsKey;
 import static com.youyi.infra.conf.core.Conf.getBooleanConfig;
 
@@ -149,9 +151,7 @@ public class UserService {
         UserDO currentUser = getCurrentUserInfo();
         List<String> followerIds = userRelationRepository.queryFollowingUserRelationsBatch(currentUser.getUserId(), creatorIds);
         Set<String> followerIdSet = Set.copyOf(followerIds);
-        users.forEach(follower -> {
-            follower.setHasFollowed(followerIdSet.contains(follower.getUserId()));
-        });
+        users.forEach(follower -> follower.setHasFollowed(followerIdSet.contains(follower.getUserId())));
     }
 
     public List<UserDO> queryFollowingUsers(UserDO userDO) {
@@ -236,5 +236,11 @@ public class UserService {
         Set<String> suggestedUserIds = suggestedUserInfoList.stream().map(SuggestedUserInfo::getSuggestedUserId).collect(Collectors.toSet());
         Map<String, UserDO> userId2DOMap = queryBatchByUserId(suggestedUserIds);
         return new ArrayList<>(userId2DOMap.values());
+    }
+
+    public List<HotAuthorCacheInfo> listHotUserCache() {
+        String cacheKey = ofHotAuthorListKey();
+        String hotUserJson = cacheManager.getString(cacheKey);
+        return GsonUtil.fromJson(hotUserJson, List.class, HotAuthorCacheInfo.class);
     }
 }

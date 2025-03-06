@@ -31,6 +31,7 @@ import static com.youyi.runner.user.util.UserResponseUtil.editUserInfoSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.followUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.getCurrentUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.getUserInfoSuccess;
+import static com.youyi.runner.user.util.UserResponseUtil.listHotUserSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.querySelfFollowersSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.querySelfFollowingUsersSuccess;
 import static com.youyi.runner.user.util.UserResponseUtil.loginSuccess;
@@ -172,5 +173,12 @@ public class UserController {
         UserDO userDO = USER_ASSEMBLER.toDO(request);
         List<UserDO> suggestedUsers = userHelper.querySuggestedUsers(userDO);
         return querySuggestedUsersSuccess(suggestedUsers, request);
+    }
+
+    @SaCheckLogin
+    @RequestMapping(value = "/hot", method = RequestMethod.GET)
+    public Result<List<UserBasicInfoResponse>> listHotUser() {
+        List<UserDO> hotUsers = userHelper.listHotUser();
+        return listHotUserSuccess(hotUsers);
     }
 }

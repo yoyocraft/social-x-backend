@@ -61,4 +61,7 @@ public class UserBasicInfoResponse extends BaseResponse {
 
     @SerializedName("hasFollowed")
     private Boolean hasFollowed;
+
+    @SerializedName("hotScore")
+    private Double hotScore;
 }

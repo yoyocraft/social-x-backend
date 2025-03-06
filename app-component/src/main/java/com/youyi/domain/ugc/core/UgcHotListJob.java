@@ -7,7 +7,6 @@ import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.HotUgcCacheInfo;
-import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.infra.cache.manager.CacheManager;
@@ -41,8 +40,6 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
     private static final Logger logger = LoggerFactory.getLogger(UgcHotListJob.class);
 
     private final UgcRepository ugcRepository;
-    private final CommentaryRepository commentaryRepository;
-
     private final CacheManager cacheManager;
 
     private final ReentrantLock jobLock = new ReentrantLock();
@@ -142,13 +139,12 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
     // T+1, get from cache
     private List<HotUgcCacheInfo> calculateHotScores(List<UgcDocument> ugcList) {
         return ugcList.stream().map(ugc -> {
-            long commentaryCount = commentaryRepository.queryCountByUgcId(ugc.getUgcId());
-
             double score = ugc.getViewCount() * 0.4
                 + ugc.getLikeCount() * 0.3
                 + ugc.getCollectCount() * 0.2
-                + commentaryCount * 0.1;
+                + ugc.getCommentaryCount() * 0.1;
 
+            // POST 没有标题，默认使用内容作为标题
             if (UgcType.POST == UgcType.of(ugc.getType())) {
                 return new HotUgcCacheInfo(ugc.getUgcId(), ugc.getContent(), score, ugc.getViewCount());
             }
