@@ -11,6 +11,8 @@ import com.youyi.domain.user.request.UserFollowRequest;
 import com.youyi.domain.user.request.UserQueryRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
+import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import static com.youyi.common.util.param.ParamChecker.captchaChecker;
@@ -49,6 +51,11 @@ public class UserValidator {
                 () -> IdentityType.EMAIL_PASSWORD == IdentityType.of(request.getIdentityType()),
                 notBlankChecker("密码不能为空"),
                 request.getCredential()
+            )
+            .putBatchIf(
+                () -> IdentityType.EMAIL_PASSWORD == IdentityType.of(request.getIdentityType()),
+                notBlankChecker("验证码不能为空"),
+                Optional.ofNullable(request.getExtra()).orElseGet(Map::of).values()
             )
             .validateWithThrow();
     }
