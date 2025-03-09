@@ -7,6 +7,7 @@ package com.youyi.common.constant;
 public class ErrorCodeConstant {
 
     public static final String SUCCESS = "SUCCESS";
+    public static final Integer SUCCESS_CODE = 0;
 
     public static final String INVALID_PARAM = "INVALID_PARAM";
 

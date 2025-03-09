@@ -1,5 +1,6 @@
 package com.youyi.domain.media.core;
 
+import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.media.MediaSource;
 import com.youyi.domain.media.model.MediaResourceDO;
 import java.io.File;
@@ -55,6 +56,31 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
         mediaResourceDO.create(finalFilePath, buildAccessUrl(mediaResourceDO, datePath));
     }
 
+    public MediaResourceDO getMediaResourceByUrl(String url) {
+        checkNotNull(url, "URL is null");
+        checkArgument(!url.trim().isEmpty(), "URL is empty");
+
+        String basePath = getStringConfig(MEDIA_STORAGE_BASE_PATH);
+        String accessPrefix = getStringConfig(MEDIA_ACCESS_URL_PREFIX);
+
+        // 检查 URL 是否包含访问前缀
+        checkArgument(url.startsWith(accessPrefix), "Invalid URL format");
+
+        // 提取 URL 中的相对路径
+        String relativePath = url.substring(accessPrefix.length()).replaceFirst("^/+", SymbolConstant.EMPTY);
+        String filePath = buildFullPath(basePath, relativePath);
+
+        File file = new File(filePath);
+        checkArgument(file.exists(), "File not found at path: " + filePath);
+
+        // 创建 MediaResourceDO 对象
+        MediaResourceDO mediaResourceDO = new MediaResourceDO();
+        mediaResourceDO.setAccessUrl(url);
+        mediaResourceDO.setResourceUrl(filePath);
+        mediaResourceDO.setMedia(file);
+        return mediaResourceDO;
+    }
+
     private void mkdirIfNeeded(String dirPath) throws IOException {
         Path path = Paths.get(dirPath);
         if (Files.exists(path)) {
@@ -100,6 +126,7 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
     private String buildAccessUrl(MediaResourceDO mediaResourceDO, String datePath) {
         return buildFullPath(
             getStringConfig(MEDIA_ACCESS_URL_PREFIX),
+            mediaResourceDO.getResourceType().getType(),
             mediaResourceDO.getSource().getSource(),
             datePath,
             mediaResourceDO.getMedia().getName()
