@@ -6,4 +6,6 @@ package com.youyi.common.constant;
  */
 public class UserConstant {
     public static final String USER_LOGIN_STATE = "SocialX_USER_LOGIN_STATE_KEY";
+
+    public static final String IMAGE_CAPTCHA_KEY = "imageCaptcha";
 }

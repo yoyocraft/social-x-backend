@@ -38,6 +38,7 @@
         <commonmark.version>0.24.0</commonmark.version>
         <jsoup.version>1.18.3</jsoup.version>
         <oapi-java-sdk.version>release-V4-2.3.2</oapi-java-sdk.version>
+        <easy-captcha.version>2.2.5</easy-captcha.version>
 
         <!-- Plugins -->
         <maven-flatten-plugin.version>1.5.0</maven-flatten-plugin.version>
@@ -157,21 +158,24 @@
                 <artifactId>sa-token-spring-boot-starter</artifactId>
                 <version>${sa-token.version}</version>
             </dependency>
-
             <!-- Knife4j -->
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
                 <version>${knife4j.version}</version>
             </dependency>
-
             <!-- AI -->
             <dependency>
                 <groupId>cn.bigmodel.openapi</groupId>
                 <artifactId>oapi-java-sdk</artifactId>
                 <version>${oapi-java-sdk.version}</version>
             </dependency>
-
+            <!-- Easy-Captcha -->
+            <dependency>
+              <groupId>com.pig4cloud.plugin</groupId>
+              <artifactId>captcha-spring-boot-starter</artifactId>
+              <version>${easy-captcha.version}</version>
+           </dependency>
             <!-- Util -->
             <dependency>
                 <groupId>com.google.guava</groupId>
