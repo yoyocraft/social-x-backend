@@ -14,6 +14,7 @@ public enum MediaSource {
     AVATAR,
     ARTICLE,
     POST,
+    QUESTION,
     REPLY,
     SYSTEM,
     ;

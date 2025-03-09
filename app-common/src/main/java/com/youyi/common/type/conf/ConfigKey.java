@@ -24,6 +24,7 @@ public enum ConfigKey {
     // ================ Feature AB Switch ================
     SEND_EMAIL_AB_SWITCH,
     QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH,
+    AUDIT_IMAGE_AB_SWITCH,
 
     // ================ Crypto ================
     AES_KEY,
@@ -52,6 +53,9 @@ public enum ConfigKey {
     DEFAULT_RECOMMEND_TAG,
     HOT_LIST_TOP_N,
     ATTACHMENT_MAX_COUNT,
+
+    IMAGE_DETECT_API_URL,
+    PROB_THRESHOLD,
 
     // ================ Notification ==================
     NOTIFICATION_SUMMARY_TEMPLATE,

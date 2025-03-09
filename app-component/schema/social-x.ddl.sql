@@ -114,7 +114,8 @@ CREATE TABLE `media_resource` (
     `source` VARCHAR(32) NOT NULL COMMENT 'resource source, e.g. AVATAR, POST, REPLY',
     `creator_id` VARCHAR(64) NOT NULL COMMENT 'creator id',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_resource_key` (`resource_key`)
+    UNIQUE KEY `uk_resource_key` (`resource_key`),
+    UNIQUE KEY `uk_resource_url` (`resource_url`)
 ) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'media resource';
 
 DROP TABLE IF EXISTS `ugc_category`;

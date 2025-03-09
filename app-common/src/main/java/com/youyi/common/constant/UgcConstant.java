@@ -59,4 +59,6 @@ public class UgcConstant {
         CommentaryStatus.SENSITIVE.name()
     );
 
+    public static final String AUDIT_PASS = "审核通过";
+
 }

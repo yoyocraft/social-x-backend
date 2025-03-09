@@ -7,4 +7,10 @@ package com.youyi.common.constant;
 public class MediaConstant {
     public static final String DATE_PATH_FORMATTER = "yyyy/MM/dd";
 
+    public static final String IMAGE_NORMAL_CLASSIFY = "normal";
+
+    public static final String IMAGE_SENSITIVE_CLASSIFY = "sensitive";
+
+    public static final String IMAGE_PORN_CLASSIFY = "porn";
+
 }
