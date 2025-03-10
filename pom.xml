@@ -39,6 +39,7 @@
         <jsoup.version>1.18.3</jsoup.version>
         <oapi-java-sdk.version>release-V4-2.3.2</oapi-java-sdk.version>
         <easy-captcha.version>2.2.5</easy-captcha.version>
+        <javafaker.version>1.0.2</javafaker.version>
 
         <!-- Plugins -->
         <maven-flatten-plugin.version>1.5.0</maven-flatten-plugin.version>
@@ -236,6 +237,11 @@
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.javafaker</groupId>
+                <artifactId>javafaker</artifactId>
+                <version>${javafaker.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

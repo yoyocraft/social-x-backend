@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,11 @@ public class CommentaryHelper {
     }
 
     public List<CommentaryDO> queryUgcCommentary(CommentaryDO commentaryDO) {
-        List<CommentaryDocument> commentaryDocumentList = commentaryService.queryByUgcIdWithTimeCursor(commentaryDO);
+        // 查询出根评论
+        List<CommentaryDocument> rootCommentaryDocumentList = commentaryService.queryRootCommentaryByUgcIdWithTimeCursor(commentaryDO);
+        // 查询出对应的子评论
+        List<CommentaryDocument> childCommenatryDocumentList = commentaryService.queryByParentId(rootCommentaryDocumentList);
+        List<CommentaryDocument> commentaryDocumentList = Stream.concat(rootCommentaryDocumentList.stream(), childCommenatryDocumentList.stream()).toList();
         Set<String> commentatorIds = commentaryDocumentList.stream().map(CommentaryDocument::getCommentatorId).collect(Collectors.toSet());
         Map<String, UserDO> id2CommentatorMap = userService.queryBatchByUserId(commentatorIds);
         List<CommentaryDO> commentaryDOList = commentaryService.fillCommentatorAndCursorInfo(commentaryDocumentList, id2CommentatorMap);

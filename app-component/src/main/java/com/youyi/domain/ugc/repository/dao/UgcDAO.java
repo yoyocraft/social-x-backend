@@ -55,6 +55,10 @@ public class UgcDAO {
         mongoTemplate.save(ugcDocument);
     }
 
+    public void saveAll(Collection<UgcDocument> ugcDocuments) {
+        mongoTemplate.insertAll(ugcDocuments);
+    }
+
     public UpdateResult updateByUgcId(UgcDocument ugcDocument) {
         Query query = new Query();
         query.addCriteria(Criteria.where(UGC_ID).is(ugcDocument.getUgcId()));

@@ -1,7 +1,8 @@
 package com.youyi.domain.ugc.repository;
 
-import com.google.common.collect.Lists;
+import com.github.javafaker.Faker;
 import com.youyi.BaseIntegrationTest;
+import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.common.util.GsonUtil;
@@ -9,6 +10,7 @@ import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.util.List;
+import java.util.Random;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -23,13 +25,19 @@ class UgcRepositoryTest extends BaseIntegrationTest {
 
     private static final Logger logger = LoggerFactory.getLogger(UgcRepositoryTest.class);
 
+    private static final Faker faker = new Faker(new Random(System.currentTimeMillis()));
+
+    private static final Random random = new Random(System.currentTimeMillis());
+
     @Autowired
     UgcRepository ugcRepository;
 
     @Test
     void testSaveUgc() {
+        String categoryId = "1883785981502304257";
+        String categoryName = "后端";
         for (int i = 0; i < 100; i++) {
-            ugcRepository.saveUgc(buildUgcDocument(i + 1));
+            ugcRepository.saveUgc(buildUgcDocument(categoryId, categoryName));
         }
     }
 
@@ -61,61 +69,41 @@ class UgcRepositoryTest extends BaseIntegrationTest {
         Assertions.assertDoesNotThrow(() -> ugcRepository.updateUgc(ugcDocument));
     }
 
-    UgcDocument buildUgcDocument(int base) {
+    UgcDocument buildUgcDocument(String categoryId, String categoryName) {
+        String authorId = "1883827647466573824";
+        String title = faker.book().title();
+        String summary = faker.lorem().paragraph(20);
+
+        String cover = "/media/cover/default_cover.png";
+        String auditRet = "审核通过";
+        UgcExtraData extraData = new UgcExtraData();
+        extraData.setAuditRet(auditRet);
+        extraData.setHasSolved(Boolean.FALSE);
+        extraData.setUgcSummary(SymbolConstant.EMPTY);
+
         UgcDocument ugcDocument = new UgcDocument();
-        ugcDocument.setCategoryId("1883785981502304257");
-        ugcDocument.setCategoryName("后端");
-        ugcDocument.setAttachmentUrls(Lists.newArrayList("/media/avatar/default.jpg", "/media/avatar/default.jpg"));
         ugcDocument.setUgcId(IdSeqUtil.genUgcId());
         ugcDocument.setType(UgcType.ARTICLE.name());
-        ugcDocument.setAuthorId("1883827647466573824");
-        ugcDocument.setContent("""
-            当然！这里有几个有趣的脑筋急转弯，试试看你能不能猜出来！🤔
-                        
-            ---
-                        
-            1. **什么东西越用越多，但永远装不满？** \s
-               💡 **答案：** 知识（因为学得越多，知道的就越多） \s
-                        
-            2. **什么书从来不单独卖？** \s
-               💡 **答案：** 说明书（因为总是和商品一起出现） \s
-                        
-            3. **为什么企鹅的肚子是白色的？** \s
-               💡 **答案：** 因为如果肚子是黑的，翻过来就找不到啦！ \s
-                        
-            4. **什么东西有头无尾，有眼无眉，能看不能动？** \s
-               💡 **答案：** 鱼（鱼头、鱼眼，但尾巴不算“尾”，鱼本身能动，但谜面是“能看不能动”） \s
-                        
-            5. **什么东西下雨时是干的，晴天是湿的？** \s
-               💡 **答案：** 影子（晴天太阳晒出影子，下雨时没影子） \s
-                        
-            6. **什么字所有人都会念错？** \s
-               💡 **答案：** “错”字（因为题目问的就是“什么字所有人都会念错”） \s
-                        
-            7. **什么东西你打它，它哭；你不打它，它也哭？** \s
-               💡 **答案：** 洋葱（切洋葱会流泪，放久了烂了也会“哭”） \s
-                        
-            8. **什么桥不能走？** \s
-               💡 **答案：** 郑板桥（人名谐音梗） \s
-                        
-            ---
-                        
-            试试考考朋友，看他们能猜中几个！😉 如果有其他需求，比如更难的或特定主题的，可以告诉我～
-            """);
-        ugcDocument.setCover("/media/avatar/default.jpg");
-        ugcDocument.setTitle("【测试】文章" + base);
-        ugcDocument.setSummary("【测试】摘要" + base);
-        ugcDocument.setTags(Lists.newArrayList("面试技巧", "简历优化", "职场经验"));
-        ugcDocument.setViewCount(1000L);
-        ugcDocument.setLikeCount(1000L);
-        ugcDocument.setCollectCount(100L);
-        ugcDocument.setCommentaryCount(1000L);
+        ugcDocument.setAuthorId(authorId);
+        ugcDocument.setTitle(title);
+        ugcDocument.setContent(faker.lorem().paragraph());
+        ugcDocument.setSummary(summary);
+        ugcDocument.setCategoryId(categoryId);
+        ugcDocument.setCategoryName(categoryName);
+        ugcDocument.setTags(List.of("tag_1"));
+        ugcDocument.setViewCount(getRandomLong(1000, 10000));
+        ugcDocument.setLikeCount(getRandomLong(100, 1000));
+        ugcDocument.setCollectCount(getRandomLong(100, 1000));
+        ugcDocument.setCommentaryCount(getRandomLong(100, 1000));
         ugcDocument.setStatus(UgcStatus.PUBLISHED.name());
+        ugcDocument.setCover(cover);
         ugcDocument.setGmtCreate(System.currentTimeMillis());
         ugcDocument.setGmtModified(System.currentTimeMillis());
-        UgcExtraData extraData = new UgcExtraData();
-        extraData.setAuditRet("审核通过");
         ugcDocument.setExtraData(extraData);
         return ugcDocument;
+    }
+
+    public static Long getRandomLong(long min, long max) {
+        return random.nextLong(max - min + 1) + min;
     }
 }

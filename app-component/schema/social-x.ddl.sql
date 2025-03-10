@@ -2,18 +2,18 @@
 DROP TABLE IF EXISTS `config`;
 
 CREATE TABLE `config` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
-    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
-    `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
-    `config_key` VARCHAR(255) NOT NULL COMMENT 'config key',
-    `config_value` TEXT NOT NULL COMMENT 'config value',
-    `config_type` VARCHAR(32) NOT NULL DEFAULT 'STRING' COMMENT 'STRING, JSON, INTEGER, BOOLEAN, etc.',
-    `config_desc` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'config description',
-    `version` INT(11) NOT NULL DEFAULT 0 COMMENT 'version',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_config_key_deleted_at` (`config_key`, `deleted_at`)
-) ENGINE = InnoDB CHARSET = utf8mb4 COMMENT 'project config';
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+  `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
+  `deleted_at` BIGINT NOT NULL DEFAULT '0' COMMENT 'deleted at',
+  `config_key` VARCHAR(255) NOT NULL COMMENT 'config key',
+  `config_value` TEXT NOT NULL COMMENT 'config value',
+  `config_type` VARCHAR(32) NOT NULL DEFAULT 'STRING' COMMENT 'STRING, JSON, INTEGER, BOOLEAN, etc.',
+  `version` INT NOT NULL DEFAULT '0' COMMENT 'version',
+  `config_desc` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'config description',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_config_key_deleted_at` (`config_key`,`deleted_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='project config';
 
 DROP TABLE IF EXISTS `operation_log`;
 
@@ -42,7 +42,7 @@ CREATE TABLE `user_info` (
     `email_iv` CHAR(24) NOT NULL COMMENT 'phone iv, for AES encryption, encoded by base64',
     `phone` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'phone, AES encrypted',
     `phone_iv` CHAR(24) NOT NULL DEFAULT '' COMMENT 'phone iv, for AES encryption, encoded by base64',
-    `nick_name` VARCHAR(64) NOT NULL COMMENT 'user nick name',
+    `nickname` VARCHAR(64) NOT NULL COMMENT 'user nick name',
     `avatar` VARCHAR(255) NOT NULL DEFAULT '/media/avatar/default.png' COMMENT 'avatar',
     `work_start_time` CHAR(7) NOT NULL DEFAULT '2025-07' COMMENT 'Date of joining the workforce in yyyy-MM format',
     `work_direction` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'work direction, e.g. 0: UNKNOWN, 1: BACKEND, 2: FRONTEND, 3: FULL_STACK',
@@ -178,7 +178,7 @@ CREATE TABLE `notification` (
     `notification_id` VARCHAR(64) NOT NULL COMMENT 'notification id',
     `notification_type` VARCHAR(64) NOT NULL COMMENT 'notification type',
     `notification_status` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'notification status, e.g. UNREAD(0), READ(1), DELETED(Integer.MAX_VALUE)',
-    `receiver_id` VARCHAR(64) NOT NULL COMMENT 'receiver id',
+    `receiver_id` VARCHAR(64) NOT NULL DEFAULT '' COMMENT 'receiver id',
     `sender_id` VARCHAR(64) NOT NULL COMMENT 'sender id',
     `read_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'read time',
     PRIMARY KEY (`id`),

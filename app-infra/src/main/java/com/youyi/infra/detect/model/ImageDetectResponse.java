@@ -20,7 +20,7 @@ public class ImageDetectResponse implements Serializable {
     public static final ImageDetectResponse DEFAULT_INSTANCE = new ImageDetectResponse();
 
     static {
-        DEFAULT_INSTANCE.setCode(0);
+        DEFAULT_INSTANCE.setCode(1);
         DEFAULT_INSTANCE.setMessage(SUCCESS);
         DEFAULT_INSTANCE.setData(List.of());
     }
