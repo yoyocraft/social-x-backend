@@ -8,7 +8,7 @@ import java.io.File;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.youyi.common.util.IdSeqUtil.genResourceKey;
+import static com.youyi.common.util.IdSeqUtil.genMediaResourceKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -39,7 +39,7 @@ public class MediaResourceDO {
     }
 
     public void create(String resourceUrl, String accessUrl) {
-        this.resourceKey = genResourceKey();
+        this.resourceKey = genMediaResourceKey();
         this.resourceUrl = resourceUrl;
         this.accessUrl = accessUrl;
     }

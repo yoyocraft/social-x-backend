@@ -13,4 +13,6 @@ public class MediaConstant {
 
     public static final String IMAGE_PORN_CLASSIFY = "porn";
 
+    public static final String MEDIA_FILE_NAME_FORMATTER = "%s.%s";
+
 }

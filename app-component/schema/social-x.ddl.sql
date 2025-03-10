@@ -108,7 +108,7 @@ CREATE TABLE `media_resource` (
     `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
     `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
     `extra_data` JSON COMMENT 'extra data',
-    `resource_key` VARCHAR(128) NOT NULL COMMENT 'resource key',
+    `resource_key` VARCHAR(64) NOT NULL COMMENT 'resource key',
     `resource_type` VARCHAR(32) NOT NULL COMMENT 'resource type, e.g. IMAGE, VIDEO, AUDIO, DOCUMENT, OTHER',
     `resource_url` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'resource url',
     `source` VARCHAR(32) NOT NULL COMMENT 'resource source, e.g. AVATAR, POST, REPLY',

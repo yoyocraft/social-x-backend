@@ -2,6 +2,8 @@ package com.youyi.common.util;
 
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
+import com.youyi.common.type.IdType;
+import java.util.EnumMap;
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
@@ -10,61 +12,68 @@ import org.apache.commons.lang3.RandomStringUtils;
  */
 public class IdSeqUtil {
 
-    // ============================= Id Seq ==============================
-    private static final long USER_ID_WORKER = 1L;
-    private static final Snowflake USER_ID_SEQ = IdUtil.getSnowflake(USER_ID_WORKER);
-    private static final long UGC_ID_WORKER = 2L;
-    private static final Snowflake UGC_ID_SEQ = IdUtil.getSnowflake(UGC_ID_WORKER);
-    private static final long UGC_CATEGORY_ID_WORKER = 3L;
-    private static final Snowflake UGC_CATEGORY_ID_SEQ = IdUtil.getSnowflake(UGC_CATEGORY_ID_WORKER);
-    private static final long UGC_TAG_ID_WORKER = 4L;
-    private static final Snowflake UGC_TAG_ID_SEQ = IdUtil.getSnowflake(UGC_TAG_ID_WORKER);
-    private static final long COMMENTARY_ID_WORKER = 5L;
-    private static final Snowflake COMMENTARY_ID_SEQ = IdUtil.getSnowflake(COMMENTARY_ID_WORKER);
-    private static final long SYS_TASK_ID_WORKER = 6L;
-    private static final Snowflake SYS_TASK_ID_SEQ = IdUtil.getSnowflake(SYS_TASK_ID_WORKER);
-    private static final long NOTIFICATION_ID_WORKER = 7L;
-    private static final Snowflake NOTIFICATION_ID_SEQ = IdUtil.getSnowflake(NOTIFICATION_ID_WORKER);
+    // ============================= Snowflake Instances ==============================
+    private static final EnumMap<IdType, Snowflake> SNOWFLAKE_MAP = new EnumMap<>(IdType.class);
+
+    static {
+        for (IdType type : IdType.values()) {
+            SNOWFLAKE_MAP.put(type, IdUtil.getSnowflake(type.getWorkerId()));
+        }
+    }
 
     // ============================= Constants ==============================
     private static final int EMAIL_CAPTCHA_LENGTH = 6;
-    private static final String USER_NICK_NAME_PREFIX = "social_x_";
     private static final int USER_NICKNAME_SUFFIX_LENGTH = 8;
     private static final int USER_VERIFY_CAPTCHA_TOKEN_LENGTH = 64;
     private static final int USER_PWD_SALT_LENGTH = 64;
-    private static final int RESOURCE_KEY_LENGTH = 128;
+    private static final String USER_NICK_NAME_PREFIX = "social_x_";
 
+    // ============================= Private Constructor ==============================
     private IdSeqUtil() {
     }
 
+    // ============================= ID Generators ==============================
+    public static String genId(IdType idType) {
+        return SNOWFLAKE_MAP.get(idType).nextIdStr();
+    }
+
     public static String genUserId() {
-        return USER_ID_SEQ.nextIdStr();
+        return genId(IdType.USER_ID);
     }
 
     public static String genUgcId() {
-        return UGC_ID_SEQ.nextIdStr();
+        return genId(IdType.UGC_ID);
     }
 
     public static String genUgcCategoryId() {
-        return UGC_CATEGORY_ID_SEQ.nextIdStr();
+        return genId(IdType.UGC_CATEGORY_ID);
     }
 
     public static String genUgcTagId() {
-        return UGC_TAG_ID_SEQ.nextIdStr();
+        return genId(IdType.UGC_TAG_ID);
     }
 
     public static String genCommentaryId() {
-        return COMMENTARY_ID_SEQ.nextIdStr();
+        return genId(IdType.COMMENTARY_ID);
     }
 
     public static String genSysTaskId() {
-        return SYS_TASK_ID_SEQ.nextIdStr();
+        return genId(IdType.SYS_TASK_ID);
     }
 
     public static String genNotificationId() {
-        return NOTIFICATION_ID_SEQ.nextIdStr();
+        return genId(IdType.NOTIFICATION_ID);
     }
 
+    public static String genMediaResourceKey() {
+        return genId(IdType.MEDIA_RESOURCE_KEY);
+    }
+
+    public static String genMediaResourceName() {
+        return genId(IdType.MEDIA_RESOURCE_NAME);
+    }
+
+    // ============================= Random String Generators ==============================
     public static String genEmailCaptcha() {
         return RandomStringUtils.secure().nextNumeric(EMAIL_CAPTCHA_LENGTH);
     }
@@ -79,9 +88,5 @@ public class IdSeqUtil {
 
     public static String genPwdSalt() {
         return RandomStringUtils.secure().nextAlphanumeric(USER_PWD_SALT_LENGTH);
-    }
-
-    public static String genResourceKey() {
-        return RandomStringUtils.secure().nextAlphanumeric(RESOURCE_KEY_LENGTH);
     }
 }
