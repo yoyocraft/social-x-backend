@@ -7,6 +7,7 @@ import com.youyi.common.type.ugc.CommentaryStatus;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
 import com.youyi.domain.ugc.repository.dao.CommentaryDAO;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -35,6 +36,16 @@ public class CommentaryRepository {
         try {
             checkNotNull(commentaryDocument);
             commentaryDAO.save(commentaryDocument);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public void saveAllCommentary(Collection<CommentaryDocument> commentaryDocuments) {
+        try {
+            checkState(CollectionUtils.isNotEmpty(commentaryDocuments));
+            commentaryDAO.saveAll(commentaryDocuments);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
@@ -84,6 +95,16 @@ public class CommentaryRepository {
     public List<CommentaryDocument> queryByParentId(String parentId) {
         try {
             checkState(StringUtils.isNotBlank(parentId));
+            return commentaryDAO.queryByParentId(parentId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public List<CommentaryDocument> queryByParentId(Collection<String> parentId) {
+        try {
+            checkState(CollectionUtils.isNotEmpty(parentId));
             return commentaryDAO.queryByParentId(parentId);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);

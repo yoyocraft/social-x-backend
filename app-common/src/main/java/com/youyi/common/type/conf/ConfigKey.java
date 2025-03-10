@@ -45,12 +45,10 @@ public enum ConfigKey {
     DEFAULT_PAGE_SIZE,
 
     // ================ Ugc ==================
-    INNER_UGC_CATEGORIES,
-    INNER_UGC_TAGS,
+    SYSTEM_PRESET_UGC_CATEGORY,
+    SYSTEM_PRESET_UGC_TAG,
     UGC_MAX_TAG_COUNT,
     UGC_TAG_RELATIONSHIP,
-    @Deprecated
-    DEFAULT_RECOMMEND_TAG,
     HOT_LIST_TOP_N,
     ATTACHMENT_MAX_COUNT,
 
@@ -59,11 +57,8 @@ public enum ConfigKey {
 
     // ================ Notification ==================
     NOTIFICATION_SUMMARY_TEMPLATE,
-    @Deprecated
-    NOTIFICATION_GROUP_CONFIG,
 
     // ================ AI ==================
-    AI_UGC_PUBLISH_SUMMARY_PROMPT,
     AI_UGC_VIEW_SUMMARY_PROMPT,
     ;
 

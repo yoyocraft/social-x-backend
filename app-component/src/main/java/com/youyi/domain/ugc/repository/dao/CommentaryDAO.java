@@ -4,6 +4,7 @@ import com.mongodb.client.result.UpdateResult;
 import com.youyi.common.type.ugc.CommentaryStatus;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -38,6 +39,10 @@ public class CommentaryDAO {
         mongoTemplate.save(document);
     }
 
+    public void saveAll(Collection<CommentaryDocument> commentaryDocuments) {
+        mongoTemplate.insertAll(commentaryDocuments);
+    }
+
     public List<CommentaryDocument> queryByUgcIdWithTimeCursor(String ugcId, long lastCursor, int size) {
         Query query = new Query();
         query.addCriteria(Criteria.where(COMMENTARY_UGC_ID).is(ugcId));
@@ -70,6 +75,13 @@ public class CommentaryDAO {
     public List<CommentaryDocument> queryByParentId(String parentId) {
         Query query = new Query();
         query.addCriteria(Criteria.where(COMMENTARY_PARENT_ID).is(parentId));
+        buildCommentaryStatusQueryCondition(query, CommentaryStatus.ALL.name());
+        return mongoTemplate.find(query, CommentaryDocument.class);
+    }
+
+    public List<CommentaryDocument> queryByParentId(Collection<String> parentIds) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(COMMENTARY_PARENT_ID).in(parentIds));
         buildCommentaryStatusQueryCondition(query, CommentaryStatus.ALL.name());
         return mongoTemplate.find(query, CommentaryDocument.class);
     }
