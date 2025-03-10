@@ -1,5 +1,6 @@
 package com.youyi.domain.media.core;
 
+import cn.hutool.core.io.FileUtil;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.media.MediaSource;
 import com.youyi.domain.media.model.MediaResourceDO;
@@ -20,10 +21,12 @@ import org.springframework.stereotype.Component;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.MediaConstant.DATE_PATH_FORMATTER;
+import static com.youyi.common.constant.MediaConstant.MEDIA_FILE_NAME_FORMATTER;
 import static com.youyi.common.type.conf.ConfigKey.MEDIA_ACCESS_URL_PREFIX;
 import static com.youyi.common.type.conf.ConfigKey.MEDIA_STORAGE_BASE_PATH;
 import static com.youyi.common.type.media.ResourceType.IMAGE;
 import static com.youyi.common.util.CommonOperationUtil.buildFullPath;
+import static com.youyi.common.util.IdSeqUtil.genMediaResourceName;
 import static com.youyi.common.util.ext.MoreFeatures.runCatching;
 import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
@@ -90,7 +93,7 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
     }
 
     private String copyImageToStorage(File sourceFile, String dir) throws IOException {
-        File destinationFile = new File(dir, sourceFile.getName());
+        File destinationFile = new File(dir, polishFileName(sourceFile));
         try (
             FileInputStream src = new FileInputStream(sourceFile);
             FileOutputStream dest = new FileOutputStream(destinationFile)
@@ -131,5 +134,11 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
             datePath,
             mediaResourceDO.getMedia().getName()
         );
+    }
+
+    private String polishFileName(File originFile) {
+        String fileExt = FileUtil.getSuffix(originFile);
+        String uniqueFileName = genMediaResourceName();
+        return String.format(MEDIA_FILE_NAME_FORMATTER, uniqueFileName, fileExt);
     }
 }
