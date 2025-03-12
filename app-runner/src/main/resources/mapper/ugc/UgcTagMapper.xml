@@ -8,6 +8,7 @@
         <id column="id" property="id"/>
         <result property="gmtCreate" column="gmt_create"/>
         <result property="gmtModified" column="gmt_modified"/>
+        <result property="deletedAt" column="deleted_at"/>
         <result property="tagId" column="tag_id"/>
         <result property="tagName" column="tag_name"/>
         <result property="priority" column="priority"/>
@@ -16,7 +17,7 @@
     </resultMap>
 
     <sql id="result_cols">
-        id, gmt_create, gmt_modified, tag_id, tag_name, creator_id, priority, type
+        id, gmt_create, gmt_modified, deleted_at, tag_id, tag_name, creator_id, priority, type
     </sql>
 
     <sql id="query_cursor_definition">
@@ -43,12 +44,14 @@
         <include refid="result_cols"/>
         FROM ugc_tag
         WHERE type = #{type}
+        AND deleted_at = 0
         ORDER BY priority DESC, id DESC
     </select>
     <select id="queryAll" resultType="com.youyi.domain.ugc.repository.po.UgcTagPO">
         SELECT
         <include refid="result_cols"/>
         FROM ugc_tag
+        WHERE deleted_at = 0
         ORDER BY priority DESC, id DESC
     </select>
     <select id="queryByCursor" resultType="com.youyi.domain.ugc.repository.po.UgcTagPO">
@@ -58,8 +61,14 @@
         WHERE id <![CDATA[ > ]]> (
             <include refid="query_cursor_definition"/>
         )
+        AND deleted_at = 0
         ORDER BY id ASC, priority DESC
         LIMIT #{size}
+    </select>
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM ugc_tag
+        WHERE deleted_at = 0
     </select>
 
 </mapper>

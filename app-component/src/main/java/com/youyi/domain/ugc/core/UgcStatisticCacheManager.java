@@ -4,16 +4,14 @@ import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.type.ugc.UgcStatisticType;
 import com.youyi.infra.cache.manager.CacheManager;
 import com.youyi.infra.cache.repo.UgcCacheRepo;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,8 +22,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UgcStatisticCacheManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(UgcStatisticCacheManager.class);
-
     private static final EnumMap<UgcStatisticType, Function<String, String>> statisticFunc = new EnumMap<>(UgcStatisticType.class);
 
     static {
@@ -34,9 +30,6 @@ public class UgcStatisticCacheManager {
         statisticFunc.put(UgcStatisticType.COLLECT, UgcCacheRepo::ofUgcCollectCountKey);
         statisticFunc.put(UgcStatisticType.COMMENTARY, UgcCacheRepo::ofUgcCommentaryCountKey);
     }
-
-    private static final String INCR_OPT = "1";
-    private static final String DECR_OPT = "0";
 
     private static final String INCR_WITH_EXPIRE_LUA_SCRIPT = """
         local key = KEYS[1]
@@ -151,14 +144,6 @@ public class UgcStatisticCacheManager {
         );
     }
 
-    public Long getCommentaryLikeCount(String commentaryId) {
-        String cacheKey = UgcCacheRepo.ofCommentaryLikeCountKey(commentaryId);
-        Object value = cacheManager.get(cacheKey);
-        return Optional.ofNullable(value)
-            .map(val -> Long.parseLong(val.toString()))
-            .orElse(0L);
-    }
-
     public Long getAndDelCommentaryLikeCount(String commentaryId) {
         String cacheKey = UgcCacheRepo.ofCommentaryLikeCountKey(commentaryId);
         return cacheManager.execute(Long.class, GET_AND_DEL_LUA_SCRIPT, cacheKey);
@@ -193,5 +178,20 @@ public class UgcStatisticCacheManager {
         }
 
         return statisticsMap;
+    }
+
+    public Map<String, Long> getBatchCommentaryStatistic(List<String> commentaryIds) {
+        if (CollectionUtils.isEmpty(commentaryIds)) {
+            return Collections.emptyMap();
+        }
+        List<String> allKeys = commentaryIds.stream().map(UgcCacheRepo::ofCommentaryLikeCountKey).toList();
+        List<Object> result = cacheManager.getPipelineResult(allKeys);
+        Map<String, Long> statisticMap = new HashMap<>();
+        int index = 0;
+        for (String key : allKeys) {
+            Object value = result.get(index++);
+            statisticMap.put(key, value == null ? 0L : Long.parseLong(value.toString()));
+        }
+        return statisticMap;
     }
 }

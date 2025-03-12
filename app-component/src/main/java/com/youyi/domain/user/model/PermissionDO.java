@@ -30,14 +30,7 @@ public class PermissionDO {
     private PermissionType toSavePermission;
 
     private List<PermissionType> toSavePermissions;
-
-    @Deprecated
-    public PermissionPO buildToSavePermissionPO() {
-        PermissionPO po = new PermissionPO();
-        po.setPermissionName(toSavePermission.name());
-        return po;
-    }
-
+    
     public List<PermissionPO> buildToSavePermissionPOs() {
         return toSavePermissions.stream()
             .map(this::buildPermissionPO)

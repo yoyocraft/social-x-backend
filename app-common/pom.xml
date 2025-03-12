@@ -20,6 +20,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Mapstruct -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+
         <!-- Utils -->
         <dependency>
             <groupId>com.google.guava</groupId>

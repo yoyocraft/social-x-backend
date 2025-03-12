@@ -34,8 +34,7 @@ public class UgcConstant {
 
     public static List<String> includeUgcStatus = List.of(
         UgcStatus.PUBLISHED.name(),
-        UgcStatus.AUDITING.name(),
-        UgcStatus.PRIVATE.name()
+        UgcStatus.AUDITING.name()
     );
 
     public static EnumSet<UgcType> hotUgcTypeList = EnumSet.of(

@@ -12,7 +12,6 @@ import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
-import com.youyi.domain.ugc.request.UgcSetStatusRequest;
 import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
 import com.youyi.infra.lock.LocalLockUtil;
 import com.youyi.infra.sse.SseEmitter;
@@ -39,7 +38,6 @@ import static com.youyi.runner.ugc.util.UgcResponseUtil.queryHotUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.querySelfUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUgcDetailSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUserPageUgcSuccess;
-import static com.youyi.runner.ugc.util.UgcResponseUtil.setStatusSuccess;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -184,21 +182,5 @@ public class UgcController {
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         SseEmitter sseEmitter = ugcHelper.generateSummary(ugcDO);
         return generateSummarySuccess(sseEmitter, request);
-    }
-
-    // ============================ deprecated api ============================
-    @Deprecated
-    @SaCheckLogin
-    @RecordOpLog(opType = OperationType.UGC_SET_STATUS)
-    @RequestMapping(value = "/set_status", method = RequestMethod.POST)
-    public Result<Boolean> setUgcStatus(@RequestBody UgcSetStatusRequest request) {
-        UgcValidator.checkUgcSetStatusRequest(request);
-        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
-        LocalLockUtil.runWithLockFailSafe(
-            () -> ugcHelper.updateUgcStatus(ugcDO),
-            CommonOperationUtil::tooManyRequestError,
-            request.getUgcId(), request.getStatus()
-        );
-        return setStatusSuccess(request);
     }
 }

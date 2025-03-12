@@ -27,6 +27,7 @@ public enum PermissionType {
     AUTHORIZE_PERMISSION,
     REVOKE_PERMISSION,
 
+    // =========================== System Notification ===========================
     NOTIFICATION_MANAGER,
     ;
 

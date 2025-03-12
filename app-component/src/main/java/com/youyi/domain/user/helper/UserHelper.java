@@ -25,8 +25,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -43,8 +41,6 @@ import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey
 @Service
 @RequiredArgsConstructor
 public class UserHelper {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserHelper.class);
 
     private final LoginStrategyFactory loginStrategyFactory;
     private final CacheManager cacheManager;
@@ -235,7 +231,6 @@ public class UserHelper {
     }
 
     private void checkToken(UserDO userDO) {
-        logger.debug("user:{} check verify token", userDO.getUserId());
         String cacheVerifyTokenKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
         String systemVerifyToken = (String) cacheManager.get(cacheVerifyTokenKey);
 

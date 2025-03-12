@@ -65,6 +65,7 @@ public interface CommentaryRelationshipRepository extends Neo4jRepository<Commen
         MATCH (t:CommentaryNode)
         WHERE t.commentaryId IN $commentaryIds
         DETACH DELETE t;
-        """)
+        """
+    )
     void deleteCommentaryNode(@Param("commentaryIds") List<String> commentaryIds);
 }

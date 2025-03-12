@@ -35,6 +35,7 @@ import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COM
 import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COMMENT_REPLY;
 import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_FEATURED;
 import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_LIKE;
+import static com.youyi.common.type.notification.NotificationTemplateKey.USER_FOLLOW;
 import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getCacheValue;
 import static com.youyi.infra.conf.core.Conf.getMapConfig;
@@ -50,9 +51,9 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
     private static final Logger logger = LoggerFactory.getLogger(NotificationManager.class);
     private static ThreadPoolExecutor notificationExecutor;
 
-    private final NotificationRepository notificationRepository;
     private final UgcRepository ugcRepository;
     private final CommentaryRepository commentaryRepository;
+    private final NotificationRepository notificationRepository;
 
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
@@ -82,7 +83,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
             receiver.getUserId(),
             NotificationType.FOLLOW,
             receiver.getUserId(),
-            generateSummary(NotificationTemplateKey.USER_FOLLOW, sender.getNickname()),
+            generateSummary(USER_FOLLOW, sender.getNickname()),
             SymbolConstant.EMPTY
         );
     }

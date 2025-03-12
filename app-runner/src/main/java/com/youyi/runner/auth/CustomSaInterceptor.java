@@ -1,4 +1,4 @@
-package com.youyi.runner.auth.configuration;
+package com.youyi.runner.auth;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;

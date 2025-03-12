@@ -1,6 +1,5 @@
 package com.youyi.domain.media.core;
 
-import cn.hutool.core.io.FileUtil;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.media.MediaSource;
 import com.youyi.domain.media.model.MediaResourceDO;
@@ -12,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.annotation.Nonnull;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -137,7 +137,7 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
     }
 
     private String polishFileName(File originFile) {
-        String fileExt = FileUtil.getSuffix(originFile);
+        String fileExt = FilenameUtils.getExtension(originFile.getName());
         String uniqueFileName = genMediaResourceName();
         return String.format(MEDIA_FILE_NAME_FORMATTER, uniqueFileName, fileExt);
     }

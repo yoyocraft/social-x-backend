@@ -1,6 +1,5 @@
 package com.youyi.domain.media.assembler;
 
-import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.type.media.MediaSource;
 import com.youyi.common.type.media.ResourceType;
 import com.youyi.domain.media.model.MediaResourceDO;
@@ -41,11 +40,9 @@ public interface MediaResourceAssembler {
 
     default File toFile(MultipartFile file) {
         String filename = file.getOriginalFilename();
-        String baseFileName = FilenameUtils.getBaseName(filename);
+        String basename = FilenameUtils.getBaseName(filename);
         String extension = FilenameUtils.getExtension(filename);
-
-        String tmpFileName = baseFileName + SymbolConstant.UNDERLINE + System.currentTimeMillis();
-        File tmpFile = runCatching(() -> File.createTempFile(tmpFileName, DOT + extension));
+        File tmpFile = runCatching(() -> File.createTempFile(basename, DOT + extension));
         runCatching(() -> file.transferTo(tmpFile));
         return tmpFile;
     }

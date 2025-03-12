@@ -18,6 +18,8 @@ public interface UgcCategoryMapper {
 
     List<UgcCategoryPO> queryAll();
 
+    long count();
+
     List<UgcCategoryPO> queryByType(@Param("type") Integer type);
 
     UgcCategoryPO queryByCategoryId(@Param("categoryId") String categoryId);

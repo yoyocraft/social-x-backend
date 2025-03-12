@@ -3,10 +3,11 @@ package com.youyi.domain.task.model;
 import com.youyi.common.type.task.TaskStatus;
 import com.youyi.common.type.task.TaskType;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.common.util.IdSeqUtil;
 import com.youyi.domain.task.repository.po.SysTaskPO;
 import lombok.Getter;
 import lombok.Setter;
+
+import static com.youyi.common.util.IdSeqUtil.genSysTaskId;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -22,7 +23,7 @@ public class SysTaskDO {
     private SysTaskExtraData extraData;
 
     public void create() {
-        this.taskId = IdSeqUtil.genSysTaskId();
+        this.taskId = genSysTaskId();
         this.taskStatus = TaskStatus.INIT;
     }
 

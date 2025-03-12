@@ -30,7 +30,7 @@ public class SysTaskService {
         sysTaskRepository.insert(po);
     }
 
-    public void saveCommonSysTask(List<String> targetIds, TaskType taskType) {
+    public void saveBatchCommonSysTask(List<String> targetIds, TaskType taskType) {
         if (CollectionUtils.isEmpty(targetIds)) {
             return;
         }

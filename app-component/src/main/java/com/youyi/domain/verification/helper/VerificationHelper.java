@@ -28,7 +28,6 @@ public class VerificationHelper {
         // 保存验证码
         saveCaptcha(verificationDO);
         // 发送邮件
-        // TODO youyi 2025/1/9 支持重试，防抖，异步发送即可
         emailSender.sendCaptchaEmail(verificationDO.getEmail(), captcha);
     }
 

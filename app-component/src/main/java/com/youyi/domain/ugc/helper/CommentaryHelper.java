@@ -72,7 +72,7 @@ public class CommentaryHelper {
 
     public List<CommentaryDO> queryUgcCommentary(CommentaryDO commentaryDO) {
         // 查询出根评论
-        List<CommentaryDocument> rootCommentaryDocumentList = commentaryService.queryRootCommentaryByUgcIdWithTimeCursor(commentaryDO);
+        List<CommentaryDocument> rootCommentaryDocumentList = commentaryService.listRootCommentary(commentaryDO);
         // 查询出对应的子评论
         List<CommentaryDocument> childCommenatryDocumentList = commentaryService.queryByParentId(rootCommentaryDocumentList);
         List<CommentaryDocument> commentaryDocumentList = Stream.concat(rootCommentaryDocumentList.stream(), childCommenatryDocumentList.stream()).toList();
@@ -84,10 +84,6 @@ public class CommentaryHelper {
         // 填充交互数据
         commentaryService.fillInteractInfo(commentaryDOList, userService.getCurrentUserInfo());
         return commentaryDOList;
-    }
-
-    public Long queryUgcCommentaryCount(CommentaryDO commentaryDO) {
-        return commentaryRepository.queryCountByUgcId(commentaryDO.getUgcId());
     }
 
     public void deleteCommentary(CommentaryDO commentaryDO) {

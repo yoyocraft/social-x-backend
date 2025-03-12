@@ -7,6 +7,8 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/04
@@ -21,18 +23,10 @@ public class AESUtil {
     }
 
     public static String encrypt(String aesKey, String aesAlgo, String plainText, String iv) throws Exception {
-        if (StringUtils.isBlank(aesKey)) {
-            throw new IllegalArgumentException("AES key cannot be null or empty");
-        }
-        if (StringUtils.isBlank(aesAlgo)) {
-            throw new IllegalArgumentException("AES algorithm cannot be null or empty");
-        }
-        if (StringUtils.isBlank(plainText)) {
-            throw new IllegalArgumentException("Plain text cannot be null or empty");
-        }
-        if (StringUtils.isBlank(iv)) {
-            throw new IllegalArgumentException("IV cannot be null or empty");
-        }
+        checkState(StringUtils.isNotBlank(aesKey), "AES key cannot be null or empty");
+        checkState(StringUtils.isNotBlank(aesAlgo), "AES algorithm cannot be null or empty");
+        checkState(StringUtils.isNotBlank(plainText), "Plain text cannot be null or empty");
+        checkState(StringUtils.isNotBlank(iv), "IV cannot be null or empty");
 
         byte[] ivBytes = Base64.decodeBase64(iv);
 
@@ -55,18 +49,10 @@ public class AESUtil {
     }
 
     public static String decrypt(String aesKey, String aesAlgo, String cipherText, String iv) throws Exception {
-        if (StringUtils.isBlank(aesKey)) {
-            throw new IllegalArgumentException("AES key cannot be null or empty");
-        }
-        if (StringUtils.isBlank(aesAlgo)) {
-            throw new IllegalArgumentException("AES algorithm cannot be null or empty");
-        }
-        if (StringUtils.isBlank(cipherText)) {
-            throw new IllegalArgumentException("Cipher text cannot be null or empty");
-        }
-        if (StringUtils.isBlank(iv)) {
-            throw new IllegalArgumentException("IV cannot be null or empty");
-        }
+        checkState(StringUtils.isNotBlank(aesKey), "AES key cannot be null or empty");
+        checkState(StringUtils.isNotBlank(aesAlgo), "AES algorithm cannot be null or empty");
+        checkState(StringUtils.isNotBlank(cipherText), "Cipher text cannot be null or empty");
+        checkState(StringUtils.isNotBlank(iv), "IV cannot be null or empty");
 
         byte[] ivBytes = Base64.decodeBase64(iv);
         byte[] cipherBytes = Base64.decodeBase64(cipherText);

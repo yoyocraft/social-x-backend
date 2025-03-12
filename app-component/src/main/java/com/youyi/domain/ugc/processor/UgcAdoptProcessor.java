@@ -3,6 +3,7 @@ package com.youyi.domain.ugc.processor;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.task.core.TaskProcessor;
 import com.youyi.domain.task.model.SysTaskExtraData;
+import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.util.Objects;
@@ -38,8 +39,11 @@ public class UgcAdoptProcessor implements TaskProcessor {
             logger.warn("ugcDocument is null, taskId: {}, extraData: {}", taskId, GsonUtil.toJson(extraData));
             return;
         }
-        Optional.ofNullable(ugcDocument.getExtraData())
-            .ifPresent(ugcExtraData -> ugcExtraData.setHasSolved(true));
+        UgcExtraData ugcExtraData = Optional.ofNullable(ugcDocument.getExtraData()).orElseGet(UgcExtraData::new);
+        if (ugcExtraData.getHasSolved()) {
+            return;
+        }
+        ugcExtraData.setHasSolved(Boolean.TRUE);
         ugcRepository.updateUgc(ugcDocument);
     }
 }

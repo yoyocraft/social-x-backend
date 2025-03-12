@@ -44,22 +44,9 @@
         <include refid="result_cols"/>
         FROM sys_task
         WHERE task_type = #{taskType}
-        AND task_status IN (
-            <foreach collection="taskStatus" item="item" separator=",">
-                #{item}
-            </foreach>
-        )
-        AND deleted_at = 0
-        AND id <![CDATA[ > ]]> #{cursor}
-        ORDER BY gmt_modified DESC, id DESC
-        LIMIT #{size}
-    </select>
-    <select id="queryToCompensationTasksWithCursor" resultType="com.youyi.domain.task.repository.po.SysTaskPO">
-        SELECT
-        <include refid="result_cols"/>
-        FROM sys_task
-        WHERE task_type = #{taskType}
-        AND gmt_modified <![CDATA[ < ]]> NOW() - INTERVAL 1 DAY
+        <if test="withTimeInterval">
+            AND gmt_modified <![CDATA[ < ]]> NOW() - INTERVAL 1 DAY
+        </if>
         AND task_status IN (
             <foreach collection="taskStatus" item="item" separator=",">
                 #{item}

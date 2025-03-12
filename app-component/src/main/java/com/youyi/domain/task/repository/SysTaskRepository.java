@@ -52,10 +52,10 @@ public class SysTaskRepository {
         }
     }
 
-    public int updateStatus(List<String> taskIds, String taskStatus) {
+    public void updateStatus(List<String> taskIds, String taskStatus) {
         try {
             checkState(StringUtils.isNotBlank(taskStatus));
-            return sysTaskMapper.updateStatus(taskIds, taskStatus);
+            sysTaskMapper.updateStatus(taskIds, taskStatus);
         } catch (Exception e) {
             infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
@@ -65,7 +65,7 @@ public class SysTaskRepository {
     public List<SysTaskPO> queryByTypeAndStatusWithCursor(String taskType, List<String> taskStatus, Long cursor, Integer size) {
         try {
             checkState(StringUtils.isNotBlank(taskType) && CollectionUtils.isNotEmpty(taskStatus) && size > 0);
-            return sysTaskMapper.queryByTypeAndStatusWithCursor(taskType, taskStatus, cursor, size);
+            return sysTaskMapper.queryByTypeAndStatusWithCursor(taskType, taskStatus, cursor, size, Boolean.FALSE);
         } catch (Exception e) {
             infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
@@ -75,7 +75,7 @@ public class SysTaskRepository {
     public List<SysTaskPO> queryToCompensationTasksWithCursor(String taskType, List<String> taskStatus, Long cursor, Integer size) {
         try {
             checkState(StringUtils.isNotBlank(taskType) && CollectionUtils.isNotEmpty(taskStatus) && size > 0);
-            return sysTaskMapper.queryToCompensationTasksWithCursor(taskType, taskStatus, cursor, size);
+            return sysTaskMapper.queryByTypeAndStatusWithCursor(taskType, taskStatus, cursor, size, Boolean.TRUE);
         } catch (Exception e) {
             infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);

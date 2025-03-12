@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.RepositoryConstant.INIT_QUERY_CURSOR;
@@ -35,18 +36,9 @@ public class CommentaryService {
     private final UgcStatisticCacheManager ugcStatisticCacheManager;
     private final NotificationManager notificationManager;
 
-    public List<CommentaryDocument> queryByUgcIdWithTimeCursor(CommentaryDO commentaryDO) {
+    public List<CommentaryDocument> listRootCommentary(CommentaryDO commentaryDO) {
         long cursor = getTimeCursor(commentaryDO);
-        return commentaryRepository.queryByUgcIdWithTimeCursor(
-            commentaryDO.getUgcId(),
-            cursor,
-            commentaryDO.getSize()
-        );
-    }
-
-    public List<CommentaryDocument> queryRootCommentaryByUgcIdWithTimeCursor(CommentaryDO commentaryDO) {
-        long cursor = getTimeCursor(commentaryDO);
-        return commentaryRepository.queryRootCommentaryByUgcIdWithTimeCursor(
+        return commentaryRepository.queryRootCommentaryWithTimeCursor(
             commentaryDO.getUgcId(),
             cursor,
             commentaryDO.getSize()
@@ -82,8 +74,13 @@ public class CommentaryService {
     }
 
     public void fillCommentaryStatistic(List<CommentaryDO> commentaryDOList) {
+        if (CollectionUtils.isEmpty(commentaryDOList)) {
+            return;
+        }
+        List<String> commentaryIds = commentaryDOList.stream().map(CommentaryDO::getCommentaryId).toList();
+        Map<String, Long> commentaryStatistic = ugcStatisticCacheManager.getBatchCommentaryStatistic(commentaryIds);
         commentaryDOList.forEach(commentaryDO -> {
-            Long likeCount = ugcStatisticCacheManager.getCommentaryLikeCount(commentaryDO.getCommentaryId());
+            Long likeCount = commentaryStatistic.getOrDefault(commentaryDO.getCommentaryId(), 0L);
             commentaryDO.calLikeCount(likeCount);
         });
     }
@@ -100,10 +97,10 @@ public class CommentaryService {
         return cursor;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public void deleteCommentary(CommentaryDO commentaryDO) {
         // 查询子评论
         List<CommentaryDocument> childCommentaryDocuments = commentaryRepository.queryByParentId(commentaryDO.getCommentaryId());
-        // TODO youyi 2025/1/28 保证事务和数据一致性
         // 删除子评论
         List<String> childCommentaryIds = childCommentaryDocuments.stream().map(CommentaryDocument::getCommentaryId).toList();
         if (CollectionUtils.isNotEmpty(childCommentaryIds)) {

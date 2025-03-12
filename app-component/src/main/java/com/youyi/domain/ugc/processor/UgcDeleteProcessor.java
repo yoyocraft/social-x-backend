@@ -74,7 +74,7 @@ public class UgcDeleteProcessor implements TaskProcessor {
         List<String> allToDeleteCommentaryIds = Lists.newArrayList();
         while (true) {
             // 删除根评论即可，不需要递归查询子评论，在 CommentaryDeleteProcessor 中会处理对应的子评论
-            List<CommentaryDocument> commentaryDocuments = commentaryService.queryRootCommentaryByUgcIdWithTimeCursor(commentaryDO);
+            List<CommentaryDocument> commentaryDocuments = commentaryService.listRootCommentary(commentaryDO);
             if (CollectionUtils.isEmpty(commentaryDocuments)) {
                 break;
             }
@@ -84,7 +84,7 @@ public class UgcDeleteProcessor implements TaskProcessor {
             commentaryDO.setCursor(nextCursor);
         }
         logger.info("delete related commentary, ugcId: {}, allToDeleteCommentaryIds: {}", ugcId, allToDeleteCommentaryIds);
-        sysTaskService.saveCommonSysTask(allToDeleteCommentaryIds, TaskType.COMMENTARY_DELETE_EVENT);
+        sysTaskService.saveBatchCommonSysTask(allToDeleteCommentaryIds, TaskType.COMMENTARY_DELETE_EVENT);
     }
 
     private void deleteCacheData(String ugcId) {
