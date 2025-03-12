@@ -37,12 +37,15 @@ public class SysTaskTrigger {
 
     private static final long COMPENSATION_TASK_EXECUTE_INTERVAL = 60 * 60 * 1000L;
 
-    private static final EnumSet<TaskType> needHandleTasks = EnumSet.of(
+    private static final EnumSet<TaskType> needHandleTaskType = EnumSet.of(
         TaskType.UGC_DELETE_EVENT,
         TaskType.COMMENTARY_DELETE_EVENT,
         TaskType.UGC_ADOPT_EVENT
     );
 
+    /**
+     * 需要补偿的任务状态
+     */
     private static final List<String> needToCompensateTaskStatus = List.of(
         TaskStatus.PROCESSING.name()
     );
@@ -57,14 +60,14 @@ public class SysTaskTrigger {
 
     @Scheduled(initialDelay = INIT_TASK_DELAY_INTERVAL, fixedRate = TASK_EXECUTE_INTERVAL)
     public void trigger() {
-        for (TaskType taskType : needHandleTasks) {
+        for (TaskType taskType : needHandleTaskType) {
             processNormal(taskType);
         }
     }
 
     @Scheduled(initialDelay = COMPENSATION_TASK_DELAY_INTERVAL, fixedRate = COMPENSATION_TASK_EXECUTE_INTERVAL)
     public void compensate() {
-        for (TaskType taskType : needHandleTasks) {
+        for (TaskType taskType : needHandleTaskType) {
             processCompensation(taskType);
         }
     }
@@ -108,6 +111,7 @@ public class SysTaskTrigger {
                 failTaskIds.add(task.getTaskId());
             }
         }
+        // 无需考虑事务问题，任务处理支持幂等
         if (CollectionUtils.isNotEmpty(successTaskIds)) {
             sysTaskRepository.updateStatus(successTaskIds, TaskStatus.SUCCESS.name());
         }

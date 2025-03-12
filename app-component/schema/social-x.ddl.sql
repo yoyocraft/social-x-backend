@@ -142,6 +142,7 @@ CREATE TABLE `ugc_tag` (
    `id` BIGINT NOT NULL AUTO_INCREMENT,
    `gmt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
    `gmt_modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'modified time',
+   `deleted_at` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'deleted at',
    `tag_id` VARCHAR(64) NOT NULL COMMENT 'tag id',
    `tag_name` VARCHAR(64) NOT NULL COMMENT 'tag name',
    `creator_id` VARCHAR(64) NOT NULL COMMENT 'creator id',

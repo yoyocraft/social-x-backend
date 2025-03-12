@@ -43,20 +43,6 @@ public class CommentaryDAO {
         mongoTemplate.insertAll(commentaryDocuments);
     }
 
-    public List<CommentaryDocument> queryByUgcIdWithTimeCursor(String ugcId, long lastCursor, int size) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where(COMMENTARY_UGC_ID).is(ugcId));
-        buildCommentaryStatusQueryCondition(query, CommentaryStatus.ALL.name());
-        buildTimeCursorQueryCondition(query, lastCursor, size);
-        return mongoTemplate.find(query, CommentaryDocument.class);
-    }
-
-    public long queryCountByUgcId(String ugcId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where(COMMENTARY_UGC_ID).is(ugcId));
-        return mongoTemplate.count(query, CommentaryDocument.class);
-    }
-
     public List<CommentaryDocument> queryRootCommentaryWithTimeCursor(String ugcId, long lastCursor, int size) {
         Query query = new Query();
         query.addCriteria(Criteria.where(COMMENTARY_UGC_ID).is(ugcId));

@@ -28,7 +28,6 @@ import static com.youyi.runner.ugc.util.CommentaryResponseUtil.deleteSuccess;
 import static com.youyi.runner.ugc.util.CommentaryResponseUtil.featuredSuccess;
 import static com.youyi.runner.ugc.util.CommentaryResponseUtil.likeSuccess;
 import static com.youyi.runner.ugc.util.CommentaryResponseUtil.publishSuccess;
-import static com.youyi.runner.ugc.util.CommentaryResponseUtil.queryCommentaryCountSuccess;
 import static com.youyi.runner.ugc.util.CommentaryResponseUtil.queryUgcCommentarySuccess;
 
 /**
@@ -119,17 +118,5 @@ public class CommentaryController {
             commentaryDO.getCommentaryId(), request.getReqId()
         );
         return featuredSuccess(request);
-    }
-
-    // ============================ deprecated api ============================
-
-    @Deprecated
-    @SaCheckLogin
-    @RequestMapping(value = "/count", method = RequestMethod.GET)
-    public Result<Long> queryCommentaryCount(CommentaryQueryRequest request) {
-        CommentaryValidator.checkCommentaryQueryRequestForCount(request);
-        CommentaryDO commentaryDO = COMMENTARY_ASSEMBLER.toDO(request);
-        Long allCount = commentaryHelper.queryUgcCommentaryCount(commentaryDO);
-        return queryCommentaryCountSuccess(allCount, request);
     }
 }

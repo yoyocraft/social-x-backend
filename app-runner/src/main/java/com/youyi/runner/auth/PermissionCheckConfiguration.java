@@ -1,4 +1,4 @@
-package com.youyi.runner.auth.configuration;
+package com.youyi.runner.auth;
 
 import cn.dev33.satoken.stp.StpInterface;
 import com.youyi.common.type.user.PermissionType;

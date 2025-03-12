@@ -29,9 +29,9 @@ import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
  */
 @Component
 @RequiredArgsConstructor
-public class UgcMetadataInitTrigger implements ApplicationListener<ApplicationReadyEvent> {
+public class UgcMetadataInitializer implements ApplicationListener<ApplicationReadyEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(UgcMetadataInitTrigger.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcMetadataInitializer.class);
 
     private final UgcCategoryRepository ugcCategoryRepository;
     private final UgcTagRepository ugcTagRepository;
@@ -43,9 +43,9 @@ public class UgcMetadataInitTrigger implements ApplicationListener<ApplicationRe
     }
 
     private void initUgcCategories() {
-        List<UgcCategoryPO> categoriesFromDB = ugcCategoryRepository.queryAll();
-        if (CollectionUtils.isNotEmpty(categoriesFromDB)) {
-            logger.info("[UgcInitJob] inner ugc categories already exists, skip init");
+        long count = ugcCategoryRepository.count();
+        if (count > 0) {
+            logger.info("[UgcMetadataInitializer] inner ugc categories already exists, skip init");
             return;
         }
         List<UgcCategoryWrapper> categoryWrappers = Conf.getListConfig(SYSTEM_PRESET_UGC_CATEGORY, UgcCategoryWrapper.class);
@@ -69,9 +69,9 @@ public class UgcMetadataInitTrigger implements ApplicationListener<ApplicationRe
     }
 
     private void initUgcTags() {
-        List<UgcTagPO> tagsFromDB = ugcTagRepository.queryAll();
-        if (CollectionUtils.isNotEmpty(tagsFromDB)) {
-            logger.info("[UgcInitJob] inner ugc tags already exists, skip init");
+        long count = ugcTagRepository.count();
+        if (count > 0) {
+            logger.info("[UgcMetadataInitializer] inner ugc tags already exists, skip init");
             return;
         }
 

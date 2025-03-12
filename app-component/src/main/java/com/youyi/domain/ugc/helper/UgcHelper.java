@@ -4,7 +4,6 @@ import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.task.TaskType;
 import com.youyi.common.type.ugc.UgcInteractionType;
-import com.youyi.common.type.ugc.UgcStatus;
 import com.youyi.common.type.ugc.UgcType;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
@@ -107,15 +106,6 @@ public class UgcHelper {
         ugcService.fillUgcInteractInfo(Collections.singletonList(ugcDO), userService.getCurrentUserInfo());
         // 视情况增加 viewCount
         ugcService.incrUgcViewCount(ugcDO, userService.getCurrentUserInfo());
-    }
-
-    public void updateUgcStatus(UgcDO ugcDO) {
-        fillCurrUserAsAuthor(ugcDO);
-        UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
-        checkNotNull(ugcDocument);
-        checkSelfAuthor(ugcDO, ugcDocument);
-        checkStatusValidation(ugcDO, ugcDocument);
-        ugcRepository.updateUgcStatus(ugcDO.getUgcId(), ugcDO.getStatus().name());
     }
 
     public List<UgcDO> listTimelineUgcFeed(UgcDO ugcDO) {
@@ -336,21 +326,6 @@ public class UgcHelper {
         }
         throw AppBizException.of(OPERATION_DENIED, "无权修改！");
     }
-
-    private void checkStatusValidation(UgcDO ugcDO, UgcDocument ugcDocument) {
-        UgcStatus updateStatus = ugcDO.getStatus();
-        String statusFromDB = ugcDocument.getStatus();
-
-        // 设置 PRIVATE 必须是 PUBLISHED
-        if (updateStatus == UgcStatus.PRIVATE && !UgcStatus.PUBLISHED.name().equals(statusFromDB)) {
-            throw AppBizException.of(OPERATION_DENIED, "非审核通过的稿件无法设置私密！");
-        }
-        // 设置 PUBLISHED 必须是 PRIVATE
-        if (updateStatus == UgcStatus.PUBLISHED && !UgcStatus.PRIVATE.name().equals(statusFromDB)) {
-            throw AppBizException.of(OPERATION_DENIED, "非私密稿件无法设置为公开！");
-        }
-    }
-
     private void checkEditingOperation(UgcDO ugcDO, UgcDocument ugcDocument) {
         if (Boolean.TRUE.equals(ugcDO.getEditing())) {
             fillCurrUserAsAuthor(ugcDO);

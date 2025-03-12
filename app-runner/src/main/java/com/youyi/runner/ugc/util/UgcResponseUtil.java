@@ -9,7 +9,6 @@ import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
-import com.youyi.domain.ugc.request.UgcSetStatusRequest;
 import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
 import com.youyi.infra.sse.SseEmitter;
 import com.youyi.runner.ugc.model.UgcResponse;
@@ -56,12 +55,6 @@ public class UgcResponseUtil {
     public static Result<UgcResponse> queryUgcDetailSuccess(UgcDO ugcDO, UgcQueryRequest request) {
         Result<UgcResponse> response = Result.success(UGC_CONVERTER.toResponse(ugcDO));
         logger.info("query ugc by ugcId, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
-        return response;
-    }
-
-    public static Result<Boolean> setStatusSuccess(UgcSetStatusRequest request) {
-        Result<Boolean> response = Result.success(Boolean.TRUE);
-        logger.info("set ugc status, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
         return response;
     }
 

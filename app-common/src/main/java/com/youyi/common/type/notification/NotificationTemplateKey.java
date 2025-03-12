@@ -6,13 +6,7 @@ package com.youyi.common.type.notification;
  */
 public enum NotificationTemplateKey {
 
-    UNKNOWN,
-    /**
-     * for sum count
-     */
-    ALL,
     USER_FOLLOW,
-
     UGC_LIKE,
     UGC_COLLECT,
     UGC_ADOPT,

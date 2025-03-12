@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -63,6 +64,8 @@ import static com.youyi.infra.conf.core.Conf.getStringConfig;
 @RequiredArgsConstructor
 public class UgcService {
 
+    private static final ReentrantLock calRecommendTagLock = new ReentrantLock();
+
     private final UgcRepository ugcRepository;
     private final UgcRelationshipRepository ugcRelationshipRepository;
 
@@ -84,7 +87,6 @@ public class UgcService {
         // find by ugcId
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
         checkNotNull(ugcDocument);
-        checkStatusValidationBeforeUpdate(ugcDocument);
         checkAuthorization(ugcDO, ugcDocument);
         ugcDO.fillBeforeUpdateWhenPublish(ugcDocument);
         ugcRepository.updateUgc(ugcDO.buildToUpdateUgcDocumentWhenPublish());
@@ -285,7 +287,6 @@ public class UgcService {
     public List<HotUgcCacheInfo> queryHotUgcFromCache(UgcDO ugcDO) {
         String cacheKey = ofHotUgcListKey(ugcDO.getUgcType().name());
         if (!cacheManager.exists(cacheKey)) {
-            // TODO youyi 2025/2/25 待处理
             return Collections.emptyList();
         }
 
@@ -344,7 +345,7 @@ public class UgcService {
             })
             .doOnNext(c -> {
                 lineBuilder.append(c);
-                if (c == '\n') {
+                if (c == SymbolConstant.NEW_LINE_CHAR) {
                     String line = UgcContentUtil.polishSummaryLine(lineBuilder);
 
                     if (!line.isEmpty()) {
@@ -365,13 +366,6 @@ public class UgcService {
                 sseEmitter.complete();
             })
             .subscribe();
-    }
-
-    private void checkStatusValidationBeforeUpdate(UgcDocument ugcDocument) {
-        // 私密的稿件禁止修改
-        if (UgcStatus.PRIVATE.name().equals(ugcDocument.getStatus())) {
-            throw AppBizException.of(OPERATION_DENIED, "私密稿件禁止修改！");
-        }
     }
 
     private void checkAuthorization(UgcDO ugcDO, UgcDocument ugcDocument) {
@@ -412,7 +406,7 @@ public class UgcService {
         String recommendTagJson = cacheManager.getString(recommendTagKey);
         if (StringUtils.isNotBlank(recommendTagJson)) {
             recommendedTags = GsonUtil.fromJson(recommendTagJson, List.class, String.class);
-            if (!CollectionUtils.isEmpty(recommendedTags)) {
+            if (CollectionUtils.isNotEmpty(recommendedTags)) {
                 return recommendedTags;
             }
         }
@@ -422,17 +416,23 @@ public class UgcService {
             // 返回空的 Tags, 默认不加入任何的 tag 查询条件
             return Collections.emptyList();
         }
-        // TODO youyi 2025/3/3 计算过程加锁
-        // 2. 计算 tag
-        List<UgcTagPO> ugcTagPOList = ugcTagRepository.queryByType(UgcTagType.FOR_ARTICLE.getType());
-        List<String> allTags = ugcTagPOList.stream().map(UgcTagPO::getTagName).toList();
-        Map<String, Set<String>> tagRelations = GsonUtil.fromJson(getStringConfig(UGC_TAG_RELATIONSHIP), new TypeToken<>() {
-        });
-        recommendedTags = RecommendUtil.getTop10RecommendedTags(allTags, personalizedTags, tagRelations);
-        // 3. 保存缓存
-        recommendTagJson = GsonUtil.toJson(recommendedTags);
-        cacheManager.set(recommendTagKey, recommendTagJson, CacheKey.UGC_USER_RECOMMEND_TAG.getTtl());
-        return recommendedTags;
+        if (!calRecommendTagLock.tryLock()) {
+            return Collections.emptyList();
+        }
+        try {
+            // 2. 计算 tag
+            List<UgcTagPO> ugcTagPOList = ugcTagRepository.queryByType(UgcTagType.FOR_ARTICLE.getType());
+            List<String> allTags = ugcTagPOList.stream().map(UgcTagPO::getTagName).toList();
+            Map<String, Set<String>> tagRelations = GsonUtil.fromJson(getStringConfig(UGC_TAG_RELATIONSHIP), new TypeToken<>() {
+            });
+            recommendedTags = RecommendUtil.getTop10RecommendedTags(allTags, personalizedTags, tagRelations);
+            // 3. 保存缓存
+            recommendTagJson = GsonUtil.toJson(recommendedTags);
+            cacheManager.set(recommendTagKey, recommendTagJson, CacheKey.UGC_USER_RECOMMEND_TAG.getTtl());
+            return recommendedTags;
+        } finally {
+            calRecommendTagLock.unlock();
+        }
     }
 
     public void fillUgcInteractInfo(List<UgcDO> ugcDOList, UserDO currentUser) {

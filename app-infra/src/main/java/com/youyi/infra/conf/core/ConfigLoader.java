@@ -26,7 +26,7 @@ import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
 public class ConfigLoader implements SmartInitializingSingleton {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
-    private static final int CONFIG_CACHE_REFRESH_INTERVAL = 10000;
+    private static final long CONFIG_CACHE_REFRESH_INTERVAL = 10L * 1000;
 
     private final ConfigRepository configRepository;
 

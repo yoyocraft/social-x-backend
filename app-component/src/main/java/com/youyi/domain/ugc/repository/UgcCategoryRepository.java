@@ -48,6 +48,15 @@ public class UgcCategoryRepository {
         }
     }
 
+    public long count() {
+        try {
+            return ugcCategoryMapper.count();
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
+
     public List<UgcCategoryPO> queryByType(Integer type) {
         try {
             checkState(type != null);

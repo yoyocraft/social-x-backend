@@ -51,5 +51,10 @@
         WHERE deleted_at = 0
         AND type = #{type}
     </select>
+    <select id="count" resultType="java.lang.Long">
+        SELECT count(*)
+        FROM ugc_category
+        WHERE deleted_at = 0
+    </select>
 
 </mapper>

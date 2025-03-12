@@ -144,12 +144,13 @@ public class UgcAuditJob {
         for (String url : attachmentUrls) {
             try {
                 MediaResourceDO resourceDO = localImageManager.getMediaResourceByUrl(url);
-                if (resourceDO != null) {
-                    imageInfos.add(new ImageDetectRequest.ImageInfo(
-                        resourceDO.getResourceUrl(),
-                        MediaUtil.encodeImageToBase64FromPath(resourceDO.getMedia())
-                    ));
+                if (resourceDO == null) {
+                    continue;
                 }
+                imageInfos.add(new ImageDetectRequest.ImageInfo(
+                    resourceDO.getResourceUrl(),
+                    MediaUtil.encodeImageToBase64FromPath(resourceDO.getMedia())
+                ));
             } catch (Exception e) {
                 logger.warn("Failed to process image URL: {}, error: {}", url, e.getMessage());
             }

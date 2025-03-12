@@ -62,27 +62,7 @@ public class CommentaryRepository {
         }
     }
 
-    public List<CommentaryDocument> queryByUgcIdWithTimeCursor(String ugcId, long lastCursor, int size) {
-        try {
-            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return commentaryDAO.queryByUgcIdWithTimeCursor(ugcId, lastCursor, size);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
-    }
-
-    public long queryCountByUgcId(String ugcId) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId));
-            return commentaryDAO.queryCountByUgcId(ugcId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
-    }
-
-    public List<CommentaryDocument> queryRootCommentaryByUgcIdWithTimeCursor(String ugcId, long lastCursor, int size) {
+    public List<CommentaryDocument> queryRootCommentaryWithTimeCursor(String ugcId, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
             return commentaryDAO.queryRootCommentaryWithTimeCursor(ugcId, lastCursor, size);

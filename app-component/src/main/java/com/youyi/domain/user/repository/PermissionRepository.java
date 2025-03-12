@@ -34,17 +34,6 @@ public class PermissionRepository {
     private final PermissionMapper permissionMapper;
     private final RolePermissionMapper rolePermissionMapper;
 
-    public void insertPermission(PermissionPO permissionPO) {
-        try {
-            checkNotNull(permissionPO);
-            int ret = permissionMapper.insert(permissionPO);
-            checkState(ret == SINGLE_DML_AFFECTED_ROWS);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
-    }
-
     public void insertBatchPermissions(List<PermissionPO> permissionPOs) {
         try {
             checkState(CollectionUtils.isNotEmpty(permissionPOs));

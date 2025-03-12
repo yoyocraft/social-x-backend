@@ -104,16 +104,6 @@ public class UgcRepository {
         }
     }
 
-    public void updateUgcStatus(String ugcId, String ugcStatus) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId) && StringUtils.isNotBlank(ugcStatus));
-            ugcDAO.updateStatusByUgcId(ugcId, ugcStatus);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
-    }
-
     public List<UgcDocument> queryByStatusWithTimeCursor(String ugcType, String ugcStatus, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);

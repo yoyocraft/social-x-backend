@@ -29,11 +29,8 @@ public class ImageDetectAdapter {
 
         try {
             String response = future.join();
-
             ImageDetectResponse detectResponse = GsonUtil.fromJson(response, ImageDetectResponse.class);
-
             logger.info("check image, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(detectResponse));
-
             return detectResponse;
         } catch (Exception ex) {
             logger.error("check image error, request:{}, error:{}", GsonUtil.toJson(request), ex.getMessage());

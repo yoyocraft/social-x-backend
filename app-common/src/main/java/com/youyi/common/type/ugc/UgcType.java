@@ -13,26 +13,14 @@ import org.apache.commons.lang3.EnumUtils;
 @Getter
 public enum UgcType {
 
-    /**
-     * 所有
-     */
     ALL(SymbolConstant.EMPTY),
 
     DRAFT("草稿"),
 
-    /**
-     * 文章
-     */
     ARTICLE("文章"),
 
-    /**
-     * 动态帖子
-     */
     POST("帖子"),
 
-    /**
-     * 问答
-     */
     QUESTION("问答"),
     ;
 

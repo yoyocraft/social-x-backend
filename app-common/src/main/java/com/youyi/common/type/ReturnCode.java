@@ -12,6 +12,7 @@ import lombok.Getter;
 public enum ReturnCode implements ErrorCode {
 
     SUCCESS("SUCCESS", ""),
+
     SYSTEM_ERROR("SYSTEM_ERROR", "系统繁忙，请稍后再试"),
     INVALID_PARAM("INVALID_PARAM", "参数非法"),
     CAPTCHA_EXPIRED("CAPTCHA_EXPIRED", "验证码过期，请重新获取"),

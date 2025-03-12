@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +28,8 @@ public class RecommendUtil {
      * @param tagRelations     标签联系，用于计算余弦相似度
      * @return Top10 推荐的标签
      */
-    public static List<String> getTop10RecommendedTags(Collection<String> allTags, Collection<String> userInterestTags, Map<String, Set<String>> tagRelations) {
-        Map<String, Double> tagScores = new HashMap<>();
-
+    public static List<String> getTop10RecommendedTags(Collection<String> allTags, Collection<String> userInterestTags,
+        Map<String, Set<String>> tagRelations) {
         // 扩展用户兴趣标签
         Set<String> extendedUserTags = new HashSet<>(userInterestTags);
         for (String tag : userInterestTags) {
@@ -66,7 +64,8 @@ public class RecommendUtil {
             top10Tags.add(topTags.poll().getKey());
         }
 
-        Collections.reverse(top10Tags);
+        // 随机打乱顺序
+        Collections.shuffle(top10Tags);
 
         return top10Tags;
     }

@@ -9,7 +9,6 @@ import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
-import com.youyi.domain.ugc.request.UgcSetStatusRequest;
 import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
 import java.util.List;
 import java.util.Optional;
@@ -88,13 +87,6 @@ public class UgcValidator {
     public static void checkUgcQueryRequestForQueryByUgcId(UgcQueryRequest request) {
         ParamCheckerChain.newCheckerChain()
             .put(snowflakeIdChecker("UGC ID不合法"), request.getUgcId())
-            .validateWithThrow();
-    }
-
-    public static void checkUgcSetStatusRequest(UgcSetStatusRequest request) {
-        ParamCheckerChain.newCheckerChain()
-            .put(snowflakeIdChecker("UGC ID不合法"), request.getUgcId())
-            .put(enumExistChecker(UgcStatus.class, "UGC状态不合法"), request.getStatus())
             .validateWithThrow();
     }
 

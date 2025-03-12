@@ -19,6 +19,7 @@ public class PermissionConstant {
     public static final String AUTHORIZE_PERMISSION = "AUTHORIZE_PERMISSION";
     public static final String REVOKE_PERMISSION = "REVOKE_PERMISSION";
 
+    // ========================== Notification ==========================
     public static final String NOTIFICATION_MANAGER = "NOTIFICATION_MANAGER";
 
 }

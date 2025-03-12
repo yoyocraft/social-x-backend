@@ -12,6 +12,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class HotAuthorCacheInfo {
+
     private String authorId;
+
     private double hotScore;
 }

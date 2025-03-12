@@ -29,10 +29,6 @@ public enum UgcStatus {
      */
     PUBLISHED,
     /**
-     * 仅我可见
-     */
-    PRIVATE,
-    /**
      * 已删除，数据库字段
      */
     DELETED,

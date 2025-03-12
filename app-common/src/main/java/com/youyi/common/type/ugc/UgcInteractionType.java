@@ -8,8 +8,11 @@ import org.apache.commons.lang3.EnumUtils;
  */
 public enum UgcInteractionType {
     UNKNOWN,
+
     LIKE,
+
     COLLECT,
+
     /**
      * 采纳
      */

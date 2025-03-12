@@ -22,13 +22,7 @@ public interface SysTaskMapper {
         @Param("taskType") String taskType,
         @Param("taskStatus") List<String> taskStatus,
         @Param("cursor") Long cursor,
-        @Param("size") Integer size
-    );
-
-    List<SysTaskPO> queryToCompensationTasksWithCursor(
-        @Param("taskType") String taskType,
-        @Param("taskStatus") List<String> taskStatus,
-        @Param("cursor") Long cursor,
-        @Param("size") Integer size
+        @Param("size") Integer size,
+        @Param("withTimeInterval") Boolean withTimeInterval
     );
 }
