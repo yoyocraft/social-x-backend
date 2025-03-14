@@ -1,8 +1,8 @@
 package com.youyi.domain.ugc.assembler;
 
-import com.youyi.common.type.ugc.UgcInteractionType;
-import com.youyi.common.type.ugc.UgcStatus;
-import com.youyi.common.type.ugc.UgcType;
+import com.youyi.domain.ugc.type.UgcInteractionType;
+import com.youyi.domain.ugc.type.UgcStatus;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcInteractionRequest;

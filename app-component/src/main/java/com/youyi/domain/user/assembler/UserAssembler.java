@@ -1,8 +1,8 @@
 package com.youyi.domain.user.assembler;
 
 import com.youyi.common.type.BizType;
-import com.youyi.common.type.user.IdentityType;
-import com.youyi.common.type.user.WorkDirectionType;
+import com.youyi.domain.user.type.IdentityType;
+import com.youyi.domain.user.type.WorkDirectionType;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;

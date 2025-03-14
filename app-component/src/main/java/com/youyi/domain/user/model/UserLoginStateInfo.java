@@ -1,8 +1,8 @@
 package com.youyi.domain.user.model;
 
-import com.youyi.common.type.user.UserRoleType;
-import com.youyi.common.type.user.UserStatusType;
-import com.youyi.common.type.user.WorkDirectionType;
+import com.youyi.domain.user.type.UserRoleType;
+import com.youyi.domain.user.type.UserStatusType;
+import com.youyi.domain.user.type.WorkDirectionType;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;

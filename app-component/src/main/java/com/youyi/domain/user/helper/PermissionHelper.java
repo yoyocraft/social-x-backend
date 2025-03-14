@@ -1,6 +1,6 @@
 package com.youyi.domain.user.helper;
 
-import com.youyi.common.type.user.UserRoleType;
+import com.youyi.domain.user.type.UserRoleType;
 import com.youyi.domain.user.model.PermissionDO;
 import com.youyi.domain.user.repository.PermissionRepository;
 import com.youyi.domain.user.repository.po.PermissionPO;

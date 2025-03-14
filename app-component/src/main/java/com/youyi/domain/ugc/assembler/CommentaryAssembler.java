@@ -1,7 +1,7 @@
 package com.youyi.domain.ugc.assembler;
 
-import com.youyi.common.type.ugc.CommentaryStatus;
-import com.youyi.common.type.ugc.UgcInteractionType;
+import com.youyi.domain.ugc.type.CommentaryStatus;
+import com.youyi.domain.ugc.type.UgcInteractionType;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.request.CommentaryDeleteRequest;
 import com.youyi.domain.ugc.request.CommentaryPublishRequest;

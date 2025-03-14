@@ -1,7 +1,7 @@
 package com.youyi.domain.user.assembler;
 
-import com.youyi.common.type.user.PermissionType;
-import com.youyi.common.type.user.UserRoleType;
+import com.youyi.domain.user.type.PermissionType;
+import com.youyi.domain.user.type.UserRoleType;
 import com.youyi.domain.user.model.PermissionDO;
 import com.youyi.domain.user.request.PermissionAddRequest;
 import com.youyi.domain.user.request.RolePermissionAuthorizeRequest;

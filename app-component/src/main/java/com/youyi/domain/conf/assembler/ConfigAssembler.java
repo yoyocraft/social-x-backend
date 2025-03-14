@@ -1,11 +1,11 @@
 package com.youyi.domain.conf.assembler;
 
-import com.youyi.common.type.conf.ConfigType;
 import com.youyi.domain.conf.model.ConfigDO;
 import com.youyi.domain.conf.request.ConfigCreateRequest;
 import com.youyi.domain.conf.request.ConfigDeleteRequest;
 import com.youyi.domain.conf.request.ConfigQueryRequest;
 import com.youyi.domain.conf.request.ConfigUpdateRequest;
+import com.youyi.infra.conf.core.ConfigType;
 import com.youyi.infra.conf.util.CommonConfUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

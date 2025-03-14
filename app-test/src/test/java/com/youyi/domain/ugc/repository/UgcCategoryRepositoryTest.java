@@ -1,9 +1,9 @@
 package com.youyi.domain.ugc.repository;
 
 import com.youyi.BaseIntegrationTest;
-import com.youyi.common.type.ugc.UgcCategoryType;
+import com.youyi.domain.ugc.type.UgcCategoryType;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.common.util.IdSeqUtil;
+import com.youyi.common.util.seq.IdSeqUtil;
 import com.youyi.common.wrapper.UgcCategoryWrapper;
 import com.youyi.domain.ugc.repository.po.UgcCategoryPO;
 import java.util.List;

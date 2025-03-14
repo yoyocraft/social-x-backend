@@ -1,8 +1,7 @@
 package com.youyi.runner.user.util;
 
 import com.youyi.common.exception.AppBizException;
-import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.user.IdentityType;
+import com.youyi.domain.user.type.IdentityType;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
 import com.youyi.domain.user.request.UserFollowRequest;
@@ -10,6 +9,7 @@ import com.youyi.domain.user.request.UserQueryRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
 import com.youyi.infra.conf.core.Conf;
+import com.youyi.infra.conf.core.ConfigKey;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;

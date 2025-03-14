@@ -2,8 +2,8 @@ package com.youyi.domain.user.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.youyi.common.type.user.PermissionType;
-import com.youyi.common.type.user.UserRoleType;
+import com.youyi.domain.user.type.PermissionType;
+import com.youyi.domain.user.type.UserRoleType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.repository.po.PermissionPO;
 import com.youyi.domain.user.repository.po.RolePermissionPO;

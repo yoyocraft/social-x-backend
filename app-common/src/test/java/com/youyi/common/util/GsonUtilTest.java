@@ -2,8 +2,9 @@ package com.youyi.common.util;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.youyi.common.type.ugc.UgcTagType;
-import com.youyi.common.type.user.PermissionType;
+import com.youyi.common.util.seq.IdSeqUtil;
+import com.youyi.domain.ugc.type.UgcTagType;
+import com.youyi.domain.user.type.PermissionType;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.common.wrapper.UgcTagWrapper;
 import java.time.LocalDateTime;

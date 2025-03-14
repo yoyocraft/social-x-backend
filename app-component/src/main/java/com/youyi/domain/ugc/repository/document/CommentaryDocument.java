@@ -1,7 +1,7 @@
 package com.youyi.domain.ugc.repository.document;
 
 import com.youyi.common.base.BaseDocument;
-import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.domain.ugc.type.CommentaryStatus;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
 import java.util.List;
 import lombok.Getter;

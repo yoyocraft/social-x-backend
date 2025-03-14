@@ -1,7 +1,7 @@
 package com.youyi.domain.ugc.repository.dao;
 
 import com.mongodb.client.result.UpdateResult;
-import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.domain.ugc.type.CommentaryStatus;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import java.util.Collection;
@@ -15,15 +15,15 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.RepositoryConstant.TOP_COMMENTARY_ID;
-import static com.youyi.common.constant.UgcConstant.COMMENTARY_EXTRA_DATA;
-import static com.youyi.common.constant.UgcConstant.COMMENTARY_GMT_MODIFIED;
-import static com.youyi.common.constant.UgcConstant.COMMENTARY_ID;
-import static com.youyi.common.constant.UgcConstant.COMMENTARY_LIKE_COUNT;
-import static com.youyi.common.constant.UgcConstant.COMMENTARY_PARENT_ID;
-import static com.youyi.common.constant.UgcConstant.COMMENTARY_STATUS;
-import static com.youyi.common.constant.UgcConstant.COMMENTARY_UGC_ID;
-import static com.youyi.common.constant.UgcConstant.UGC_GMT_MODIFIED;
-import static com.youyi.common.constant.UgcConstant.includeCommentaryStatus;
+import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_EXTRA_DATA;
+import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_GMT_MODIFIED;
+import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_ID;
+import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_LIKE_COUNT;
+import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_PARENT_ID;
+import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_STATUS;
+import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_UGC_ID;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_GMT_MODIFIED;
+import static com.youyi.domain.ugc.constant.UgcConstant.includeCommentaryStatus;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

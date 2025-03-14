@@ -1,6 +1,6 @@
 package com.youyi.runner.ugc.util;
 
-import com.youyi.common.type.ugc.UgcInteractionType;
+import com.youyi.domain.ugc.type.UgcInteractionType;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.ugc.request.CommentaryDeleteRequest;
 import com.youyi.domain.ugc.request.CommentaryPublishRequest;
@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
 
-import static com.youyi.common.type.conf.ConfigKey.ATTACHMENT_MAX_COUNT;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
 import static com.youyi.common.util.param.ParamChecker.snowflakeIdChecker;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
+import static com.youyi.infra.conf.core.ConfigKey.ATTACHMENT_MAX_COUNT;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

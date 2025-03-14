@@ -3,7 +3,7 @@ package com.youyi.domain.ugc.repository;
 import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
-import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.domain.ugc.type.UgcStatus;
 import com.youyi.domain.ugc.repository.dao.UgcDAO;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.util.Collection;

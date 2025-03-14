@@ -1,9 +1,9 @@
 package com.youyi.domain.media.assembler;
 
-import com.youyi.common.type.media.MediaSource;
-import com.youyi.common.type.media.ResourceType;
 import com.youyi.domain.media.model.MediaResourceDO;
 import com.youyi.domain.media.request.ImageUploadRequest;
+import com.youyi.domain.media.type.MediaSource;
+import com.youyi.domain.media.type.ResourceType;
 import java.io.File;
 import org.apache.commons.io.FilenameUtils;
 import org.mapstruct.Mapper;

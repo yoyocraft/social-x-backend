@@ -1,6 +1,6 @@
 package com.youyi.domain.user.helper.login;
 
-import com.youyi.common.type.user.IdentityType;
+import com.youyi.domain.user.type.IdentityType;
 import java.util.EnumMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.SmartInitializingSingleton;

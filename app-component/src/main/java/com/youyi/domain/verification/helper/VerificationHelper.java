@@ -1,8 +1,8 @@
 package com.youyi.domain.verification.helper;
 
-import com.youyi.common.type.cache.CacheKey;
-import com.youyi.common.util.IdSeqUtil;
+import com.youyi.common.util.seq.IdSeqUtil;
 import com.youyi.domain.verification.model.VerificationDO;
+import com.youyi.infra.cache.CacheKey;
 import com.youyi.infra.cache.manager.CacheManager;
 import com.youyi.infra.email.EmailSender;
 import lombok.RequiredArgsConstructor;

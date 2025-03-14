@@ -2,7 +2,6 @@ package com.youyi.domain.user.core;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.google.common.collect.Lists;
-import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.HotAuthorCacheInfo;
 import com.youyi.domain.user.model.UserDO;
@@ -13,6 +12,7 @@ import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.domain.user.repository.relation.SuggestedUserInfo;
 import com.youyi.domain.user.repository.relation.UserNode;
 import com.youyi.domain.user.repository.relation.UserRelationship;
+import com.youyi.infra.cache.CacheKey;
 import com.youyi.infra.cache.manager.CacheManager;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,11 +30,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
-import static com.youyi.common.type.conf.ConfigKey.QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH;
+import static com.youyi.domain.user.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofHotAuthorListKey;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserFollowIdsKey;
 import static com.youyi.infra.conf.core.Conf.getBooleanConfig;
+import static com.youyi.infra.conf.core.ConfigKey.QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

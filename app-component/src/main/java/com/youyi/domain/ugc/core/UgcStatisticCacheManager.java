@@ -1,7 +1,7 @@
 package com.youyi.domain.ugc.core;
 
-import com.youyi.common.type.cache.CacheKey;
-import com.youyi.common.type.ugc.UgcStatisticType;
+import com.youyi.domain.ugc.type.UgcStatisticType;
+import com.youyi.infra.cache.CacheKey;
 import com.youyi.infra.cache.manager.CacheManager;
 import com.youyi.infra.cache.repo.UgcCacheRepo;
 import java.util.Collections;

@@ -1,10 +1,10 @@
 package com.youyi.runner.notification.util;
 
 import com.youyi.common.constant.SymbolConstant;
-import com.youyi.common.type.notification.NotificationStatus;
 import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.domain.notification.model.NotificationExtraData;
+import com.youyi.domain.notification.type.NotificationStatus;
 import com.youyi.runner.notification.model.NotificationResponse;
 import com.youyi.runner.notification.model.NotificationUnreadInfo;
 import java.util.Optional;

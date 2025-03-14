@@ -3,7 +3,7 @@ package com.youyi.domain.ugc.repository;
 import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
-import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.domain.ugc.type.CommentaryStatus;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
 import com.youyi.domain.ugc.repository.dao.CommentaryDAO;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;

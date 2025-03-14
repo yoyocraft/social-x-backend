@@ -1,10 +1,10 @@
 package com.youyi.domain.task.core;
 
-import com.youyi.common.type.task.TaskType;
 import com.youyi.domain.task.model.SysTaskDO;
 import com.youyi.domain.task.model.SysTaskExtraData;
 import com.youyi.domain.task.repository.SysTaskRepository;
 import com.youyi.domain.task.repository.po.SysTaskPO;
+import com.youyi.domain.task.type.TaskType;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;

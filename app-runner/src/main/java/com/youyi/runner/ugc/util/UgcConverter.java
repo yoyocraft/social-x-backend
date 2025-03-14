@@ -1,7 +1,7 @@
 package com.youyi.runner.ugc.util;
 
-import com.youyi.common.type.ugc.UgcStatus;
-import com.youyi.common.type.ugc.UgcType;
+import com.youyi.domain.ugc.type.UgcStatus;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.user.model.UserDO;

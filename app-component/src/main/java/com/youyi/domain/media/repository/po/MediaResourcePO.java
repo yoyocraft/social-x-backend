@@ -1,8 +1,8 @@
 package com.youyi.domain.media.repository.po;
 
 import com.youyi.common.base.BasePO;
-import com.youyi.common.type.media.MediaSource;
-import com.youyi.common.type.media.ResourceType;
+import com.youyi.domain.media.type.MediaSource;
+import com.youyi.domain.media.type.ResourceType;
 import lombok.Getter;
 import lombok.Setter;
 

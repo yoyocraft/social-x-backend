@@ -1,12 +1,12 @@
 package com.youyi.domain.ugc.core;
 
-import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.ugc.UgcStatus;
-import com.youyi.common.type.ugc.UgcType;
+import com.youyi.domain.ugc.type.UgcStatus;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.infra.conf.core.ConfigKey;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

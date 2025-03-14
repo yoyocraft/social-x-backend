@@ -1,14 +1,14 @@
 package com.youyi.domain.media.model;
 
-import com.youyi.common.type.media.MediaSource;
-import com.youyi.common.type.media.ResourceType;
 import com.youyi.domain.media.repository.po.MediaResourcePO;
+import com.youyi.domain.media.type.MediaSource;
+import com.youyi.domain.media.type.ResourceType;
 import com.youyi.domain.user.model.UserDO;
 import java.io.File;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.youyi.common.util.IdSeqUtil.genMediaResourceKey;
+import static com.youyi.common.util.seq.IdSeqUtil.genMediaResourceKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

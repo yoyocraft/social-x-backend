@@ -1,7 +1,7 @@
 package com.youyi.runner.auth;
 
 import cn.dev33.satoken.stp.StpInterface;
-import com.youyi.common.type.user.PermissionType;
+import com.youyi.domain.user.type.PermissionType;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.helper.PermissionHelper;
 import com.youyi.domain.user.model.PermissionDO;

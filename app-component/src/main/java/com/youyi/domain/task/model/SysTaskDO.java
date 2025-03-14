@@ -1,13 +1,13 @@
 package com.youyi.domain.task.model;
 
-import com.youyi.common.type.task.TaskStatus;
-import com.youyi.common.type.task.TaskType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.task.repository.po.SysTaskPO;
+import com.youyi.domain.task.type.TaskStatus;
+import com.youyi.domain.task.type.TaskType;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.youyi.common.util.IdSeqUtil.genSysTaskId;
+import static com.youyi.common.util.seq.IdSeqUtil.genSysTaskId;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

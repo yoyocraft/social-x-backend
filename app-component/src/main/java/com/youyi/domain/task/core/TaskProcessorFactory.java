@@ -1,6 +1,6 @@
 package com.youyi.domain.task.core;
 
-import com.youyi.common.type.task.TaskType;
+import com.youyi.domain.task.type.TaskType;
 import com.youyi.domain.ugc.processor.CommentaryDeleteProcessor;
 import com.youyi.domain.ugc.processor.UgcAdoptProcessor;
 import com.youyi.domain.ugc.processor.UgcDeleteProcessor;

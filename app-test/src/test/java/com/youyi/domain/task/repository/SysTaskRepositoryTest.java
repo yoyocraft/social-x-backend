@@ -1,12 +1,12 @@
 package com.youyi.domain.task.repository;
 
 import com.youyi.BaseIntegrationTest;
-import com.youyi.common.type.task.TaskStatus;
-import com.youyi.common.type.task.TaskType;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.common.util.IdSeqUtil;
+import com.youyi.common.util.seq.IdSeqUtil;
 import com.youyi.domain.task.model.SysTaskExtraData;
 import com.youyi.domain.task.repository.po.SysTaskPO;
+import com.youyi.domain.task.type.TaskStatus;
+import com.youyi.domain.task.type.TaskType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

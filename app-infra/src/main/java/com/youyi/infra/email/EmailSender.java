@@ -11,15 +11,15 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.type.InfraCode.SEND_EMAIL_ERROR;
-import static com.youyi.common.type.conf.ConfigKey.CAPTCHA_EMAIL_SUBJECT;
-import static com.youyi.common.type.conf.ConfigKey.CAPTCHA_EMAIL_TEMPLATE;
-import static com.youyi.common.type.conf.ConfigKey.CAPTCHA_EMAIL_TITLE;
-import static com.youyi.common.type.conf.ConfigKey.CAPTCHA_PROCESS_CN_TITLE;
-import static com.youyi.common.type.conf.ConfigKey.MAIL_FROM;
-import static com.youyi.common.type.conf.ConfigKey.PLATFORM_RESPONSIBLE_PERSON;
-import static com.youyi.common.type.conf.ConfigKey.SEND_EMAIL_AB_SWITCH;
 import static com.youyi.infra.conf.core.Conf.getBooleanConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
+import static com.youyi.infra.conf.core.ConfigKey.CAPTCHA_EMAIL_SUBJECT;
+import static com.youyi.infra.conf.core.ConfigKey.CAPTCHA_EMAIL_TEMPLATE;
+import static com.youyi.infra.conf.core.ConfigKey.CAPTCHA_EMAIL_TITLE;
+import static com.youyi.infra.conf.core.ConfigKey.CAPTCHA_PROCESS_CN_TITLE;
+import static com.youyi.infra.conf.core.ConfigKey.MAIL_FROM;
+import static com.youyi.infra.conf.core.ConfigKey.PLATFORM_RESPONSIBLE_PERSON;
+import static com.youyi.infra.conf.core.ConfigKey.SEND_EMAIL_AB_SWITCH;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

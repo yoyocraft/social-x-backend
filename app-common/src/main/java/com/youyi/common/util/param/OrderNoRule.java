@@ -5,9 +5,9 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
-import static com.youyi.common.constant.ValidateRegex.COMMON_NO_REGEX;
-import static com.youyi.common.constant.ValidateRegex.VALIDATE_EMAIL_REGEX;
-import static com.youyi.common.constant.ValidateRegex.VALIDATE_SIX_DIGITS_REGEX;
+import static com.youyi.common.util.param.ValidateRegex.COMMON_NO_REGEX;
+import static com.youyi.common.util.param.ValidateRegex.VALIDATE_EMAIL_REGEX;
+import static com.youyi.common.util.param.ValidateRegex.VALIDATE_SIX_DIGITS_REGEX;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

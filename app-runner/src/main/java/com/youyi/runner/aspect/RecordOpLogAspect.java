@@ -2,7 +2,6 @@ package com.youyi.runner.aspect;
 
 import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.constant.SymbolConstant;
-import com.youyi.common.type.aspect.AspectOrdered;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.audit.helper.OperationLogHelper;
@@ -39,9 +38,9 @@ import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.SystemConstant.SYSTEM_OPERATOR_ID;
 import static com.youyi.common.constant.SystemConstant.SYSTEM_OPERATOR_NAME;
-import static com.youyi.common.type.conf.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
 import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getCacheValue;
+import static com.youyi.infra.conf.core.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

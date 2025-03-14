@@ -1,5 +1,6 @@
 package com.youyi.common.util;
 
+import com.youyi.common.util.seq.IdSeqUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;

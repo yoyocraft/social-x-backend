@@ -1,12 +1,12 @@
 package com.youyi.domain.notification.assembler;
 
 import com.youyi.common.constant.RepositoryConstant;
-import com.youyi.common.type.notification.NotificationType;
 import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.domain.notification.request.NotificationPublishRequest;
 import com.youyi.domain.notification.request.NotificationQueryRequest;
 import com.youyi.domain.notification.request.NotificationReadRequest;
 import com.youyi.domain.notification.request.NotificationUnreadQueryRequest;
+import com.youyi.domain.notification.type.NotificationType;
 import com.youyi.infra.conf.util.CommonConfUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

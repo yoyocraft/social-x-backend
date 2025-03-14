@@ -1,12 +1,12 @@
 package com.youyi.runner.config.util;
 
-import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.conf.ConfigType;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.conf.request.ConfigCreateRequest;
 import com.youyi.domain.conf.request.ConfigDeleteRequest;
 import com.youyi.domain.conf.request.ConfigQueryRequest;
 import com.youyi.domain.conf.request.ConfigUpdateRequest;
+import com.youyi.infra.conf.core.ConfigKey;
+import com.youyi.infra.conf.core.ConfigType;
 
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.greaterThanOrEqualChecker;

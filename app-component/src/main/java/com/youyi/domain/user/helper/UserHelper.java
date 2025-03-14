@@ -3,7 +3,6 @@ package com.youyi.domain.user.helper;
 import cn.dev33.satoken.stp.StpUtil;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.ReturnCode;
-import com.youyi.common.type.cache.CacheKey;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.ugc.model.HotAuthorCacheInfo;
@@ -17,6 +16,7 @@ import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.domain.user.repository.relation.UserRelationship;
+import com.youyi.infra.cache.CacheKey;
 import com.youyi.infra.cache.manager.CacheManager;
 import java.util.Collections;
 import java.util.List;
@@ -28,9 +28,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
+import static com.youyi.domain.user.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.ReturnCode.PERMISSION_DENIED;
-import static com.youyi.common.util.IdSeqUtil.genUserVerifyCaptchaToken;
+import static com.youyi.common.util.seq.IdSeqUtil.genUserVerifyCaptchaToken;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserVerifyTokenKey;
 import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
 

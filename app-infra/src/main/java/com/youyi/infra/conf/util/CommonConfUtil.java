@@ -1,7 +1,7 @@
 package com.youyi.infra.conf.util;
 
 import com.youyi.common.base.BasePageRequest;
-import com.youyi.common.type.conf.ConfigKey;
+import com.youyi.infra.conf.core.ConfigKey;
 import java.util.Collection;
 import java.util.Objects;
 import org.apache.commons.collections4.CollectionUtils;

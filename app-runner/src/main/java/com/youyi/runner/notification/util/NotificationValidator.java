@@ -1,11 +1,11 @@
 package com.youyi.runner.notification.util;
 
-import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.notification.NotificationType;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.notification.request.NotificationPublishRequest;
 import com.youyi.domain.notification.request.NotificationQueryRequest;
 import com.youyi.domain.notification.request.NotificationReadRequest;
+import com.youyi.domain.notification.type.NotificationType;
+import com.youyi.infra.conf.core.ConfigKey;
 
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;

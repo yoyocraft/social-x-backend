@@ -1,13 +1,13 @@
 package com.youyi.domain.ugc.core;
 
-import com.youyi.common.type.cache.CacheKey;
-import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.domain.ugc.type.UgcStatus;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.HotAuthorCacheInfo;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.infra.cache.CacheKey;
 import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.conf.core.ConfigKey;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

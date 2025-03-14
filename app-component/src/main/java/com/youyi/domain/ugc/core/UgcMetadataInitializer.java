@@ -19,9 +19,9 @@ import org.springframework.stereotype.Component;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.youyi.common.constant.SystemConstant.SYSTEM_OPERATOR_ID;
-import static com.youyi.common.type.conf.ConfigKey.SYSTEM_PRESET_UGC_CATEGORY;
-import static com.youyi.common.type.conf.ConfigKey.SYSTEM_PRESET_UGC_TAG;
 import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
+import static com.youyi.infra.conf.core.ConfigKey.SYSTEM_PRESET_UGC_CATEGORY;
+import static com.youyi.infra.conf.core.ConfigKey.SYSTEM_PRESET_UGC_TAG;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

@@ -1,10 +1,10 @@
 package com.youyi.infra.cache.repo;
 
 import com.google.common.collect.ImmutableMap;
-import com.youyi.common.type.cache.CacheKey;
+import com.youyi.infra.cache.CacheKey;
 import java.util.Map;
 
-import static com.youyi.common.util.CacheUtil.buildKey;
+import static com.youyi.infra.cache.CacheUtil.buildKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

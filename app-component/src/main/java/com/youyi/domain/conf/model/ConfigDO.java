@@ -1,6 +1,6 @@
 package com.youyi.domain.conf.model;
 
-import com.youyi.common.type.conf.ConfigType;
+import com.youyi.infra.conf.core.ConfigType;
 import com.youyi.infra.conf.repository.po.ConfigPO;
 import java.time.LocalDateTime;
 import lombok.Getter;

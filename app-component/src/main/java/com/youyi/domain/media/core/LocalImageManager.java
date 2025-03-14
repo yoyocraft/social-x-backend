@@ -1,8 +1,9 @@
 package com.youyi.domain.media.core;
 
 import com.youyi.common.constant.SymbolConstant;
-import com.youyi.common.type.media.MediaSource;
 import com.youyi.domain.media.model.MediaResourceDO;
+import com.youyi.domain.media.type.MediaSource;
+import com.youyi.domain.media.type.ResourceType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,16 +21,15 @@ import org.springframework.stereotype.Component;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.youyi.common.constant.MediaConstant.DATE_PATH_FORMATTER;
-import static com.youyi.common.constant.MediaConstant.MEDIA_FILE_NAME_FORMATTER;
-import static com.youyi.common.type.conf.ConfigKey.MEDIA_ACCESS_URL_PREFIX;
-import static com.youyi.common.type.conf.ConfigKey.MEDIA_STORAGE_BASE_PATH;
-import static com.youyi.common.type.media.ResourceType.IMAGE;
+import static com.youyi.domain.media.constant.MediaConstant.DATE_PATH_FORMATTER;
+import static com.youyi.domain.media.constant.MediaConstant.MEDIA_FILE_NAME_FORMATTER;
 import static com.youyi.common.util.CommonOperationUtil.buildFullPath;
-import static com.youyi.common.util.IdSeqUtil.genMediaResourceName;
+import static com.youyi.common.util.seq.IdSeqUtil.genMediaResourceName;
 import static com.youyi.common.util.ext.MoreFeatures.runCatching;
 import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
+import static com.youyi.infra.conf.core.ConfigKey.MEDIA_ACCESS_URL_PREFIX;
+import static com.youyi.infra.conf.core.ConfigKey.MEDIA_STORAGE_BASE_PATH;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -118,7 +118,7 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
     private String getStorageImageDirPath(MediaSource source, String datePath) {
         String storageDirPath = buildFullPath(
             getStringConfig(MEDIA_STORAGE_BASE_PATH),
-            IMAGE.getType(),
+            ResourceType.IMAGE.getType(),
             source.getSource(),
             datePath
         );
