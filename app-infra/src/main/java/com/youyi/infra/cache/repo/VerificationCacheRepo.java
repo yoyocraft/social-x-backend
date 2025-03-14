@@ -19,4 +19,11 @@ public class VerificationCacheRepo {
         );
         return buildKey(CacheKey.EMAIL_CAPTCHA, dataMap);
     }
+
+    public static String ofImageCaptchaKey(String captchaId) {
+        Map<String, String> dataMap = ImmutableMap.of(
+            "captchaId", captchaId
+        );
+        return buildKey(CacheKey.IMAGE_CAPTCHA, dataMap);
+    }
 }

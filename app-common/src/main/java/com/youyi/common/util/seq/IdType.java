@@ -19,6 +19,7 @@ public enum IdType {
     NOTIFICATION_ID(7L),
     MEDIA_RESOURCE_KEY(8L),
     MEDIA_RESOURCE_NAME(9L),
+    IMAGE_CAPTCHA_ID(10L),
     ;
 
     private final long workerId;

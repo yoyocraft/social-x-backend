@@ -40,9 +40,9 @@ public interface MediaResourceAssembler {
 
     default File toFile(MultipartFile file) {
         String filename = file.getOriginalFilename();
-        String basename = FilenameUtils.getBaseName(filename);
+        String baseName = FilenameUtils.getBaseName(filename);
         String extension = FilenameUtils.getExtension(filename);
-        File tmpFile = runCatching(() -> File.createTempFile(basename, DOT + extension));
+        File tmpFile = runCatching(() -> File.createTempFile(baseName, DOT + extension));
         runCatching(() -> file.transferTo(tmpFile));
         return tmpFile;
     }

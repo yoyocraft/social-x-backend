@@ -1,10 +1,7 @@
 package com.youyi.common.util;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
 import com.youyi.common.util.seq.IdSeqUtil;
-import com.youyi.domain.ugc.type.UgcTagType;
-import com.youyi.domain.user.type.PermissionType;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.common.wrapper.UgcTagWrapper;
 import java.time.LocalDateTime;
@@ -12,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
@@ -56,20 +52,6 @@ class GsonUtilTest {
     }
 
     @Test
-    void testFromJson() {
-        List<PermissionType> permissions = Lists.newArrayList(
-            PermissionType.CREATE_CONFIG,
-            PermissionType.READ_CONFIG,
-            PermissionType.UPDATE_CONFIG,
-            PermissionType.DELETE_CONFIG
-        );
-
-        String json = GsonUtil.toJson(permissions);
-        List<PermissionType> permissionTypes = Assertions.assertDoesNotThrow(() -> GsonUtil.fromJson(json, List.class, PermissionType.class));
-        Assertions.assertTrue(CollectionUtils.isNotEmpty(permissionTypes));
-    }
-
-    @Test
     void testFromLocalDateTime() {
         LocalDateTime localDateTime = LocalDateTime.now();
         String dateJson = Assertions.assertDoesNotThrow(() -> GsonUtil.toJson(localDateTime));
@@ -94,7 +76,7 @@ class GsonUtilTest {
             UgcTagWrapper wrapper = new UgcTagWrapper();
             wrapper.setTagId(tagId);
             wrapper.setTagName(tag);
-            wrapper.setType(UgcTagType.FOR_ARTICLE.getType());
+            wrapper.setType(0);
             wrapper.setPriority(allTagPriority.getAndIncrement());
             return wrapper;
         }).toList();
@@ -112,7 +94,7 @@ class GsonUtilTest {
             UgcTagWrapper wrapper = new UgcTagWrapper();
             wrapper.setTagId(tagId);
             wrapper.setTagName(tag);
-            wrapper.setType(UgcTagType.FOR_USER_INTEREST.getType());
+            wrapper.setType(1);
             wrapper.setPriority(interestTagPriority.getAndIncrement());
             return wrapper;
         }).toList();

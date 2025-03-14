@@ -13,9 +13,14 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.Strictness;
+import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -36,12 +41,15 @@ public class GsonUtil {
     static {
         GSON = Converters.registerAll(new GsonBuilder())
             .registerTypeAdapter(File.class, new FileAdapter())
+            .registerTypeAdapter(Charset.class, new CharsetAdapter())
             .setStrictness(Strictness.LENIENT)
             .create();
 
         PRETTY_GSON = Converters.registerAll(new GsonBuilder())
             .registerTypeAdapter(File.class, new FileAdapter())
+            .registerTypeAdapter(Charset.class, new CharsetAdapter())
             .setPrettyPrinting().create();
+
     }
 
     private GsonUtil() {
@@ -145,6 +153,18 @@ public class GsonUtil {
         @Override
         public File deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             return new File(json.getAsString());
+        }
+    }
+
+    private static class CharsetAdapter extends TypeAdapter<Charset> {
+        @Override
+        public void write(JsonWriter out, Charset value) throws IOException {
+            out.value(value.name());
+        }
+
+        @Override
+        public Charset read(JsonReader in) throws IOException {
+            return Charset.forName(in.nextString());
         }
     }
 

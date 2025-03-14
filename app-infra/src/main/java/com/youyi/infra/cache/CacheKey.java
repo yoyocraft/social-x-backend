@@ -27,6 +27,7 @@ public enum CacheKey {
     USER_FOLLOW_IDS(ofKey("u", "fl", "${userId}"), Duration.ofHours(24)),
 
     EMAIL_CAPTCHA(ofKey("em", "cap", "${email}", "${bizType}"), Duration.ofMinutes(10)),
+    IMAGE_CAPTCHA(ofKey("img", "cap", "${captchaId}"), Duration.ofMinutes(2)),
     ;
 
     private final boolean pattern;

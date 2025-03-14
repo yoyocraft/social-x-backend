@@ -15,4 +15,7 @@ public class VerificationDO {
     private String email;
     private String captcha;
     private BizType bizType;
+
+    private String captchaId;
+    private String image;
 }

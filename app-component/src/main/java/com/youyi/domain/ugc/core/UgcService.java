@@ -151,7 +151,7 @@ public class UgcService {
         // 2. 查询
         return ugcRepository.queryByAuthorWithTimeCursor(
             SymbolConstant.EMPTY,
-            SymbolConstant.EMPTY,
+            ugcDO.getUgcType().name(),
             UgcStatus.PUBLISHED.name(),
             authorIds,
             cursor,

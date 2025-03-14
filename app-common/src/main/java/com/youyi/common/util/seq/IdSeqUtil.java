@@ -72,6 +72,10 @@ public class IdSeqUtil {
         return genId(IdType.MEDIA_RESOURCE_NAME);
     }
 
+    public static String genImageCaptchaId() {
+        return genId(IdType.IMAGE_CAPTCHA_ID);
+    }
+
     // ============================= Random String Generators ==============================
     public static String genEmailCaptcha() {
         return RandomStringUtils.secure().nextNumeric(EMAIL_CAPTCHA_LENGTH);

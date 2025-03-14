@@ -21,11 +21,11 @@ import org.springframework.stereotype.Component;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.youyi.common.util.CommonOperationUtil.buildFullPath;
+import static com.youyi.common.util.ext.MoreFeatures.runCatching;
+import static com.youyi.common.util.seq.IdSeqUtil.genMediaResourceName;
 import static com.youyi.domain.media.constant.MediaConstant.DATE_PATH_FORMATTER;
 import static com.youyi.domain.media.constant.MediaConstant.MEDIA_FILE_NAME_FORMATTER;
-import static com.youyi.common.util.CommonOperationUtil.buildFullPath;
-import static com.youyi.common.util.seq.IdSeqUtil.genMediaResourceName;
-import static com.youyi.common.util.ext.MoreFeatures.runCatching;
 import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
 import static com.youyi.infra.conf.core.ConfigKey.MEDIA_ACCESS_URL_PREFIX;
@@ -47,8 +47,10 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
     }
 
     public void doUploadImage(MediaResourceDO mediaResourceDO) {
-        // 1. 校验图片
+        // 0. 校验图片
         checkImage(mediaResourceDO.getMedia());
+        // 1. 重命名图片
+        runCatching(() -> renameMedia(mediaResourceDO));
         // 2. 计算日期目录
         String datePath = getCurrentDatePath();
         // 3. 计算图片存储文件夹路径
@@ -93,7 +95,7 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
     }
 
     private String copyImageToStorage(File sourceFile, String dir) throws IOException {
-        File destinationFile = new File(dir, polishFileName(sourceFile));
+        File destinationFile = new File(dir, sourceFile.getName());
         try (
             FileInputStream src = new FileInputStream(sourceFile);
             FileOutputStream dest = new FileOutputStream(destinationFile)
@@ -134,6 +136,14 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
             datePath,
             mediaResourceDO.getMedia().getName()
         );
+    }
+
+    private void renameMedia(MediaResourceDO mediaResourceDO) throws IOException {
+        File originFile = mediaResourceDO.getMedia();
+        String newFileName = polishFileName(originFile);
+        File newFile = new File(originFile.getParent(), newFileName);
+        Files.move(originFile.toPath(), newFile.toPath());
+        mediaResourceDO.setMedia(newFile);
     }
 
     private String polishFileName(File originFile) {

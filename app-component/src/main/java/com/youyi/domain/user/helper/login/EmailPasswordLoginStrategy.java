@@ -1,23 +1,23 @@
 package com.youyi.domain.user.helper.login;
 
-import com.pig4cloud.captcha.utils.CaptchaUtil;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
+import com.youyi.infra.cache.manager.CacheManager;
 import com.youyi.infra.privacy.CryptoManager;
-import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import static com.youyi.domain.user.constant.UserConstant.IMAGE_CAPTCHA_KEY;
 import static com.youyi.common.type.ReturnCode.CAPTCHA_ERROR;
+import static com.youyi.common.type.ReturnCode.CAPTCHA_EXPIRED;
 import static com.youyi.common.type.ReturnCode.PASSWORD_ERROR;
 import static com.youyi.common.type.ReturnCode.USER_NOT_EXIST;
+import static com.youyi.domain.user.constant.UserConstant.IMAGE_CAPTCHA_ID;
+import static com.youyi.domain.user.constant.UserConstant.IMAGE_CAPTCHA_KEY;
+import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofImageCaptchaKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -28,6 +28,7 @@ import static com.youyi.common.type.ReturnCode.USER_NOT_EXIST;
 public class EmailPasswordLoginStrategy implements LoginStrategy {
 
     private final UserRepository userRepository;
+    private final CacheManager cacheManager;
 
     @Override
     public void login(UserDO userDO) {
@@ -52,17 +53,18 @@ public class EmailPasswordLoginStrategy implements LoginStrategy {
     }
 
     private void checkImageCaptcha(UserDO userDO) {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes == null) {
-            throw AppBizException.of(CAPTCHA_ERROR, "未获取到请求上下文");
+        String captchaId = userDO.getExtra().get(IMAGE_CAPTCHA_ID);
+        String cacheKey = ofImageCaptchaKey(captchaId);
+        String verifyCaptcha = cacheManager.getString(cacheKey);
+        if (StringUtils.isBlank(verifyCaptcha)) {
+            throw AppBizException.of(CAPTCHA_EXPIRED);
         }
-        HttpServletRequest request = attributes.getRequest();
         String imageCaptcha = userDO.getExtra().get(IMAGE_CAPTCHA_KEY);
-        String verifyCaptcha = (String) request.getSession().getAttribute(IMAGE_CAPTCHA_KEY);
-        CaptchaUtil.clear(request);
         if (!StringUtils.equalsIgnoreCase(imageCaptcha, verifyCaptcha)) {
             throw AppBizException.of(CAPTCHA_ERROR);
         }
+        // 验证码校验通过，删除验证码
+        cacheManager.delete(cacheKey);
     }
 
     private void checkPassword(UserDO userDO, UserAuthPO userAuthPO) {
