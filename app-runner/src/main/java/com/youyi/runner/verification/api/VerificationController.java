@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.youyi.common.constant.UserConstant.IMAGE_CAPTCHA_KEY;
+import static com.youyi.domain.user.constant.UserConstant.IMAGE_CAPTCHA_KEY;
 import static com.youyi.domain.verification.assembler.VerificationAssembler.VERIFICATION_ASSEMBLER;
 import static com.youyi.runner.verification.util.VerificationResponseUtil.notifyCaptchaSuccess;
 

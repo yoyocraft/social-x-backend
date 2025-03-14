@@ -5,7 +5,6 @@ import com.youyi.common.base.Result;
 import com.youyi.common.exception.AppBizException;
 import com.youyi.common.type.RequestState;
 import com.youyi.common.type.ServerType;
-import com.youyi.common.type.aspect.AspectOrdered;
 import com.youyi.common.util.GsonUtil;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;

@@ -1,7 +1,7 @@
 package com.youyi.domain.ugc.core;
 
-import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
+import com.youyi.infra.conf.core.ConfigKey;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nonnull;
 import lombok.Getter;
@@ -11,9 +11,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import static com.youyi.common.type.conf.ConfigKey.AUDIT_UGC_THREAD_POOL_CONFIG;
 import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getCacheValue;
+import static com.youyi.infra.conf.core.ConfigKey.AUDIT_UGC_THREAD_POOL_CONFIG;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -83,7 +83,7 @@ public class UgcTpeContainer implements ApplicationListener<ApplicationReadyEven
     }
 
     private void checkTpeConfig() {
-        checkConfig(ConfigKey.AUDIT_UGC_THREAD_POOL_CONFIG);
+        checkConfig(AUDIT_UGC_THREAD_POOL_CONFIG);
         checkConfig(ConfigKey.UGC_STATISTICS_THREAD_POOL_CONFIG);
         checkConfig(ConfigKey.UGC_SYS_TASK_THREAD_POOL_CONFIG);
     }

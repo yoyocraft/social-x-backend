@@ -1,6 +1,6 @@
 package com.youyi.domain.ugc.model;
 
-import com.youyi.common.type.ugc.UgcTagType;
+import com.youyi.domain.ugc.type.UgcTagType;
 import com.youyi.domain.ugc.repository.po.UgcTagPO;
 import lombok.Getter;
 import lombok.Setter;

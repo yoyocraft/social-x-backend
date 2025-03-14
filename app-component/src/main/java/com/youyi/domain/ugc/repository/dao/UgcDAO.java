@@ -1,8 +1,8 @@
 package com.youyi.domain.ugc.repository.dao;
 
 import com.mongodb.client.result.UpdateResult;
-import com.youyi.common.type.ugc.UgcStatus;
-import com.youyi.common.type.ugc.UgcType;
+import com.youyi.domain.ugc.type.UgcStatus;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -20,26 +20,26 @@ import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.RepositoryConstant.MONGO_IGNORE_CASE_OPTION;
 import static com.youyi.common.constant.RepositoryConstant.ofFuzzyQuery;
-import static com.youyi.common.constant.UgcConstant.UGC_ATTACHMENT_URLS;
-import static com.youyi.common.constant.UgcConstant.UGC_AUTHOR_ID;
-import static com.youyi.common.constant.UgcConstant.UGC_CATEGORY_ID;
-import static com.youyi.common.constant.UgcConstant.UGC_CATEGORY_NAME;
-import static com.youyi.common.constant.UgcConstant.UGC_COLLECT_COUNT;
-import static com.youyi.common.constant.UgcConstant.UGC_COMMENTARY_COUNT;
-import static com.youyi.common.constant.UgcConstant.UGC_CONTENT;
-import static com.youyi.common.constant.UgcConstant.UGC_COVER;
-import static com.youyi.common.constant.UgcConstant.UGC_EXTRA_DATA;
-import static com.youyi.common.constant.UgcConstant.UGC_GMT_MODIFIED;
-import static com.youyi.common.constant.UgcConstant.UGC_ID;
-import static com.youyi.common.constant.UgcConstant.UGC_LIKE_COUNT;
-import static com.youyi.common.constant.UgcConstant.UGC_QUESTION_HAS_SOLVED;
-import static com.youyi.common.constant.UgcConstant.UGC_STATUS;
-import static com.youyi.common.constant.UgcConstant.UGC_SUMMARY;
-import static com.youyi.common.constant.UgcConstant.UGC_TAGS;
-import static com.youyi.common.constant.UgcConstant.UGC_TITLE;
-import static com.youyi.common.constant.UgcConstant.UGC_TYPE;
-import static com.youyi.common.constant.UgcConstant.UGC_VIEW_COUNT;
-import static com.youyi.common.constant.UgcConstant.includeUgcStatus;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_ATTACHMENT_URLS;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_AUTHOR_ID;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_CATEGORY_ID;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_CATEGORY_NAME;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_COLLECT_COUNT;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_COMMENTARY_COUNT;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_CONTENT;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_COVER;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_EXTRA_DATA;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_GMT_MODIFIED;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_ID;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_LIKE_COUNT;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_QUESTION_HAS_SOLVED;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_STATUS;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_SUMMARY;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_TAGS;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_TITLE;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_TYPE;
+import static com.youyi.domain.ugc.constant.UgcConstant.UGC_VIEW_COUNT;
+import static com.youyi.domain.ugc.constant.UgcConstant.includeUgcStatus;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

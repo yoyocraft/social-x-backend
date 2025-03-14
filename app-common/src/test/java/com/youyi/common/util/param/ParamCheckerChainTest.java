@@ -1,7 +1,7 @@
 package com.youyi.common.util.param;
 
 import com.youyi.common.exception.AppBizException;
-import com.youyi.common.util.IdSeqUtil;
+import com.youyi.common.util.seq.IdSeqUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

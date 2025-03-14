@@ -2,10 +2,10 @@ package com.youyi.domain.ugc.helper;
 
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.youyi.common.exception.AppBizException;
-import com.youyi.common.type.task.TaskType;
-import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.domain.ugc.type.CommentaryStatus;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
+import com.youyi.domain.task.type.TaskType;
 import com.youyi.domain.ugc.core.CommentaryService;
 import com.youyi.domain.ugc.core.UgcStatisticCacheManager;
 import com.youyi.domain.ugc.core.UgcTpeContainer;

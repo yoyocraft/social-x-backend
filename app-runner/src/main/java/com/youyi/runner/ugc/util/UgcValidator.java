@@ -1,27 +1,27 @@
 package com.youyi.runner.ugc.util;
 
-import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.ugc.UgcInteractionType;
-import com.youyi.common.type.ugc.UgcStatus;
-import com.youyi.common.type.ugc.UgcType;
+import com.youyi.domain.ugc.type.UgcInteractionType;
+import com.youyi.domain.ugc.type.UgcStatus;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.ugc.request.UgcDeleteRequest;
 import com.youyi.domain.ugc.request.UgcInteractionRequest;
 import com.youyi.domain.ugc.request.UgcPublishRequest;
 import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
+import com.youyi.infra.conf.core.ConfigKey;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import static com.youyi.common.type.conf.ConfigKey.ATTACHMENT_MAX_COUNT;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;
 import static com.youyi.common.util.param.ParamChecker.lessThanOrEqualChecker;
 import static com.youyi.common.util.param.ParamChecker.notBlankChecker;
 import static com.youyi.common.util.param.ParamChecker.notNullChecker;
 import static com.youyi.common.util.param.ParamChecker.snowflakeIdChecker;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
+import static com.youyi.infra.conf.core.ConfigKey.ATTACHMENT_MAX_COUNT;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

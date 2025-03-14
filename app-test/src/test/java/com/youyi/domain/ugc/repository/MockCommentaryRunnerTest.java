@@ -2,8 +2,8 @@ package com.youyi.domain.ugc.repository;
 
 import com.github.javafaker.Faker;
 import com.youyi.BaseIntegrationTest;
-import com.youyi.common.type.ugc.CommentaryStatus;
-import com.youyi.common.util.IdSeqUtil;
+import com.youyi.domain.ugc.type.CommentaryStatus;
+import com.youyi.common.util.seq.IdSeqUtil;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import java.util.ArrayList;

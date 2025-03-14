@@ -1,10 +1,10 @@
 package com.youyi.domain.notification.model;
 
-import com.youyi.common.type.notification.NotificationStatus;
-import com.youyi.common.type.notification.NotificationType;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.common.util.IdSeqUtil;
+import com.youyi.common.util.seq.IdSeqUtil;
 import com.youyi.domain.notification.repository.po.NotificationPO;
+import com.youyi.domain.notification.type.NotificationStatus;
+import com.youyi.domain.notification.type.NotificationType;
 import com.youyi.domain.user.model.UserDO;
 import java.time.LocalDateTime;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.youyi.domain.ugc.core;
 
 import com.youyi.BaseIntegrationTest;
-import com.youyi.common.type.ugc.UgcStatus;
+import com.youyi.domain.ugc.type.UgcStatus;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import org.junit.jupiter.api.Assertions;

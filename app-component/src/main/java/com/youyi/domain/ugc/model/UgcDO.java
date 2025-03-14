@@ -1,9 +1,9 @@
 package com.youyi.domain.ugc.model;
 
-import com.youyi.common.type.ugc.UgcInteractionType;
-import com.youyi.common.type.ugc.UgcStatus;
-import com.youyi.common.type.ugc.UgcType;
-import com.youyi.common.util.IdSeqUtil;
+import com.youyi.domain.ugc.type.UgcInteractionType;
+import com.youyi.domain.ugc.type.UgcStatus;
+import com.youyi.domain.ugc.type.UgcType;
+import com.youyi.common.util.seq.IdSeqUtil;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.user.model.UserDO;
 import java.util.List;

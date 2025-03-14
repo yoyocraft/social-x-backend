@@ -1,13 +1,13 @@
 package com.youyi.domain.task.core;
 
 import com.google.common.collect.Lists;
-import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.task.TaskStatus;
-import com.youyi.common.type.task.TaskType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.task.model.SysTaskExtraData;
 import com.youyi.domain.task.repository.SysTaskRepository;
 import com.youyi.domain.task.repository.po.SysTaskPO;
+import com.youyi.domain.task.type.TaskStatus;
+import com.youyi.domain.task.type.TaskType;
+import com.youyi.infra.conf.core.ConfigKey;
 import java.util.EnumSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

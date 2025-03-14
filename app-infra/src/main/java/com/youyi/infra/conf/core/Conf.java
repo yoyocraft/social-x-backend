@@ -1,7 +1,6 @@
 package com.youyi.infra.conf.core;
 
 import com.google.gson.reflect.TypeToken;
-import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.util.GsonUtil;
 import java.lang.reflect.Type;
 import java.util.List;

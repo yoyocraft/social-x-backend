@@ -2,11 +2,11 @@ package com.youyi.domain.ugc.helper;
 
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
-import com.youyi.common.type.task.TaskType;
-import com.youyi.common.type.ugc.UgcInteractionType;
-import com.youyi.common.type.ugc.UgcType;
+import com.youyi.domain.ugc.type.UgcInteractionType;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
+import com.youyi.domain.task.type.TaskType;
 import com.youyi.domain.ugc.core.UgcService;
 import com.youyi.domain.ugc.core.UgcTpeContainer;
 import com.youyi.domain.ugc.model.HotUgcCacheInfo;

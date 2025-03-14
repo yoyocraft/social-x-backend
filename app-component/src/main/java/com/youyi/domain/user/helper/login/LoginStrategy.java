@@ -5,7 +5,7 @@ import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.model.UserLoginStateInfo;
 
-import static com.youyi.common.constant.UserConstant.USER_LOGIN_STATE;
+import static com.youyi.domain.user.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

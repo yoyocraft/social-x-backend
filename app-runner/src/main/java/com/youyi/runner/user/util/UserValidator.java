@@ -1,9 +1,8 @@
 package com.youyi.runner.user.util;
 
 import com.youyi.common.type.BizType;
-import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.user.IdentityType;
-import com.youyi.common.type.user.WorkDirectionType;
+import com.youyi.domain.user.type.IdentityType;
+import com.youyi.domain.user.type.WorkDirectionType;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.user.request.UserAuthenticateRequest;
 import com.youyi.domain.user.request.UserEditInfoRequest;
@@ -11,6 +10,7 @@ import com.youyi.domain.user.request.UserFollowRequest;
 import com.youyi.domain.user.request.UserQueryRequest;
 import com.youyi.domain.user.request.UserSetPwdRequest;
 import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
+import com.youyi.infra.conf.core.ConfigKey;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;

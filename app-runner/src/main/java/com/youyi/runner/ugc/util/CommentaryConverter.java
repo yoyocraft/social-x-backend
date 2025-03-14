@@ -1,6 +1,6 @@
 package com.youyi.runner.ugc.util;
 
-import com.youyi.common.type.ugc.CommentaryStatus;
+import com.youyi.domain.ugc.type.CommentaryStatus;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.runner.ugc.model.CommentaryInfo;
 import java.util.Objects;

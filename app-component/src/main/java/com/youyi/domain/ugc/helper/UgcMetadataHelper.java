@@ -1,8 +1,8 @@
 package com.youyi.domain.ugc.helper;
 
 import com.google.common.collect.Sets;
-import com.youyi.common.type.ugc.UgcCategoryType;
-import com.youyi.common.type.ugc.UgcTagType;
+import com.youyi.domain.ugc.type.UgcCategoryType;
+import com.youyi.domain.ugc.type.UgcTagType;
 import com.youyi.domain.ugc.model.UgcCategoryInfo;
 import com.youyi.domain.ugc.model.UgcMetadataDO;
 import com.youyi.domain.ugc.model.UgcTagInfo;

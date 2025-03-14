@@ -1,6 +1,6 @@
 package com.youyi.domain.notification.model;
 
-import com.youyi.common.type.notification.NotificationType;
+import com.youyi.domain.notification.type.NotificationType;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import static com.youyi.common.constant.UserConstant.IMAGE_CAPTCHA_KEY;
+import static com.youyi.domain.user.constant.UserConstant.IMAGE_CAPTCHA_KEY;
 import static com.youyi.common.type.ReturnCode.CAPTCHA_ERROR;
 import static com.youyi.common.type.ReturnCode.PASSWORD_ERROR;
 import static com.youyi.common.type.ReturnCode.USER_NOT_EXIST;

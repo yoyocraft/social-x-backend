@@ -1,10 +1,10 @@
 package com.youyi.infra.privacy;
 
 import com.youyi.common.exception.AppSystemException;
-import com.youyi.common.type.conf.ConfigKey;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.util.crypto.AESUtil;
 import com.youyi.common.util.crypto.IvGenerator;
+import com.youyi.infra.conf.core.ConfigKey;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 

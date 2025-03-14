@@ -1,7 +1,7 @@
 package com.youyi.runner.user.util;
 
-import com.youyi.common.type.user.PermissionType;
-import com.youyi.common.type.user.UserRoleType;
+import com.youyi.domain.user.type.PermissionType;
+import com.youyi.domain.user.type.UserRoleType;
 import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.user.request.PermissionAddRequest;
 import com.youyi.domain.user.request.RolePermissionAuthorizeRequest;

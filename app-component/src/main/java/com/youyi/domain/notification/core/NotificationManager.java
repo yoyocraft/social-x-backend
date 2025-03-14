@@ -1,20 +1,20 @@
 package com.youyi.domain.notification.core;
 
 import com.youyi.common.constant.SymbolConstant;
-import com.youyi.common.constant.UgcConstant;
-import com.youyi.common.type.conf.ConfigKey;
-import com.youyi.common.type.notification.NotificationTemplateKey;
-import com.youyi.common.type.notification.NotificationType;
-import com.youyi.common.type.ugc.UgcType;
+import com.youyi.domain.ugc.constant.UgcConstant;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.domain.notification.model.NotificationExtraData;
 import com.youyi.domain.notification.repository.NotificationRepository;
+import com.youyi.domain.notification.type.NotificationTemplateKey;
+import com.youyi.domain.notification.type.NotificationType;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.user.model.UserDO;
+import com.youyi.infra.conf.core.ConfigKey;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -28,17 +28,17 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.SystemConstant.DEFAULT_KEY;
-import static com.youyi.common.type.conf.ConfigKey.NOTIFICATION_SUMMARY_TEMPLATE;
-import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_ADOPT;
-import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COLLECT;
-import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COMMENT;
-import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_COMMENT_REPLY;
-import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_FEATURED;
-import static com.youyi.common.type.notification.NotificationTemplateKey.UGC_LIKE;
-import static com.youyi.common.type.notification.NotificationTemplateKey.USER_FOLLOW;
+import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_ADOPT;
+import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_COLLECT;
+import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_COMMENT;
+import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_COMMENT_REPLY;
+import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_FEATURED;
+import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_LIKE;
+import static com.youyi.domain.notification.type.NotificationTemplateKey.USER_FOLLOW;
 import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getCacheValue;
 import static com.youyi.infra.conf.core.Conf.getMapConfig;
+import static com.youyi.infra.conf.core.ConfigKey.NOTIFICATION_SUMMARY_TEMPLATE;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

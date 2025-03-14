@@ -1,13 +1,13 @@
 package com.youyi.domain.notification.core;
 
 import com.youyi.common.constant.SymbolConstant;
-import com.youyi.common.type.notification.NotificationType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.domain.notification.model.NotificationExtraData;
 import com.youyi.domain.notification.model.NotificationUnreadInfo;
 import com.youyi.domain.notification.repository.NotificationRepository;
 import com.youyi.domain.notification.repository.po.NotificationPO;
+import com.youyi.domain.notification.type.NotificationType;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.repository.UserRelationRepository;
 import java.util.HashSet;
@@ -20,8 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
-import static com.youyi.common.type.notification.NotificationStatus.READ;
-import static com.youyi.common.type.notification.NotificationStatus.UNREAD;
+import static com.youyi.domain.notification.type.NotificationStatus.READ;
+import static com.youyi.domain.notification.type.NotificationStatus.UNREAD;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

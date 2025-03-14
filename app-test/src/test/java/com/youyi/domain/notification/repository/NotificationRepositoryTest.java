@@ -1,12 +1,12 @@
 package com.youyi.domain.notification.repository;
 
 import com.youyi.BaseIntegrationTest;
-import com.youyi.common.type.notification.NotificationStatus;
-import com.youyi.common.type.notification.NotificationType;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.common.util.IdSeqUtil;
+import com.youyi.common.util.seq.IdSeqUtil;
 import com.youyi.domain.notification.model.NotificationUnreadInfo;
 import com.youyi.domain.notification.repository.po.NotificationPO;
+import com.youyi.domain.notification.type.NotificationStatus;
+import com.youyi.domain.notification.type.NotificationType;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

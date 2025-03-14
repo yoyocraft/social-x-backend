@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import static com.youyi.common.type.conf.ConfigKey.IMAGE_DETECT_API_URL;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
+import static com.youyi.infra.conf.core.ConfigKey.IMAGE_DETECT_API_URL;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
