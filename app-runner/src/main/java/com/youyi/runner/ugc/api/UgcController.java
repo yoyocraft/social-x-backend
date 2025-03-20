@@ -16,6 +16,7 @@ import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
 import com.youyi.infra.lock.LocalLockUtil;
 import com.youyi.infra.sse.SseEmitter;
 import com.youyi.runner.ugc.model.UgcResponse;
+import com.youyi.runner.ugc.model.UgcStatisticResponse;
 import com.youyi.runner.ugc.util.UgcValidator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ import static com.youyi.runner.ugc.util.UgcResponseUtil.publishSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryHotUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.querySelfUgcSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUgcDetailSuccess;
+import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUgcStatisticSuccess;
 import static com.youyi.runner.ugc.util.UgcResponseUtil.queryUserPageUgcSuccess;
 
 /**
@@ -182,5 +184,13 @@ public class UgcController {
         UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
         SseEmitter sseEmitter = ugcHelper.generateSummary(ugcDO);
         return generateSummarySuccess(sseEmitter, request);
+    }
+
+    @RequestMapping(value = "/statistic", method = RequestMethod.POST)
+    public Result<UgcStatisticResponse> queryUgcStatistic(@RequestBody UgcQueryRequest request) {
+        UgcValidator.checkUgcQueryRequestForUgcStatistic(request);
+        UgcDO ugcDO = UGC_ASSEMBLER.toDO(request);
+        ugcHelper.queryUgcStatistic(ugcDO);
+        return queryUgcStatisticSuccess(request, ugcDO);
     }
 }

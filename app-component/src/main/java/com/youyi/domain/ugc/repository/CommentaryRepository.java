@@ -92,6 +92,16 @@ public class CommentaryRepository {
         }
     }
 
+    public List<CommentaryDocument> queryByCommentatorId(String commentatorId) {
+        try {
+            checkState(StringUtils.isNotBlank(commentatorId));
+            return commentaryDAO.queryByCommentatorId(commentatorId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
     public List<CommentaryDocument> queryWithTimeCursor(long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);

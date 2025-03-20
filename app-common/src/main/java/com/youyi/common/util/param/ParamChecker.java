@@ -175,15 +175,6 @@ public interface ParamChecker<T> {
         };
     }
 
-    static ParamChecker<Boolean> trueChecker(String errorMsg) {
-        return param -> {
-            boolean validate = Boolean.TRUE.equals(param);
-            return validate
-                ? CheckResult.success()
-                : CheckResult.of(INVALID_PARAM, errorMsg);
-        };
-    }
-
     static ParamChecker<String> snowflakeIdChecker() {
         return snowflakeIdChecker("id不合法");
     }

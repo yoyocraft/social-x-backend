@@ -59,14 +59,13 @@ class UserValidatorTest {
 
     @Test
     void testCheckUserQueryRequest() {
-        AppBizException ex = Assertions.assertThrows(AppBizException.class, () -> UserValidator.checkUserQueryRequest(new UserQueryRequest()));
-        Assertions.assertEquals("INVALID_PARAM", ex.getCode());
+        Assertions.assertDoesNotThrow(() -> UserValidator.checkUserQueryRequest(new UserQueryRequest()));
         try (MockedStatic<Conf> mockConf = Mockito.mockStatic(Conf.class)) {
             mockConf.when(() -> Conf.getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE)).thenReturn(15);
             UserQueryRequest request = buildValidUserQueryRequest();
             // size 超过最大值
             request.setSize(100);
-            ex = Assertions.assertThrows(AppBizException.class, () -> UserValidator.checkUserQueryRequest(request));
+            AppBizException ex = Assertions.assertThrows(AppBizException.class, () -> UserValidator.checkUserQueryRequest(request));
             Assertions.assertEquals("INVALID_PARAM", ex.getCode());
             Assertions.assertEquals("size过大", ex.getMessage());
 

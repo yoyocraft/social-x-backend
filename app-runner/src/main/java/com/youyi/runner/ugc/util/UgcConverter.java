@@ -6,6 +6,7 @@ import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.runner.ugc.model.UgcResponse;
+import com.youyi.runner.ugc.model.UgcStatisticResponse;
 import com.youyi.runner.user.model.UserBasicInfoResponse;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,6 +42,8 @@ public interface UgcConverter {
         @Mapping(target = "auditRet", expression = "java(Optional.ofNullable(ugcDO.getExtraData()).orElseGet(UgcExtraData::new).getAuditRet())"),
     })
     UgcResponse toResponse(UgcDO ugcDO);
+
+    UgcStatisticResponse toStatisticResponse(UgcDO ugcDO);
 
     default UserBasicInfoResponse toAuthorResponse(UserDO userDO) {
         UserBasicInfoResponse author = new UserBasicInfoResponse();

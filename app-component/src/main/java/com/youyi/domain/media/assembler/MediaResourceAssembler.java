@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static com.youyi.common.constant.SymbolConstant.DOT;
 import static com.youyi.common.util.ext.MoreFeatures.runCatching;
+import static com.youyi.common.util.seq.IdSeqUtil.genTmpFileName;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -40,9 +41,8 @@ public interface MediaResourceAssembler {
 
     default File toFile(MultipartFile file) {
         String filename = file.getOriginalFilename();
-        String baseName = FilenameUtils.getBaseName(filename);
         String extension = FilenameUtils.getExtension(filename);
-        File tmpFile = runCatching(() -> File.createTempFile(baseName, DOT + extension));
+        File tmpFile = runCatching(() -> File.createTempFile(genTmpFileName(), DOT + extension));
         runCatching(() -> file.transferTo(tmpFile));
         return tmpFile;
     }

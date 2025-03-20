@@ -76,6 +76,12 @@ public interface UgcRelationshipRepository extends Neo4jRepository<UgcNode, Long
         """)
     List<UgcInteractInfo> queryCollectedUgcIdsWithCursor(@Param("userId") String userId, @Param("cursor") Long cursor, @Param("limit") int limit);
 
+    @Query("""
+        MATCH (u:user {userId: $userId})-[r:COLLECT]->(t:ugc)
+        RETURN t.ugcId AS ugcId
+        """)
+    List<String> queryAllCollectedUgcIds(@Param("userId") String userId);
+
     @Query("MATCH (u:ugc {ugcId: $ugcId}) RETURN u")
     UgcNode findByUgcId(@Param("ugcId") String ugcId);
 

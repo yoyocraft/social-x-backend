@@ -26,7 +26,6 @@ import static com.youyi.common.util.ext.MoreFeatures.runCatching;
 import static com.youyi.common.util.seq.IdSeqUtil.genMediaResourceName;
 import static com.youyi.domain.media.constant.MediaConstant.DATE_PATH_FORMATTER;
 import static com.youyi.domain.media.constant.MediaConstant.MEDIA_FILE_NAME_FORMATTER;
-import static com.youyi.infra.conf.core.Conf.checkConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
 import static com.youyi.infra.conf.core.ConfigKey.MEDIA_ACCESS_URL_PREFIX;
 import static com.youyi.infra.conf.core.ConfigKey.MEDIA_STORAGE_BASE_PATH;
@@ -40,9 +39,6 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
 
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
-        checkConfig(MEDIA_STORAGE_BASE_PATH);
-        checkConfig(MEDIA_ACCESS_URL_PREFIX);
-
         runCatching(() -> mkdirIfNeeded(getStringConfig(MEDIA_STORAGE_BASE_PATH)));
     }
 

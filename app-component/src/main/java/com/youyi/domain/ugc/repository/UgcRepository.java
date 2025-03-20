@@ -3,9 +3,9 @@ package com.youyi.domain.ugc.repository;
 import com.youyi.common.exception.AppSystemException;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
-import com.youyi.domain.ugc.type.UgcStatus;
 import com.youyi.domain.ugc.repository.dao.UgcDAO;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.domain.ugc.type.UgcStatus;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -88,6 +88,16 @@ public class UgcRepository {
         try {
             checkState(Objects.nonNull(ugcIds) && !ugcIds.isEmpty());
             return ugcDAO.queryBatchByUgcId(ugcIds);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
+            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
+        }
+    }
+
+    public List<UgcDocument> queryBatchByAuthorId(String authorId) {
+        try {
+            checkState(StringUtils.isNotBlank(authorId));
+            return ugcDAO.queryBatchByAuthorId(authorId);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

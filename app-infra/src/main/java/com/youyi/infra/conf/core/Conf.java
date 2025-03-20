@@ -30,13 +30,6 @@ public class Conf {
         );
     }
 
-    public static void checkConfig(String key) {
-        checkState(
-            StringUtils.isNotBlank(getStringConfig(key)),
-            String.format(CHECK_CONFIG_ERROR_MSG_FORMATTER, key)
-        );
-    }
-
     // ====================== map type ======================
     public static <K, V> Map<K, V> getMapConfig(String configKey, Class<K> keyType, Class<V> valueType) {
         return getMapConfig(configKey, keyType, valueType, Map.of());
