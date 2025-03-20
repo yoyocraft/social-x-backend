@@ -1,9 +1,9 @@
 package com.youyi.domain.ugc.repository.dao;
 
 import com.mongodb.client.result.UpdateResult;
+import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.type.UgcStatus;
 import com.youyi.domain.ugc.type.UgcType;
-import com.youyi.domain.ugc.repository.document.UgcDocument;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -115,6 +115,12 @@ public class UgcDAO {
     public List<UgcDocument> queryBatchByUgcId(List<String> ugcIds) {
         Query query = new Query();
         query.addCriteria(Criteria.where(UGC_ID).in(ugcIds));
+        return mongoTemplate.find(query, UgcDocument.class);
+    }
+
+    public List<UgcDocument> queryBatchByAuthorId(String authorId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(UGC_AUTHOR_ID).is(authorId));
         return mongoTemplate.find(query, UgcDocument.class);
     }
 

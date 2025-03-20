@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.RepositoryConstant.TOP_COMMENTARY_ID;
+import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_COMMENTATOR_ID;
 import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_EXTRA_DATA;
 import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_GMT_MODIFIED;
 import static com.youyi.domain.ugc.constant.UgcConstant.COMMENTARY_ID;
@@ -68,6 +69,13 @@ public class CommentaryDAO {
     public List<CommentaryDocument> queryByParentId(Collection<String> parentIds) {
         Query query = new Query();
         query.addCriteria(Criteria.where(COMMENTARY_PARENT_ID).in(parentIds));
+        buildCommentaryStatusQueryCondition(query, CommentaryStatus.ALL.name());
+        return mongoTemplate.find(query, CommentaryDocument.class);
+    }
+
+    public List<CommentaryDocument> queryByCommentatorId(String commentatorId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(COMMENTARY_COMMENTATOR_ID).is(commentatorId));
         buildCommentaryStatusQueryCondition(query, CommentaryStatus.ALL.name());
         return mongoTemplate.find(query, CommentaryDocument.class);
     }

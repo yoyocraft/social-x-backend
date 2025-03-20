@@ -6,7 +6,6 @@ import com.youyi.domain.ugc.repository.UgcCategoryRepository;
 import com.youyi.domain.ugc.repository.UgcTagRepository;
 import com.youyi.domain.ugc.repository.po.UgcCategoryPO;
 import com.youyi.domain.ugc.repository.po.UgcTagPO;
-import com.youyi.infra.conf.core.Conf;
 import java.util.List;
 import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Component;
 import static com.google.common.base.Preconditions.checkState;
 import static com.youyi.common.constant.SystemConstant.SYSTEM_OPERATOR_ID;
 import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
+import static com.youyi.infra.conf.core.Conf.getListConfig;
 import static com.youyi.infra.conf.core.ConfigKey.SYSTEM_PRESET_UGC_CATEGORY;
 import static com.youyi.infra.conf.core.ConfigKey.SYSTEM_PRESET_UGC_TAG;
 
@@ -48,7 +48,7 @@ public class UgcMetadataInitializer implements ApplicationListener<ApplicationRe
             logger.info("[UgcMetadataInitializer] inner ugc categories already exists, skip init");
             return;
         }
-        List<UgcCategoryWrapper> categoryWrappers = Conf.getListConfig(SYSTEM_PRESET_UGC_CATEGORY, UgcCategoryWrapper.class);
+        List<UgcCategoryWrapper> categoryWrappers = getListConfig(SYSTEM_PRESET_UGC_CATEGORY, UgcCategoryWrapper.class);
         checkState(
             CollectionUtils.isNotEmpty(categoryWrappers),
             "inner ugc categories is empty, please check INNER_UGC_CATEGORIES config"
@@ -75,7 +75,7 @@ public class UgcMetadataInitializer implements ApplicationListener<ApplicationRe
             return;
         }
 
-        List<UgcTagWrapper> tagWrappers = Conf.getListConfig(SYSTEM_PRESET_UGC_TAG, UgcTagWrapper.class);
+        List<UgcTagWrapper> tagWrappers = getListConfig(SYSTEM_PRESET_UGC_TAG, UgcTagWrapper.class);
         checkState(
             CollectionUtils.isNotEmpty(tagWrappers),
             "inner ugc tags is empty, please check INNER_UGC_TAGS config"

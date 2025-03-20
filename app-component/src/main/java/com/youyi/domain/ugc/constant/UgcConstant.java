@@ -48,6 +48,7 @@ public class UgcConstant {
     public static final String COMMENTARY_ID = "commentaryId";
     public static final String COMMENTARY_PARENT_ID = "parentId";
     public static final String COMMENTARY_UGC_ID = "ugcId";
+    public static final String COMMENTARY_COMMENTATOR_ID = "commentatorId";
     public static final String COMMENTARY_LIKE_COUNT = "likeCount";
     public static final String COMMENTARY_STATUS = "status";
     public static final String COMMENTARY_EXTRA_DATA = "extraData";

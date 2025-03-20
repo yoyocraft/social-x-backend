@@ -154,4 +154,10 @@ public class UgcValidator {
             .put(notBlankChecker("请求ID不能为空"), request.getReqId())
             .validateWithThrow();
     }
+
+    public static void checkUgcQueryRequestForUgcStatistic(UgcQueryRequest request) {
+        ParamCheckerChain.newCheckerChain()
+            .put(snowflakeIdChecker("用户ID不合法"), request.getAuthorId())
+            .validateWithThrow();
+    }
 }

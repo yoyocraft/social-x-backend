@@ -1,10 +1,10 @@
 package com.youyi.domain.ugc.model;
 
+import com.youyi.common.util.seq.IdSeqUtil;
+import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.type.UgcInteractionType;
 import com.youyi.domain.ugc.type.UgcStatus;
 import com.youyi.domain.ugc.type.UgcType;
-import com.youyi.common.util.seq.IdSeqUtil;
-import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.user.model.UserDO;
 import java.util.List;
 import java.util.Objects;
@@ -72,6 +72,11 @@ public class UgcDO {
 
     // for edit
     private Boolean editing;
+
+    // for statistic
+    private Long articleCount;
+    private Long postCount;
+    private Long questionCount;
 
     public void create() {
         this.ugcId = IdSeqUtil.genUgcId();

@@ -3,12 +3,12 @@ package com.youyi.runner.aspect;
 import com.youyi.common.annotation.RecordOpLog;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.audit.helper.OperationLogHelper;
 import com.youyi.domain.audit.model.OperationLogDO;
 import com.youyi.domain.audit.model.OperationLogExtraData;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
+import com.youyi.infra.conf.util.ThreadPoolExecutorUtil;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +28,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
@@ -38,8 +39,6 @@ import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.SystemConstant.SYSTEM_OPERATOR_ID;
 import static com.youyi.common.constant.SystemConstant.SYSTEM_OPERATOR_NAME;
-import static com.youyi.infra.conf.core.Conf.checkConfig;
-import static com.youyi.infra.conf.core.Conf.getCacheValue;
 import static com.youyi.infra.conf.core.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
 
 /**
@@ -49,7 +48,7 @@ import static com.youyi.infra.conf.core.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONF
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEvent>, Ordered {
+public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEvent>, Ordered, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(RecordOpLogAspect.class);
     private static final ExpressionParser expressionParser = new SpelExpressionParser();
@@ -69,13 +68,17 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
-        checkConfig(RECORD_OP_LOG_THREAD_POOL_CONFIG);
         initAsyncExecutor();
     }
 
     @Override
     public int getOrder() {
         return AspectOrdered.RECORD_OP_LOG.getOrder();
+    }
+
+    @Override
+    public void destroy() {
+        ThreadPoolExecutorUtil.shutdownExecutor(asyncRecordOpLogExecutor, "asyncRecordOpLogExecutor");
     }
 
     @Pointcut("@annotation(com.youyi.common.annotation.RecordOpLog)")
@@ -253,15 +256,6 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
     }
 
     private void initAsyncExecutor() {
-        ThreadPoolConfigWrapper recordOpLogExecutorConfig = getCacheValue(RECORD_OP_LOG_THREAD_POOL_CONFIG, ThreadPoolConfigWrapper.class);
-        asyncRecordOpLogExecutor = new ThreadPoolExecutor(
-            recordOpLogExecutorConfig.getCorePoolSize(),
-            recordOpLogExecutorConfig.getMaximumPoolSize(),
-            recordOpLogExecutorConfig.getKeepAliveTime(),
-            recordOpLogExecutorConfig.getTimeUnit(),
-            recordOpLogExecutorConfig.getQueue(),
-            recordOpLogExecutorConfig.getThreadFactory(logger),
-            recordOpLogExecutorConfig.getRejectedHandler()
-        );
+        asyncRecordOpLogExecutor = ThreadPoolExecutorUtil.createExecutor(RECORD_OP_LOG_THREAD_POOL_CONFIG, logger);
     }
 }

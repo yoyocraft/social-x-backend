@@ -12,6 +12,7 @@ import com.youyi.domain.ugc.request.UgcQueryRequest;
 import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
 import com.youyi.infra.sse.SseEmitter;
 import com.youyi.runner.ugc.model.UgcResponse;
+import com.youyi.runner.ugc.model.UgcStatisticResponse;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -103,6 +104,12 @@ public class UgcResponseUtil {
     public static SseEmitter generateSummarySuccess(SseEmitter sseEmitter, UgcSummaryGenerateRequest request) {
         logger.info("generate summary, request:{}", GsonUtil.toJson(request));
         return sseEmitter;
+    }
+
+    public static Result<UgcStatisticResponse> queryUgcStatisticSuccess(UgcQueryRequest request, UgcDO ugcDO) {
+        Result<UgcStatisticResponse> response = Result.success(UGC_CONVERTER.toStatisticResponse(ugcDO));
+        logger.info("query ugc statistic, request:{}, response:{}", GsonUtil.toJson(request), GsonUtil.toJson(response));
+        return response;
     }
 
     private static Result<PageCursorResult<String, UgcResponse>> buildCursorResponse(List<UgcDO> ugcDOList) {

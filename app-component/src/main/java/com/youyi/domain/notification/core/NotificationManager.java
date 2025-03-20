@@ -1,20 +1,19 @@
 package com.youyi.domain.notification.core;
 
 import com.youyi.common.constant.SymbolConstant;
-import com.youyi.domain.ugc.constant.UgcConstant;
-import com.youyi.domain.ugc.type.UgcType;
-import com.youyi.common.wrapper.ThreadPoolConfigWrapper;
 import com.youyi.domain.notification.model.NotificationDO;
 import com.youyi.domain.notification.model.NotificationExtraData;
 import com.youyi.domain.notification.repository.NotificationRepository;
 import com.youyi.domain.notification.type.NotificationTemplateKey;
 import com.youyi.domain.notification.type.NotificationType;
+import com.youyi.domain.ugc.constant.UgcConstant;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.user.model.UserDO;
-import com.youyi.infra.conf.core.ConfigKey;
+import com.youyi.infra.conf.util.ThreadPoolExecutorUtil;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -23,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -35,10 +35,9 @@ import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_COM
 import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_FEATURED;
 import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_LIKE;
 import static com.youyi.domain.notification.type.NotificationTemplateKey.USER_FOLLOW;
-import static com.youyi.infra.conf.core.Conf.checkConfig;
-import static com.youyi.infra.conf.core.Conf.getCacheValue;
 import static com.youyi.infra.conf.core.Conf.getMapConfig;
 import static com.youyi.infra.conf.core.ConfigKey.NOTIFICATION_SUMMARY_TEMPLATE;
+import static com.youyi.infra.conf.core.ConfigKey.NOTIFICATION_THREAD_POOL_CONFIG;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -46,7 +45,7 @@ import static com.youyi.infra.conf.core.ConfigKey.NOTIFICATION_SUMMARY_TEMPLATE;
  */
 @Component
 @RequiredArgsConstructor
-public class NotificationManager implements ApplicationListener<ApplicationReadyEvent> {
+public class NotificationManager implements ApplicationListener<ApplicationReadyEvent>, DisposableBean {
 
     private static final Logger logger = LoggerFactory.getLogger(NotificationManager.class);
     private static ThreadPoolExecutor notificationExecutor;
@@ -57,21 +56,16 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
 
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
-        checkConfig(ConfigKey.NOTIFICATION_THREAD_POOL_CONFIG);
         initAsyncExecutor();
     }
 
+    @Override
+    public void destroy() {
+        ThreadPoolExecutorUtil.shutdownExecutor(notificationExecutor, "notificationExecutor");
+    }
+
     private void initAsyncExecutor() {
-        ThreadPoolConfigWrapper notificationTpeConfig = getCacheValue(ConfigKey.NOTIFICATION_THREAD_POOL_CONFIG, ThreadPoolConfigWrapper.class);
-        notificationExecutor = new ThreadPoolExecutor(
-            notificationTpeConfig.getCorePoolSize(),
-            notificationTpeConfig.getMaximumPoolSize(),
-            notificationTpeConfig.getKeepAliveTime(),
-            notificationTpeConfig.getTimeUnit(),
-            notificationTpeConfig.getQueue(),
-            notificationTpeConfig.getThreadFactory(logger),
-            notificationTpeConfig.getRejectedHandler()
-        );
+        notificationExecutor = ThreadPoolExecutorUtil.createExecutor(NOTIFICATION_THREAD_POOL_CONFIG, logger);
     }
 
     /**

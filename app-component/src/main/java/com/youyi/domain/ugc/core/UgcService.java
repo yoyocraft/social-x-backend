@@ -3,10 +3,6 @@ package com.youyi.domain.ugc.core;
 import com.google.gson.reflect.TypeToken;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
-import com.youyi.domain.ugc.type.UgcStatisticType;
-import com.youyi.domain.ugc.type.UgcStatus;
-import com.youyi.domain.ugc.type.UgcTagType;
-import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.HotUgcCacheInfo;
 import com.youyi.domain.ugc.model.UgcDO;
@@ -14,10 +10,15 @@ import com.youyi.domain.ugc.model.UgcExtraData;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.UgcTagRepository;
+import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.repository.po.UgcTagPO;
 import com.youyi.domain.ugc.repository.relation.UgcInteractInfo;
 import com.youyi.domain.ugc.repository.relation.UgcNode;
+import com.youyi.domain.ugc.type.UgcStatisticType;
+import com.youyi.domain.ugc.type.UgcStatus;
+import com.youyi.domain.ugc.type.UgcTagType;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.ugc.util.RecommendUtil;
 import com.youyi.domain.ugc.util.UgcContentUtil;
 import com.youyi.domain.user.model.UserDO;
@@ -38,6 +39,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -93,10 +95,10 @@ public class UgcService {
     }
 
     public List<UgcDocument> querySelfUgc(UgcDO ugcDO) {
-        UserDO author = ugcDO.getAuthor();
+        String authorId = ugcDO.getAuthorId();
         // 根据 cursor 查询 gmt_modified 作为查询游标
         long cursor = getTimeCursor(ugcDO);
-        return ugcRepository.querySelfUgc(ugcDO.getUgcType().name(), ugcDO.getStatus().name(), author.getUserId(), cursor, ugcDO.getSize());
+        return ugcRepository.querySelfUgc(ugcDO.getUgcType().name(), ugcDO.getStatus().name(), authorId, cursor, ugcDO.getSize());
     }
 
     public List<UgcDocument> listTimelineUgcFeed(UgcDO ugcDO) {
@@ -368,37 +370,6 @@ public class UgcService {
             .subscribe();
     }
 
-    private void checkAuthorization(UgcDO ugcDO, UgcDocument ugcDocument) {
-        String currentUserId = ugcDO.getAuthor().getUserId();
-        String actualAuthorId = ugcDocument.getAuthorId();
-
-        if (!currentUserId.equals(actualAuthorId)) {
-            throw AppBizException.of(OPERATION_DENIED, "无权修改！");
-        }
-    }
-
-    private long getTimeCursor(UgcDO ugcDO) {
-        long cursor;
-        if (INIT_QUERY_CURSOR.equals(ugcDO.getCursor())) {
-            cursor = System.currentTimeMillis();
-        } else {
-            UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getCursor());
-            checkNotNull(ugcDocument);
-            cursor = ugcDocument.getGmtModified();
-        }
-        return cursor;
-    }
-
-    private boolean checkIncrCondition(UgcDO ugcDO, UserDO currentUser) {
-        // 仅公开稿件才可增加浏览量
-        if (ugcDO.getStatus() != UgcStatus.PUBLISHED) {
-            return false;
-        }
-
-        // 非作者查看可以增加浏览量
-        return !ugcDO.getAuthor().getUserId().equals(currentUser.getUserId());
-    }
-
     public List<String> getRecommendTags(UserDO currentUser) {
         List<String> recommendedTags;
         // 0. 先读取缓存数据
@@ -451,5 +422,51 @@ public class UgcService {
             ugcDO.setLiked(likedUgcIds.contains(ugcDO.getUgcId()));
             ugcDO.setCollected(collectedUgcIds.contains(ugcDO.getUgcId()));
         });
+    }
+
+    private void checkAuthorization(UgcDO ugcDO, UgcDocument ugcDocument) {
+        String currentUserId = ugcDO.getAuthor().getUserId();
+        String actualAuthorId = ugcDocument.getAuthorId();
+
+        if (!currentUserId.equals(actualAuthorId)) {
+            throw AppBizException.of(OPERATION_DENIED, "无权修改！");
+        }
+    }
+
+    private long getTimeCursor(UgcDO ugcDO) {
+        long cursor;
+        if (INIT_QUERY_CURSOR.equals(ugcDO.getCursor())) {
+            cursor = System.currentTimeMillis();
+        } else {
+            UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getCursor());
+            checkNotNull(ugcDocument);
+            cursor = ugcDocument.getGmtModified();
+        }
+        return cursor;
+    }
+
+    private boolean checkIncrCondition(UgcDO ugcDO, UserDO currentUser) {
+        // 仅公开稿件才可增加浏览量
+        if (ugcDO.getStatus() != UgcStatus.PUBLISHED) {
+            return false;
+        }
+
+        // 非作者查看可以增加浏览量
+        return !ugcDO.getAuthor().getUserId().equals(currentUser.getUserId());
+    }
+
+    public void fillContentStatistic(UgcDO ugcDO, List<UgcDocument> ugcDocumentList, List<String> collectedUgcIds) {
+        Map<String, List<UgcDocument>> typeUgcMap = ugcDocumentList.stream().collect(Collectors.groupingBy(UgcDocument::getType));
+        ugcDO.setArticleCount((long) typeUgcMap.getOrDefault(UgcType.ARTICLE.name(), Collections.emptyList()).size());
+        ugcDO.setPostCount((long) typeUgcMap.getOrDefault(UgcType.POST.name(), Collections.emptyList()).size());
+        ugcDO.setQuestionCount((long) typeUgcMap.getOrDefault(UgcType.QUESTION.name(), Collections.emptyList()).size());
+        ugcDO.setCollectCount((long) collectedUgcIds.size());
+    }
+
+    public void fillActivityStatistic(UgcDO ugcDO, List<UgcDocument> ugcDocumentList, List<CommentaryDocument> commentaryDocumentList) {
+        ugcDO.setCommentaryCount((long) commentaryDocumentList.size());
+        ugcDocumentList.stream().map(UgcDocument::getLikeCount)
+            .reduce(Long::sum)
+            .ifPresent(ugcDO::setLikeCount);
     }
 }

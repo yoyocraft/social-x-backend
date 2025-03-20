@@ -22,10 +22,8 @@ public class ImageDetectAdapter {
     private static final Logger logger = LoggerFactory.getLogger(ImageDetectAdapter.class);
 
     public ImageDetectResponse checkImage(ImageDetectRequest request) {
-        CompletableFuture<String> future = HttpUtil.sendPostRequest(
-            getStringConfig(IMAGE_DETECT_API_URL),
-            request
-        );
+        String reqUrl = getStringConfig(IMAGE_DETECT_API_URL);
+        CompletableFuture<String> future = HttpUtil.sendPostRequest(reqUrl, request);
 
         try {
             String response = future.join();

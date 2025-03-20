@@ -2,6 +2,8 @@ package com.youyi.domain.ugc.helper;
 
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
+import com.youyi.domain.ugc.repository.CommentaryRepository;
+import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.type.UgcInteractionType;
 import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.notification.core.NotificationManager;
@@ -58,6 +60,7 @@ public class UgcHelper {
     private final UgcRepository ugcRepository;
     private final UgcCategoryRepository ugcCategoryRepository;
     private final UgcRelationshipRepository ugcRelationshipRepository;
+    private final CommentaryRepository commentaryRepository;
 
     public void publishUgc(UgcDO ugcDO) {
         fillCurrUserAsAuthor(ugcDO);
@@ -199,6 +202,18 @@ public class UgcHelper {
         return sseEmitter;
     }
 
+    public void queryUgcStatistic(UgcDO ugcDO) {
+        List<UgcDocument> ugcDocumentList = ugcRepository.queryBatchByAuthorId(ugcDO.getAuthorId());
+        List<String> collectedUgcIds = ugcRelationshipRepository.queryAllCollectedUgcIds(ugcDO.getAuthorId());
+        // 填充 UGC Type Statistic 数据
+        ugcService.fillContentStatistic(ugcDO, ugcDocumentList, collectedUgcIds);
+
+        List<CommentaryDocument> commentaryDocumentList = commentaryRepository.queryByCommentatorId(ugcDO.getAuthorId());
+        // 填充活跃度数据
+        ugcService.fillActivityStatistic(ugcDO, ugcDocumentList, commentaryDocumentList);
+
+    }
+
     private void handleLikeUgcInteraction(UgcDO ugcDO, UserDO currentUser) {
         // 喜欢
         if (Boolean.TRUE.equals(ugcDO.getInteractFlag())) {
@@ -326,6 +341,7 @@ public class UgcHelper {
         }
         throw AppBizException.of(OPERATION_DENIED, "无权修改！");
     }
+
     private void checkEditingOperation(UgcDO ugcDO, UgcDocument ugcDocument) {
         if (Boolean.TRUE.equals(ugcDO.getEditing())) {
             fillCurrUserAsAuthor(ugcDO);
