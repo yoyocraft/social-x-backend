@@ -9,7 +9,7 @@ ENV="local" # prod
 # 检查 JAR 是否存在
 if [ ! -f "$JAR_PATH" ]; then
     echo "JAR 文件未找到，正在执行打包..."
-    if ./mvnw clean package -P$ENV -DskipTests; then
+    if ./mvnw clean package -P$ENV -Dmaven.test.skip=true; then
         echo "打包完成。"
     else
         echo "打包失败，请检查代码或环境配置。" >&2

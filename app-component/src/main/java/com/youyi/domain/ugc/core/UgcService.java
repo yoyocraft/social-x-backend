@@ -47,6 +47,7 @@ import org.springframework.stereotype.Component;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.RepositoryConstant.INIT_QUERY_CURSOR;
+import static com.youyi.common.constant.SystemConstant.DEFAULT_KEY;
 import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofHotUgcListKey;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCollectCountKey;
@@ -54,8 +55,10 @@ import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCommentaryCountKey;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcLikeCountKey;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcUserRecommendTagKey;
 import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcViewCountKey;
+import static com.youyi.infra.conf.core.Conf.getMapConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
 import static com.youyi.infra.conf.core.ConfigKey.AI_UGC_VIEW_SUMMARY_PROMPT;
+import static com.youyi.infra.conf.core.ConfigKey.DEFAULT_RECOMMEND_TAG;
 import static com.youyi.infra.conf.core.ConfigKey.UGC_TAG_RELATIONSHIP;
 
 /**
@@ -168,7 +171,7 @@ public class UgcService {
         }
 
         long cursor = getTimeCursor(ugcDO);
-        return ugcRepository.queryByTagWithTimeCursor(tags, ugcDO.getStatus().name(), cursor, ugcDO.getSize());
+        return ugcRepository.queryByTagWithTimeCursor(tags, ugcDO.getCategoryId(), ugcDO.getStatus().name(), cursor, ugcDO.getSize());
     }
 
     public List<UgcDO> fillAuthorAndCursorInfo(List<UgcDocument> ugcDocumentList, Map<String, UserDO> id2UserInfoMap) {
@@ -424,6 +427,22 @@ public class UgcService {
         });
     }
 
+    public void fillRecommendTags(UgcDO ugcDO, List<String> systemRecommendTags) {
+        if (StringUtils.isBlank(ugcDO.getCategoryId())) {
+            ugcDO.setTags(systemRecommendTags);
+            return;
+        }
+        Set<String> recommendTags = new HashSet<>(systemRecommendTags);
+        Map<String, String> defaultRecommendTagMap = getMapConfig(DEFAULT_RECOMMEND_TAG, String.class, String.class);
+        String defaultRecommendTag = defaultRecommendTagMap.getOrDefault(ugcDO.getCategoryId(), defaultRecommendTagMap.get(DEFAULT_KEY));
+        if (StringUtils.isBlank(defaultRecommendTag) || recommendTags.contains(defaultRecommendTag)) {
+            ugcDO.setTags(new ArrayList<>(recommendTags));
+            return;
+        }
+        recommendTags.add(defaultRecommendTag);
+        ugcDO.setTags(new ArrayList<>(recommendTags));
+    }
+
     private void checkAuthorization(UgcDO ugcDO, UgcDocument ugcDocument) {
         String currentUserId = ugcDO.getAuthor().getUserId();
         String actualAuthorId = ugcDocument.getAuthorId();
@@ -462,11 +481,11 @@ public class UgcService {
         ugcDO.setQuestionCount((long) typeUgcMap.getOrDefault(UgcType.QUESTION.name(), Collections.emptyList()).size());
         ugcDO.setCollectCount((long) collectedUgcIds.size());
     }
-
     public void fillActivityStatistic(UgcDO ugcDO, List<UgcDocument> ugcDocumentList, List<CommentaryDocument> commentaryDocumentList) {
         ugcDO.setCommentaryCount((long) commentaryDocumentList.size());
         ugcDocumentList.stream().map(UgcDocument::getLikeCount)
             .reduce(Long::sum)
             .ifPresent(ugcDO::setLikeCount);
     }
+
 }

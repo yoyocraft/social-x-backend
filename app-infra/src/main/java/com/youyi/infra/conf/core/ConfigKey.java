@@ -55,6 +55,8 @@ public enum ConfigKey {
     IMAGE_DETECT_API_URL,
     PROB_THRESHOLD,
 
+    DEFAULT_RECOMMEND_TAG,
+
     // ================ Notification ==================
     NOTIFICATION_SUMMARY_TEMPLATE,
 

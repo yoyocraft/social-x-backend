@@ -157,10 +157,10 @@ public class UgcRepository {
         }
     }
 
-    public List<UgcDocument> queryByTagWithTimeCursor(Collection<String> tags, String ugcStatus, long lastCursor, int size) {
+    public List<UgcDocument> queryByTagWithTimeCursor(Collection<String> tags, String categoryId, String ugcStatus, long lastCursor, int size) {
         try {
             checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryWithTimeCursor(EMPTY, EMPTY, EMPTY, ugcStatus, emptyList(), tags, lastCursor, size);
+            return ugcDAO.queryWithTimeCursor(EMPTY, EMPTY, categoryId, ugcStatus, emptyList(), tags, lastCursor, size);
         } catch (Exception e) {
             infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
             throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);

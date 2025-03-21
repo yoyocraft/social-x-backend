@@ -161,10 +161,11 @@ public class UgcHelper {
         // 1. 查询当前用户感兴趣的标签信息
         UserDO currentUserInfo = userService.getCurrentUserInfo();
         List<String> recommendTags = ugcService.getRecommendTags(currentUserInfo);
-        ugcDO.setTags(recommendTags);
-        // 2. 游标查询UGC信息
+        // 2. 拼接一个默认的标签，防止查询不到推荐的文章
+        ugcService.fillRecommendTags(ugcDO, recommendTags);
+        // 3. 游标查询UGC信息
         List<UgcDocument> ugcDocumentList = ugcService.listRecommendUgcFeed(ugcDO);
-        // 3. 封装信息
+        // 4. 封装信息
         return polishUgcInfos(ugcDocumentList);
     }
 
