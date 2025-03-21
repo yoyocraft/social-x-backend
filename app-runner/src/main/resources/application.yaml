@@ -2,6 +2,7 @@ server:
   port: ${SERVER_PORT}
   servlet:
     context-path: ${CONTEXT_PATH}
+  shutdown: GRACEFUL
 
 spring:
   application:
@@ -9,6 +10,9 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   task:
     scheduling:
       thread-name-prefix: ${TASK_THREAD_NAME_PREFIX}
@@ -17,9 +21,8 @@ spring:
       shutdown:
         await-termination: ${TASK_SHUTDOWN_AWAIT_TERMINATION}
         await-termination-period: ${TASK_SHUTDOWN_AWAIT_TERMINATION_PERIOD}
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
+  lifecycle:
+    timeout-per-shutdown-phase: ${SPRING_LIFECYCLE_TIMEOUT_PER_SHUTDOWN_PHASE}
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
