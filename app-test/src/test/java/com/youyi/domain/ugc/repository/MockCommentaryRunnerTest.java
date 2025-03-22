@@ -2,10 +2,11 @@ package com.youyi.domain.ugc.repository;
 
 import com.github.javafaker.Faker;
 import com.youyi.BaseIntegrationTest;
-import com.youyi.domain.ugc.type.CommentaryStatus;
+import com.youyi.common.constant.RepositoryConstant;
 import com.youyi.common.util.seq.IdSeqUtil;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
+import com.youyi.domain.ugc.type.CommentaryStatus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -44,21 +45,19 @@ class MockCommentaryRunnerTest extends BaseIntegrationTest {
     );
 
     private static final List<String> UGC_IDS = List.of(
-        "1899070453153144832"
+        "1899292582322642944"
     );
 
     private static final List<String> COMMENTARY_IDS = List.of(
-        // RepositoryConstant.TOP_COMMENTARY_ID
-        "1899078628279472129",
-        "1899078628279472128"
+        RepositoryConstant.TOP_COMMENTARY_ID
     );
 
     @Autowired
     CommentaryRepository commentaryRepository;
 
     @Test
-    void testSaveAllUgc() {
-        int turnCount = 5;
+    void testSaveAllCommentary() {
+        int turnCount = 1;
         List<CommentaryDocument> commentaryDocumentList = new ArrayList<>();
         for (String ugcId : UGC_IDS) {
             AUTHOR_IDS.forEach(authorId -> {

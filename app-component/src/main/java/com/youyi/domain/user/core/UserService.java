@@ -12,6 +12,7 @@ import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.domain.user.repository.relation.SuggestedUserInfo;
 import com.youyi.domain.user.repository.relation.UserNode;
 import com.youyi.domain.user.repository.relation.UserRelationship;
+import com.youyi.domain.user.util.RecommendUtil;
 import com.youyi.infra.cache.CacheKey;
 import com.youyi.infra.cache.manager.CacheManager;
 import java.util.ArrayList;
@@ -147,6 +148,9 @@ public class UserService {
     }
 
     public void fillUserInteractInfo(List<UserDO> users) {
+        if (CollectionUtils.isEmpty(users)) {
+            return;
+        }
         List<String> creatorIds = users.stream().map(UserDO::getUserId).toList();
         UserDO currentUser = getCurrentUserInfo();
         List<String> followerIds = userRelationRepository.queryFollowingUserRelationsBatch(currentUser.getUserId(), creatorIds);
@@ -227,7 +231,7 @@ public class UserService {
         return followUserIds;
     }
 
-    public List<UserDO> querySuggestedUsers(UserDO userDO) {
+    public List<UserDO> querySuggestedUsersUsingGraph(UserDO userDO) {
         List<SuggestedUserInfo> suggestedUserInfoList = userRelationRepository.getSuggestedUsers(userDO.getUserId(), userDO.getSize());
         if (CollectionUtils.isEmpty(suggestedUserInfoList)) {
             return Collections.emptyList();
@@ -236,6 +240,25 @@ public class UserService {
         Set<String> suggestedUserIds = suggestedUserInfoList.stream().map(SuggestedUserInfo::getSuggestedUserId).collect(Collectors.toSet());
         Map<String, UserDO> userId2DOMap = queryBatchByUserId(suggestedUserIds);
         return new ArrayList<>(userId2DOMap.values());
+    }
+
+    public List<UserDO> querySuggestedUserFromDatabase(UserDO currentUser) {
+        if (CollectionUtils.isEmpty(currentUser.getPersonalizedTags())) {
+            return Collections.emptyList();
+        }
+
+        List<UserInfoPO> suggestedUserInfos = userRepository.querySuggestedUsers(currentUser.buildToQueryUserInfoPO());
+        if (CollectionUtils.isEmpty(suggestedUserInfos)) {
+            return Collections.emptyList();
+        }
+
+        List<UserDO> suggestedUsers = suggestedUserInfos.stream().map(po -> {
+            UserDO userDO = new UserDO();
+            userDO.fillUserInfo(po);
+            return userDO;
+        }).toList();
+
+        return RecommendUtil.recommendUsers(currentUser, suggestedUsers);
     }
 
     public List<HotAuthorCacheInfo> listHotUserCache() {
