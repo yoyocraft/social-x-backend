@@ -88,6 +88,28 @@
         </foreach>
         AND `deleted_at` = 0
     </select>
-
+    <select id="querySuggestedUsers" resultType="com.youyi.domain.user.repository.po.UserInfoPO">
+        SELECT
+        <include refid="result_cols"/>
+        FROM `user_info`
+        WHERE `deleted_at` = 0
+        AND `user_id` != #{userId}
+        <trim prefix="AND (" suffix=")" suffixOverrides="OR">
+            <if test="company != null and company != '暂无'">
+                `company` LIKE CONCAT('%', #{company}, '%') OR
+            </if>
+            <if test="jobTitle != null and jobTitle != '暂无'">
+                `job_title` LIKE CONCAT('%', #{jobTitle}, '%') OR
+            </if>
+            <if test="workDirection != null and workDirection != ''">
+                `work_direction` = #{workDirection} OR
+            </if>
+            <if test="personalizedTags != null">
+                `personalized_tags` IS NOT NULL OR
+            </if>
+        </trim>
+        ORDER BY `id` ASC
+        LIMIT 50
+    </select>
 
 </mapper>

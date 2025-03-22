@@ -18,19 +18,24 @@ import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.domain.user.repository.relation.UserRelationship;
 import com.youyi.infra.cache.CacheKey;
 import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.tpe.TpeContainer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.youyi.domain.user.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.common.type.ReturnCode.PERMISSION_DENIED;
 import static com.youyi.common.util.seq.IdSeqUtil.genUserVerifyCaptchaToken;
+import static com.youyi.domain.user.constant.UserConstant.USER_LOGIN_STATE;
 import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserVerifyTokenKey;
 import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
 
@@ -42,7 +47,11 @@ import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey
 @RequiredArgsConstructor
 public class UserHelper {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserHelper.class);
+
     private final LoginStrategyFactory loginStrategyFactory;
+
+    private final TpeContainer tpeContainer;
     private final CacheManager cacheManager;
     private final NotificationManager notificationManager;
     private final UserService userService;
@@ -142,11 +151,28 @@ public class UserHelper {
 
     public List<UserDO> querySuggestedUsers(UserDO userDO) {
         UserDO currentUserInfo = userService.getCurrentUserInfo();
-        userDO.setUserId(currentUserInfo.getUserId());
-        List<UserDO> userDOList = userService.querySuggestedUsers(userDO);
-        // TODO 根据用户个人信息推荐一些用户，比如公司、职位等等
-        userService.fillUserInteractInfo(userDOList);
-        return userDOList;
+        userDO.fillUserInfo(currentUserInfo);
+
+        // 从 Neo4j 查询
+        CompletableFuture<List<UserDO>> relationSuggestedUsersFuture = CompletableFuture.supplyAsync(() -> userService.querySuggestedUsersUsingGraph(userDO), tpeContainer.getUserCommonOpExecutor());
+
+        // 从数据库查询
+        CompletableFuture<List<UserDO>> similarSuggestedUsersFuture = CompletableFuture.supplyAsync(() -> userService.querySuggestedUserFromDatabase(userDO), tpeContainer.getUserCommonOpExecutor());
+
+        try {
+            List<UserDO> relationSuggestedUsers = relationSuggestedUsersFuture.get();
+            List<UserDO> similarSuggestedUsers = similarSuggestedUsersFuture.get();
+
+            List<UserDO> suggestedUsers = new ArrayList<>(relationSuggestedUsers.size() + similarSuggestedUsers.size());
+            suggestedUsers.addAll(relationSuggestedUsers);
+            suggestedUsers.addAll(similarSuggestedUsers);
+
+            userService.fillUserInteractInfo(suggestedUsers);
+            return suggestedUsers;
+        } catch (Exception e) {
+            logger.error("query suggested users error", e);
+            return Collections.emptyList();
+        }
     }
 
     public List<UserDO> listHotUser() {

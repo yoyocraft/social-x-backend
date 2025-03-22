@@ -88,6 +88,9 @@ public class UserDO {
 
     private Double hotScore;
 
+    // for recommend
+    private Double similarity;
+
     public void initUserId() {
         this.userId = genUserId();
     }
@@ -147,6 +150,17 @@ public class UserDO {
         return userInfoPO;
     }
 
+    public UserInfoPO buildToQueryUserInfoPO() {
+        UserInfoPO userInfoPO = new UserInfoPO();
+        userInfoPO.setUserId(this.userId);
+        userInfoPO.setWorkStartTime(this.workStartTime);
+        userInfoPO.setWorkDirection(this.workDirection.getCode());
+        userInfoPO.setPersonalizedTags(GsonUtil.toJson(this.personalizedTags));
+        userInfoPO.setJobTitle(this.jobTitle);
+        userInfoPO.setCompany(this.company);
+        return userInfoPO;
+    }
+
     public void fillUserInfo(UserInfoPO userInfoPO) {
         this.userId = userInfoPO.getUserId();
         this.originalEmail = CryptoManager.aesDecrypt(userInfoPO.getEmail(), userInfoPO.getEmailIv());
@@ -184,6 +198,30 @@ public class UserDO {
         this.originalPhone = userLoginStateInfo.getDesensitizedMobile();
         this.status = userLoginStateInfo.getStatus();
         this.joinTime = userLoginStateInfo.getJoinTime();
+    }
+
+    public void fillUserInfo(UserDO userDO) {
+        this.userId = userDO.getUserId();
+        this.originalEmail = userDO.getOriginalEmail();
+        this.encryptedEmail = userDO.getEncryptedEmail();
+        this.identityType = userDO.getIdentityType();
+        this.identifier = userDO.getIdentifier();
+        this.credential = userDO.getCredential();
+        this.extra = userDO.getExtra();
+        this.salt = userDO.getSalt();
+        this.encryptedPhone = userDO.getEncryptedPhone();
+        this.originalPhone = userDO.getOriginalPhone();
+        this.nickname = userDO.getNickname();
+        this.avatar = userDO.getAvatar();
+        this.workStartTime = userDO.getWorkStartTime();
+        this.workDirection = userDO.getWorkDirection();
+        this.bio = userDO.getBio();
+        this.personalizedTags = userDO.getPersonalizedTags();
+        this.jobTitle = userDO.getJobTitle();
+        this.company = userDO.getCompany();
+        this.status = userDO.getStatus();
+        this.role = userDO.getRole();
+        this.joinTime = userDO.getJoinTime();
     }
 
     public void initSalt() {

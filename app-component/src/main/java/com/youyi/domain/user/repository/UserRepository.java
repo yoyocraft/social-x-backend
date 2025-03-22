@@ -129,4 +129,14 @@ public class UserRepository {
             throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
         }
     }
+
+    public List<UserInfoPO> querySuggestedUsers(UserInfoPO userInfoPO) {
+        try {
+            checkNotNull(userInfoPO);
+            return userInfoMapper.querySuggestedUsers(userInfoPO);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
 }
