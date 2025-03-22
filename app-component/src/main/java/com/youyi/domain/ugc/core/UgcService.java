@@ -73,11 +73,10 @@ public class UgcService {
 
     private final UgcRepository ugcRepository;
     private final UgcRelationshipRepository ugcRelationshipRepository;
+    private final UgcTagRepository ugcTagRepository;
 
-    private final UgcTpeContainer ugcTpeContainer;
     private final UgcStatisticCacheManager ugcStatisticCacheManager;
     private final CacheManager cacheManager;
-    private final UgcTagRepository ugcTagRepository;
 
     private final AiClient aiClient;
 
@@ -365,9 +364,7 @@ public class UgcService {
                 UgcExtraData extraData = Optional.ofNullable(ugcDO.getExtraData()).orElseGet(UgcExtraData::new);
                 extraData.setUgcSummary(summaryBuilder.toString());
                 ugcDO.setExtraData(extraData);
-                ugcTpeContainer.getUgcSysTaskExecutor().execute(() ->
-                    ugcRepository.updateUgc(ugcDO.buildToUpdateUgcDocumentWhenPublish())
-                );
+                ugcRepository.updateUgc(ugcDO.buildToUpdateUgcDocumentWhenPublish());
                 sseEmitter.complete();
             })
             .subscribe();
@@ -481,6 +478,7 @@ public class UgcService {
         ugcDO.setQuestionCount((long) typeUgcMap.getOrDefault(UgcType.QUESTION.name(), Collections.emptyList()).size());
         ugcDO.setCollectCount((long) collectedUgcIds.size());
     }
+
     public void fillActivityStatistic(UgcDO ugcDO, List<UgcDocument> ugcDocumentList, List<CommentaryDocument> commentaryDocumentList) {
         ugcDO.setCommentaryCount((long) commentaryDocumentList.size());
         ugcDocumentList.stream().map(UgcDocument::getLikeCount)

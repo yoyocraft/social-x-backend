@@ -15,6 +15,7 @@ import com.youyi.infra.conf.core.ConfigKey;
 import com.youyi.infra.detect.ImageDetectClient;
 import com.youyi.infra.detect.model.ImageDetectRequest;
 import com.youyi.infra.detect.model.ImageDetectResponse;
+import com.youyi.infra.tpe.TpeContainer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +47,8 @@ public class UgcAuditJob {
     private static final Logger logger = LoggerFactory.getLogger(UgcAuditJob.class);
 
     private static final long AUDIT_UGC_INTERVAL = 30000L;
-    private final UgcTpeContainer ugcTpeContainer;
+
+    private final TpeContainer tpeContainer;
 
     private final UgcRepository ugcRepository;
 
@@ -69,7 +71,7 @@ public class UgcAuditJob {
             if (ugcList.isEmpty()) {
                 break;
             }
-            ugcList.forEach(ugcDocument -> ugcTpeContainer.getAuditUgcExecutor().execute(() -> doAuditUgc(ugcDocument)));
+            ugcList.forEach(ugcDocument -> tpeContainer.getAuditUgcExecutor().execute(() -> doAuditUgc(ugcDocument)));
             cursor = ugcList.get(ugcList.size() - 1).getGmtModified();
         }
     }

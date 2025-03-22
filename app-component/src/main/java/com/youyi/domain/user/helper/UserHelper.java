@@ -144,6 +144,7 @@ public class UserHelper {
         UserDO currentUserInfo = userService.getCurrentUserInfo();
         userDO.setUserId(currentUserInfo.getUserId());
         List<UserDO> userDOList = userService.querySuggestedUsers(userDO);
+        // TODO 根据用户个人信息推荐一些用户，比如公司、职位等等
         userService.fillUserInteractInfo(userDOList);
         return userDOList;
     }

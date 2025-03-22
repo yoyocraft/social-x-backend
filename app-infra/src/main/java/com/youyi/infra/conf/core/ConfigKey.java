@@ -20,6 +20,7 @@ public enum ConfigKey {
     UGC_STATISTICS_THREAD_POOL_CONFIG,
     UGC_SYS_TASK_THREAD_POOL_CONFIG,
     NOTIFICATION_THREAD_POOL_CONFIG,
+    USER_COMMON_OP_THREAD_POOL_CONFIG,
 
     // ================ Feature AB Switch ================
     SEND_EMAIL_AB_SWITCH,
