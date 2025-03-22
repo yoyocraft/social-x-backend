@@ -8,7 +8,7 @@ import com.youyi.domain.audit.model.OperationLogDO;
 import com.youyi.domain.audit.model.OperationLogExtraData;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
-import com.youyi.infra.conf.util.ThreadPoolExecutorUtil;
+import com.youyi.infra.tpe.TpeContainer;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
-import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -28,9 +27,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
@@ -39,7 +35,6 @@ import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.SystemConstant.SYSTEM_OPERATOR_ID;
 import static com.youyi.common.constant.SystemConstant.SYSTEM_OPERATOR_NAME;
-import static com.youyi.infra.conf.core.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONFIG;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -48,7 +43,7 @@ import static com.youyi.infra.conf.core.ConfigKey.RECORD_OP_LOG_THREAD_POOL_CONF
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEvent>, Ordered, DisposableBean {
+public class RecordOpLogAspect implements Ordered {
 
     private static final Logger logger = LoggerFactory.getLogger(RecordOpLogAspect.class);
     private static final ExpressionParser expressionParser = new SpelExpressionParser();
@@ -56,10 +51,10 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
 
     private final ThreadLocal<OperationLogDO> opLogThreadLocal = new ThreadLocal<>();
 
-    private static ThreadPoolExecutor asyncRecordOpLogExecutor;
-
     private final OperationLogHelper operationLogHelper;
     private final UserService userService;
+
+    private final TpeContainer tpeContainer;
 
     static {
         SYSTEM_USER.setUserId(SYSTEM_OPERATOR_ID);
@@ -67,18 +62,8 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
     }
 
     @Override
-    public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
-        initAsyncExecutor();
-    }
-
-    @Override
     public int getOrder() {
         return AspectOrdered.RECORD_OP_LOG.getOrder();
-    }
-
-    @Override
-    public void destroy() {
-        ThreadPoolExecutorUtil.shutdownExecutor(asyncRecordOpLogExecutor, "asyncRecordOpLogExecutor");
     }
 
     @Pointcut("@annotation(com.youyi.common.annotation.RecordOpLog)")
@@ -109,14 +94,15 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
     }
 
     private void processOperationLog(JoinPoint joinPoint, Object result, Throwable exception) {
-        if (asyncRecordOpLogExecutor == null) {
+        ThreadPoolExecutor recordOpLogExecutor = tpeContainer.getRecordOpLogExecutor();
+        if (recordOpLogExecutor == null) {
             logger.error("Async executor for recording operation logs is not initialized.");
             return;
         }
 
         try {
             final OperationLogDO operationLogDO = opLogThreadLocal.get();
-            asyncRecordOpLogExecutor.execute(() -> {
+            recordOpLogExecutor.execute(() -> {
                 buildOperationLogDO(joinPoint, operationLogDO, result, exception);
                 doRecordOpLog(operationLogDO);
             });
@@ -253,9 +239,5 @@ public class RecordOpLogAspect implements ApplicationListener<ApplicationReadyEv
         } catch (Exception e) {
             logger.error("Error occurred while recording operation log: {}", e.getMessage(), e);
         }
-    }
-
-    private void initAsyncExecutor() {
-        asyncRecordOpLogExecutor = ThreadPoolExecutorUtil.createExecutor(RECORD_OP_LOG_THREAD_POOL_CONFIG, logger);
     }
 }

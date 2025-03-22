@@ -2,13 +2,11 @@ package com.youyi.domain.ugc.helper;
 
 import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.youyi.common.exception.AppBizException;
-import com.youyi.domain.ugc.type.CommentaryStatus;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.task.type.TaskType;
 import com.youyi.domain.ugc.core.CommentaryService;
 import com.youyi.domain.ugc.core.UgcStatisticCacheManager;
-import com.youyi.domain.ugc.core.UgcTpeContainer;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.model.CommentaryExtraData;
 import com.youyi.domain.ugc.model.UgcExtraData;
@@ -18,8 +16,10 @@ import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
+import com.youyi.domain.ugc.type.CommentaryStatus;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
+import com.youyi.infra.tpe.TpeContainer;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +43,7 @@ public class CommentaryHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(CommentaryHelper.class);
 
-    private final UgcTpeContainer ugcTpeContainer;
+    private final TpeContainer tpeContainer;
     private final SysTaskService sysTaskService;
 
     private final UserService userService;
@@ -92,7 +92,7 @@ public class CommentaryHelper {
         checkSelfCommentator(commentaryDO, commentaryDocument);
         commentaryService.deleteCommentary(commentaryDO);
         // 异步写入本地消息
-        ugcTpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(commentaryDO.getCommentaryId(), TaskType.COMMENTARY_DELETE_EVENT));
+        tpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(commentaryDO.getCommentaryId(), TaskType.COMMENTARY_DELETE_EVENT));
         // 减少缓存计数器
         ugcStatisticCacheManager.incrOrDecrUgcCommentaryCount(commentaryDocument.getUgcId(), false);
     }
@@ -134,7 +134,7 @@ public class CommentaryHelper {
         if (Boolean.TRUE.equals(ugcExtraData.getHasSolved())) {
             return;
         }
-        ugcTpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(ugcDocument.getUgcId(), TaskType.UGC_ADOPT_EVENT));
+        tpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(ugcDocument.getUgcId(), TaskType.UGC_ADOPT_EVENT));
 
         // 发送通知
         notificationManager.sendUgcAdoptNotification(currentUser, commentaryDO.getCommentaryId(), ugcDocument);

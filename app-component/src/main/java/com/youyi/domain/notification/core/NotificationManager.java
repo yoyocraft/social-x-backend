@@ -13,18 +13,13 @@ import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.user.model.UserDO;
-import com.youyi.infra.conf.util.ThreadPoolExecutorUtil;
+import com.youyi.infra.tpe.TpeContainer;
 import java.text.MessageFormat;
 import java.util.Map;
-import java.util.concurrent.ThreadPoolExecutor;
-import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.SystemConstant.DEFAULT_KEY;
@@ -37,7 +32,6 @@ import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_LIK
 import static com.youyi.domain.notification.type.NotificationTemplateKey.USER_FOLLOW;
 import static com.youyi.infra.conf.core.Conf.getMapConfig;
 import static com.youyi.infra.conf.core.ConfigKey.NOTIFICATION_SUMMARY_TEMPLATE;
-import static com.youyi.infra.conf.core.ConfigKey.NOTIFICATION_THREAD_POOL_CONFIG;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -45,28 +39,15 @@ import static com.youyi.infra.conf.core.ConfigKey.NOTIFICATION_THREAD_POOL_CONFI
  */
 @Component
 @RequiredArgsConstructor
-public class NotificationManager implements ApplicationListener<ApplicationReadyEvent>, DisposableBean {
+public class NotificationManager {
 
     private static final Logger logger = LoggerFactory.getLogger(NotificationManager.class);
-    private static ThreadPoolExecutor notificationExecutor;
 
     private final UgcRepository ugcRepository;
     private final CommentaryRepository commentaryRepository;
     private final NotificationRepository notificationRepository;
 
-    @Override
-    public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
-        initAsyncExecutor();
-    }
-
-    @Override
-    public void destroy() {
-        ThreadPoolExecutorUtil.shutdownExecutor(notificationExecutor, "notificationExecutor");
-    }
-
-    private void initAsyncExecutor() {
-        notificationExecutor = ThreadPoolExecutorUtil.createExecutor(NOTIFICATION_THREAD_POOL_CONFIG, logger);
-    }
+    private final TpeContainer tpeContainer;
 
     /**
      * 发送关注通知
@@ -86,7 +67,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
      * 发送 UGC 点赞通知
      */
     public void sendUgcLikeNotification(UserDO sender, String ugcId) {
-        notificationExecutor.execute(() -> {
+        tpeContainer.getNotificationExecutor().execute(() -> {
             UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
             sendNotification(
                 sender,
@@ -104,7 +85,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
      * 发送 UGC 收藏通知
      */
     public void sendUgcCollectNotification(UserDO sender, String ugcId) {
-        notificationExecutor.execute(() -> {
+        tpeContainer.getNotificationExecutor().execute(() -> {
             UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
             sendNotification(
                 sender,
@@ -122,7 +103,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
      * 发送 UGC 采纳通知
      */
     public void sendUgcAdoptNotification(UserDO sender, String commentaryId, UgcDocument ugcDocument) {
-        notificationExecutor.execute(() -> {
+        tpeContainer.getNotificationExecutor().execute(() -> {
             CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryId);
             sendNotification(
                 sender,
@@ -142,7 +123,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
      * 发送 UGC 精选通知
      */
     public void sendUgcFeaturedNotification(UserDO sender, String commentaryId, UgcDocument ugcDocument) {
-        notificationExecutor.execute(() -> {
+        tpeContainer.getNotificationExecutor().execute(() -> {
             CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryId);
             sendNotification(
                 sender,
@@ -162,7 +143,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
      * 发送 UGC 评论通知
      */
     public void sendUgcCommentNotification(UserDO sender, String commentaryId, String content, String ugcId) {
-        notificationExecutor.execute(() -> {
+        tpeContainer.getNotificationExecutor().execute(() -> {
             UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
             sendNotification(
                 sender,
@@ -182,7 +163,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
      * 发送 UGC 评论回复通知
      */
     public void sendUgcCommentReplyNotification(UserDO sender, String commentaryId, String content, String ugcId) {
-        notificationExecutor.execute(() -> {
+        tpeContainer.getNotificationExecutor().execute(() -> {
             CommentaryDocument commentaryDocument = commentaryRepository.queryByCommentaryId(commentaryId);
             UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcId);
             sendNotification(
@@ -198,7 +179,7 @@ public class NotificationManager implements ApplicationListener<ApplicationReady
     }
 
     public void sendSystemNotification(UserDO sender, String title, String content) {
-        notificationExecutor.execute(() -> sendNotification(
+        tpeContainer.getNotificationExecutor().execute(() -> sendNotification(
             sender,
             SymbolConstant.EMPTY,
             NotificationType.SYSTEM,

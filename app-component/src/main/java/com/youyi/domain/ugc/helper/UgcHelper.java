@@ -2,28 +2,28 @@ package com.youyi.domain.ugc.helper;
 
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.exception.AppBizException;
-import com.youyi.domain.ugc.repository.CommentaryRepository;
-import com.youyi.domain.ugc.repository.document.CommentaryDocument;
-import com.youyi.domain.ugc.type.UgcInteractionType;
-import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.notification.core.NotificationManager;
 import com.youyi.domain.task.core.SysTaskService;
 import com.youyi.domain.task.type.TaskType;
 import com.youyi.domain.ugc.core.UgcService;
-import com.youyi.domain.ugc.core.UgcTpeContainer;
 import com.youyi.domain.ugc.model.HotUgcCacheInfo;
 import com.youyi.domain.ugc.model.UgcDO;
 import com.youyi.domain.ugc.model.UgcExtraData;
+import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.UgcCategoryRepository;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
+import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.repository.po.UgcCategoryPO;
 import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
+import com.youyi.domain.ugc.type.UgcInteractionType;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.ugc.util.UgcContentUtil;
 import com.youyi.domain.user.core.UserService;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.infra.sse.SseEmitter;
+import com.youyi.infra.tpe.TpeContainer;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import java.util.Arrays;
@@ -50,7 +50,7 @@ import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
 @RequiredArgsConstructor
 public class UgcHelper {
 
-    private final UgcTpeContainer ugcTpeContainer;
+    private final TpeContainer tpeContainer;
     private final SysTaskService sysTaskService;
     private final NotificationManager notificationManager;
 
@@ -74,7 +74,7 @@ public class UgcHelper {
         checkSelfAuthor(ugcDO, ugcDocument);
         ugcRepository.deleteUgc(ugcDO.getUgcId());
         // 异步写入本地 SysTask，异步处理删除后续
-        ugcTpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(ugcDO.getUgcId(), TaskType.UGC_DELETE_EVENT));
+        tpeContainer.getUgcSysTaskExecutor().execute(() -> sysTaskService.saveCommonSysTask(ugcDO.getUgcId(), TaskType.UGC_DELETE_EVENT));
     }
 
     public List<UgcDO> listSelfUgc(UgcDO ugcDO) {

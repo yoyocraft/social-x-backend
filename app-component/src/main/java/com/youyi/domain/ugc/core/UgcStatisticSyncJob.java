@@ -7,6 +7,7 @@ import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.infra.conf.core.ConfigKey;
+import com.youyi.infra.tpe.TpeContainer;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +32,12 @@ public class UgcStatisticSyncJob {
     private static final long SYNC_INTERVAL = 60 * 60 * 1000L;
     private static final long SYNC_INIT_DELAY_INTERVAL = 5 * 60 * 1000L;
 
-    private final UgcStatisticCacheManager ugcStatisticCacheManager;
-    private final UgcTpeContainer ugcTpeContainer;
+    private final TpeContainer tpeContainer;
+
     private final UgcRepository ugcRepository;
     private final CommentaryRepository commentaryRepository;
+
+    private final UgcStatisticCacheManager ugcStatisticCacheManager;
 
     @Scheduled(initialDelay = SYNC_INIT_DELAY_INTERVAL, fixedDelay = SYNC_INTERVAL)
     public void syncJob() {
@@ -53,7 +56,7 @@ public class UgcStatisticSyncJob {
             if (commentaryList.isEmpty()) {
                 break;
             }
-            commentaryList.forEach(commentaryDocument -> ugcTpeContainer.getUgcStatisticsExecutor().execute(() -> doSyncCommentaryStatistic(commentaryDocument)));
+            commentaryList.forEach(commentaryDocument -> tpeContainer.getUgcStatisticsExecutor().execute(() -> doSyncCommentaryStatistic(commentaryDocument)));
             cursor = commentaryList.get(commentaryList.size() - 1).getGmtModified();
         }
     }
@@ -65,7 +68,7 @@ public class UgcStatisticSyncJob {
             if (ugcList.isEmpty()) {
                 break;
             }
-            ugcList.forEach(ugcDocument -> ugcTpeContainer.getUgcStatisticsExecutor().execute(() -> doSyncUgcStatistic(ugcDocument)));
+            ugcList.forEach(ugcDocument -> tpeContainer.getUgcStatisticsExecutor().execute(() -> doSyncUgcStatistic(ugcDocument)));
             cursor = ugcList.get(ugcList.size() - 1).getGmtModified();
         }
     }
