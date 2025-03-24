@@ -9,6 +9,7 @@ public enum InfraType {
     MYSQL,
     REDIS,
     MONGODB,
+    NEO4J,
     AI,
     ;
 }

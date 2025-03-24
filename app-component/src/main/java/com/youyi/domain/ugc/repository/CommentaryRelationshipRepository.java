@@ -1,71 +1,128 @@
 package com.youyi.domain.ugc.repository;
 
+import com.youyi.common.exception.AppSystemException;
+import com.youyi.common.type.InfraCode;
+import com.youyi.common.type.InfraType;
+import com.youyi.domain.ugc.repository.dao.CommentaryRelationshipDAO;
 import com.youyi.domain.ugc.repository.relation.CommentaryNode;
 import com.youyi.domain.ugc.repository.relation.UgcInteractRelationship;
+import java.util.Collections;
 import java.util.List;
-import org.springframework.data.neo4j.repository.Neo4jRepository;
-import org.springframework.data.neo4j.repository.query.Query;
-import org.springframework.data.repository.query.Param;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+
+import static com.google.common.base.Preconditions.checkState;
+import static com.youyi.common.util.LogUtil.infraLog;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/29
  */
 @Repository
-public interface CommentaryRelationshipRepository extends Neo4jRepository<CommentaryNode, Long> {
+@RequiredArgsConstructor
+public class CommentaryRelationshipRepository {
 
-    @Query("CREATE (c:commentary {commentaryId: $commentaryId}) RETURN c")
-    CommentaryNode save(@Param("commentaryId") String commentaryId);
+    private static final Logger logger = LoggerFactory.getLogger(CommentaryRelationshipRepository.class);
 
-    @Query(
-        """ 
-            MATCH (u:user {userId: $userId})
-            WITH u
-            MATCH (t:commentary {commentaryId: $commentaryId})
-            MERGE (u)-[r:LIKE]->(t)
-            SET r.since = timestamp()
-            """
-    )
-    void addLikeRelationship(@Param("commentaryId") String commentaryId, @Param("userId") String userId);
+    private final CommentaryRelationshipDAO commentaryRelationshipDAO;
 
-    @Query(
-        """
-            MATCH (u:user {userId: $userId})-[r:LIKE]->(t:commentary {commentaryId: $commentaryId})
-            DELETE r
-            """
-    )
-    void deleteLikeRelationship(@Param("commentaryId") String commentaryId, @Param("userId") String userId);
+    public CommentaryNode save(String commentaryId) {
+        try {
+            checkState(StringUtils.isNotBlank(commentaryId));
+            return commentaryRelationshipDAO.save(commentaryId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("MATCH (u:user {userId: $userId})-[r:LIKE]->(t:commentary {commentaryId: $commentaryId}) RETURN u AS target, r.since AS since")
-    UgcInteractRelationship queryLikeRelationship(@Param("commentaryId") String commentaryId, @Param("userId") String userId);
+    public void addLikeRelationship(String commentaryId, String userId) {
+        try {
+            checkState(StringUtils.isNoneBlank(commentaryId, userId));
+            commentaryRelationshipDAO.addLikeRelationship(commentaryId, userId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("MATCH (u:user {userId: $userId})-[r:LIKE]->(t:commentary) WHERE t.commentaryId IN $commentaryIds RETURN t.commentaryId AS commentaryId")
-    List<String> queryLikeRelationships(@Param("commentaryIds") List<String> commentaryIds, @Param("userId") String userId);
+    public void deleteLikeRelationship(String commentaryId, String userId) {
+        try {
+            checkState(StringUtils.isNoneBlank(commentaryId, userId));
+            commentaryRelationshipDAO.deleteLikeRelationship(commentaryId, userId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("MATCH (c:commentary {commentaryId: $commentaryId}) RETURN c")
-    CommentaryNode findByCommentaryId(@Param("commentaryId") String commentaryId);
+    public UgcInteractRelationship queryLikeRelationship(String commentaryId, String userId) {
+        try {
+            checkState(StringUtils.isNoneBlank(commentaryId, userId));
+            return commentaryRelationshipDAO.queryLikeRelationship(commentaryId, userId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("""
-            MATCH (u:user)-[r:LIKE]->(t:commentary {commentaryId: $commentaryId})
-            DELETE r
-        """
-    )
-    void deleteAllLikeRelationships(@Param("commentaryId") String commentaryId);
+    public List<String> queryLikeRelationships(List<String> commentaryIds, String userId) {
+        try {
+            checkState(StringUtils.isNotBlank(userId));
+            if (commentaryIds == null || commentaryIds.isEmpty()) {
+                return Collections.emptyList();
+            }
+            return commentaryRelationshipDAO.queryLikeRelationships(commentaryIds, userId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("""
-        MATCH (u:user)-[r:LIKE]->(t:commentary)
-        WHERE t.commentaryId IN $commentaryIds
-        DELETE r
-        """
-    )
-    void deleteAllLikeRelationships(@Param("commentaryIds") List<String> commentaryIds);
+    public CommentaryNode findByCommentaryId(String commentaryId) {
+        try {
+            checkState(StringUtils.isNotBlank(commentaryId));
+            return commentaryRelationshipDAO.findByCommentaryId(commentaryId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("""
-        MATCH (t:CommentaryNode)
-        WHERE t.commentaryId IN $commentaryIds
-        DETACH DELETE t;
-        """
-    )
-    void deleteCommentaryNode(@Param("commentaryIds") List<String> commentaryIds);
+    public void deleteAllLikeRelationships(String commentaryId) {
+        try {
+            checkState(StringUtils.isNotBlank(commentaryId));
+            commentaryRelationshipDAO.deleteAllLikeRelationships(commentaryId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
+
+    public void deleteAllLikeRelationships(List<String> commentaryIds) {
+        try {
+            if (commentaryIds == null || commentaryIds.isEmpty()) {
+                return;
+            }
+            commentaryRelationshipDAO.deleteAllLikeRelationships(commentaryIds);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
+
+    public void deleteCommentaryNode(List<String> commentaryIds) {
+        try {
+            if (commentaryIds == null || commentaryIds.isEmpty()) {
+                return;
+            }
+            commentaryRelationshipDAO.deleteCommentaryNode(commentaryIds);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 }

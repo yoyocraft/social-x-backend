@@ -1,100 +1,178 @@
 package com.youyi.domain.user.repository;
 
+import com.youyi.common.exception.AppSystemException;
+import com.youyi.common.type.InfraCode;
+import com.youyi.common.type.InfraType;
+import com.youyi.domain.user.repository.dao.UserRelationDAO;
 import com.youyi.domain.user.repository.relation.SuggestedUserInfo;
 import com.youyi.domain.user.repository.relation.UserNode;
 import com.youyi.domain.user.repository.relation.UserRelationship;
+import java.util.Collections;
 import java.util.List;
-import org.springframework.data.neo4j.repository.Neo4jRepository;
-import org.springframework.data.neo4j.repository.query.Query;
-import org.springframework.data.repository.query.Param;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+
+import static com.google.common.base.Preconditions.checkState;
+import static com.youyi.common.util.LogUtil.infraLog;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/27
  */
 @Repository
-public interface UserRelationRepository extends Neo4jRepository<UserNode, Long> {
+@RequiredArgsConstructor
+public class UserRelationRepository {
 
-    @Query("CREATE (u:user {userId: $userId, nickname: $nickname}) RETURN u")
-    UserNode save(@Param("userId") String userId, @Param("nickname") String nickname);
+    private static final Logger logger = LoggerFactory.getLogger(UserRelationRepository.class);
 
-    @Query("MATCH (u:user {userId: $userId}) RETURN u")
-    UserNode findByUserId(@Param("userId") String userId);
+    private final UserRelationDAO userRelationDAO;
 
-    @Query("MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user) RETURN f AS target, r.since AS since")
-    List<UserRelationship> queryFollowingUserRelations(@Param("userId") String userId);
+    public UserNode save(String userId, String nickname) {
+        try {
+            checkState(StringUtils.isNoneBlank(userId, nickname));
+            return userRelationDAO.save(userId, nickname);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+        }
+    }
 
-    @Query("MATCH (u:user {userId: $subscriberId})-[r:FOLLOWING]->(f:user {userId: $creatorId}) RETURN f AS target, r.since AS since")
-    UserRelationship queryFollowingUserRelations(@Param("subscriberId") String subscriberId, @Param("creatorId") String creatorId);
+    public UserNode findByUserId(String userId) {
+        try {
+            checkState(StringUtils.isNotBlank(userId));
+            return userRelationDAO.findByUserId(userId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("""
-            MATCH (u:user {userId: $subscriberId})-[r:FOLLOWING]->(f:user)
-            WHERE f.userId IN $creatorIds
-            RETURN f.userId AS creatorId
-        """)
-    List<String> queryFollowingUserRelationsBatch(@Param("subscriberId") String subscriberId, @Param("creatorIds") List<String> creatorIds);
+    public List<UserRelationship> queryFollowingUserRelations(String userId) {
+        try {
+            checkState(StringUtils.isNotBlank(userId));
+            return userRelationDAO.queryFollowingUserRelations(userId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("MATCH (u:user {userId: $subscriberId})-[r:FOLLOWING]->(f:user) WHERE f.userId IN $creatorIds RETURN f.userId AS creatorId")
-    List<String> queryFollowingUserRelations(@Param("subscriberId") String subscriberId, @Param("creatorIds") List<String> creatorIds);
+    public UserRelationship queryFollowingUserRelations(String subscriberId, String creatorId) {
+        try {
+            checkState(StringUtils.isNoneBlank(subscriberId, creatorId));
+            return userRelationDAO.queryFollowingUserRelations(subscriberId, creatorId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query(
-        """ 
-            MATCH (f:user {userId: $subscriberId})
-            WITH f
-            MATCH (t:user {userId: $creatorId})
-            MERGE (f)-[r:FOLLOWING]->(t)
-            SET r.since = timestamp()
-            """)
-    void addFollowingUserRelationship(@Param("subscriberId") String subscriberId, @Param("creatorId") String creatorId);
+    public List<String> queryFollowingUserRelationsBatch(String subscriberId, List<String> creatorIds) {
+        try {
+            checkState(StringUtils.isNotBlank(subscriberId));
+            if (creatorIds == null || creatorIds.isEmpty()) {
+                return Collections.emptyList();
+            }
+            return userRelationDAO.queryFollowingUserRelationsBatch(subscriberId, creatorIds);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query(
-        """
-            MATCH (f:user {userId: $subscriberId})-[r:FOLLOWING]->(t:user {userId: $creatorId})
-            DELETE r
-            """)
-    void deleteFollowingUserRelationship(@Param("subscriberId") String subscriberId, @Param("creatorId") String creatorId);
+    public List<String> queryFollowingUserRelations(String subscriberId, List<String> creatorIds) {
+        try {
+            checkState(StringUtils.isNotBlank(subscriberId));
+            if (creatorIds == null || creatorIds.isEmpty()) {
+                return Collections.emptyList();
+            }
+            return userRelationDAO.queryFollowingUserRelations(subscriberId, creatorIds);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("""
-            MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)
-            RETURN COUNT(r) AS followingCount
-        """)
-    int getFollowingCount(@Param("userId") String userId);
+    public void addFollowingUserRelationship(String subscriberId, String creatorId) {
+        try {
+            checkState(StringUtils.isNoneBlank(subscriberId, creatorId));
+            userRelationDAO.addFollowingUserRelationship(subscriberId, creatorId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("""
-            MATCH (u:user)-[r:FOLLOWING]->(f:user {userId: $userId})
-            RETURN COUNT(r) AS followerCount
-        """)
-    int getFollowerCount(@Param("userId") String userId);
+    public void deleteFollowingUserRelationship(String subscriberId, String creatorId) {
+        try {
+            checkState(StringUtils.isNoneBlank(subscriberId, creatorId));
+            userRelationDAO.deleteFollowingUserRelationship(subscriberId, creatorId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("""
-            MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)
-            WHERE ($cursor IS NULL OR r.since < $cursor)
-            RETURN f AS target, r.since AS since
-            ORDER BY r.since DESC LIMIT $limit
-        """)
-    List<UserRelationship> getFollowingUsers(@Param("userId") String userId, @Param("cursor") Long cursor, @Param("limit") int limit);
+    public int getFollowingCount(String userId) {
+        try {
+            checkState(StringUtils.isNotBlank(userId));
+            return userRelationDAO.getFollowingCount(userId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("""
-            MATCH (u:user)-[r:FOLLOWING]->(f:user {userId: $userId})
-            WHERE ($cursor IS NULL OR r.since < $cursor)
-            RETURN f AS target, r.since AS since
-            ORDER BY r.since DESC LIMIT $limit
-        """)
-    List<UserRelationship> getFollowers(@Param("userId") String userId, @Param("cursor") Long cursor, @Param("limit") int limit);
+    public int getFollowerCount(String userId) {
+        try {
+            checkState(StringUtils.isNotBlank(userId));
+            return userRelationDAO.getFollowerCount(userId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("""
-            MATCH (u:user {userId: $userId})-[r:FOLLOWING]->(f:user)
-            RETURN f AS target, r.since AS since
-        """)
-    List<UserRelationship> getAllFollowingUsers(@Param("userId") String userId);
+    public List<UserRelationship> getFollowingUsers(String userId, Long cursor, int limit) {
+        try {
+            checkState(StringUtils.isNotBlank(userId) && limit > 0);
+            return userRelationDAO.getFollowingUsers(userId, cursor, limit);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 
-    @Query("""
-            MATCH (u:user {userId: $userId})-[:FOLLOWING*2..3]->(s:user)
-            WHERE NOT (u)-[:FOLLOWING]->(s) AND u <> s
-            RETURN s.userId AS suggestedUserId, COUNT(*) AS score
-            ORDER BY score DESC
-            LIMIT $limit
-        """)
-    List<SuggestedUserInfo> getSuggestedUsers(@Param("userId") String userId, @Param("limit") int limit);
+    public List<UserRelationship> getFollowers(String userId, Long cursor, int limit) {
+        try {
+            checkState(StringUtils.isNotBlank(userId) && limit > 0);
+            return userRelationDAO.getFollowers(userId, cursor, limit);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
+
+    public List<UserRelationship> getAllFollowingUsers(String userId) {
+        try {
+            checkState(StringUtils.isNotBlank(userId));
+            return userRelationDAO.getAllFollowingUsers(userId);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
+
+    public List<SuggestedUserInfo> getSuggestedUsers(String userId, int limit) {
+        try {
+            checkState(StringUtils.isNotBlank(userId) && limit > 0);
+            return userRelationDAO.getSuggestedUsers(userId, limit);
+        } catch (Exception e) {
+            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
+            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        }
+    }
 }
