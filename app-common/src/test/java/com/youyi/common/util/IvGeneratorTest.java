@@ -13,9 +13,9 @@ class IvGeneratorTest {
     @Test
     void testGenIv() {
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> IvGenerator.generateIv(null));
+        Assertions.assertThrows(IllegalStateException.class, () -> IvGenerator.generateIv(null));
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> IvGenerator.generateIv(""));
+        Assertions.assertThrows(IllegalStateException.class, () -> IvGenerator.generateIv(""));
 
         String baseStr = "18266667777";
         String ret1 = IvGenerator.generateIv(baseStr);
