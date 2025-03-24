@@ -11,12 +11,21 @@ import lombok.Getter;
 @Getter
 public class PageCursorResult<CURSOR, T> {
 
+    /**
+     * 数据
+     */
     @SerializedName("data")
     private final List<T> data;
 
+    /**
+     * 游标
+     */
     @SerializedName("cursor")
     private final CURSOR cursor;
 
+    /**
+     * 是否有更多
+     */
     @SerializedName("hasMore")
     private final Boolean hasMore;
 

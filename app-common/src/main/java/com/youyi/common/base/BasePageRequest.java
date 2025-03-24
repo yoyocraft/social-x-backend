@@ -12,9 +12,15 @@ import lombok.Setter;
 @Setter
 public abstract class BasePageRequest extends BaseRequest {
 
+    /**
+     * 分页页码
+     */
     @SerializedName("page")
     private Integer page;
 
+    /**
+     * 分页大小
+     */
     @SerializedName("size")
     private Integer size;
 }

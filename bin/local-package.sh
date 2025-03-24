@@ -1,0 +1,1 @@
+mvnw clean package -Plocal -Dmaven.test.skip=true

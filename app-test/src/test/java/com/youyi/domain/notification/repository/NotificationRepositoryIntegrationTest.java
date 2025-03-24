@@ -18,9 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/02/08
  */
-class NotificationRepositoryTest extends BaseIntegrationTest {
+class NotificationRepositoryIntegrationTest extends BaseIntegrationTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(NotificationRepositoryTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(NotificationRepositoryIntegrationTest.class);
 
     @Autowired
     private NotificationRepository notificationRepository;

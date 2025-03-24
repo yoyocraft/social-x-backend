@@ -21,9 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/23
  */
-class UgcRepositoryTest extends BaseIntegrationTest {
+class UgcRepositoryIntegrationTest extends BaseIntegrationTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(UgcRepositoryTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(UgcRepositoryIntegrationTest.class);
 
     private static final Faker faker = new Faker(new Random(System.currentTimeMillis()));
 

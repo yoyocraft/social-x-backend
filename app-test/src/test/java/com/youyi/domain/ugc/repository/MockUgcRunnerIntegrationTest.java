@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/03/10
  */
-class MockUgcRunnerTest extends BaseIntegrationTest {
+class MockUgcRunnerIntegrationTest extends BaseIntegrationTest {
 
     private static final Faker faker = new Faker(new Random(System.currentTimeMillis()));
 
@@ -91,9 +91,9 @@ class MockUgcRunnerTest extends BaseIntegrationTest {
     );
 
     private static final List<String> AUTHOR_IDS = List.of(
-        "1883827647466573824",
-        "1883829503093772288",
-        "1896484864405671936"
+        // "1883827647466573824",
+        // "1883829503093772288",
+        // "1896484864405671936"
     );
 
     @Autowired

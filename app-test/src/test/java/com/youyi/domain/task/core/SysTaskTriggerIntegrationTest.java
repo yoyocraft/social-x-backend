@@ -1,4 +1,4 @@
-package com.youyi.domain.ugc.core;
+package com.youyi.domain.task.core;
 
 import com.youyi.BaseIntegrationTest;
 import org.junit.jupiter.api.Assertions;
@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
- * @date 2025/01/29
+ * @date 2025/01/30
  */
-class UgcStatisticSyncJobTest extends BaseIntegrationTest {
+class SysTaskTriggerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
-    UgcStatisticSyncJob ugcStatisticSyncJob;
+    SysTaskTrigger sysTaskTrigger;
 
     @Test
-    void testSync() {
-        Assertions.assertDoesNotThrow(() -> ugcStatisticSyncJob.syncJob());
+    void testTrigger() {
+        Assertions.assertDoesNotThrow(() -> sysTaskTrigger.trigger());
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/03/09
  */
-class LocalImageManagerTest extends BaseIntegrationTest {
+class LocalImageManagerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     LocalImageManager localImageManager;

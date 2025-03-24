@@ -1,0 +1,1 @@
+mvnw clean package -Prelease -Dmaven.test.skip=true

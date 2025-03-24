@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/02/27
  */
-class UgcCategoryRepositoryTest extends BaseIntegrationTest {
+class UgcCategoryRepositoryIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     UgcCategoryRepository ugcCategoryRepository;

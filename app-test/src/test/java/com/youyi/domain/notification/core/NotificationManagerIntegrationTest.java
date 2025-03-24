@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/03/02
  */
-class NotificationManagerTest extends BaseIntegrationTest {
+class NotificationManagerIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     NotificationManager notificationManager;

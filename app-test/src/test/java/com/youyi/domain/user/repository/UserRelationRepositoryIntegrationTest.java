@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/01/27
  */
-class UserRelationRepositoryTest extends BaseIntegrationTest {
+class UserRelationRepositoryIntegrationTest extends BaseIntegrationTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserRelationRepositoryTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserRelationRepositoryIntegrationTest.class);
 
     @Autowired
     UserRelationRepository userRelationRepository;

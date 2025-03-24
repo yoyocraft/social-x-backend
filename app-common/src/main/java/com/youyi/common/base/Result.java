@@ -20,24 +20,35 @@ public class Result<T> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 业务数据
+     */
     @SerializedName("data")
     private T data;
 
     /**
+     * 业务Code
      * {@link ReturnCode}
      */
     @SerializedName("code")
     private String code;
 
+    /**
+     * 业务消息
+     */
     @SerializedName("message")
     private String message;
 
     /**
+     * 业务状态
      * {@link RequestState}
      */
     @SerializedName("bizState")
     private String bizState;
 
+    /**
+     * 时间戳
+     */
     @SerializedName("timestamp")
     private Long timestamp;
 

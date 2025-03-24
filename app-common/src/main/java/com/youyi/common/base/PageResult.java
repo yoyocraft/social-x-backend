@@ -11,15 +11,27 @@ import lombok.Getter;
 @Getter
 public class PageResult<T> {
 
+    /**
+     * 总数
+     */
     @SerializedName("total")
     private final Long total;
 
+    /**
+     * 当前页码
+     */
     @SerializedName("pageNo")
     private final Long pageNo;
 
+    /**
+     * 每页数量
+     */
     @SerializedName("pageSize")
     private final Long pageSize;
 
+    /**
+     * 数据
+     */
     @SerializedName("data")
     private final List<T> data;
 

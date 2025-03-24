@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
  * @date 2025/03/09
  */
-class UgcAuditJobTest extends BaseIntegrationTest {
+class UgcAuditJobIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     UgcRepository ugcRepository;

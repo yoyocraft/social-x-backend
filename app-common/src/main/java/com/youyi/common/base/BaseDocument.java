@@ -16,7 +16,13 @@ public abstract class BaseDocument implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * 创建时间
+     */
     private Long gmtCreate;
 
+    /**
+     * 修改时间
+     */
     private Long gmtModified;
 }
