@@ -1,6 +1,6 @@
 package com.youyi.domain.media.repository;
 
-import com.youyi.common.exception.AppSystemException;
+import com.youyi.common.base.BaseRepository;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.domain.media.repository.mapper.MediaResourceMapper;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.youyi.common.constant.RepositoryConstant.SINGLE_DML_AFFECTED_ROWS;
-import static com.youyi.common.util.LogUtil.infraLog;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -21,20 +20,30 @@ import static com.youyi.common.util.LogUtil.infraLog;
  */
 @Repository
 @RequiredArgsConstructor
-public class MediaResourceRepository {
+public class MediaResourceRepository extends BaseRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(MediaResourceRepository.class);
 
     private final MediaResourceMapper mediaResourceMapper;
 
+    @Override
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    @Override
+    protected InfraType getInfraType() {
+        return InfraType.MYSQL;
+    }
+
+    @Override
+    protected InfraCode getInfraCode() {
+        return InfraCode.MYSQL_ERROR;
+    }
+
     public void insertMedia(MediaResourcePO mediaResourcePO) {
-        try {
-            checkNotNull(mediaResourcePO);
-            int ret = mediaResourceMapper.insert(mediaResourcePO);
-            checkState(ret == SINGLE_DML_AFFECTED_ROWS);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkNotNull(mediaResourcePO);
+        int ret = executeWithExceptionHandling(() -> mediaResourceMapper.insert(mediaResourcePO));
+        checkState(ret == SINGLE_DML_AFFECTED_ROWS);
     }
 }

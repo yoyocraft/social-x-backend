@@ -1,6 +1,6 @@
 package com.youyi.domain.ugc.repository;
 
-import com.youyi.common.exception.AppSystemException;
+import com.youyi.common.base.BaseRepository;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.domain.ugc.repository.dao.UgcRelationshipDAO;
@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.youyi.common.util.LogUtil.infraLog;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -24,165 +23,105 @@ import static com.youyi.common.util.LogUtil.infraLog;
  */
 @Repository
 @RequiredArgsConstructor
-public class UgcRelationshipRepository {
+public class UgcRelationshipRepository extends BaseRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(UgcRelationshipRepository.class);
 
     private final UgcRelationshipDAO ugcRelationshipDAO;
 
+    @Override
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    @Override
+    protected InfraType getInfraType() {
+        return InfraType.NEO4J;
+    }
+
+    @Override
+    protected InfraCode getInfraCode() {
+        return InfraCode.NEO4J_ERROR;
+    }
+
     public UgcNode save(String ugcId) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId));
-            return ugcRelationshipDAO.save(ugcId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(ugcId));
+        return executeWithExceptionHandling(() -> ugcRelationshipDAO.save(ugcId));
     }
 
     public void addLikeRelationship(String ugcId, String userId) {
-        try {
-            checkState(StringUtils.isNoneBlank(ugcId, userId));
-            ugcRelationshipDAO.addLikeRelationship(ugcId, userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNoneBlank(ugcId, userId));
+        executeWithExceptionHandling(() -> ugcRelationshipDAO.addLikeRelationship(ugcId, userId));
     }
 
     public void deleteLikeRelationship(String ugcId, String userId) {
-        try {
-            checkState(StringUtils.isNoneBlank(ugcId, userId));
-            ugcRelationshipDAO.deleteLikeRelationship(ugcId, userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNoneBlank(ugcId, userId));
+        executeWithExceptionHandling(() -> ugcRelationshipDAO.deleteLikeRelationship(ugcId, userId));
     }
 
     public void addCollectRelationship(String ugcId, String userId) {
-        try {
-            checkState(StringUtils.isNoneBlank(ugcId, userId));
-            ugcRelationshipDAO.addCollectRelationship(ugcId, userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNoneBlank(ugcId, userId));
+        executeWithExceptionHandling(() -> ugcRelationshipDAO.addCollectRelationship(ugcId, userId));
     }
 
     public void deleteCollectRelationship(String ugcId, String userId) {
-        try {
-            checkState(StringUtils.isNoneBlank(ugcId, userId));
-            ugcRelationshipDAO.deleteCollectRelationship(ugcId, userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNoneBlank(ugcId, userId));
+        executeWithExceptionHandling(() -> ugcRelationshipDAO.deleteCollectRelationship(ugcId, userId));
     }
 
     public UgcInteractRelationship queryLikeRelationship(String ugcId, String userId) {
-        try {
-            checkState(StringUtils.isNoneBlank(ugcId, userId));
-            return ugcRelationshipDAO.queryLikeRelationship(ugcId, userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNoneBlank(ugcId, userId));
+        return executeWithExceptionHandling(() -> ugcRelationshipDAO.queryLikeRelationship(ugcId, userId));
     }
 
     public List<String> queryLikeRelationships(List<String> ugcIds, String userId) {
-        try {
-            checkState(StringUtils.isNotBlank(userId));
-            if (ugcIds == null || ugcIds.isEmpty()) {
-                return Collections.emptyList();
-            }
-            return ugcRelationshipDAO.queryLikeRelationships(ugcIds, userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        checkState(StringUtils.isNotBlank(userId));
+        if (ugcIds == null || ugcIds.isEmpty()) {
+            return Collections.emptyList();
         }
+        return executeWithExceptionHandling(() -> ugcRelationshipDAO.queryLikeRelationships(ugcIds, userId));
     }
 
     public UgcInteractRelationship queryCollectRelationship(String ugcId, String userId) {
-        try {
-            checkState(StringUtils.isNoneBlank(ugcId, userId));
-            return ugcRelationshipDAO.queryCollectRelationship(ugcId, userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNoneBlank(ugcId, userId));
+        return executeWithExceptionHandling(() -> ugcRelationshipDAO.queryCollectRelationship(ugcId, userId));
     }
 
     public List<String> queryCollectRelationships(List<String> ugcIds, String userId) {
-        try {
-            checkState(StringUtils.isNotBlank(userId));
-            if (ugcIds == null || ugcIds.isEmpty()) {
-                return Collections.emptyList();
-            }
-            return ugcRelationshipDAO.queryCollectRelationships(ugcIds, userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        checkState(StringUtils.isNotBlank(userId));
+        if (ugcIds == null || ugcIds.isEmpty()) {
+            return Collections.emptyList();
         }
+        return executeWithExceptionHandling(() -> ugcRelationshipDAO.queryCollectRelationships(ugcIds, userId));
     }
 
     public List<UgcInteractInfo> queryCollectedUgcIdsWithCursor(String userId, Long cursor, int limit) {
-        try {
-            checkState(StringUtils.isNotBlank(userId) && limit > 0);
-            return ugcRelationshipDAO.queryCollectedUgcIdsWithCursor(userId, cursor, limit);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId) && limit > 0);
+        return executeWithExceptionHandling(() -> ugcRelationshipDAO.queryCollectedUgcIdsWithCursor(userId, cursor, limit));
     }
 
     public List<String> queryAllCollectedUgcIds(String userId) {
-        try {
-            checkState(StringUtils.isNotBlank(userId));
-            return ugcRelationshipDAO.queryAllCollectedUgcIds(userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId));
+        return executeWithExceptionHandling(() -> ugcRelationshipDAO.queryAllCollectedUgcIds(userId));
     }
 
     public UgcNode findByUgcId(String ugcId) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId));
-            return ugcRelationshipDAO.findByUgcId(ugcId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(ugcId));
+        return executeWithExceptionHandling(() -> ugcRelationshipDAO.findByUgcId(ugcId));
     }
 
     public void deleteAllLikeRelationships(String ugcId) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId));
-            ugcRelationshipDAO.deleteAllLikeRelationships(ugcId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(ugcId));
+        executeWithExceptionHandling(() -> ugcRelationshipDAO.deleteAllLikeRelationships(ugcId));
     }
 
     public void deleteAllCollectRelationships(String ugcId) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId));
-            ugcRelationshipDAO.deleteAllCollectRelationships(ugcId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(ugcId));
+        executeWithExceptionHandling(() -> ugcRelationshipDAO.deleteAllCollectRelationships(ugcId));
     }
 
     public void deleteUgcNode(String ugcId) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId));
-            ugcRelationshipDAO.deleteUgcNode(ugcId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(ugcId));
+        executeWithExceptionHandling(() -> ugcRelationshipDAO.deleteUgcNode(ugcId));
     }
 }

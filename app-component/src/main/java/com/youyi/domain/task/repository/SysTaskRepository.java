@@ -1,6 +1,6 @@
 package com.youyi.domain.task.repository;
 
-import com.youyi.common.exception.AppSystemException;
+import com.youyi.common.base.BaseRepository;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.domain.task.repository.mapper.SysTaskMapper;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.youyi.common.constant.RepositoryConstant.SINGLE_DML_AFFECTED_ROWS;
-import static com.youyi.common.util.LogUtil.infraLog;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -24,61 +23,52 @@ import static com.youyi.common.util.LogUtil.infraLog;
  */
 @Repository
 @RequiredArgsConstructor
-public class SysTaskRepository {
+public class SysTaskRepository extends BaseRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(SysTaskRepository.class);
 
     private final SysTaskMapper sysTaskMapper;
 
+    @Override
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    @Override
+    protected InfraType getInfraType() {
+        return InfraType.MYSQL;
+    }
+
+    @Override
+    protected InfraCode getInfraCode() {
+        return InfraCode.MYSQL_ERROR;
+    }
+
     public void insert(SysTaskPO po) {
-        try {
-            checkNotNull(po);
-            int ret = sysTaskMapper.insert(po);
-            checkState(ret == SINGLE_DML_AFFECTED_ROWS);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkNotNull(po);
+        int ret = executeWithExceptionHandling(() -> sysTaskMapper.insert(po));
+        checkState(ret == SINGLE_DML_AFFECTED_ROWS);
     }
 
     public void insertBatch(List<SysTaskPO> poList) {
-        try {
-            checkState(CollectionUtils.isNotEmpty(poList));
-            int ret = sysTaskMapper.insertBatch(poList);
-            checkState(ret == poList.size());
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkState(CollectionUtils.isNotEmpty(poList));
+        int ret = executeWithExceptionHandling(() -> sysTaskMapper.insertBatch(poList));
+        checkState(ret == poList.size());
     }
 
     public void updateStatus(List<String> taskIds, String taskStatus) {
-        try {
-            checkState(StringUtils.isNotBlank(taskStatus));
-            sysTaskMapper.updateStatus(taskIds, taskStatus);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(taskStatus));
+        executeWithExceptionHandling(() -> sysTaskMapper.updateStatus(taskIds, taskStatus));
     }
 
     public List<SysTaskPO> queryByTypeAndStatusWithCursor(String taskType, List<String> taskStatus, Long cursor, Integer size) {
-        try {
-            checkState(StringUtils.isNotBlank(taskType) && CollectionUtils.isNotEmpty(taskStatus) && size > 0);
-            return sysTaskMapper.queryByTypeAndStatusWithCursor(taskType, taskStatus, cursor, size, Boolean.FALSE);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(taskType) && CollectionUtils.isNotEmpty(taskStatus) && size > 0);
+        return executeWithExceptionHandling(() -> sysTaskMapper.queryByTypeAndStatusWithCursor(taskType, taskStatus, cursor, size, Boolean.FALSE));
     }
 
     public List<SysTaskPO> queryToCompensationTasksWithCursor(String taskType, List<String> taskStatus, Long cursor, Integer size) {
-        try {
-            checkState(StringUtils.isNotBlank(taskType) && CollectionUtils.isNotEmpty(taskStatus) && size > 0);
-            return sysTaskMapper.queryByTypeAndStatusWithCursor(taskType, taskStatus, cursor, size, Boolean.TRUE);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(taskType) && CollectionUtils.isNotEmpty(taskStatus) && size > 0);
+        return executeWithExceptionHandling(() -> sysTaskMapper.queryByTypeAndStatusWithCursor(taskType, taskStatus, cursor, size, Boolean.TRUE));
+
     }
 }

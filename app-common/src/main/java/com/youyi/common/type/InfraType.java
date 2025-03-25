@@ -6,6 +6,8 @@ package com.youyi.common.type;
  */
 public enum InfraType {
 
+    UNKNOWN,
+
     MYSQL,
     REDIS,
     MONGODB,
