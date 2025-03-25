@@ -1,6 +1,6 @@
 package com.youyi.domain.user.repository;
 
-import com.youyi.common.exception.AppSystemException;
+import com.youyi.common.base.BaseRepository;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.domain.user.repository.dao.UserRelationDAO;
@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.youyi.common.util.LogUtil.infraLog;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -24,155 +23,100 @@ import static com.youyi.common.util.LogUtil.infraLog;
  */
 @Repository
 @RequiredArgsConstructor
-public class UserRelationRepository {
+public class UserRelationRepository extends BaseRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRelationRepository.class);
 
     private final UserRelationDAO userRelationDAO;
 
+    @Override
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    @Override
+    protected InfraType getInfraType() {
+        return InfraType.NEO4J;
+    }
+
+    @Override
+    protected InfraCode getInfraCode() {
+        return InfraCode.NEO4J_ERROR;
+    }
+
     public UserNode save(String userId, String nickname) {
-        try {
-            checkState(StringUtils.isNoneBlank(userId, nickname));
-            return userRelationDAO.save(userId, nickname);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkState(StringUtils.isNoneBlank(userId, nickname));
+        return executeWithExceptionHandling(() -> userRelationDAO.save(userId, nickname));
     }
 
     public UserNode findByUserId(String userId) {
-        try {
-            checkState(StringUtils.isNotBlank(userId));
-            return userRelationDAO.findByUserId(userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId));
+        return executeWithExceptionHandling(() -> userRelationDAO.findByUserId(userId));
     }
 
     public List<UserRelationship> queryFollowingUserRelations(String userId) {
-        try {
-            checkState(StringUtils.isNotBlank(userId));
-            return userRelationDAO.queryFollowingUserRelations(userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId));
+        return executeWithExceptionHandling(() -> userRelationDAO.queryFollowingUserRelations(userId));
     }
 
     public UserRelationship queryFollowingUserRelations(String subscriberId, String creatorId) {
-        try {
-            checkState(StringUtils.isNoneBlank(subscriberId, creatorId));
-            return userRelationDAO.queryFollowingUserRelations(subscriberId, creatorId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNoneBlank(subscriberId, creatorId));
+        return executeWithExceptionHandling(() -> userRelationDAO.queryFollowingUserRelations(subscriberId, creatorId));
     }
 
     public List<String> queryFollowingUserRelationsBatch(String subscriberId, List<String> creatorIds) {
-        try {
-            checkState(StringUtils.isNotBlank(subscriberId));
-            if (creatorIds == null || creatorIds.isEmpty()) {
-                return Collections.emptyList();
-            }
-            return userRelationDAO.queryFollowingUserRelationsBatch(subscriberId, creatorIds);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        checkState(StringUtils.isNotBlank(subscriberId));
+        if (creatorIds == null || creatorIds.isEmpty()) {
+            return Collections.emptyList();
         }
+        return executeWithExceptionHandling(() -> userRelationDAO.queryFollowingUserRelationsBatch(subscriberId, creatorIds));
     }
 
     public List<String> queryFollowingUserRelations(String subscriberId, List<String> creatorIds) {
-        try {
-            checkState(StringUtils.isNotBlank(subscriberId));
-            if (creatorIds == null || creatorIds.isEmpty()) {
-                return Collections.emptyList();
-            }
-            return userRelationDAO.queryFollowingUserRelations(subscriberId, creatorIds);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
+        checkState(StringUtils.isNotBlank(subscriberId));
+        if (creatorIds == null || creatorIds.isEmpty()) {
+            return Collections.emptyList();
         }
+        return executeWithExceptionHandling(() -> userRelationDAO.queryFollowingUserRelations(subscriberId, creatorIds));
     }
 
     public void addFollowingUserRelationship(String subscriberId, String creatorId) {
-        try {
-            checkState(StringUtils.isNoneBlank(subscriberId, creatorId));
-            userRelationDAO.addFollowingUserRelationship(subscriberId, creatorId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNoneBlank(subscriberId, creatorId));
+        executeWithExceptionHandling(() -> userRelationDAO.addFollowingUserRelationship(subscriberId, creatorId));
     }
 
     public void deleteFollowingUserRelationship(String subscriberId, String creatorId) {
-        try {
-            checkState(StringUtils.isNoneBlank(subscriberId, creatorId));
-            userRelationDAO.deleteFollowingUserRelationship(subscriberId, creatorId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNoneBlank(subscriberId, creatorId));
+        executeWithExceptionHandling(() -> userRelationDAO.deleteFollowingUserRelationship(subscriberId, creatorId));
     }
 
     public int getFollowingCount(String userId) {
-        try {
-            checkState(StringUtils.isNotBlank(userId));
-            return userRelationDAO.getFollowingCount(userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId));
+        return executeWithExceptionHandling(() -> userRelationDAO.getFollowingCount(userId));
     }
 
     public int getFollowerCount(String userId) {
-        try {
-            checkState(StringUtils.isNotBlank(userId));
-            return userRelationDAO.getFollowerCount(userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId));
+        return executeWithExceptionHandling(() -> userRelationDAO.getFollowerCount(userId));
     }
 
     public List<UserRelationship> getFollowingUsers(String userId, Long cursor, int limit) {
-        try {
-            checkState(StringUtils.isNotBlank(userId) && limit > 0);
-            return userRelationDAO.getFollowingUsers(userId, cursor, limit);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId) && limit > 0);
+        return executeWithExceptionHandling(() -> userRelationDAO.getFollowingUsers(userId, cursor, limit));
     }
 
     public List<UserRelationship> getFollowers(String userId, Long cursor, int limit) {
-        try {
-            checkState(StringUtils.isNotBlank(userId) && limit > 0);
-            return userRelationDAO.getFollowers(userId, cursor, limit);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId) && limit > 0);
+        return executeWithExceptionHandling(() -> userRelationDAO.getFollowers(userId, cursor, limit));
     }
 
     public List<UserRelationship> getAllFollowingUsers(String userId) {
-        try {
-            checkState(StringUtils.isNotBlank(userId));
-            return userRelationDAO.getAllFollowingUsers(userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId));
+        return executeWithExceptionHandling(() -> userRelationDAO.getAllFollowingUsers(userId));
     }
 
     public List<SuggestedUserInfo> getSuggestedUsers(String userId, int limit) {
-        try {
-            checkState(StringUtils.isNotBlank(userId) && limit > 0);
-            return userRelationDAO.getSuggestedUsers(userId, limit);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.NEO4J, InfraCode.NEO4J_ERROR, e);
-            throw AppSystemException.of(InfraCode.NEO4J_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId) && limit > 0);
+        return executeWithExceptionHandling(() -> userRelationDAO.getSuggestedUsers(userId, limit));
     }
 }

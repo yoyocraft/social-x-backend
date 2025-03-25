@@ -1,6 +1,6 @@
 package com.youyi.domain.ugc.repository;
 
-import com.youyi.common.exception.AppSystemException;
+import com.youyi.common.base.BaseRepository;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.domain.ugc.repository.dao.UgcDAO;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Repository;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.youyi.common.constant.SymbolConstant.EMPTY;
-import static com.youyi.common.util.LogUtil.infraLog;
 import static java.util.Collections.emptyList;
 
 /**
@@ -28,163 +27,103 @@ import static java.util.Collections.emptyList;
  */
 @Repository
 @RequiredArgsConstructor
-public class UgcRepository {
+public class UgcRepository extends BaseRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(UgcRepository.class);
 
     private final UgcDAO ugcDAO;
 
+    @Override
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    @Override
+    protected InfraType getInfraType() {
+        return InfraType.MONGODB;
+    }
+
+    @Override
+    protected InfraCode getInfraCode() {
+        return InfraCode.MONGODB_ERROR;
+    }
+
     public void saveUgc(UgcDocument ugcDocument) {
-        try {
-            checkNotNull(ugcDocument);
-            ugcDAO.save(ugcDocument);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkNotNull(ugcDocument);
+        executeWithExceptionHandling(() -> ugcDAO.save(ugcDocument));
     }
 
     public void saveAllUgc(Collection<UgcDocument> ugcDocuments) {
-        try {
-            checkState(CollectionUtils.isNotEmpty(ugcDocuments));
-            ugcDAO.saveAll(ugcDocuments);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(CollectionUtils.isNotEmpty(ugcDocuments));
+        executeWithExceptionHandling(() -> ugcDAO.saveAll(ugcDocuments));
     }
 
     public void deleteUgc(String ugcId) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId));
-            ugcDAO.updateStatusByUgcId(ugcId, UgcStatus.DELETED.name());
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(ugcId));
+        executeWithExceptionHandling(() -> ugcDAO.updateStatusByUgcId(ugcId, UgcStatus.DELETED.name()));
     }
 
     public List<UgcDocument> querySelfUgc(String ugcType, String ugcStatus, String authorId, long lastCursor, int size) {
-        try {
-            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryWithTimeCursor(EMPTY, ugcType, EMPTY, ugcStatus, authorId, emptyList(), lastCursor, size);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+        return executeWithExceptionHandling(() -> ugcDAO.queryWithTimeCursor(EMPTY, ugcType, EMPTY, ugcStatus, authorId, emptyList(), lastCursor, size));
     }
 
     public UgcDocument queryByUgcId(String ugcId) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId));
-            return ugcDAO.queryByUgcId(ugcId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(ugcId));
+        return executeWithExceptionHandling(() -> ugcDAO.queryByUgcId(ugcId));
     }
 
     public List<UgcDocument> queryBatchByUgcId(List<String> ugcIds) {
-        try {
-            checkState(Objects.nonNull(ugcIds) && !ugcIds.isEmpty());
-            return ugcDAO.queryBatchByUgcId(ugcIds);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(Objects.nonNull(ugcIds) && !ugcIds.isEmpty());
+        return executeWithExceptionHandling(() -> ugcDAO.queryBatchByUgcId(ugcIds));
     }
 
     public List<UgcDocument> queryBatchByAuthorId(String authorId) {
-        try {
-            checkState(StringUtils.isNotBlank(authorId));
-            return ugcDAO.queryBatchByAuthorId(authorId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(authorId));
+        return executeWithExceptionHandling(() -> ugcDAO.queryBatchByAuthorId(authorId));
     }
 
     public void updateUgc(UgcDocument ugcDocument) {
-        try {
-            checkNotNull(ugcDocument);
-            ugcDAO.updateByUgcId(ugcDocument);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkNotNull(ugcDocument);
+        executeWithExceptionHandling(() -> ugcDAO.updateByUgcId(ugcDocument));
     }
 
     public List<UgcDocument> queryByStatusWithTimeCursor(String ugcType, String ugcStatus, long lastCursor, int size) {
-        try {
-            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryWithTimeCursor(EMPTY, ugcType, EMPTY, ugcStatus, emptyList(), emptyList(), lastCursor, size);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+        return executeWithExceptionHandling(() -> ugcDAO.queryWithTimeCursor(EMPTY, ugcType, EMPTY, ugcStatus, emptyList(), emptyList(), lastCursor, size));
     }
 
     public List<UgcDocument> queryWithTimeCursor(String keyword, String categoryId, String ugcType, String ugcStatus, List<String> tags,
         long lastCursor, int size) {
-        try {
-            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryWithTimeCursor(keyword, ugcType, categoryId, ugcStatus, emptyList(), tags, lastCursor, size);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+        return executeWithExceptionHandling(() -> ugcDAO.queryWithTimeCursor(keyword, ugcType, categoryId, ugcStatus, emptyList(), tags, lastCursor, size));
     }
 
     public List<UgcDocument> queryByAuthorWithTimeCursor(String categoryId, String ugcType, String ugcStatus, String authorId,
         long lastCursor, int size) {
-        try {
-            checkState(System.currentTimeMillis() >= lastCursor && size > 0 && StringUtils.isNotBlank(authorId));
-            return ugcDAO.queryWithTimeCursor(EMPTY, ugcType, categoryId, ugcStatus, authorId, emptyList(), lastCursor, size);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(System.currentTimeMillis() >= lastCursor && size > 0 && StringUtils.isNotBlank(authorId));
+        return executeWithExceptionHandling(() -> ugcDAO.queryWithTimeCursor(EMPTY, ugcType, categoryId, ugcStatus, authorId, emptyList(), lastCursor, size));
     }
 
     public List<UgcDocument> queryByAuthorWithTimeCursor(String categoryId, String ugcType, String ugcStatus, Collection<String> authorIds,
         long lastCursor, int size) {
-        try {
-            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryWithTimeCursor(EMPTY, ugcType, categoryId, ugcStatus, authorIds, emptyList(), lastCursor, size);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+        return executeWithExceptionHandling(() -> ugcDAO.queryWithTimeCursor(EMPTY, ugcType, categoryId, ugcStatus, authorIds, emptyList(), lastCursor, size));
     }
 
     public List<UgcDocument> queryByTagWithTimeCursor(Collection<String> tags, String categoryId, String ugcStatus, long lastCursor, int size) {
-        try {
-            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryWithTimeCursor(EMPTY, EMPTY, categoryId, ugcStatus, emptyList(), tags, lastCursor, size);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+        return executeWithExceptionHandling(() -> ugcDAO.queryWithTimeCursor(EMPTY, EMPTY, categoryId, ugcStatus, emptyList(), tags, lastCursor, size));
     }
 
     public void incrUgcStatisticCount(String ugcId, long incrViewCount, long incrLikeCount, long incrCollectCount, long incrCommentaryCount) {
-        try {
-            checkState(StringUtils.isNotBlank(ugcId));
-            ugcDAO.updateUgcStatistics(ugcId, incrViewCount, incrLikeCount, incrCollectCount, incrCommentaryCount);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(ugcId));
+        executeWithExceptionHandling(() -> ugcDAO.updateUgcStatistics(ugcId, incrViewCount, incrLikeCount, incrCollectCount, incrCommentaryCount));
     }
 
     public List<UgcDocument> queryByExtraDataWithTimeCursor(String categoryId, String ugcType, String ugcStatus, Boolean hasSolved,
         long lastCursor, int size) {
-        try {
-            checkState(Objects.nonNull(hasSolved) && System.currentTimeMillis() >= lastCursor && size > 0);
-            return ugcDAO.queryWithTimeCursor(EMPTY, ugcType, categoryId, ugcStatus, EMPTY, emptyList(), hasSolved, lastCursor, size);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(Objects.nonNull(hasSolved) && System.currentTimeMillis() >= lastCursor && size > 0);
+        return executeWithExceptionHandling(() -> ugcDAO.queryWithTimeCursor(EMPTY, ugcType, categoryId, ugcStatus, EMPTY, emptyList(), hasSolved, lastCursor, size));
     }
 }

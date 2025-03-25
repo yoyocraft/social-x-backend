@@ -1,6 +1,6 @@
 package com.youyi.domain.user.repository;
 
-import com.youyi.common.exception.AppSystemException;
+import com.youyi.common.base.BaseRepository;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.domain.user.repository.mapper.UserAuthMapper;
@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 import static com.youyi.common.constant.RepositoryConstant.SINGLE_DML_AFFECTED_ROWS;
-import static com.youyi.common.util.LogUtil.infraLog;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -29,114 +28,85 @@ import static com.youyi.common.util.LogUtil.infraLog;
  */
 @Repository
 @RequiredArgsConstructor
-public class UserRepository {
+public class UserRepository extends BaseRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
 
     private final UserAuthMapper userAuthMapper;
     private final UserInfoMapper userInfoMapper;
 
+    @Override
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    @Override
+    protected InfraType getInfraType() {
+        return InfraType.MYSQL;
+    }
+
+    @Override
+    protected InfraCode getInfraCode() {
+        return InfraCode.MYSQL_ERROR;
+    }
+
     public UserInfoPO queryUserInfoByEmail(String email) {
-        try {
-            checkState(StringUtils.isNotBlank(email));
-            return userInfoMapper.queryByEmail(email);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(email));
+        return executeWithExceptionHandling(() -> userInfoMapper.queryByEmail(email));
+
     }
 
     public UserInfoPO queryUserInfoByUserId(String userId) {
-        try {
-            checkState(StringUtils.isNotBlank(userId));
-            return userInfoMapper.queryByUserId(userId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(userId));
+        return executeWithExceptionHandling(() -> userInfoMapper.queryByUserId(userId));
     }
 
     public UserAuthPO queryUserAuthByIdentityTypeAndIdentifier(String identityType, String identifier) {
-        try {
-            checkState(StringUtils.isNotBlank(identityType) && StringUtils.isNotBlank(identifier));
-            return userAuthMapper.queryByIdentityTypeAndIdentifier(identityType, identifier);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(identityType) && StringUtils.isNotBlank(identifier));
+        return executeWithExceptionHandling(() -> userAuthMapper.queryByIdentityTypeAndIdentifier(identityType, identifier));
     }
 
     public void insertUserAuth(UserAuthPO userAuthPO) {
-        try {
-            checkNotNull(userAuthPO);
-            int ret = userAuthMapper.insert(userAuthPO);
-            checkState(ret == SINGLE_DML_AFFECTED_ROWS);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkNotNull(userAuthPO);
+        int ret = executeWithExceptionHandling(() -> userAuthMapper.insert(userAuthPO));
+        checkState(ret == SINGLE_DML_AFFECTED_ROWS);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void insertOrUpdateUserAuth(UserAuthPO userAuthPO) {
-        try {
-            checkState(
-                Objects.nonNull(userAuthPO)
-                    && StringUtils.isNotBlank(userAuthPO.getIdentityType())
-                    && StringUtils.isNotBlank(userAuthPO.getIdentifier())
-            );
-            UserAuthPO po = userAuthMapper.queryByIdentityTypeAndIdentifier(userAuthPO.getIdentityType(), userAuthPO.getIdentifier());
-            if (Objects.isNull(po)) {
-                int ret = userAuthMapper.insert(userAuthPO);
-                checkState(ret == SINGLE_DML_AFFECTED_ROWS);
-                return;
-            }
-            int ret = userAuthMapper.update(userAuthPO);
+        checkState(
+            Objects.nonNull(userAuthPO)
+                && StringUtils.isNotBlank(userAuthPO.getIdentityType())
+                && StringUtils.isNotBlank(userAuthPO.getIdentifier())
+        );
+        UserAuthPO po = executeWithExceptionHandling(() -> userAuthMapper.queryByIdentityTypeAndIdentifier(userAuthPO.getIdentityType(), userAuthPO.getIdentifier()));
+        if (Objects.isNull(po)) {
+            int ret = executeWithExceptionHandling(() -> userAuthMapper.insert(userAuthPO));
             checkState(ret == SINGLE_DML_AFFECTED_ROWS);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
+            return;
         }
+        int ret = executeWithExceptionHandling(() -> userAuthMapper.update(userAuthPO));
+        checkState(ret == SINGLE_DML_AFFECTED_ROWS);
     }
 
     public void insertUserInfo(UserInfoPO userInfoPO) {
-        try {
-            checkNotNull(userInfoPO);
-            int ret = userInfoMapper.insert(userInfoPO);
-            checkState(ret == SINGLE_DML_AFFECTED_ROWS);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkNotNull(userInfoPO);
+        int ret = executeWithExceptionHandling(() -> userInfoMapper.insert(userInfoPO));
+        checkState(ret == SINGLE_DML_AFFECTED_ROWS);
     }
 
     public void editUserInfo(UserInfoPO userInfoPO) {
-        try {
-            checkNotNull(userInfoPO);
-            userInfoMapper.update(userInfoPO);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkNotNull(userInfoPO);
+        executeWithExceptionHandling(() -> userInfoMapper.update(userInfoPO));
     }
 
     public List<UserInfoPO> queryUserInfoByUserIds(Collection<String> userIds) {
-        try {
-            checkState(CollectionUtils.isNotEmpty(userIds));
-            return userInfoMapper.queryBatchByUserId(userIds);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkState(CollectionUtils.isNotEmpty(userIds));
+        return executeWithExceptionHandling(() -> userInfoMapper.queryBatchByUserId(userIds));
     }
 
     public List<UserInfoPO> querySuggestedUsers(UserInfoPO userInfoPO) {
-        try {
-            checkNotNull(userInfoPO);
-            return userInfoMapper.querySuggestedUsers(userInfoPO);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MYSQL, InfraCode.MYSQL_ERROR, e);
-            throw AppSystemException.of(InfraCode.MYSQL_ERROR, e);
-        }
+        checkNotNull(userInfoPO);
+        return executeWithExceptionHandling(() -> userInfoMapper.querySuggestedUsers(userInfoPO));
     }
 }

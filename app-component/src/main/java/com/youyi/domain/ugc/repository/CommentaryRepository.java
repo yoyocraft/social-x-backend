@@ -1,6 +1,6 @@
 package com.youyi.domain.ugc.repository;
 
-import com.youyi.common.exception.AppSystemException;
+import com.youyi.common.base.BaseRepository;
 import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.domain.ugc.type.CommentaryStatus;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static com.youyi.common.util.LogUtil.infraLog;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -26,129 +25,84 @@ import static com.youyi.common.util.LogUtil.infraLog;
  */
 @Repository
 @RequiredArgsConstructor
-public class CommentaryRepository {
+public class CommentaryRepository extends BaseRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(CommentaryRepository.class);
 
     private final CommentaryDAO commentaryDAO;
 
+    @Override
+    protected Logger getLogger() {
+        return logger;
+    }
+
+    @Override
+    protected InfraType getInfraType() {
+        return InfraType.MONGODB;
+    }
+
+    @Override
+    protected InfraCode getInfraCode() {
+        return InfraCode.MONGODB_ERROR;
+    }
+
     public void saveCommentary(CommentaryDocument commentaryDocument) {
-        try {
-            checkNotNull(commentaryDocument);
-            commentaryDAO.save(commentaryDocument);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkNotNull(commentaryDocument);
+        executeWithExceptionHandling(() -> commentaryDAO.save(commentaryDocument));
     }
 
     public void saveAllCommentary(Collection<CommentaryDocument> commentaryDocuments) {
-        try {
-            checkState(CollectionUtils.isNotEmpty(commentaryDocuments));
-            commentaryDAO.saveAll(commentaryDocuments);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(CollectionUtils.isNotEmpty(commentaryDocuments));
+        executeWithExceptionHandling(() -> commentaryDAO.saveAll(commentaryDocuments));
     }
 
     public CommentaryDocument queryByCommentaryId(String commentaryId) {
-        try {
-            checkNotNull(commentaryId);
-            return commentaryDAO.queryByCommentaryId(commentaryId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkNotNull(commentaryId);
+        return executeWithExceptionHandling(() -> commentaryDAO.queryByCommentaryId(commentaryId));
     }
 
     public List<CommentaryDocument> queryRootCommentaryWithTimeCursor(String ugcId, long lastCursor, int size) {
-        try {
-            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return commentaryDAO.queryRootCommentaryWithTimeCursor(ugcId, lastCursor, size);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+        return executeWithExceptionHandling(() -> commentaryDAO.queryRootCommentaryWithTimeCursor(ugcId, lastCursor, size));
     }
 
     public List<CommentaryDocument> queryByParentId(String parentId) {
-        try {
-            checkState(StringUtils.isNotBlank(parentId));
-            return commentaryDAO.queryByParentId(parentId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(parentId));
+        return executeWithExceptionHandling(() -> commentaryDAO.queryByParentId(parentId));
     }
 
     public List<CommentaryDocument> queryByParentId(Collection<String> parentId) {
-        try {
-            checkState(CollectionUtils.isNotEmpty(parentId));
-            return commentaryDAO.queryByParentId(parentId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(CollectionUtils.isNotEmpty(parentId));
+        return executeWithExceptionHandling(() -> commentaryDAO.queryByParentId(parentId));
     }
 
     public List<CommentaryDocument> queryByCommentatorId(String commentatorId) {
-        try {
-            checkState(StringUtils.isNotBlank(commentatorId));
-            return commentaryDAO.queryByCommentatorId(commentatorId);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(commentatorId));
+        return executeWithExceptionHandling(() -> commentaryDAO.queryByCommentatorId(commentatorId));
     }
 
     public List<CommentaryDocument> queryWithTimeCursor(long lastCursor, int size) {
-        try {
-            checkState(System.currentTimeMillis() >= lastCursor && size > 0);
-            return commentaryDAO.queryWithTimeCursor(lastCursor, size);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(System.currentTimeMillis() >= lastCursor && size > 0);
+        return executeWithExceptionHandling(() -> commentaryDAO.queryWithTimeCursor(lastCursor, size));
     }
 
     public void deleteCommentary(String commentaryId) {
-        try {
-            checkState(StringUtils.isNotBlank(commentaryId));
-            commentaryDAO.updateStatusByCommentaryId(commentaryId, CommentaryStatus.DELETED.name());
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(commentaryId));
+        executeWithExceptionHandling(() -> commentaryDAO.updateStatusByCommentaryId(commentaryId, CommentaryStatus.DELETED.name()));
     }
 
     public void batchDeleteCommentary(List<String> commentaryIds) {
-        try {
-            checkState(CollectionUtils.isNotEmpty(commentaryIds));
-            commentaryDAO.batchUpdateStatusByCommentaryId(commentaryIds, CommentaryStatus.DELETED.name());
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(CollectionUtils.isNotEmpty(commentaryIds));
+        executeWithExceptionHandling(() -> commentaryDAO.batchUpdateStatusByCommentaryId(commentaryIds, CommentaryStatus.DELETED.name()));
     }
 
     public void incrLikeCount(String commentaryId, long incrLikeCount) {
-        try {
-            checkState(StringUtils.isNotBlank(commentaryId));
-            commentaryDAO.updateCommentaryStatistics(commentaryId, incrLikeCount);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(commentaryId));
+        executeWithExceptionHandling(() -> commentaryDAO.updateCommentaryStatistics(commentaryId, incrLikeCount));
     }
 
     public void updateCommentaryExtraData(String commentaryId, CommentaryExtraData extraData) {
-        try {
-            checkState(StringUtils.isNotBlank(commentaryId));
-            commentaryDAO.updateCommentaryExtraData(commentaryId, extraData);
-        } catch (Exception e) {
-            infraLog(logger, InfraType.MONGODB, InfraCode.MONGODB_ERROR, e);
-            throw AppSystemException.of(InfraCode.MONGODB_ERROR, e);
-        }
+        checkState(StringUtils.isNotBlank(commentaryId));
+        executeWithExceptionHandling(() -> commentaryDAO.updateCommentaryExtraData(commentaryId, extraData));
     }
 }
