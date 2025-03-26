@@ -4,7 +4,6 @@ import com.youyi.common.base.BasePageRequest;
 import com.youyi.infra.conf.core.ConfigKey;
 import java.util.Collection;
 import java.util.Objects;
-import org.apache.commons.collections4.CollectionUtils;
 
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
@@ -22,6 +21,6 @@ public class CommonConfUtil {
     }
 
     public static boolean checkHasMore(Collection<?> data) {
-        return CollectionUtils.isNotEmpty(data) && data.size() >= getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
+        return Objects.nonNull(data) && data.size() >= getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
     }
 }

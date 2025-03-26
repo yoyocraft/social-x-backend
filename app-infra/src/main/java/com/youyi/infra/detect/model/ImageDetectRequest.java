@@ -16,7 +16,8 @@ import lombok.Setter;
 @Setter
 public class ImageDetectRequest implements Serializable {
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @SerializedName("images")
     private List<ImageInfo> images;

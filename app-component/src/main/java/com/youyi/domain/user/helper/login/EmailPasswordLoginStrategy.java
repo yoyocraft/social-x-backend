@@ -5,7 +5,7 @@ import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
-import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.cache.CacheRepository;
 import com.youyi.infra.privacy.CryptoManager;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +17,7 @@ import static com.youyi.common.type.ReturnCode.PASSWORD_ERROR;
 import static com.youyi.common.type.ReturnCode.USER_NOT_EXIST;
 import static com.youyi.domain.user.constant.UserConstant.IMAGE_CAPTCHA_ID;
 import static com.youyi.domain.user.constant.UserConstant.IMAGE_CAPTCHA_KEY;
-import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofImageCaptchaKey;
+import static com.youyi.infra.cache.key.VerificationCacheKeyRepo.ofImageCaptchaKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -28,7 +28,7 @@ import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofImageCaptchaKey
 public class EmailPasswordLoginStrategy implements LoginStrategy {
 
     private final UserRepository userRepository;
-    private final CacheManager cacheManager;
+    private final CacheRepository cacheRepository;
 
     @Override
     public void login(UserDO userDO) {
@@ -55,7 +55,7 @@ public class EmailPasswordLoginStrategy implements LoginStrategy {
     private void checkImageCaptcha(UserDO userDO) {
         String captchaId = userDO.getExtra().get(IMAGE_CAPTCHA_ID);
         String cacheKey = ofImageCaptchaKey(captchaId);
-        String verifyCaptcha = cacheManager.getString(cacheKey);
+        String verifyCaptcha = cacheRepository.getString(cacheKey);
         if (StringUtils.isBlank(verifyCaptcha)) {
             throw AppBizException.of(CAPTCHA_EXPIRED);
         }
@@ -64,7 +64,7 @@ public class EmailPasswordLoginStrategy implements LoginStrategy {
             throw AppBizException.of(CAPTCHA_ERROR);
         }
         // 验证码校验通过，删除验证码
-        cacheManager.delete(cacheKey);
+        cacheRepository.delete(cacheKey);
     }
 
     private void checkPassword(UserDO userDO, UserAuthPO userAuthPO) {

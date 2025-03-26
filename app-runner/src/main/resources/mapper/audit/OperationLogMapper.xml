@@ -20,13 +20,5 @@
         INSERT INTO `operation_log` (extra_data, operation_type, operator_id, operator_name)
         VALUES (#{extraData}, #{operationType}, #{operatorId}, #{operatorName})
     </insert>
-    <select id="queryByOperationTypeAndOperatorId"
-            resultType="com.youyi.domain.audit.repository.po.OperationLogPO">
-        SELECT
-        <include refid="result_cols"/>
-        FROM `operation_log`
-        WHERE `operation_type` = #{operationType}
-        AND `operator_id` = #{operatorId}
-    </select>
 
 </mapper>

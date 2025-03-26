@@ -16,7 +16,7 @@ public enum CacheKey {
     UGC_LIKE_COUNT(ofKey("ugc", "${ugcId}", "sl"), Duration.ofHours(24)),
     UGC_COLLECT_COUNT(ofKey("ugc", "${ugcId}", "sc"), Duration.ofHours(24)),
     UGC_COMMENTARY_COUNT(ofKey("ugc", "${ugcId}", "scom"), Duration.ofHours(24)),
-    UGC_USER_RECOMMEND_TAG(ofKey("ugc", "u", "${userId}", "rec_tag"), Duration.ofHours(1)),
+    UGC_USER_RECOMMEND_TAG(ofKey("ugc", "u", "${userId}", "rt"), Duration.ofHours(1)),
 
     HOT_UGC_LIST(ofKey("ugc", "hot", "${ugcType}"), Duration.ofHours(24)),
     HOT_AUTHOR_LIST(ofKey("u", "hot"), Duration.ofHours(24), false),

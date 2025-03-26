@@ -2,7 +2,7 @@ package com.youyi.runner.verification.util;
 
 import com.youyi.common.type.BizType;
 import com.youyi.common.util.param.ParamCheckerChain;
-import com.youyi.domain.verification.request.CaptchaVerifyRequest;
+import com.youyi.runner.verification.model.CaptchaVerifyRequest;
 
 import static com.youyi.common.util.param.ParamChecker.emailChecker;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;

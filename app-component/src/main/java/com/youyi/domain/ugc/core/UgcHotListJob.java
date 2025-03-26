@@ -8,7 +8,7 @@ import com.youyi.domain.ugc.model.HotUgcCacheInfo;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.infra.cache.CacheKey;
-import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.cache.CacheRepository;
 import com.youyi.infra.conf.core.ConfigKey;
 import java.util.Comparator;
 import java.util.List;
@@ -26,7 +26,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofHotUgcListKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofHotUgcListKey;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
@@ -40,7 +40,7 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
     private static final Logger logger = LoggerFactory.getLogger(UgcHotListJob.class);
 
     private final UgcRepository ugcRepository;
-    private final CacheManager cacheManager;
+    private final CacheRepository cacheRepository;
 
     private final ReentrantLock jobLock = new ReentrantLock();
 
@@ -161,6 +161,6 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
 
     private void cacheHotList(UgcType ugcType, List<HotUgcCacheInfo> hotList) {
         String cacheKey = ofHotUgcListKey(ugcType.name());
-        cacheManager.set(cacheKey, GsonUtil.toJson(hotList), CacheKey.HOT_UGC_LIST.getTtl());
+        cacheRepository.set(cacheKey, GsonUtil.toJson(hotList), CacheKey.HOT_UGC_LIST.getTtl());
     }
 }

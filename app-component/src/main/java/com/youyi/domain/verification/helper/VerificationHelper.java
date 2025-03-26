@@ -5,13 +5,13 @@ import com.pig4cloud.captcha.base.Captcha;
 import com.youyi.common.util.seq.IdSeqUtil;
 import com.youyi.domain.verification.model.VerificationDO;
 import com.youyi.infra.cache.CacheKey;
-import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.cache.CacheRepository;
 import com.youyi.infra.email.EmailSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
-import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofImageCaptchaKey;
+import static com.youyi.infra.cache.key.VerificationCacheKeyRepo.ofEmailCaptchaKey;
+import static com.youyi.infra.cache.key.VerificationCacheKeyRepo.ofImageCaptchaKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -22,7 +22,7 @@ import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofImageCaptchaKey
 public class VerificationHelper {
 
     private final EmailSender emailSender;
-    private final CacheManager cacheManager;
+    private final CacheRepository cacheRepository;
 
     public void verifyEmailCaptcha(VerificationDO verificationDO) {
         // 生成验证码
@@ -42,12 +42,12 @@ public class VerificationHelper {
 
     private void saveEmailCaptcha(VerificationDO verificationDO) {
         String cacheKey = ofEmailCaptchaKey(verificationDO.getEmail(), verificationDO.getBizType());
-        cacheManager.set(cacheKey, verificationDO.getCaptcha(), CacheKey.EMAIL_CAPTCHA.getTtl());
+        cacheRepository.set(cacheKey, verificationDO.getCaptcha(), CacheKey.EMAIL_CAPTCHA.getTtl());
     }
 
     private void saveImageCaptcha(VerificationDO verificationDO) {
         String cacheKey = ofImageCaptchaKey(verificationDO.getCaptchaId());
-        cacheManager.set(cacheKey, verificationDO.getCaptcha(), CacheKey.EMAIL_CAPTCHA.getTtl());
+        cacheRepository.set(cacheKey, verificationDO.getCaptcha(), CacheKey.EMAIL_CAPTCHA.getTtl());
     }
 
     private VerificationDO genImageCaptcha() {

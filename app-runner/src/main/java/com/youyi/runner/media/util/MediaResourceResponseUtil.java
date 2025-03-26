@@ -3,12 +3,12 @@ package com.youyi.runner.media.util;
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.media.model.MediaResourceDO;
-import com.youyi.domain.media.request.ImageUploadRequest;
 import com.youyi.runner.media.model.ImageUploadResponse;
+import com.youyi.runner.media.model.ImageUploadRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.youyi.runner.media.util.MediaResourceConverter.MEDIA_RESOURCE_CONVERTER;
+import static com.youyi.runner.media.assembler.MediaResourceConverter.MEDIA_RESOURCE_CONVERTER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

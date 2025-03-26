@@ -5,12 +5,12 @@ import com.youyi.common.base.Result;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.CommentaryDO;
-import com.youyi.domain.ugc.request.CommentaryDeleteRequest;
-import com.youyi.domain.ugc.request.CommentaryPublishRequest;
-import com.youyi.domain.ugc.request.CommentaryQueryRequest;
-import com.youyi.domain.ugc.request.UgcInteractionRequest;
+import com.youyi.runner.ugc.model.CommentaryDeleteRequest;
 import com.youyi.runner.ugc.model.CommentaryInfo;
+import com.youyi.runner.ugc.model.CommentaryPublishRequest;
+import com.youyi.runner.ugc.model.CommentaryQueryRequest;
 import com.youyi.runner.ugc.model.CommentaryResponse;
+import com.youyi.runner.ugc.model.UgcInteractionRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.youyi.common.constant.RepositoryConstant.TOP_COMMENTARY_ID;
 import static com.youyi.infra.conf.util.CommonConfUtil.checkHasMore;
-import static com.youyi.runner.ugc.util.CommentaryConverter.COMMENTARY_CONVERTER;
+import static com.youyi.runner.ugc.assembler.CommentaryConverter.COMMENTARY_CONVERTER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

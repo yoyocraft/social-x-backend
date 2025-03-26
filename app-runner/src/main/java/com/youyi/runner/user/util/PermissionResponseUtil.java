@@ -2,9 +2,9 @@ package com.youyi.runner.user.util;
 
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
-import com.youyi.domain.user.request.PermissionAddRequest;
-import com.youyi.domain.user.request.RolePermissionAuthorizeRequest;
-import com.youyi.domain.user.request.RolePermissionRevokeRequest;
+import com.youyi.runner.user.model.PermissionAddRequest;
+import com.youyi.runner.user.model.RolePermissionAuthorizeRequest;
+import com.youyi.runner.user.model.RolePermissionRevokeRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -24,7 +24,7 @@ import com.youyi.domain.ugc.util.UgcContentUtil;
 import com.youyi.domain.user.model.UserDO;
 import com.youyi.infra.ai.AiClient;
 import com.youyi.infra.cache.CacheKey;
-import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.cache.CacheRepository;
 import com.youyi.infra.sse.SseEmitter;
 import com.zhipu.oapi.service.v4.model.ModelData;
 import io.reactivex.Flowable;
@@ -49,12 +49,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.constant.RepositoryConstant.INIT_QUERY_CURSOR;
 import static com.youyi.common.constant.SystemConstant.DEFAULT_KEY;
 import static com.youyi.common.type.ReturnCode.OPERATION_DENIED;
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofHotUgcListKey;
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCollectCountKey;
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCommentaryCountKey;
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcLikeCountKey;
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcUserRecommendTagKey;
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcViewCountKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofHotUgcListKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofUgcCollectCountKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofUgcCommentaryCountKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofUgcLikeCountKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofUgcUserRecommendTagKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofUgcViewCountKey;
 import static com.youyi.infra.conf.core.Conf.getMapConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
 import static com.youyi.infra.conf.core.ConfigKey.AI_UGC_VIEW_SUMMARY_PROMPT;
@@ -76,7 +76,7 @@ public class UgcService {
     private final UgcTagRepository ugcTagRepository;
 
     private final UgcStatisticCacheManager ugcStatisticCacheManager;
-    private final CacheManager cacheManager;
+    private final CacheRepository cacheRepository;
 
     private final AiClient aiClient;
 
@@ -290,11 +290,11 @@ public class UgcService {
 
     public List<HotUgcCacheInfo> queryHotUgcFromCache(UgcDO ugcDO) {
         String cacheKey = ofHotUgcListKey(ugcDO.getUgcType().name());
-        if (!cacheManager.exists(cacheKey)) {
+        if (!cacheRepository.exists(cacheKey)) {
             return Collections.emptyList();
         }
 
-        String cacheInfoJson = cacheManager.getString(cacheKey);
+        String cacheInfoJson = cacheRepository.getString(cacheKey);
         return GsonUtil.fromJson(cacheInfoJson, List.class, HotUgcCacheInfo.class);
     }
 
@@ -374,7 +374,7 @@ public class UgcService {
         List<String> recommendedTags;
         // 0. 先读取缓存数据
         String recommendTagKey = ofUgcUserRecommendTagKey(currentUser.getUserId());
-        String recommendTagJson = cacheManager.getString(recommendTagKey);
+        String recommendTagJson = cacheRepository.getString(recommendTagKey);
         if (StringUtils.isNotBlank(recommendTagJson)) {
             recommendedTags = GsonUtil.fromJson(recommendTagJson, List.class, String.class);
             if (CollectionUtils.isNotEmpty(recommendedTags)) {
@@ -399,7 +399,7 @@ public class UgcService {
             recommendedTags = RecommendUtil.getTop10RecommendedTags(allTags, personalizedTags, tagRelations);
             // 3. 保存缓存
             recommendTagJson = GsonUtil.toJson(recommendedTags);
-            cacheManager.set(recommendTagKey, recommendTagJson, CacheKey.UGC_USER_RECOMMEND_TAG.getTtl());
+            cacheRepository.set(recommendTagKey, recommendTagJson, CacheKey.UGC_USER_RECOMMEND_TAG.getTtl());
             return recommendedTags;
         } finally {
             calRecommendTagLock.unlock();

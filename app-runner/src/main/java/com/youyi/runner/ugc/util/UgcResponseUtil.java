@@ -5,21 +5,21 @@ import com.youyi.common.base.Result;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.UgcDO;
-import com.youyi.domain.ugc.request.UgcDeleteRequest;
-import com.youyi.domain.ugc.request.UgcInteractionRequest;
-import com.youyi.domain.ugc.request.UgcPublishRequest;
-import com.youyi.domain.ugc.request.UgcQueryRequest;
-import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
 import com.youyi.infra.sse.SseEmitter;
+import com.youyi.runner.ugc.model.UgcDeleteRequest;
+import com.youyi.runner.ugc.model.UgcInteractionRequest;
+import com.youyi.runner.ugc.model.UgcPublishRequest;
+import com.youyi.runner.ugc.model.UgcQueryRequest;
 import com.youyi.runner.ugc.model.UgcResponse;
 import com.youyi.runner.ugc.model.UgcStatisticResponse;
+import com.youyi.runner.ugc.model.UgcSummaryGenerateRequest;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.youyi.infra.conf.util.CommonConfUtil.checkHasMore;
-import static com.youyi.runner.ugc.util.UgcConverter.UGC_CONVERTER;
+import static com.youyi.runner.ugc.assembler.UgcConverter.UGC_CONVERTER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

@@ -5,12 +5,12 @@ import com.youyi.common.base.Result;
 import com.youyi.common.constant.SymbolConstant;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.notification.model.NotificationDO;
-import com.youyi.domain.notification.request.NotificationPublishRequest;
-import com.youyi.domain.notification.request.NotificationQueryRequest;
-import com.youyi.domain.notification.request.NotificationReadRequest;
-import com.youyi.domain.notification.request.NotificationUnreadQueryRequest;
+import com.youyi.runner.notification.model.NotificationPublishRequest;
+import com.youyi.runner.notification.model.NotificationQueryRequest;
+import com.youyi.runner.notification.model.NotificationReadRequest;
 import com.youyi.runner.notification.model.NotificationResponse;
 import com.youyi.runner.notification.model.NotificationUnreadInfo;
+import com.youyi.runner.notification.model.NotificationUnreadQueryRequest;
 import com.youyi.runner.notification.model.NotificationUnreadResponse;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.youyi.infra.conf.util.CommonConfUtil.checkHasMore;
-import static com.youyi.runner.notification.util.NotificationConverter.NOTIFICATION_CONVERTER;
+import static com.youyi.runner.notification.assembler.NotificationConverter.NOTIFICATION_CONVERTER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

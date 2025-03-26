@@ -11,7 +11,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.youyi.runner.ugc.util.UgcMetadataConverter.UGC_METADATA_CONVERTER;
+import static com.youyi.runner.ugc.assembler.UgcMetadataConverter.UGC_METADATA_CONVERTER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

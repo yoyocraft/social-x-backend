@@ -1,8 +1,8 @@
 package com.youyi.runner.media.util;
 
 import com.youyi.common.util.param.ParamCheckerChain;
-import com.youyi.domain.media.request.ImageUploadRequest;
 import com.youyi.domain.media.type.MediaSource;
+import com.youyi.runner.media.model.ImageUploadRequest;
 import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 

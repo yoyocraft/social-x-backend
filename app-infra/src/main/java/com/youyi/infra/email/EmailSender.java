@@ -29,11 +29,10 @@ import static com.youyi.infra.conf.core.ConfigKey.SEND_EMAIL_AB_SWITCH;
 @RequiredArgsConstructor
 public class EmailSender {
 
+    private static final String MAIL_FROM_FORMATTER = "%s<%s>";
     private static final Logger logger = LoggerFactory.getLogger(EmailSender.class);
 
     private final JavaMailSender mailSender;
-
-    private static final String MAIL_FROM_FORMATTER = "%s<%s>";
 
     public void sendCaptchaEmail(String emailTo, String captcha) {
         boolean canSend = getBooleanConfig(SEND_EMAIL_AB_SWITCH);

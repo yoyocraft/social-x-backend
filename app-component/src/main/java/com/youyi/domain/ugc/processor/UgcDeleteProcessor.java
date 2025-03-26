@@ -11,7 +11,7 @@ import com.youyi.domain.ugc.core.CommentaryService;
 import com.youyi.domain.ugc.model.CommentaryDO;
 import com.youyi.domain.ugc.repository.UgcRelationshipRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
-import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.cache.CacheRepository;
 import com.youyi.infra.conf.core.ConfigKey;
 import java.util.List;
 import java.util.Objects;
@@ -21,10 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCollectCountKey;
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcCommentaryCountKey;
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcLikeCountKey;
-import static com.youyi.infra.cache.repo.UgcCacheRepo.ofUgcViewCountKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofUgcCollectCountKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofUgcCommentaryCountKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofUgcLikeCountKey;
+import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofUgcViewCountKey;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
@@ -40,7 +40,7 @@ public class UgcDeleteProcessor implements TaskProcessor {
     private final SysTaskService sysTaskService;
     private final CommentaryService commentaryService;
     private final UgcRelationshipRepository ugcRelationshipRepository;
-    private final CacheManager cacheManager;
+    private final CacheRepository cacheRepository;
 
     @Override
     public void process(String taskId, SysTaskExtraData extraData) {
@@ -94,6 +94,6 @@ public class UgcDeleteProcessor implements TaskProcessor {
             ofUgcCollectCountKey(ugcId),
             ofUgcCommentaryCountKey(ugcId)
         );
-        cacheManager.batchDelete(deletedKeys);
+        cacheRepository.batchDelete(deletedKeys);
     }
 }

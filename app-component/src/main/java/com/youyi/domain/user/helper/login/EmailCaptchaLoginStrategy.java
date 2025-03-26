@@ -7,7 +7,7 @@ import com.youyi.domain.user.model.UserDO;
 import com.youyi.domain.user.repository.UserRepository;
 import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
-import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.cache.CacheRepository;
 import com.youyi.infra.privacy.CryptoManager;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import static com.youyi.common.type.BizType.LOGIN;
-import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
+import static com.youyi.infra.cache.key.VerificationCacheKeyRepo.ofEmailCaptchaKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -26,7 +26,7 @@ import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey
 @RequiredArgsConstructor
 public class EmailCaptchaLoginStrategy implements LoginStrategy {
 
-    private final CacheManager cacheManager;
+    private final CacheRepository cacheRepository;
     private final UserRepository userRepository;
     private final TransactionTemplate transactionTemplate;
 
@@ -76,7 +76,7 @@ public class EmailCaptchaLoginStrategy implements LoginStrategy {
 
     void checkCaptcha(UserDO userDO) {
         String cacheKey = ofEmailCaptchaKey(userDO.getIdentifier(), LOGIN);
-        String systemCaptcha = cacheManager.getString(cacheKey);
+        String systemCaptcha = cacheRepository.getString(cacheKey);
         if (StringUtils.isBlank(systemCaptcha)) {
             // 验证码过期
             throw AppBizException.of(ReturnCode.CAPTCHA_EXPIRED);
@@ -90,6 +90,6 @@ public class EmailCaptchaLoginStrategy implements LoginStrategy {
 
     void cleanCaptcha(UserDO userDO) {
         String cacheKey = ofEmailCaptchaKey(userDO.getIdentifier(), LOGIN);
-        cacheManager.delete(cacheKey);
+        cacheRepository.delete(cacheKey);
     }
 }

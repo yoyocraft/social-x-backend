@@ -1,11 +1,11 @@
 package com.youyi.runner.ugc.util;
 
-import com.youyi.domain.ugc.type.UgcInteractionType;
 import com.youyi.common.util.param.ParamCheckerChain;
-import com.youyi.domain.ugc.request.CommentaryDeleteRequest;
-import com.youyi.domain.ugc.request.CommentaryPublishRequest;
-import com.youyi.domain.ugc.request.CommentaryQueryRequest;
-import com.youyi.domain.ugc.request.UgcInteractionRequest;
+import com.youyi.domain.ugc.type.UgcInteractionType;
+import com.youyi.runner.ugc.model.CommentaryDeleteRequest;
+import com.youyi.runner.ugc.model.CommentaryPublishRequest;
+import com.youyi.runner.ugc.model.CommentaryQueryRequest;
+import com.youyi.runner.ugc.model.UgcInteractionRequest;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;

@@ -4,18 +4,18 @@ import com.youyi.common.base.PageCursorResult;
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.conf.model.ConfigDO;
-import com.youyi.domain.conf.request.ConfigCreateRequest;
-import com.youyi.domain.conf.request.ConfigDeleteRequest;
-import com.youyi.domain.conf.request.ConfigQueryRequest;
-import com.youyi.domain.conf.request.ConfigUpdateRequest;
 import com.youyi.runner.config.model.ConfigInfoResponse;
+import com.youyi.runner.config.model.ConfigCreateRequest;
+import com.youyi.runner.config.model.ConfigDeleteRequest;
+import com.youyi.runner.config.model.ConfigQueryRequest;
+import com.youyi.runner.config.model.ConfigUpdateRequest;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.youyi.infra.conf.util.CommonConfUtil.checkHasMore;
-import static com.youyi.runner.config.util.ConfigConverter.CONFIG_CONVERTER;
+import static com.youyi.runner.config.assembler.ConfigConverter.CONFIG_CONVERTER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
