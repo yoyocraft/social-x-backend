@@ -5,10 +5,7 @@ import com.youyi.common.type.InfraCode;
 import com.youyi.common.type.InfraType;
 import com.youyi.domain.audit.repository.mapper.OperationLogMapper;
 import com.youyi.domain.audit.repository.po.OperationLogPO;
-import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -48,10 +45,5 @@ public class OperationLogRepository extends BaseRepository {
         checkNotNull(po);
         int ret = executeWithExceptionHandling(() -> operationLogMapper.insert(po));
         checkState(ret == SINGLE_DML_AFFECTED_ROWS);
-    }
-
-    public List<OperationLogPO> queryByTypeAndOperatorId(String operationType, Long operatorId) {
-        checkState(StringUtils.isNotBlank(operationType) && Objects.nonNull(operatorId));
-        return executeWithExceptionHandling(() -> operationLogMapper.queryByOperationTypeAndOperatorId(operationType, operatorId));
     }
 }

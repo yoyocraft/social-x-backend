@@ -15,12 +15,6 @@ import static com.youyi.infra.conf.core.Conf.getCacheValue;
 public class ThreadPoolExecutorUtil {
     private static final Logger innerLogger = LoggerFactory.getLogger(ThreadPoolExecutorUtil.class);
 
-    /**
-     * 创建线程池
-     *
-     * @param configKey 配置项
-     * @return ThreadPoolExecutor 实例
-     */
     public static ThreadPoolExecutor createExecutor(ConfigKey configKey, Logger logger) {
         ThreadPoolConfigWrapper config = getCacheValue(configKey, ThreadPoolConfigWrapper.class);
 
@@ -42,12 +36,6 @@ public class ThreadPoolExecutorUtil {
         );
     }
 
-    /**
-     * 关闭线程池
-     *
-     * @param executor 线程池实例
-     * @param name     线程池名称
-     */
     public static void shutdownExecutor(ThreadPoolExecutor executor, String name) {
         if (executor != null) {
             executor.shutdown();

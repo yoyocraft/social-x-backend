@@ -1,11 +1,11 @@
 package com.youyi.runner.user.util;
 
+import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.user.type.PermissionType;
 import com.youyi.domain.user.type.UserRoleType;
-import com.youyi.common.util.param.ParamCheckerChain;
-import com.youyi.domain.user.request.PermissionAddRequest;
-import com.youyi.domain.user.request.RolePermissionAuthorizeRequest;
-import com.youyi.domain.user.request.RolePermissionRevokeRequest;
+import com.youyi.runner.user.model.PermissionAddRequest;
+import com.youyi.runner.user.model.RolePermissionAuthorizeRequest;
+import com.youyi.runner.user.model.RolePermissionRevokeRequest;
 
 import static com.youyi.common.util.param.ParamChecker.collectionNotEmptyChecker;
 import static com.youyi.common.util.param.ParamChecker.enumExistChecker;

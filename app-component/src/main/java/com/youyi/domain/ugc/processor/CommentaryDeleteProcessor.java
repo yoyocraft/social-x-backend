@@ -7,8 +7,8 @@ import com.youyi.domain.task.model.SysTaskExtraData;
 import com.youyi.domain.ugc.repository.CommentaryRelationshipRepository;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
-import com.youyi.infra.cache.manager.CacheManager;
-import com.youyi.infra.cache.repo.UgcCacheRepo;
+import com.youyi.infra.cache.CacheRepository;
+import com.youyi.infra.cache.key.UgcCacheKeyRepo;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class CommentaryDeleteProcessor implements TaskProcessor {
 
     private final CommentaryRepository commentaryRepository;
     private final CommentaryRelationshipRepository commentaryRelationshipRepository;
-    private final CacheManager cacheManager;
+    private final CacheRepository cacheRepository;
 
     @Override
     public void process(String taskId, SysTaskExtraData extraData) {
@@ -57,7 +57,7 @@ public class CommentaryDeleteProcessor implements TaskProcessor {
     }
 
     private void deleteCacheData(List<String> allToDeleteCommentaryIds) {
-        List<String> deletedKeys = allToDeleteCommentaryIds.stream().map(UgcCacheRepo::ofCommentaryLikeCountKey).toList();
-        cacheManager.batchDelete(deletedKeys);
+        List<String> deletedKeys = allToDeleteCommentaryIds.stream().map(UgcCacheKeyRepo::ofCommentaryLikeCountKey).toList();
+        cacheRepository.batchDelete(deletedKeys);
     }
 }

@@ -6,7 +6,7 @@ import com.youyi.domain.ugc.model.HotAuthorCacheInfo;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.infra.cache.CacheKey;
-import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.cache.CacheRepository;
 import com.youyi.infra.conf.core.ConfigKey;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +23,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
-import static com.youyi.infra.cache.repo.UserCacheRepo.ofHotAuthorListKey;
+import static com.youyi.infra.cache.key.UserCacheKeyRepo.ofHotAuthorListKey;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
@@ -37,7 +37,7 @@ public class AuthorHotListJob implements ApplicationListener<ApplicationReadyEve
     private static final Logger logger = LoggerFactory.getLogger(AuthorHotListJob.class);
 
     private final UgcRepository ugcRepository;
-    private final CacheManager cacheManager;
+    private final CacheRepository cacheRepository;
 
     private final ReentrantLock jobLock = new ReentrantLock();
     private static final long HOT_AUTHOR_JOB_INTERVAL = 3L * 60 * 60 * 1000;
@@ -122,6 +122,6 @@ public class AuthorHotListJob implements ApplicationListener<ApplicationReadyEve
 
     private void cacheHotAuthors(List<HotAuthorCacheInfo> hotAuthors) {
         String cacheKey = ofHotAuthorListKey();
-        cacheManager.set(cacheKey, GsonUtil.toJson(hotAuthors), CacheKey.HOT_AUTHOR_LIST.getTtl());
+        cacheRepository.set(cacheKey, GsonUtil.toJson(hotAuthors), CacheKey.HOT_AUTHOR_LIST.getTtl());
     }
 }

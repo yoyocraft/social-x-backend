@@ -52,10 +52,8 @@ public enum ConfigKey {
     UGC_TAG_RELATIONSHIP,
     HOT_LIST_TOP_N,
     ATTACHMENT_MAX_COUNT,
-
     IMAGE_DETECT_API_URL,
     PROB_THRESHOLD,
-
     DEFAULT_RECOMMEND_TAG,
 
     // ================ Notification ==================

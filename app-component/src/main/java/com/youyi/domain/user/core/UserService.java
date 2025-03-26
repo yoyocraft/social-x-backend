@@ -14,7 +14,7 @@ import com.youyi.domain.user.repository.relation.UserNode;
 import com.youyi.domain.user.repository.relation.UserRelationship;
 import com.youyi.domain.user.util.RecommendUtil;
 import com.youyi.infra.cache.CacheKey;
-import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.cache.CacheRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,8 +32,8 @@ import org.springframework.stereotype.Component;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.domain.user.constant.UserConstant.USER_LOGIN_STATE;
-import static com.youyi.infra.cache.repo.UserCacheRepo.ofHotAuthorListKey;
-import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserFollowIdsKey;
+import static com.youyi.infra.cache.key.UserCacheKeyRepo.ofHotAuthorListKey;
+import static com.youyi.infra.cache.key.UserCacheKeyRepo.ofUserFollowIdsKey;
 import static com.youyi.infra.conf.core.Conf.getBooleanConfig;
 import static com.youyi.infra.conf.core.ConfigKey.QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH;
 
@@ -48,7 +48,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserRelationRepository userRelationRepository;
 
-    private final CacheManager cacheManager;
+    private final CacheRepository cacheRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -201,15 +201,15 @@ public class UserService {
         String followCacheKey = ofUserFollowIdsKey(currentUser.getUserId());
         // 如果是关注，则添加到缓存中，否则从缓存中移除
         if (follow) {
-            cacheManager.addToSet(followCacheKey, followUserInfo.getUserId(), CacheKey.USER_FOLLOW_IDS.getTtl());
+            cacheRepository.addToSet(followCacheKey, followUserInfo.getUserId(), CacheKey.USER_FOLLOW_IDS.getTtl());
             return;
         }
-        cacheManager.removeFromSet(followCacheKey, followUserInfo.getUserId());
+        cacheRepository.removeFromSet(followCacheKey, followUserInfo.getUserId());
     }
 
     public Set<String> queryFollowingUserIdsFromCache(UserDO userDO) {
         String followCacheKey = ofUserFollowIdsKey(userDO.getUserId());
-        Set<Object> cachedFollowIds = cacheManager.getSetMembers(followCacheKey);
+        Set<Object> cachedFollowIds = cacheRepository.getSetMembers(followCacheKey);
 
         if (CollectionUtils.isNotEmpty(cachedFollowIds)) {
             return cachedFollowIds.stream()
@@ -227,7 +227,7 @@ public class UserService {
             .filter(Objects::nonNull)
             .map(UserNode::getUserId)
             .collect(Collectors.toSet());
-        cacheManager.addToSet(followCacheKey, CacheKey.USER_FOLLOW_IDS.getTtl(), followUserIds);
+        cacheRepository.addToSet(followCacheKey, CacheKey.USER_FOLLOW_IDS.getTtl(), followUserIds);
         return followUserIds;
     }
 
@@ -263,7 +263,7 @@ public class UserService {
 
     public List<HotAuthorCacheInfo> listHotUserCache() {
         String cacheKey = ofHotAuthorListKey();
-        String hotUserJson = cacheManager.getString(cacheKey);
+        String hotUserJson = cacheRepository.getString(cacheKey);
         return GsonUtil.fromJson(hotUserJson, List.class, HotAuthorCacheInfo.class);
     }
 }

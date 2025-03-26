@@ -22,9 +22,6 @@ public class LocalLockUtil {
 
     private static final long DEFAULT_TIMEOUT = 5000L;
 
-    /**
-     * 使用 ConcurrentHashMap 存储按 key 分组的锁
-     */
     private static final ConcurrentHashMap<String, ReentrantLock> LOCK_MAP = new ConcurrentHashMap<>();
 
     public static void runWithLockFailSafe(Runnable runWithLock, Runnable runWithFailedGotLock, String... keys) {

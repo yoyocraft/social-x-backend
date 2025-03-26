@@ -16,18 +16,11 @@ import static com.youyi.common.util.LogUtil.infraLog;
 public abstract class BaseRepository {
 
     protected abstract Logger getLogger();
-    
+
     protected abstract InfraType getInfraType();
-    
+
     protected abstract InfraCode getInfraCode();
 
-    /**
-     * 执行数据库操作并处理异常
-     *
-     * @param operation 数据库操作
-     * @param <T> 返回类型
-     * @return 操作结果
-     */
     protected <T> T executeWithExceptionHandling(RepositoryOperation<T> operation) {
         try {
             return operation.execute();
@@ -37,11 +30,6 @@ public abstract class BaseRepository {
         }
     }
 
-    /**
-     * 执行无返回值的数据库操作并处理异常
-     *
-     * @param operation 数据库操作
-     */
     protected void executeWithExceptionHandling(VoidRepositoryOperation operation) {
         try {
             operation.execute();
@@ -51,17 +39,11 @@ public abstract class BaseRepository {
         }
     }
 
-    /**
-     * 数据库操作接口
-     */
     @FunctionalInterface
     public interface RepositoryOperation<T> {
         T execute() throws Exception;
     }
 
-    /**
-     * 无返回值的数据库操作接口
-     */
     @FunctionalInterface
     public interface VoidRepositoryOperation {
         void execute() throws Exception;

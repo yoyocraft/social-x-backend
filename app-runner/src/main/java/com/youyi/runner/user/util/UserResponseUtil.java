@@ -4,12 +4,12 @@ import com.youyi.common.base.PageCursorResult;
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.user.model.UserDO;
-import com.youyi.domain.user.request.UserAuthenticateRequest;
-import com.youyi.domain.user.request.UserEditInfoRequest;
-import com.youyi.domain.user.request.UserFollowRequest;
-import com.youyi.domain.user.request.UserQueryRequest;
-import com.youyi.domain.user.request.UserVerifyCaptchaRequest;
+import com.youyi.runner.user.model.UserAuthenticateRequest;
 import com.youyi.runner.user.model.UserBasicInfoResponse;
+import com.youyi.runner.user.model.UserEditInfoRequest;
+import com.youyi.runner.user.model.UserFollowRequest;
+import com.youyi.runner.user.model.UserQueryRequest;
+import com.youyi.runner.user.model.UserVerifyCaptchaRequest;
 import com.youyi.runner.user.model.VerifyCaptchaResponse;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.youyi.infra.conf.util.CommonConfUtil.checkHasMore;
-import static com.youyi.runner.user.util.UserConverter.USER_CONVERTER;
+import static com.youyi.runner.user.assembler.UserConverter.USER_CONVERTER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

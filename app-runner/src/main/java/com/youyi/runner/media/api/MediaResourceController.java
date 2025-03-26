@@ -7,9 +7,9 @@ import com.youyi.common.type.OperationType;
 import com.youyi.common.util.CommonOperationUtil;
 import com.youyi.domain.media.helper.MediaResourceHelper;
 import com.youyi.domain.media.model.MediaResourceDO;
-import com.youyi.domain.media.request.ImageUploadRequest;
 import com.youyi.infra.lock.LocalLockUtil;
 import com.youyi.runner.media.model.ImageUploadResponse;
+import com.youyi.runner.media.model.ImageUploadRequest;
 import com.youyi.runner.media.util.MediaResourceValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.youyi.domain.media.assembler.MediaResourceAssembler.MEDIA_RESOURCE_ASSEMBLER;
+import static com.youyi.runner.media.assembler.MediaResourceAssembler.MEDIA_RESOURCE_ASSEMBLER;
 import static com.youyi.runner.media.util.MediaResourceResponseUtil.uploadImageSuccess;
 
 /**

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import static com.youyi.common.constant.ErrorCodeConstant.SUCCESS;
+import static com.youyi.common.constant.ErrorCodeConstant.SUCCESS_CODE;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -20,12 +21,13 @@ public class ImageDetectResponse implements Serializable {
     public static final ImageDetectResponse DEFAULT_INSTANCE = new ImageDetectResponse();
 
     static {
-        DEFAULT_INSTANCE.setCode(1);
+        DEFAULT_INSTANCE.setCode(SUCCESS_CODE);
         DEFAULT_INSTANCE.setMessage(SUCCESS);
         DEFAULT_INSTANCE.setData(List.of());
     }
 
-    @Serial private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @SerializedName("code")
     private Integer code;

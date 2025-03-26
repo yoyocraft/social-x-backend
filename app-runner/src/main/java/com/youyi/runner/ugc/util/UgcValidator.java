@@ -1,15 +1,15 @@
 package com.youyi.runner.ugc.util;
 
+import com.youyi.common.util.param.ParamCheckerChain;
 import com.youyi.domain.ugc.type.UgcInteractionType;
 import com.youyi.domain.ugc.type.UgcStatus;
 import com.youyi.domain.ugc.type.UgcType;
-import com.youyi.common.util.param.ParamCheckerChain;
-import com.youyi.domain.ugc.request.UgcDeleteRequest;
-import com.youyi.domain.ugc.request.UgcInteractionRequest;
-import com.youyi.domain.ugc.request.UgcPublishRequest;
-import com.youyi.domain.ugc.request.UgcQueryRequest;
-import com.youyi.domain.ugc.request.UgcSummaryGenerateRequest;
 import com.youyi.infra.conf.core.ConfigKey;
+import com.youyi.runner.ugc.model.UgcDeleteRequest;
+import com.youyi.runner.ugc.model.UgcInteractionRequest;
+import com.youyi.runner.ugc.model.UgcPublishRequest;
+import com.youyi.runner.ugc.model.UgcQueryRequest;
+import com.youyi.runner.ugc.model.UgcSummaryGenerateRequest;
 import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;

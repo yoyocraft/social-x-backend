@@ -3,12 +3,12 @@ package com.youyi.runner.verification.util;
 import com.youyi.common.base.Result;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.verification.model.VerificationDO;
-import com.youyi.domain.verification.request.CaptchaVerifyRequest;
+import com.youyi.runner.verification.model.CaptchaVerifyRequest;
 import com.youyi.runner.verification.model.ImageCaptchaResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.youyi.runner.verification.util.VerificationConverter.VERIFICATION_CONVERTER;
+import static com.youyi.runner.verification.assembler.VerificationConverter.VERIFICATION_CONVERTER;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>

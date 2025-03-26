@@ -17,7 +17,7 @@ import com.youyi.domain.user.repository.po.UserAuthPO;
 import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.domain.user.repository.relation.UserRelationship;
 import com.youyi.infra.cache.CacheKey;
-import com.youyi.infra.cache.manager.CacheManager;
+import com.youyi.infra.cache.CacheRepository;
 import com.youyi.infra.tpe.TpeContainer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,8 +36,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.youyi.common.type.ReturnCode.PERMISSION_DENIED;
 import static com.youyi.common.util.seq.IdSeqUtil.genUserVerifyCaptchaToken;
 import static com.youyi.domain.user.constant.UserConstant.USER_LOGIN_STATE;
-import static com.youyi.infra.cache.repo.UserCacheRepo.ofUserVerifyTokenKey;
-import static com.youyi.infra.cache.repo.VerificationCacheRepo.ofEmailCaptchaKey;
+import static com.youyi.infra.cache.key.UserCacheKeyRepo.ofUserVerifyTokenKey;
+import static com.youyi.infra.cache.key.VerificationCacheKeyRepo.ofEmailCaptchaKey;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -52,7 +52,7 @@ public class UserHelper {
     private final LoginStrategyFactory loginStrategyFactory;
 
     private final TpeContainer tpeContainer;
-    private final CacheManager cacheManager;
+    private final CacheRepository cacheRepository;
     private final NotificationManager notificationManager;
     private final UserService userService;
     private final UserRepository userRepository;
@@ -235,7 +235,7 @@ public class UserHelper {
 
     private void checkCaptcha(UserDO userDO) {
         String cacheCaptchaKey = ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType());
-        String systemCaptcha = cacheManager.getString(cacheCaptchaKey);
+        String systemCaptcha = cacheRepository.getString(cacheCaptchaKey);
         if (StringUtils.isBlank(systemCaptcha)) {
             // 验证码过期
             throw AppBizException.of(ReturnCode.CAPTCHA_EXPIRED);
@@ -252,14 +252,14 @@ public class UserHelper {
         userDO.setVerifyCaptchaToken(verifyToken);
         String verifyTokenCacheKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
         // 缓存 token
-        cacheManager.set(verifyTokenCacheKey, verifyToken, CacheKey.USER_VERIFY_TOKEN.getTtl());
+        cacheRepository.set(verifyTokenCacheKey, verifyToken, CacheKey.USER_VERIFY_TOKEN.getTtl());
         // 清理验证码
-        cacheManager.delete(ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType()));
+        cacheRepository.delete(ofEmailCaptchaKey(userDO.getOriginalEmail(), userDO.getBizType()));
     }
 
     private void checkToken(UserDO userDO) {
         String cacheVerifyTokenKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
-        String systemVerifyToken = (String) cacheManager.get(cacheVerifyTokenKey);
+        String systemVerifyToken = (String) cacheRepository.get(cacheVerifyTokenKey);
 
         if (StringUtils.isBlank(systemVerifyToken)) {
             throw AppBizException.of(ReturnCode.VERIFY_TOKEN_EXPIRED);
@@ -272,7 +272,7 @@ public class UserHelper {
 
     private void clearVerifyToken(UserDO userDO) {
         String cacheVerifyTokenKey = ofUserVerifyTokenKey(userDO.getOriginalEmail(), userDO.getBizType());
-        cacheManager.delete(cacheVerifyTokenKey);
+        cacheRepository.delete(cacheVerifyTokenKey);
     }
 
     private void encryptPwd(UserDO userDO) {
