@@ -425,10 +425,6 @@ public class UgcService {
     }
 
     public void fillRecommendTags(UgcDO ugcDO, List<String> systemRecommendTags) {
-        if (StringUtils.isBlank(ugcDO.getCategoryId())) {
-            ugcDO.setTags(systemRecommendTags);
-            return;
-        }
         Set<String> recommendTags = new HashSet<>(systemRecommendTags);
         Map<String, String> defaultRecommendTagMap = getMapConfig(DEFAULT_RECOMMEND_TAG, String.class, String.class);
         String defaultRecommendTag = defaultRecommendTagMap.getOrDefault(ugcDO.getCategoryId(), defaultRecommendTagMap.get(DEFAULT_KEY));
