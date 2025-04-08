@@ -13,9 +13,12 @@ class UgcContentUtilTest {
     void testMarkdownToPlainText() {
         String markdown = "# This is a Markdown Title.\nThis is a paragraph with **bold** text and *italic* text.\n![Image](image.jpg)\n";
         String plainText = UgcContentUtil.markdownToPlainText(markdown);
-        Assertions.assertEquals("""
-            This is a Markdown Title.
-            This is a paragraph with bold text and italic text.""", plainText);
+        Assertions.assertEquals(
+            """
+                This is a Markdown Title.
+                This is a paragraph with bold text and italic text.""",
+            plainText
+        );
     }
 
     @Test
@@ -24,13 +27,16 @@ class UgcContentUtilTest {
         String markdown = "# This is a Markdown Title.\nThis is a paragraph with **bold** text and *italic* text.\n![Image](image.jpg)\n";
 
         String userMessage = UgcContentUtil.polishGenUgcSummaryUserMessage(title, markdown);
-        Assertions.assertEquals("""
-            # 测试标题
-                        
-            # This is a Markdown Title.
-            This is a paragraph with **bold** text and *italic* text.
-            ![Image](image.jpg)
-            """, userMessage);
+        Assertions.assertEquals(
+            """
+                # 测试标题
+                            
+                # This is a Markdown Title.
+                This is a paragraph with **bold** text and *italic* text.
+                ![Image](image.jpg)
+                """,
+            userMessage
+        );
     }
 }
 

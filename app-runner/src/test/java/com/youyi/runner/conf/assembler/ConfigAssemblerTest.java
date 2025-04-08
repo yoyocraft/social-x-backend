@@ -1,7 +1,8 @@
-package com.youyi.domain.conf.assembler;
+package com.youyi.runner.conf.assembler;
 
 import com.youyi.domain.conf.model.ConfigDO;
-import com.youyi.domain.conf.request.ConfigUpdateRequest;
+import com.youyi.runner.config.assembler.ConfigAssembler;
+import com.youyi.runner.config.model.ConfigUpdateRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
