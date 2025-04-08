@@ -29,7 +29,7 @@ class ParamCheckerChainTest {
 
     @Test
     void testPut() {
-        ParamCheckerChain result = paramCheckerChain.put(null, null);
+        ParamCheckerChain result = paramCheckerChain.put(param -> CheckResult.success(), null);
         Assertions.assertNotNull(result);
     }
 

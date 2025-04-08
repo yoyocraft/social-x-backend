@@ -35,6 +35,7 @@ public class GsonConverterConfig {
         return new HttpMessageConverters(gsonConverter);
     }
 
+    // NOTE: https://stackoverflow.com/questions/51951641/swagger-unable-to-render-this-definition-the-provided-definition-does-not-speci
     private static class SpringfoxJsonToGsonAdapter implements JsonSerializer<Json> {
         @Override
         public JsonElement serialize(Json json, Type type, JsonSerializationContext context) {
