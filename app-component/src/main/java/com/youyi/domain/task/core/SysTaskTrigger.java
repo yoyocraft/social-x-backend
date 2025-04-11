@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
+import static com.youyi.infra.conf.util.CommonConfUtil.hasScheduleOn;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -60,13 +61,27 @@ public class SysTaskTrigger {
 
     @Scheduled(initialDelay = INIT_TASK_DELAY_INTERVAL, fixedRate = TASK_EXECUTE_INTERVAL)
     public void trigger() {
+        execNormal();
+    }
+
+    @Scheduled(initialDelay = COMPENSATION_TASK_DELAY_INTERVAL, fixedRate = COMPENSATION_TASK_EXECUTE_INTERVAL)
+    public void compensate() {
+        execCompensation();
+    }
+
+    private void execNormal() {
+        if (!hasScheduleOn()) {
+            return;
+        }
         for (TaskType taskType : needHandleTaskType) {
             processNormal(taskType);
         }
     }
 
-    @Scheduled(initialDelay = COMPENSATION_TASK_DELAY_INTERVAL, fixedRate = COMPENSATION_TASK_EXECUTE_INTERVAL)
-    public void compensate() {
+    private void execCompensation() {
+        if (!hasScheduleOn()) {
+            return;
+        }
         for (TaskType taskType : needHandleTaskType) {
             processCompensation(taskType);
         }

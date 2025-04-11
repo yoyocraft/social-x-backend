@@ -26,6 +26,7 @@ public enum ConfigKey {
     SEND_EMAIL_AB_SWITCH,
     QUERY_LOGIN_USER_INFO_FROM_DB_AB_SWITCH,
     AUDIT_IMAGE_AB_SWITCH,
+    SCHEDULE_JOB_EXEC_AB_SWITCH,
 
     // ================ Crypto ================
     AES_KEY,

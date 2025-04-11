@@ -34,6 +34,21 @@
         INSERT INTO `user_info` (user_id, email, email_iv, phone, phone_iv, nickname, avatar)
         VALUES (#{userId}, #{email}, #{emailIv}, #{phone}, #{phoneIv}, #{nickname}, #{avatar})
     </insert>
+    <insert id="insertBatch">
+        INSERT INTO `user_info` (user_id, email, email_iv, phone, phone_iv, nickname, avatar)
+        VALUES
+        <foreach collection="pos" item="item" index="index" separator=",">
+            (
+            #{item.userId},
+            #{item.email},
+            #{item.emailIv},
+            #{item.phone},
+            #{item.phoneIv},
+            #{item.nickname},
+            #{item.avatar}
+            )
+        </foreach>
+    </insert>
     <update id="update">
         UPDATE `user_info`
         <set>

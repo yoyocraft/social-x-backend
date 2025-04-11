@@ -2,6 +2,7 @@ package com.youyi.domain.user.repository;
 
 import com.youyi.BaseIntegrationTest;
 import com.youyi.common.util.GsonUtil;
+import com.youyi.domain.user.repository.relation.SuggestedUserInfo;
 import com.youyi.domain.user.repository.relation.UserNode;
 import com.youyi.domain.user.repository.relation.UserRelationship;
 import java.util.List;
@@ -42,5 +43,15 @@ class UserRelationRepositoryIntegrationTest extends BaseIntegrationTest {
     void testQueryFollowingUserRelations() {
         List<UserRelationship> relationships = userRelationRepository.queryFollowingUserRelations("222");
         Assertions.assertTrue(CollectionUtils.isNotEmpty(relationships));
+    }
+
+    @Test
+    void testGetSuggestedUsers() {
+        String userId = "1883827647466573824";
+        int size = 10;
+
+        List<SuggestedUserInfo> suggestedUsers = userRelationRepository.getSuggestedUsers(userId, size);
+        Assertions.assertTrue(CollectionUtils.isNotEmpty(suggestedUsers));
+        logger.info("suggestedUsers: {}", GsonUtil.toJson(suggestedUsers));
     }
 }

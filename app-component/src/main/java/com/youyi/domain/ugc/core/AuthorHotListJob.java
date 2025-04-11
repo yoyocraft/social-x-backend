@@ -1,10 +1,10 @@
 package com.youyi.domain.ugc.core;
 
-import com.youyi.domain.ugc.type.UgcStatus;
 import com.youyi.common.util.GsonUtil;
 import com.youyi.domain.ugc.model.HotAuthorCacheInfo;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.domain.ugc.type.UgcStatus;
 import com.youyi.infra.cache.CacheKey;
 import com.youyi.infra.cache.CacheRepository;
 import com.youyi.infra.conf.core.ConfigKey;
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
 import static com.youyi.infra.cache.key.UserCacheKeyRepo.ofHotAuthorListKey;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
+import static com.youyi.infra.conf.util.CommonConfUtil.hasScheduleOn;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -53,6 +54,9 @@ public class AuthorHotListJob implements ApplicationListener<ApplicationReadyEve
     }
 
     private void executeHotAuthorJob() {
+        if (!hasScheduleOn()) {
+            return;
+        }
         if (!jobLock.tryLock()) {
             return;
         }

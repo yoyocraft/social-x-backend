@@ -1,6 +1,7 @@
 package com.youyi.domain.user.repository.mapper;
 
 import com.youyi.domain.user.repository.po.UserAuthPO;
+import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,5 +17,8 @@ public interface UserAuthMapper {
     UserAuthPO queryByIdentityTypeAndIdentifier(@Param("identityType") String identityType, @Param("identifier") String identifier);
 
     int update(UserAuthPO po);
+
+    // for test
+    int insertBatch(List<UserAuthPO> pos);
 
 }

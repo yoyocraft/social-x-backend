@@ -24,4 +24,7 @@ public interface UserInfoMapper {
     List<UserInfoPO> queryBatchByUserId(@Param("userIds") Collection<String> userIds);
 
     List<UserInfoPO> querySuggestedUsers(UserInfoPO po);
+
+    // for test
+    int insertBatch(List<UserInfoPO> pos);
 }

@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
 import static com.youyi.infra.cache.key.UgcCacheKeyRepo.ofHotUgcListKey;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
+import static com.youyi.infra.conf.util.CommonConfUtil.hasScheduleOn;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -89,6 +90,9 @@ public class UgcHotListJob implements ApplicationListener<ApplicationReadyEvent>
     }
 
     private void executeHotJob() {
+        if (!hasScheduleOn()) {
+            return;
+        }
         if (!jobLock.tryLock()) {
             return;
         }
