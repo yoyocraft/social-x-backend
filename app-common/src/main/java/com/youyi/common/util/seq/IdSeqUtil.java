@@ -23,10 +23,10 @@ public class IdSeqUtil {
     // ============================= Constants ==============================
     private static final int EMAIL_CAPTCHA_LENGTH = 6;
     private static final int TMP_FILE_NAME_LENGTH = 6;
-    private static final int USER_NICKNAME_SUFFIX_LENGTH = 8;
+    private static final int USER_NICKNAME_SUFFIX_LENGTH = 6;
     private static final int USER_VERIFY_CAPTCHA_TOKEN_LENGTH = 64;
     private static final int USER_PWD_SALT_LENGTH = 64;
-    private static final String USER_NICK_NAME_PREFIX = "social_x_";
+    private static final String USER_NICK_NAME_PREFIX = "sx";
 
     // ============================= Private Constructor ==============================
     private IdSeqUtil() {

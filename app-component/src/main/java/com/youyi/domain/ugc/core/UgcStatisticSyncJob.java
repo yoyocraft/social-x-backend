@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
+import static com.youyi.infra.conf.util.CommonConfUtil.hasScheduleOn;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -41,6 +42,13 @@ public class UgcStatisticSyncJob {
 
     @Scheduled(initialDelay = SYNC_INIT_DELAY_INTERVAL, fixedDelay = SYNC_INTERVAL)
     public void syncJob() {
+        execSyncJob();
+    }
+
+    private void execSyncJob() {
+        if (!hasScheduleOn()) {
+            return;
+        }
         try {
             runWithCost(logger, this::syncUgcStatistic, "syncUgcStatistic");
             runWithCost(logger, this::syncCommentaryStatistic, "syncCommentaryStatistic");

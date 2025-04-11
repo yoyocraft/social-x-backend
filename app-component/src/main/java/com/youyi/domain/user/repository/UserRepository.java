@@ -109,4 +109,18 @@ public class UserRepository extends BaseRepository {
         checkNotNull(userInfoPO);
         return executeWithExceptionHandling(() -> userInfoMapper.querySuggestedUsers(userInfoPO));
     }
+
+    // for test
+
+    public void insertUserInfoBatch(List<UserInfoPO> userInfoPOs) {
+        checkState(CollectionUtils.isNotEmpty(userInfoPOs));
+        int ret = executeWithExceptionHandling(() -> userInfoMapper.insertBatch(userInfoPOs));
+        checkState(ret == userInfoPOs.size());
+    }
+
+    public void insertUserAuthBatch(List<UserAuthPO> userAuthPOs) {
+        checkState(CollectionUtils.isNotEmpty(userAuthPOs));
+        int ret = executeWithExceptionHandling(() -> userAuthMapper.insertBatch(userAuthPOs));
+        checkState(ret == userAuthPOs.size());
+    }
 }

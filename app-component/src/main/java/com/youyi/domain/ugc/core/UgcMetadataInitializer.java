@@ -22,6 +22,7 @@ import static com.youyi.common.util.ext.MoreFeatures.runWithCost;
 import static com.youyi.infra.conf.core.Conf.getListConfig;
 import static com.youyi.infra.conf.core.ConfigKey.SYSTEM_PRESET_UGC_CATEGORY;
 import static com.youyi.infra.conf.core.ConfigKey.SYSTEM_PRESET_UGC_TAG;
+import static com.youyi.infra.conf.util.CommonConfUtil.hasScheduleOn;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -38,6 +39,13 @@ public class UgcMetadataInitializer implements ApplicationListener<ApplicationRe
 
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
+        init();
+    }
+
+    private void init() {
+        if (!hasScheduleOn()) {
+            return;
+        }
         initUgcCategories();
         initUgcTags();
     }

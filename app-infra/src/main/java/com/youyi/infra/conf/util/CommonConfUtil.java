@@ -5,6 +5,7 @@ import com.youyi.infra.conf.core.ConfigKey;
 import java.util.Collection;
 import java.util.Objects;
 
+import static com.youyi.infra.conf.core.Conf.getBooleanConfig;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 
 /**
@@ -22,5 +23,9 @@ public class CommonConfUtil {
 
     public static boolean checkHasMore(Collection<?> data) {
         return Objects.nonNull(data) && data.size() >= getIntegerConfig(ConfigKey.DEFAULT_PAGE_SIZE);
+    }
+
+    public static boolean hasScheduleOn() {
+        return getBooleanConfig(ConfigKey.SCHEDULE_JOB_EXEC_AB_SWITCH, false);
     }
 }

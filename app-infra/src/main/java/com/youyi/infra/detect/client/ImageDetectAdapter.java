@@ -4,6 +4,7 @@ import com.youyi.common.util.GsonUtil;
 import com.youyi.infra.detect.model.ImageDetectRequest;
 import com.youyi.infra.detect.model.ImageDetectResponse;
 import com.youyi.infra.http.HttpUtil;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ public class ImageDetectAdapter {
 
     public ImageDetectResponse checkImage(ImageDetectRequest request) {
         String reqUrl = getStringConfig(IMAGE_DETECT_API_URL);
-        CompletableFuture<String> future = HttpUtil.sendPostRequest(reqUrl, request);
+        CompletableFuture<String> future = HttpUtil.sendPostRequest(reqUrl, request, Map.of());
 
         try {
             String response = future.join();

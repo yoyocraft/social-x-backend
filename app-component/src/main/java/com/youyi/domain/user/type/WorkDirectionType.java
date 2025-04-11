@@ -13,12 +13,17 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum WorkDirectionType implements HasCode {
     UNKNOWN(0),
-
     BACKEND(1),
-
     FRONTEND(2),
-
     FULLSTACK(3),
+    MOBILE(4),
+    UI_UX(5),
+    PRODUCT(6),
+    TEST(7),
+    OPERATION(8),
+    DATA_ANALYSIS(9),
+    ARTIFICIAL_INTELLIGENCE(10),
+    OTHER(11),
     ;
 
     private final Integer code;

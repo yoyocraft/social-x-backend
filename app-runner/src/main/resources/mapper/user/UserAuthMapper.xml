@@ -23,6 +23,13 @@
         INSERT INTO `user_auth` (user_id, identity_type, identifier, credential, salt)
         VALUES (#{userId}, #{identityType}, #{identifier}, #{credential}, #{salt})
     </insert>
+    <insert id="insertBatch">
+        INSERT INTO `user_auth` (user_id, identity_type, identifier, credential, salt)
+        VALUES
+        <foreach collection="pos" item="item" index="index" separator=",">
+            (#{item.userId}, #{item.identityType}, #{item.identifier}, #{item.credential}, #{item.salt})
+        </foreach>
+    </insert>
     <update id="update">
         UPDATE `user_auth`
         SET

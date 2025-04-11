@@ -35,6 +35,7 @@ import static com.youyi.domain.ugc.util.AuditUtil.checkSensitiveContent;
 import static com.youyi.infra.conf.core.Conf.getBooleanConfig;
 import static com.youyi.infra.conf.core.Conf.getIntegerConfig;
 import static com.youyi.infra.conf.core.Conf.getStringConfig;
+import static com.youyi.infra.conf.util.CommonConfUtil.hasScheduleOn;
 
 /**
  * @author <a href="https://github.com/yoyocraft">yoyocraft</a>
@@ -65,6 +66,9 @@ public class UgcAuditJob {
     }
 
     public void auditUgc() {
+        if (!hasScheduleOn()) {
+            return;
+        }
         long cursor = System.currentTimeMillis();
         while (true) {
             List<UgcDocument> ugcList = loadAuditingUgc(cursor);

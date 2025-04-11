@@ -233,6 +233,7 @@ public class UserDO {
     }
 
     public void preSetPwd() {
+        // 构建 UserAuthPO 需要使用到原始到 email
         this.identifier = this.originalEmail;
         this.identityType = IdentityType.EMAIL_PASSWORD;
     }
