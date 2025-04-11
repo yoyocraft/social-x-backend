@@ -11,7 +11,7 @@
 
     <properties>
         <!-- Project -->
-        <revision>1.0-SNAPSHOT</revision>
+        <revision>1.0.0</revision>
         <app.name>social-x</app.name>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
