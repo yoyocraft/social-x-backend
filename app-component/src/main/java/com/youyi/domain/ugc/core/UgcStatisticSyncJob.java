@@ -1,18 +1,21 @@
 package com.youyi.domain.ugc.core;
 
-import com.youyi.domain.ugc.type.UgcStatus;
-import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.domain.ugc.repository.CommentaryRepository;
 import com.youyi.domain.ugc.repository.UgcRepository;
 import com.youyi.domain.ugc.repository.document.CommentaryDocument;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
+import com.youyi.domain.ugc.type.UgcStatus;
+import com.youyi.domain.ugc.type.UgcType;
 import com.youyi.infra.conf.core.ConfigKey;
 import com.youyi.infra.tpe.TpeContainer;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +29,7 @@ import static com.youyi.infra.conf.util.CommonConfUtil.hasScheduleOn;
  */
 @Component
 @RequiredArgsConstructor
-public class UgcStatisticSyncJob {
+public class UgcStatisticSyncJob implements ApplicationListener<ContextClosedEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(UgcStatisticSyncJob.class);
 
@@ -42,6 +45,14 @@ public class UgcStatisticSyncJob {
 
     @Scheduled(initialDelay = SYNC_INIT_DELAY_INTERVAL, fixedDelay = SYNC_INTERVAL)
     public void syncJob() {
+        execSyncJob();
+    }
+
+    /**
+     * @see org.springframework.context.support.AbstractApplicationContext#close()
+     */
+    @Override
+    public void onApplicationEvent(@Nonnull ContextClosedEvent event) {
         execSyncJob();
     }
 
