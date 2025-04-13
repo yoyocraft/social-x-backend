@@ -20,14 +20,14 @@
 
         <!-- Dependency -->
         <spring-boot.version>2.7.18</spring-boot.version>
-        <guava.version>33.3.0-jre</guava.version>
+        <mybatis-spring-starter.version>2.3.2</mybatis-spring-starter.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-text.version>1.13.0</commons-text.version>
         <commons-io.version>2.16.1</commons-io.version>
         <commons-collections4.version>4.5.0-M1</commons-collections4.version>
         <commons-codec.version>1.17.1</commons-codec.version>
+        <guava.version>33.3.0-jre</guava.version>
         <gson.version>2.11.0</gson.version>
-        <mybatis-spring-starter.version>2.3.2</mybatis-spring-starter.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok.version>1.18.30</lombok.version>
         <sa-token.version>1.39.0</sa-token.version>
@@ -109,33 +109,6 @@
                             <includes>
                                 <include>**/Test*.java</include>
                                 <include>**/*Test.java</include>
-                            </includes>
-                            <parallel>methods</parallel>
-                            <threadCount>${surefire-run-thread-count}</threadCount>
-                            <systemPropertyVariables>
-                                <env>test</env>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <!-- IntegrationTest -->
-        <profile>
-            <id>it</id>
-            <properties>
-                <env>local</env>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${maven-surefire-plugin.version}</version>
-                        <configuration>
-                            <includes>
-                                <include>**/*IntegrationTest.java</include>
-                                <include>**/BaseIntegrationTest.java</include>
                             </includes>
                             <parallel>methods</parallel>
                             <threadCount>${surefire-run-thread-count}</threadCount>
@@ -233,10 +206,10 @@
             </dependency>
             <!-- Easy-Captcha -->
             <dependency>
-              <groupId>com.pig4cloud.plugin</groupId>
-              <artifactId>captcha-spring-boot-starter</artifactId>
-              <version>${easy-captcha.version}</version>
-           </dependency>
+                <groupId>com.pig4cloud.plugin</groupId>
+                <artifactId>captcha-spring-boot-starter</artifactId>
+                <version>${easy-captcha.version}</version>
+            </dependency>
             <!-- Util -->
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -396,5 +369,29 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <!-- Unit Test -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>

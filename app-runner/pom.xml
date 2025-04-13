@@ -17,38 +17,25 @@
         <dependency>
             <groupId>com.youyi</groupId>
             <artifactId>app-common</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.youyi</groupId>
             <artifactId>app-component</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.youyi</groupId>
             <artifactId>app-infra</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
-        </dependency>
-
-        <!-- Test -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-inline</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.skyscreamer</groupId>
-            <artifactId>jsonassert</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
