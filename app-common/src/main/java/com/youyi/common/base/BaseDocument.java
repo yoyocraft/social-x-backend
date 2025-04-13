@@ -13,8 +13,7 @@ import lombok.Setter;
 @Setter
 public abstract class BaseDocument implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 创建时间

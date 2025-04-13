@@ -17,8 +17,7 @@ import lombok.Setter;
 @Setter
 public class Result<T> implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     /**
      * 业务数据

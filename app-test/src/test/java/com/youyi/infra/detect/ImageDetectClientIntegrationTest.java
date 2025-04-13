@@ -24,7 +24,7 @@ class ImageDetectClientIntegrationTest extends BaseIntegrationTest {
         ImageDetectRequest request = new ImageDetectRequest();
         request.setImages(List.of(new ImageDetectRequest.ImageInfo(
             "test_key",
-            MediaUtil.encodeImageToBase64FromPath("/Users/youyi/Documents/hhu/graduation-design/image/post/2025/03/09/code_bear_17414999358865891577740024121901.jpg")
+            MediaUtil.encodeImageToBase64("/Users/youyi/Documents/hhu/graduation-design/image/post/2025/03/09/code_bear_17414999358865891577740024121901.jpg")
         )));
         ImageDetectResponse response = imageDetectClient.checkImage(request);
         Assertions.assertEquals(ErrorCodeConstant.SUCCESS_CODE, response.getCode());

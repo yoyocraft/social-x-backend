@@ -17,8 +17,4 @@ public class RepositoryConstant {
 
     public static final String MONGO_FUZZY_QUERY_FORMAT = ".*%s.*";
 
-    public static String ofFuzzyQuery(String query) {
-        return String.format(MONGO_FUZZY_QUERY_FORMAT, query);
-    }
-
 }
