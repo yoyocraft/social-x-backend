@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 import javax.imageio.ImageIO;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +32,11 @@ public class MediaUtil {
         return Base64.getEncoder().encodeToString(imageBytes);
     }
 
-    public static String encodeImageToBase64FromPath(String imagePath) {
-        return encodeImageToBase64FromPath(new File(imagePath));
+    public static String encodeImageToBase64(String imagePath) {
+        return encodeImageToBase64(new File(imagePath));
     }
 
-    public static String encodeImageToBase64FromPath(File file) {
+    public static String encodeImageToBase64(File file) {
         try {
             String format = getFileExtension(file);
             BufferedImage image = ImageIO.read(file);
@@ -45,11 +47,10 @@ public class MediaUtil {
         }
     }
 
-    private static String getFileExtension(File file) {
-        String name = file.getName();
-        int dotIndex = name.lastIndexOf('.');
-        if (dotIndex > 0) {
-            return name.substring(dotIndex + 1).toLowerCase();
+    public static String getFileExtension(File file) {
+        String extension = FilenameUtils.getExtension(file.getName());
+        if (StringUtils.isNotBlank(extension)) {
+            return extension;
         }
         return "jpg";
     }

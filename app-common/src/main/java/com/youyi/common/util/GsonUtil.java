@@ -49,7 +49,6 @@ public class GsonUtil {
             .registerTypeAdapter(File.class, new FileAdapter())
             .registerTypeAdapter(Charset.class, new CharsetAdapter())
             .setPrettyPrinting().create();
-
     }
 
     private GsonUtil() {

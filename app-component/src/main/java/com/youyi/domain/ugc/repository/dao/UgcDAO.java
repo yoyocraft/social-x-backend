@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.RepositoryConstant.MONGO_IGNORE_CASE_OPTION;
-import static com.youyi.common.constant.RepositoryConstant.ofFuzzyQuery;
+import static com.youyi.common.util.CommonOperationUtil.ofMongoFuzzyQuery;
 import static com.youyi.domain.ugc.constant.UgcConstant.UGC_ATTACHMENT_URLS;
 import static com.youyi.domain.ugc.constant.UgcConstant.UGC_AUTHOR_ID;
 import static com.youyi.domain.ugc.constant.UgcConstant.UGC_CATEGORY_ID;
@@ -235,10 +235,10 @@ public class UgcDAO {
             return;
         }
         Criteria regexCriteria = new Criteria().orOperator(
-            Criteria.where(UGC_TITLE).regex(ofFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION),
-            Criteria.where(UGC_SUMMARY).regex(ofFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION),
-            Criteria.where(UGC_CONTENT).regex(ofFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION),
-            Criteria.where(UGC_TAGS).regex(ofFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION)
+            Criteria.where(UGC_TITLE).regex(ofMongoFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION),
+            Criteria.where(UGC_SUMMARY).regex(ofMongoFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION),
+            Criteria.where(UGC_CONTENT).regex(ofMongoFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION),
+            Criteria.where(UGC_TAGS).regex(ofMongoFuzzyQuery(keyword), MONGO_IGNORE_CASE_OPTION)
         );
         query.addCriteria(regexCriteria);
     }

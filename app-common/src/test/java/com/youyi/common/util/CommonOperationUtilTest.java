@@ -1,7 +1,7 @@
 package com.youyi.common.util;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +17,8 @@ class CommonOperationUtilTest {
     @Test
     void testDate2Timestamp() {
         LocalDateTime now = LocalDateTime.now();
-        logger.info("{}", CommonOperationUtil.date2Timestamp(now));
-        logger.info("{}", now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+        long timestamp = Assertions.assertDoesNotThrow(() -> CommonOperationUtil.date2Timestamp(now));
+        logger.info("{}", timestamp);
     }
 }
 

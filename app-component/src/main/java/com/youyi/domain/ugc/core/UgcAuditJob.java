@@ -155,7 +155,7 @@ public class UgcAuditJob {
                 }
                 imageInfos.add(new ImageDetectRequest.ImageInfo(
                     resourceDO.getResourceUrl(),
-                    MediaUtil.encodeImageToBase64FromPath(resourceDO.getMedia())
+                    MediaUtil.encodeImageToBase64(resourceDO.getMedia())
                 ));
             } catch (Exception e) {
                 logger.warn("Failed to process image URL: {}, error: {}", url, e.getMessage());

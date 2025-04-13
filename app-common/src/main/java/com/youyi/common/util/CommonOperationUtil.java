@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import org.apache.commons.lang3.StringUtils;
 
+import static com.youyi.common.constant.RepositoryConstant.MONGO_FUZZY_QUERY_FORMAT;
 import static com.youyi.common.type.ReturnCode.TOO_MANY_REQUEST;
 
 /**
@@ -24,5 +25,9 @@ public class CommonOperationUtil {
 
     public static long date2Timestamp(LocalDateTime date) {
         return date.atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
+    }
+
+    public static String ofMongoFuzzyQuery(String query) {
+        return String.format(MONGO_FUZZY_QUERY_FORMAT, query);
     }
 }

@@ -14,6 +14,7 @@ public class SymbolConstant {
 
     public static final String EMPTY = "";
     public static final String EQUAL = "=";
+    
     public static final String AND = "&";
     public static final String QUESTION_MARK = "?";
     public static final char NEW_LINE_CHAR = '\n';
