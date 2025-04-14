@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import static com.youyi.common.constant.SystemConstant.DEFAULT_KEY;
+import static com.youyi.common.constant.SymbolConstant.EMPTY;
 import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_ADOPT;
 import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_COLLECT;
 import static com.youyi.domain.notification.type.NotificationTemplateKey.UGC_COMMENT;
@@ -202,17 +203,7 @@ public class NotificationManager {
         String summary,
         String content
     ) {
-        sendNotification(
-            sender,
-            receiverId,
-            type,
-            targetId,
-            targetType,
-            SymbolConstant.EMPTY,
-            SymbolConstant.EMPTY,
-            summary,
-            content
-        );
+        sendNotification(sender, receiverId, type, targetId, targetType, EMPTY, EMPTY, summary, content);
     }
 
     public void sendNotification(

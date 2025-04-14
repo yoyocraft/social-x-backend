@@ -54,7 +54,7 @@ public class LocalImageManager implements ApplicationListener<ApplicationReadyEv
         // 4. 复制图片到存储文件夹
         String finalFilePath = runCatching(() -> copyImageToStorage(mediaResourceDO.getMedia(), storageImageDirPath));
         // 5. 初始化 media 信息
-        mediaResourceDO.create(finalFilePath, buildAccessUrl(mediaResourceDO, datePath));
+        mediaResourceDO.fillUrl(finalFilePath, buildAccessUrl(mediaResourceDO, datePath));
     }
 
     public MediaResourceDO getMediaResourceByUrl(String url) {

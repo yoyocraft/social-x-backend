@@ -21,10 +21,14 @@ public class SysTaskDO {
     private TaskType taskType;
     private TaskStatus taskStatus;
     private SysTaskExtraData extraData;
+    private Long gmtCreate;
+    private Long gmtModified;
 
     public void create() {
         this.taskId = genSysTaskId();
         this.taskStatus = TaskStatus.INIT;
+        this.gmtCreate = System.currentTimeMillis();
+        this.gmtModified = System.currentTimeMillis();
     }
 
     public SysTaskPO buildToSaveSysTaskPO() {
@@ -33,6 +37,8 @@ public class SysTaskDO {
         po.setTaskType(this.taskType.name());
         po.setTaskStatus(this.taskStatus.name());
         po.setExtraData(GsonUtil.toJson(this.extraData));
+        po.setGmtCreate(this.gmtCreate);
+        po.setGmtModified(this.gmtModified);
         return po;
     }
 }

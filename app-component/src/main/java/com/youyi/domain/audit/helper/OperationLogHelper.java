@@ -17,6 +17,7 @@ public class OperationLogHelper {
     private final OperationLogRepository operationLogRepository;
 
     public void recordOperationLog(OperationLogDO operationLogDO) {
+        operationLogDO.create();
         OperationLogPO toSaveOperationLog = operationLogDO.buildToSaveOperationLog();
         operationLogRepository.insert(toSaveOperationLog);
     }

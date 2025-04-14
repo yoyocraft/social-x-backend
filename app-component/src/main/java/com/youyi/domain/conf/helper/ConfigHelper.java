@@ -20,6 +20,7 @@ public class ConfigHelper {
     private final ConfigRepository configRepository;
 
     public void createConfig(ConfigDO configDO) {
+        configDO.create();
         ConfigPO toSaveConfig = configDO.buildToSaveConfig();
         configRepository.insert(toSaveConfig);
     }
@@ -46,6 +47,7 @@ public class ConfigHelper {
     }
 
     public void updateConfig(ConfigDO configDO) {
+        configDO.create();
         ConfigPO configPO = configDO.buildToUpdateOrDeletePO();
         configRepository.updateConfigValue(configPO);
     }

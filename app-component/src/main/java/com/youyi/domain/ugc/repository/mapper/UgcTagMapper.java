@@ -12,16 +12,11 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface UgcTagMapper {
 
-    int insert(UgcTagPO po);
-
-    int insertBatch(@Param("tags") List<UgcTagPO> poList);
+    int insertBatch(@Param("tags") List<UgcTagPO> tags);
 
     List<UgcTagPO> queryByType(@Param("type") Integer tagType);
 
     List<UgcTagPO> queryAll();
 
     long count();
-
-    List<UgcTagPO> queryByCursor(@Param("cursor") String cursor, @Param("size") Integer size);
-
 }

@@ -4,36 +4,24 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youyi.domain.user.repository.mapper.UserAuthMapper">
 
-    <resultMap id="UserAuthResultMap" type="com.youyi.domain.user.repository.po.UserAuthPO">
-        <id column="id" property="id"/>
-        <result property="gmtCreate" column="gmt_create"/>
-        <result property="gmtModified" column="gmt_modified"/>
-        <result property="deletedAt" column="deleted_at"/>
-        <result property="userId" column="user_id"/>
-        <result property="identityType" column="identity_type"/>
-        <result property="identifier" column="identifier"/>
-        <result property="credential" column="credential"/>
-        <result property="salt" column="salt"/>
-    </resultMap>
-
     <sql id="result_cols">
         id, gmt_create, gmt_modified, deleted_at, extra_data, user_id, identity_type, identifier, credential, salt
     </sql>
     <insert id="insert">
-        INSERT INTO `user_auth` (user_id, identity_type, identifier, credential, salt)
-        VALUES (#{userId}, #{identityType}, #{identifier}, #{credential}, #{salt})
+        INSERT INTO `user_auth` (user_id, identity_type, identifier, credential, salt, gmt_create, gmt_modified)
+        VALUES (#{userId}, #{identityType}, #{identifier}, #{credential}, #{salt}, #{gmtCreate}, #{gmtModified})
     </insert>
     <insert id="insertBatch">
-        INSERT INTO `user_auth` (user_id, identity_type, identifier, credential, salt)
+        INSERT INTO `user_auth` (user_id, identity_type, identifier, credential, salt, gmt_create, gmt_modified)
         VALUES
         <foreach collection="pos" item="item" index="index" separator=",">
-            (#{item.userId}, #{item.identityType}, #{item.identifier}, #{item.credential}, #{item.salt})
+            (#{item.userId}, #{item.identityType}, #{item.identifier}, #{item.credential}, #{item.salt},
+            #{item.gmtCreate}, #{item.gmtModified})
         </foreach>
     </insert>
     <update id="update">
         UPDATE `user_auth`
-        SET
-        credential = #{credential}, salt = #{salt}
+        SET credential = #{credential}, salt = #{salt}, gmt_modified = #{gmtModified}
         WHERE `user_id` = #{userId}
         AND `identity_type` = #{identityType}
         AND `identifier` = #{identifier}

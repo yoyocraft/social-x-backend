@@ -20,15 +20,13 @@
     <sql id="result_cols">
         id, gmt_create, gmt_modified, deleted_at, extra_data, category_id, category_name, creator_id, priority, type
     </sql>
-    <insert id="insert">
-        INSERT INTO ugc_category (category_id, category_name, creator_id, priority, type, extra_data)
-        VALUES (#{categoryId}, #{categoryName}, #{creatorId}, #{priority}, #{type}, #{extraData})
-    </insert>
     <insert id="insertBatch">
-        INSERT INTO ugc_category (category_id, category_name, creator_id, priority, type, extra_data)
+        INSERT INTO ugc_category (category_id, category_name, creator_id, priority, type, extra_data, gmt_create,
+        gmt_modified)
         VALUES
         <foreach collection="categories" item="item" index="index" separator=",">
-            (#{item.categoryId}, #{item.categoryName}, #{item.creatorId}, #{item.priority}, #{item.type}, #{item.extraData})
+            (#{item.categoryId}, #{item.categoryName}, #{item.creatorId}, #{item.priority}, #{item.type},
+            #{item.extraData}, #{item.gmtCreate}, #{item.gmtModified})
         </foreach>
     </insert>
     <select id="queryAll" resultType="com.youyi.domain.ugc.repository.po.UgcCategoryPO">

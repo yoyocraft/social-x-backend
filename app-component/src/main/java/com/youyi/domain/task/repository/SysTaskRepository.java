@@ -58,7 +58,7 @@ public class SysTaskRepository extends BaseRepository {
 
     public void updateStatus(List<String> taskIds, String taskStatus) {
         checkState(StringUtils.isNotBlank(taskStatus));
-        executeWithExceptionHandling(() -> sysTaskMapper.updateStatus(taskIds, taskStatus));
+        executeWithExceptionHandling(() -> sysTaskMapper.updateStatus(taskIds, taskStatus, System.currentTimeMillis()));
     }
 
     public List<SysTaskPO> queryByTypeAndStatusWithCursor(String taskType, List<String> taskStatus, Long cursor, Integer size) {

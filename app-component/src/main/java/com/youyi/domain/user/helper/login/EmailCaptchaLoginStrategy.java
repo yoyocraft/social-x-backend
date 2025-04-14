@@ -57,12 +57,9 @@ public class EmailCaptchaLoginStrategy implements LoginStrategy {
     }
 
     void registerNewUser(UserDO userDO) {
-        userDO.initUserId();
-        // 创建用户信息 user_info
+        userDO.create();
         UserInfoPO userInfoPO = userDO.buildToSaveUserInfoPO();
-        // 创建对应的用户凭证信息 user_info
         UserAuthPO userAuthPO = userDO.buildToSaveUserAuthPO();
-        // 开启事务
         transactionTemplate.executeWithoutResult(status -> {
             try {
                 userRepository.insertUserInfo(userInfoPO);
@@ -74,7 +71,7 @@ public class EmailCaptchaLoginStrategy implements LoginStrategy {
         });
     }
 
-    void checkCaptcha(UserDO userDO) {
+    private void checkCaptcha(UserDO userDO) {
         String cacheKey = ofEmailCaptchaKey(userDO.getIdentifier(), LOGIN);
         String systemCaptcha = cacheRepository.getString(cacheKey);
         if (StringUtils.isBlank(systemCaptcha)) {
@@ -88,7 +85,7 @@ public class EmailCaptchaLoginStrategy implements LoginStrategy {
         }
     }
 
-    void cleanCaptcha(UserDO userDO) {
+    private void cleanCaptcha(UserDO userDO) {
         String cacheKey = ofEmailCaptchaKey(userDO.getIdentifier(), LOGIN);
         cacheRepository.delete(cacheKey);
     }

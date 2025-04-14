@@ -16,12 +16,13 @@
         id, gmt_create, gmt_modified, extra_data, permission_name
     </sql>
     <insert id="insert">
-        INSERT INTO `permission` (permission_name) VALUES (#{permissionName})
+        INSERT INTO `permission` (permission_name, gmt_create, gmt_modified)
+        VALUES (#{permissionName}, #{gmtCreate}, #{gmtModified})
     </insert>
     <insert id="insertBatch">
-        INSERT INTO `permission` (permission_name) VALUES
+        INSERT INTO `permission` (permission_name, gmt_create, gmt_modified) VALUES
         <foreach collection="pos" item="item" separator=",">
-            (#{item.permissionName})
+            (#{item.permissionName}, #{item.gmtCreate}, #{item.gmtModified})
         </foreach>
     </insert>
 

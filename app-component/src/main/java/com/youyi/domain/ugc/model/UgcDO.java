@@ -85,6 +85,8 @@ public class UgcDO {
         this.collectCount = 0L;
         this.commentaryCount = 0L;
         this.extraData = new UgcExtraData();
+        this.gmtCreate = System.currentTimeMillis();
+        this.gmtModified = System.currentTimeMillis();
     }
 
     public UgcDocument buildToSaveUgcDocument() {
@@ -105,8 +107,8 @@ public class UgcDO {
         ugcDocument.setStatus(status.name());
         ugcDocument.setCover(cover);
         ugcDocument.setAttachmentUrls(attachmentUrls);
-        ugcDocument.setGmtCreate(System.currentTimeMillis());
-        ugcDocument.setGmtModified(System.currentTimeMillis());
+        ugcDocument.setGmtCreate(gmtCreate);
+        ugcDocument.setGmtModified(gmtModified);
         ugcDocument.setExtraData(extraData);
         return ugcDocument;
     }

@@ -137,6 +137,8 @@ public class UserHelper {
     }
 
     public List<UserDO> queryFollowers(UserDO userDO) {
+        UserDO currentUserInfo = userService.getCurrentUserInfo();
+        userDO.setUserId(currentUserInfo.getUserId());
         List<UserDO> followers = userService.queryFollowers(userDO);
         if (CollectionUtils.isEmpty(followers)) {
             return Collections.emptyList();
