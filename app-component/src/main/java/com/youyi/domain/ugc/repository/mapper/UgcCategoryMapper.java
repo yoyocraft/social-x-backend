@@ -12,9 +12,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface UgcCategoryMapper {
 
-    int insert(UgcCategoryPO po);
-
-    int insertBatch(@Param("categories") List<UgcCategoryPO> poList);
+    int insertBatch(@Param("categories") List<UgcCategoryPO> categories);
 
     List<UgcCategoryPO> queryAll();
 

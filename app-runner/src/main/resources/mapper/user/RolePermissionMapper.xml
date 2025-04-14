@@ -19,13 +19,12 @@
     </sql>
 
     <insert id="insert">
-        INSERT INTO `role_permission` (role, permissions)
-        VALUES (#{role}, #{permissions});
+        INSERT INTO `role_permission` (role, permissions, gmt_create, gmt_modified)
+        VALUES (#{role}, #{permissions}, #{gmt_create}, #{gmt_modified});
     </insert>
     <update id="update">
         UPDATE `role_permission`
-        SET
-        permissions = #{permissions}
+        SET permissions = #{permissions}, gmt_modified = #{gmtModified}
         WHERE `role` = #{role}
         AND `deleted_at` = 0;
     </update>

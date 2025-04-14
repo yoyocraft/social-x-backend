@@ -16,7 +16,11 @@ public interface SysTaskMapper {
 
     int insertBatch(@Param("poList") List<SysTaskPO> poList);
 
-    int updateStatus(@Param("taskIds") List<String> taskIds, @Param("taskStatus") String taskStatus);
+    int updateStatus(
+        @Param("taskIds") List<String> taskIds,
+        @Param("taskStatus") String taskStatus,
+        @Param("gmtModified") Long gmtModified
+    );
 
     List<SysTaskPO> queryByTypeAndStatusWithCursor(
         @Param("taskType") String taskType,

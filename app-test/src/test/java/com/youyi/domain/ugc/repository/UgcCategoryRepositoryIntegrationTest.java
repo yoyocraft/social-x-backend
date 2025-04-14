@@ -34,6 +34,8 @@ class UgcCategoryRepositoryIntegrationTest extends BaseIntegrationTest {
                 po.setCreatorId("-1");
                 po.setPriority(priority.getAndIncrement());
                 po.setType(UgcCategoryType.QUESTION_CATEGORY.getType());
+                po.setGmtCreate(System.currentTimeMillis());
+                po.setGmtModified(System.currentTimeMillis());
                 return po;
             })
             .toList();

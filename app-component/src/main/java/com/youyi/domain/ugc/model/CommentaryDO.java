@@ -56,6 +56,8 @@ public class CommentaryDO {
         if (StringUtils.isBlank(parentId)) {
             this.parentId = TOP_COMMENTARY_ID;
         }
+        this.gmtCreate = System.currentTimeMillis();
+        this.gmtModified = System.currentTimeMillis();
     }
 
     public CommentaryDocument buildToSaveCommentaryDocument() {
@@ -69,8 +71,8 @@ public class CommentaryDO {
         commentaryDocument.setStatus(status.name());
         commentaryDocument.setAttachmentUrls(attachmentUrls);
         commentaryDocument.setExtraData(extraData);
-        commentaryDocument.setGmtCreate(System.currentTimeMillis());
-        commentaryDocument.setGmtModified(System.currentTimeMillis());
+        commentaryDocument.setGmtCreate(gmtCreate);
+        commentaryDocument.setGmtModified(gmtModified);
         return commentaryDocument;
     }
 
@@ -83,6 +85,8 @@ public class CommentaryDO {
         this.status = CommentaryStatus.of(document.getStatus());
         this.attachmentUrls = document.getAttachmentUrls();
         this.extraData = document.getExtraData();
+        this.gmtCreate = document.getGmtCreate();
+        this.gmtModified = document.getGmtModified();
     }
 
     public void calLikeCount(Long toAddCount) {

@@ -38,7 +38,6 @@ public interface NotificationConverter {
         @Mapping(target = "summary", expression = "java(getSummary(notificationDO))"),
         @Mapping(target = "targetId", expression = "java(getTargetId(notificationDO))"),
         @Mapping(target = "targetType", expression = "java(getTargetType(notificationDO))"),
-        @Mapping(target = "gmtCreate", expression = "java(CommonOperationUtil.date2Timestamp(notificationDO.getGmtCreate()))"),
         @Mapping(target = "followed", source = "followed")
     })
     NotificationResponse toResponse(NotificationDO notificationDO);

@@ -30,7 +30,15 @@ public class PermissionDO {
     private PermissionType toSavePermission;
 
     private List<PermissionType> toSavePermissions;
-    
+
+    private Long gmtCreate;
+    private Long gmtModified;
+
+    public void create() {
+        this.gmtCreate = System.currentTimeMillis();
+        this.gmtModified = System.currentTimeMillis();
+    }
+
     public List<PermissionPO> buildToSavePermissionPOs() {
         return toSavePermissions.stream()
             .map(this::buildPermissionPO)
@@ -41,6 +49,8 @@ public class PermissionDO {
         RolePermissionPO po = new RolePermissionPO();
         po.setRole(role.name());
         po.setPermissions(GsonUtil.toJson(permissions));
+        po.setGmtCreate(gmtCreate);
+        po.setGmtModified(gmtModified);
         return po;
     }
 
@@ -84,6 +94,8 @@ public class PermissionDO {
     private PermissionPO buildPermissionPO(PermissionType permission) {
         PermissionPO po = new PermissionPO();
         po.setPermissionName(permission.name());
+        po.setGmtCreate(gmtCreate);
+        po.setGmtModified(gmtModified);
         return po;
     }
 }

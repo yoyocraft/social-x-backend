@@ -25,6 +25,7 @@ public class MediaResourceHelper {
         // 2. 上传图片
         localImageManager.doUploadImage(mediaResourceDO);
         // 3. 落库
+        mediaResourceDO.create();
         mediaResourceRepository.insertMedia(mediaResourceDO.buildToSaveMediaResourcePO());
     }
 

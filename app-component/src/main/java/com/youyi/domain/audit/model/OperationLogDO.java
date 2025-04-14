@@ -18,6 +18,13 @@ public class OperationLogDO {
     private String operatorId;
     private String operatorName;
     private OperationLogExtraData extraData;
+    private Long gmtCreate;
+    private Long gmtModified;
+
+    public void create() {
+        this.gmtCreate = System.currentTimeMillis();
+        this.gmtModified = System.currentTimeMillis();
+    }
 
     public OperationLogPO buildToSaveOperationLog() {
         OperationLogPO toSaveOperationLog = new OperationLogPO();
@@ -25,6 +32,8 @@ public class OperationLogDO {
         toSaveOperationLog.setOperatorId(operatorId);
         toSaveOperationLog.setOperatorName(operatorName);
         toSaveOperationLog.setExtraData(GsonUtil.toJson(extraData));
+        toSaveOperationLog.setGmtCreate(gmtCreate);
+        toSaveOperationLog.setGmtModified(gmtModified);
         return toSaveOperationLog;
     }
 }

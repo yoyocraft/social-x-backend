@@ -70,6 +70,8 @@ public class UgcMetadataInitializer implements ApplicationListener<ApplicationRe
                 po.setPriority(wrapper.getPriority());
                 po.setType(wrapper.getType());
                 po.setExtraData(wrapper.getExtraData());
+                po.setGmtCreate(System.currentTimeMillis());
+                po.setGmtModified(System.currentTimeMillis());
                 return po;
             }).toList();
 
@@ -97,6 +99,8 @@ public class UgcMetadataInitializer implements ApplicationListener<ApplicationRe
                 po.setCreatorId(SYSTEM_OPERATOR_ID);
                 po.setPriority(wrapper.getPriority());
                 po.setType(wrapper.getType());
+                po.setGmtCreate(System.currentTimeMillis());
+                po.setGmtModified(System.currentTimeMillis());
                 return po;
             }).toList();
 

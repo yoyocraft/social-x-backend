@@ -22,6 +22,8 @@ public class MediaResourceDO {
     private ResourceType resourceType;
     private String resourceUrl;
     private MediaSource source;
+    private Long gmtCreate;
+    private Long gmtModified;
 
     private File media;
     private String creatorId;
@@ -35,13 +37,20 @@ public class MediaResourceDO {
         mediaResourcePO.setResourceUrl(resourceUrl);
         mediaResourcePO.setSource(source.name());
         mediaResourcePO.setCreatorId(creatorId);
+        mediaResourcePO.setGmtCreate(gmtCreate);
+        mediaResourcePO.setGmtModified(gmtModified);
         return mediaResourcePO;
     }
 
-    public void create(String resourceUrl, String accessUrl) {
+    public void fillUrl(String resourceUrl, String accessUrl) {
         this.resourceKey = genMediaResourceKey();
         this.resourceUrl = resourceUrl;
         this.accessUrl = accessUrl;
+    }
+
+    public void create() {
+        this.gmtCreate = System.currentTimeMillis();
+        this.gmtModified = System.currentTimeMillis();
     }
 
     public void fillCreatorInfo(UserDO creator) {

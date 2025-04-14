@@ -4,7 +4,6 @@ import com.mongodb.client.result.UpdateResult;
 import com.youyi.domain.ugc.repository.document.UgcDocument;
 import com.youyi.domain.ugc.type.UgcStatus;
 import com.youyi.domain.ugc.type.UgcType;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -73,8 +72,8 @@ public class UgcDAO {
             .set(UGC_ATTACHMENT_URLS, ugcDocument.getAttachmentUrls())
             .set(UGC_TAGS, ugcDocument.getTags())
             .set(UGC_STATUS, ugcDocument.getStatus())
-            .set(UGC_GMT_MODIFIED, System.currentTimeMillis())
-            .set(UGC_EXTRA_DATA, ugcDocument.getExtraData());
+            .set(UGC_EXTRA_DATA, ugcDocument.getExtraData())
+            .set(UGC_GMT_MODIFIED, System.currentTimeMillis());
         return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
     }
 
@@ -82,7 +81,7 @@ public class UgcDAO {
         Query query = new Query(Criteria.where(UGC_ID).is(ugcId));
         Update updateDef = new Update()
             .set(UGC_STATUS, ugcStatus)
-            .set(UGC_GMT_MODIFIED, LocalDateTime.now());
+            .set(UGC_GMT_MODIFIED, System.currentTimeMillis());
         return mongoTemplate.updateFirst(query, updateDef, UgcDocument.class);
     }
 

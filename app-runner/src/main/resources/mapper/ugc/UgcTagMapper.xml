@@ -4,39 +4,16 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youyi.domain.ugc.repository.mapper.UgcTagMapper">
 
-    <resultMap id="ConfigResultMap" type="com.youyi.domain.ugc.repository.po.UgcTagPO">
-        <id column="id" property="id"/>
-        <result property="gmtCreate" column="gmt_create"/>
-        <result property="gmtModified" column="gmt_modified"/>
-        <result property="deletedAt" column="deleted_at"/>
-        <result property="tagId" column="tag_id"/>
-        <result property="tagName" column="tag_name"/>
-        <result property="priority" column="priority"/>
-        <result property="type" column="type"/>
-        <result property="creatorId" column="creator_id"/>
-    </resultMap>
-
     <sql id="result_cols">
         id, gmt_create, gmt_modified, deleted_at, tag_id, tag_name, creator_id, priority, type
     </sql>
 
-    <sql id="query_cursor_definition">
-        SELECT
-            CASE
-                WHEN #{cursor} = '0' THEN 0
-                ELSE (SELECT id FROM ugc_tag WHERE tag_id = #{cursor})
-            END
-    </sql>
-
-    <insert id="insert">
-        INSERT INTO `ugc_tag` (tag_id, tag_name, creator_id, priority, type)
-        VALUES (#{po.tagId}, #{po.tagName}, #{po.creatorId}, #{po.priority}, #{po.type})
-    </insert>
     <insert id="insertBatch">
-        INSERT INTO `ugc_tag` (tag_id, tag_name, creator_id, priority, type)
+        INSERT INTO `ugc_tag` (tag_id, tag_name, creator_id, priority, type, gmt_create, gmt_modified)
         VALUES
         <foreach collection="tags" item="item" index="index" separator=",">
-            (#{item.tagId}, #{item.tagName}, #{item.creatorId}, #{item.priority}, #{item.type})
+            (#{item.tagId}, #{item.tagName}, #{item.creatorId}, #{item.priority}, #{item.type}, #{item.gmtCreate},
+            #{item.gmtModified})
         </foreach>
     </insert>
     <select id="queryByType" resultType="com.youyi.domain.ugc.repository.po.UgcTagPO">
@@ -53,17 +30,6 @@
         FROM ugc_tag
         WHERE deleted_at = 0
         ORDER BY priority DESC, id DESC
-    </select>
-    <select id="queryByCursor" resultType="com.youyi.domain.ugc.repository.po.UgcTagPO">
-        SELECT
-        <include refid="result_cols"/>
-        FROM ugc_tag
-        WHERE id <![CDATA[ > ]]> (
-            <include refid="query_cursor_definition"/>
-        )
-        AND deleted_at = 0
-        ORDER BY id ASC, priority DESC
-        LIMIT #{size}
     </select>
     <select id="count" resultType="java.lang.Long">
         SELECT COUNT(*)

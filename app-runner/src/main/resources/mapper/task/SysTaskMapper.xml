@@ -4,38 +4,27 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.youyi.domain.task.repository.mapper.SysTaskMapper">
 
-    <resultMap id="SysTaskResultMap" type="com.youyi.domain.task.repository.po.SysTaskPO">
-        <id column="id" property="id"/>
-        <result property="gmtCreate" column="gmt_create"/>
-        <result property="gmtModified" column="gmt_modified"/>
-        <result property="extraData" column="extra_data"/>
-        <result property="deletedAt" column="deleted_at"/>
-        <result property="taskId" column="task_id"/>
-        <result property="taskType" column="task_type"/>
-        <result property="taskStatus" column="task_status"/>
-    </resultMap>
-
     <sql id="result_cols">
         id, gmt_create, gmt_modified, deleted_at, extra_data, task_id, task_type, task_status
     </sql>
     <insert id="insert">
-        INSERT INTO sys_task(extra_data, task_id, task_type, task_status)
-        VALUES (#{extraData}, #{taskId}, #{taskType}, #{taskStatus})
+        INSERT INTO sys_task(extra_data, task_id, task_type, task_status, gmt_create, gmt_modified)
+        VALUES (#{extraData}, #{taskId}, #{taskType}, #{taskStatus}, #{gmtCreate}, #{gmtModified})
     </insert>
     <insert id="insertBatch">
-        INSERT INTO sys_task(extra_data, task_id, task_type, task_status)
+        INSERT INTO sys_task(extra_data, task_id, task_type, task_status, gmt_create, gmt_modified)
         VALUES
         <foreach collection="poList" item="item" index="index" separator=",">
-            (#{item.extraData}, #{item.taskId}, #{item.taskType}, #{item.taskStatus})
+            (#{item.extraData}, #{item.taskId}, #{item.taskType}, #{item.taskStatus}, #{gmtCreate}, #{gmtModified})
         </foreach>
     </insert>
     <update id="updateStatus">
         UPDATE sys_task
-        SET task_status = #{taskStatus}
+        SET task_status = #{taskStatus}, gmt_modified = #{gmtModified}
         WHERE task_id IN (
-            <foreach collection="taskIds" item="item" separator=",">
-                #{item}
-            </foreach>
+        <foreach collection="taskIds" item="item" separator=",">
+            #{item}
+        </foreach>
         )
     </update>
 
@@ -45,15 +34,15 @@
         FROM sys_task
         WHERE task_type = #{taskType}
         <if test="withTimeInterval">
-            AND gmt_modified <![CDATA[ < ]]> NOW() - INTERVAL 1 DAY
+            AND gmt_modified &lt; UNIX_TIMESTAMP(NOW() - INTERVAL 1 DAY)
         </if>
         AND task_status IN (
-            <foreach collection="taskStatus" item="item" separator=",">
-                #{item}
-            </foreach>
+        <foreach collection="taskStatus" item="item" separator=",">
+            #{item}
+        </foreach>
         )
         AND deleted_at = 0
-        AND id <![CDATA[ > ]]> #{cursor}
+        AND id &gt; #{cursor}
         ORDER BY gmt_modified DESC, id DESC
         LIMIT #{size}
     </select>

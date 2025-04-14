@@ -92,7 +92,7 @@ public class UgcService {
         UgcDocument ugcDocument = ugcRepository.queryByUgcId(ugcDO.getUgcId());
         checkNotNull(ugcDocument);
         checkAuthorization(ugcDO, ugcDocument);
-        ugcDO.fillBeforeUpdateWhenPublish(ugcDocument);
+        // ugcDO.fillBeforeUpdateWhenPublish(ugcDocument);
         ugcRepository.updateUgc(ugcDO.buildToUpdateUgcDocumentWhenPublish());
     }
 

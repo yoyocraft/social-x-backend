@@ -20,6 +20,7 @@ public class PermissionHelper {
     private final PermissionRepository permissionRepository;
 
     public void addPermission(PermissionDO permissionDO) {
+        permissionDO.create();
         List<PermissionPO> pos = permissionDO.buildToSavePermissionPOs();
         permissionRepository.insertBatchPermissions(pos);
     }
@@ -30,6 +31,7 @@ public class PermissionHelper {
         // 2. 合并权限，去重
         permissionDO.mergePermission(poFromDB);
         // 3. 保存角色权限
+        permissionDO.create();
         RolePermissionPO po = permissionDO.buildToSaveRolePermissionPO();
         permissionRepository.insertOrUpdateRolePermission(po);
     }
@@ -40,6 +42,7 @@ public class PermissionHelper {
         // 2. 求交集
         permissionDO.diffPermissionForRevoke(poFromDB);
         // 3. 保存用户权限
+        permissionDO.create();
         RolePermissionPO po = permissionDO.buildToSaveRolePermissionPO();
         permissionRepository.insertOrUpdateRolePermission(po);
     }

@@ -1,17 +1,16 @@
 package com.youyi.domain.user.model;
 
 import com.youyi.common.type.BizType;
+import com.youyi.common.util.GsonUtil;
+import com.youyi.common.util.crypto.IvGenerator;
+import com.youyi.common.util.seq.IdSeqUtil;
+import com.youyi.domain.user.repository.po.UserAuthPO;
+import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.domain.user.type.IdentityType;
 import com.youyi.domain.user.type.UserRoleType;
 import com.youyi.domain.user.type.UserStatusType;
 import com.youyi.domain.user.type.WorkDirectionType;
-import com.youyi.common.util.GsonUtil;
-import com.youyi.common.util.seq.IdSeqUtil;
-import com.youyi.common.util.crypto.IvGenerator;
-import com.youyi.domain.user.repository.po.UserAuthPO;
-import com.youyi.domain.user.repository.po.UserInfoPO;
 import com.youyi.infra.privacy.CryptoManager;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -57,7 +56,9 @@ public class UserDO {
     private UserStatusType status;
     private UserRoleType role;
 
-    private LocalDateTime joinTime;
+    private Long joinTime;
+    private Long gmtCreate;
+    private Long gmtModified;
 
     private Integer followerCount;
     private Integer followingCount;
@@ -91,8 +92,10 @@ public class UserDO {
     // for recommend
     private Double similarity;
 
-    public void initUserId() {
+    public void create() {
         this.userId = genUserId();
+        this.gmtCreate = System.currentTimeMillis();
+        this.gmtModified = System.currentTimeMillis();
     }
 
     public UserInfoPO buildToSaveUserInfoPO() {
@@ -104,6 +107,8 @@ public class UserDO {
         userInfoPO.setPhoneIv(EMPTY);
         userInfoPO.setAvatar(getStringConfig(DEFAULT_AVATAR));
         userInfoPO.setNickname(genUserNickname());
+        userInfoPO.setGmtCreate(gmtCreate);
+        userInfoPO.setGmtModified(gmtModified);
         return userInfoPO;
     }
 
@@ -114,6 +119,8 @@ public class UserDO {
         userAuthPO.setIdentifier(CryptoManager.aesEncrypt(identifier));
         userAuthPO.setCredential(credential);
         userAuthPO.setSalt(salt);
+        userAuthPO.setGmtCreate(gmtCreate);
+        userAuthPO.setGmtModified(gmtModified);
         return userAuthPO;
     }
 
@@ -147,6 +154,7 @@ public class UserDO {
         userInfoPO.setPersonalizedTags(GsonUtil.toJson(this.personalizedTags));
         userInfoPO.setJobTitle(this.jobTitle);
         userInfoPO.setCompany(this.company);
+        userInfoPO.setGmtModified(System.currentTimeMillis());
         return userInfoPO;
     }
 
@@ -181,6 +189,8 @@ public class UserDO {
         this.status = UserStatusType.of(userInfoPO.getStatus());
         this.role = UserRoleType.of(userInfoPO.getRole());
         this.joinTime = userInfoPO.getGmtCreate();
+        this.gmtCreate = userInfoPO.getGmtCreate();
+        this.gmtModified = userInfoPO.getGmtModified();
     }
 
     public void fillUserInfo(UserLoginStateInfo userLoginStateInfo) {
@@ -222,6 +232,8 @@ public class UserDO {
         this.status = userDO.getStatus();
         this.role = userDO.getRole();
         this.joinTime = userDO.getJoinTime();
+        this.gmtCreate = userDO.getGmtCreate();
+        this.gmtModified = userDO.getGmtModified();
     }
 
     public void initSalt() {
@@ -236,6 +248,7 @@ public class UserDO {
         // 构建 UserAuthPO 需要使用到原始到 email
         this.identifier = this.originalEmail;
         this.identityType = IdentityType.EMAIL_PASSWORD;
+        this.gmtModified = System.currentTimeMillis();
     }
 
     public boolean isAdmin() {
