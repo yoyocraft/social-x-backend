@@ -4,6 +4,7 @@ import com.youyi.BaseIntegrationTest;
 import com.youyi.domain.user.model.UserDO;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,30 @@ class UserServiceIntegrationTest extends BaseIntegrationTest {
             UserDO fan = userService.queryByUserId(fanId);
             UserDO up = userService.queryByUserId(upId);
 
+            userService.followUser(fan, up);
+        }
+    }
+
+    @Test
+    void testFollow2() {
+        final String upId = "1883827647466573824";
+        UserDO up = userService.queryByUserId(upId);
+        Set<String> fans = Set.of(
+            "1883829503093772288",
+            "1910589040149663744",
+            "1910589040174829568",
+            "1910589040179023872",
+            "1910589040179023873",
+            "1910589040183218176",
+            "1910589040183218177",
+            "1910589040183218178",
+            "1910589040187412480",
+            "1910589040187412481",
+            "1910589040191606784",
+            "1910589040191606785"
+        );
+        for (String fanId : fans) {
+            UserDO fan = userService.queryByUserId(fanId);
             userService.followUser(fan, up);
         }
     }

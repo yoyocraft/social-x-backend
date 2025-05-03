@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRelationDAO extends Neo4jRepository<UserNode, Long> {
 
-    @Query("CREATE (u:user {userId: $userId, nickname: $nickname}) RETURN u")
+    @Query("CREATE (u:user {userId: $userId, name: $nickname}) RETURN u")
     UserNode save(@Param("userId") String userId, @Param("nickname") String nickname);
 
     @Query("MATCH (u:user {userId: $userId}) RETURN u")
@@ -78,7 +78,7 @@ public interface UserRelationDAO extends Neo4jRepository<UserNode, Long> {
     @Query("""
             MATCH (u:user)-[r:FOLLOWING]->(f:user {userId: $userId})
             WHERE ($cursor IS NULL OR r.since < $cursor)
-            RETURN f AS target, r.since AS since
+            RETURN u AS target, r.since AS since
             ORDER BY r.since DESC LIMIT $limit
         """)
     List<UserRelationship> getFollowers(@Param("userId") String userId, @Param("cursor") Long cursor, @Param("limit") int limit);

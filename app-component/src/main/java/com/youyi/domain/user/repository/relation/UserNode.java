@@ -25,8 +25,8 @@ public class UserNode {
     @Property(value = "userId")
     private String userId;
 
-    @Property(value = "nickname")
-    private String nickname;
+    @Property(value = "name")
+    private String name;
 
     /**
      * 关注的用户
